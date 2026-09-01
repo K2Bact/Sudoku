@@ -1,0 +1,44 @@
+[앱 이름 (App name - 최대 30자)]
+Sudoku - Puzle de lógica
+
+[간단한 설명 (Short description - 최대 80자)]
+Sudoku clásico, 32 técnicas, informe de Sudoku IQ y desafíos diarios 365.
+
+[자세한 설명 (Full description - 최대 4000자)]
+Sudoku es un juego de puzles de lógica y entrenamiento cerebral de nueva generación, diseñado para todos los amantes del razonamiento puro, desde principiantes hasta grandes maestros.
+
+Disfruta de la máxima satisfacción deductiva con 32 técnicas auténticas enseñadas paso a paso y un informe cognitivo de Sudoku IQ en tiempo real.
+
+━━━━━━━━━━━━━━━━━━━━━
+🌟 CARACTERÍSTICAS PRINCIPALES
+━━━━━━━━━━━━━━━━━━━━━
+
+🧩 1. 5 Niveles de Dificultad Equilibrados
+- Desde Principiante hasta Maestro.
+- Tableros 100% únicos garantizados matemáticamente, solubles por pura deducción sin adivinar.
+- 4 elegantes temas visuales diseñados para descansar la vista (Arcilla, Mate Oscuro, Cerámica Pura, Editorial).
+
+🎓 2. Academia Sudoku en 32 Técnicas
+- Aprende paso a paso con diagramas y práctica interactiva:
+- Nivel Básico: Singles, líneas y bloqueos.
+- Nivel Intermedio: Pares e intersecciones.
+- Nivel Avanzado: Familia Wing (X-Wing, XY-Wing, XYZ-Wing, W-Wing).
+- Nivel Experto: Peces (Swordfish, Jellyfish), coloreado y rectángulo único (UR).
+- Nivel Maestro: Cadenas AIC, conjuntos ALS y Exocet.
+
+⚔️ 3. Duelos 1v1 en Tiempo Real y Batallas contra IA
+- Compite en igualdad de condiciones en tableros idénticos con emparejamiento global.
+- Desafía a bots de IA de 5 niveles para entrenar tu velocidad de resolución.
+
+🧠 4. Informe de Sudoku IQ Personalizado
+- Análisis detallado de tus 5 habilidades cognitivas clave: Concentración, Resistencia, Precisión, Lógica y Velocidad.
+- Gráfico radar y percentil global comparativo.
+
+📅 5. Desafíos Diarios 365 Días
+- Un nuevo puzle cada día y medallas mensuales coleccionables.
+- Desbloquea fechas pasadas para completar tu calendario anual de logros.
+
+🏆 6. 30 Logros Mundiales y Clasificaciones
+- Desbloquea hitos especiales, trofeos de maestría y sincroniza tu récord con Google Play Games.
+
+¡Descarga Sudoku hoy mismo y eleva tu agilidad mental al siguiente nivel!

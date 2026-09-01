@@ -1,0 +1,36 @@
+[앱 이름 (App name - 최대 30자)]
+Sudoku - Jogo de Lógica & QI
+
+[간단한 설명 (Short description - 최대 80자)]
+Sudoku clássico, 32 técnicas de mestre, relatório de QI e desafio diário 365
+
+[자세한 설명 (Full description - 최대 4000자)]
+Sudoku Master é o jogo definitivo de raciocínio lógico e treino mental para jogadores de todos os níveis.
+
+Exercite seu cérebro com o prazer da lógica pura e aprenda 32 técnicas oficiais na Academia de Sudoku.
+
+━━━━━━━━━━━━━━━━━━━━━
+🌟 DIFERENCIAIS DO SUDOKU
+━━━━━━━━━━━━━━━━━━━━━
+
+🧩 1. 5 Níveis de Dificuldade Equilibrados
+- Do Muito Fácil ao Mestre
+- Soluções 100% únicas e verificadas matematicamente
+- 4 temas visuais confortáveis para os olhos
+
+🎓 2. Academia de Sudoku com 32 Técnicas
+- Tutoriais interativos do básico ao nível Grão-Mestre
+- Simples: Hidden Single, Pares e Trios
+- Avançado: X-Wing, Swordfish, Jellyfish, XY-Wing
+- Mestre: 3D Medusa, Unique Rectangle e Cadeias AIC/ALS
+
+⚔️ 3. Batalha 1v1 em Tempo Real e Duelos contra IA
+- Disputas eletrizantes no mesmo tabuleiro contra jogadores do mundo todo ou robôs IA.
+
+🧠 4. Relatório de QI Mental
+- Avaliação detalhada de 5 habilidades cognitivas: foco, lógica, agilidade, persistência e precisão.
+
+📅 5. Desafio Diário dos 365 Dias
+- Puzzles diários inéditos, medalhas mensais e calendário completo de presença.
+
+Baixe o Sudoku Master agora e leve sua mente para o próximo nível!

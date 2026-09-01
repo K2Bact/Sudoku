@@ -1,0 +1,2379 @@
+{
+  "ar": [
+    {
+      "file": "achievements.js",
+      "line": 19,
+      "keyLine": "syncPlayGames: 'ألعاب Google Play و Game Center',",
+      "suspicious": [
+        "Play",
+        "Game",
+        "Center"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 91,
+      "keyLine": "title: '👑 أستاذ كبير (Grand Master)',",
+      "suspicious": [
+        "Grand",
+        "Master"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 12,
+      "keyLine": "badge: 'PRO',",
+      "suspicious": [
+        "PRO"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 70,
+      "keyLine": "benefitsTitle: '👑 مزايا العضوية المميزة (PRO)',",
+      "suspicious": [
+        "PRO"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 105,
+      "keyLine": "en: 'English',",
+      "suspicious": [
+        "English"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 109,
+      "keyLine": "esES: 'Español',",
+      "suspicious": [
+        "Espa",
+        "ol"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 110,
+      "keyLine": "de: 'Deutsch',",
+      "suspicious": [
+        "Deutsch"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 111,
+      "keyLine": "fr: 'Français',",
+      "suspicious": [
+        "Fran",
+        "ais"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 112,
+      "keyLine": "pt: 'Português',",
+      "suspicious": [
+        "Portugu"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 113,
+      "keyLine": "it: 'Italiano',",
+      "suspicious": [
+        "Italiano"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: 'تحقق من التصنيفات العالمية المباشرة عبر ألعاب Google Play.',",
+      "suspicious": [
+        "Play"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 151,
+      "keyLine": "survivalTitle: '⏳ وضع النجاة (Time Limit)',",
+      "suspicious": [
+        "Time",
+        "Limit"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 190,
+      "keyLine": "grandMaster: '👑 أستاذ كبير (Grand Master)',",
+      "suspicious": [
+        "Grand",
+        "Master"
+      ]
+    }
+  ],
+  "de": [
+    {
+      "file": "achievements.js",
+      "line": 19,
+      "keyLine": "syncPlayGames: 'Google Play & Game Center',",
+      "suspicious": [
+        "Play",
+        "Game"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 12,
+      "keyLine": "pause: 'Pause',",
+      "suspicious": [
+        "Pause"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 92,
+      "keyLine": "desc: 'Top {percentile}% aller Spieler! Meisterhafte logische Deduktion der besten 1%.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 96,
+      "keyLine": "desc: 'Top {percentile}% aller Spieler! Überragende logische und analytische Denkfähigkeit.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 100,
+      "keyLine": "desc: 'Top {percentile}% aller Spieler! Scharfe Intuition und außergewöhnliche Kombinationsgabe.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 104,
+      "keyLine": "desc: 'Top {percentile}% aller Spieler! Flexible und robuste Problemlösungsfähigkeiten.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 108,
+      "keyLine": "desc: 'Top {percentile}% aller Spieler! Ausgewogene Entwicklung aller Denkfähigkeiten.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 4,
+      "keyLine": "speedrunTab: 'Speedrun-Rang',",
+      "suspicious": [
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 10,
+      "keyLine": "topSolvers: 'Globale Ruhmeshalle TOP 10'",
+      "suspicious": [
+        "TOP"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 15,
+      "keyLine": "brainPercentile: 'Top {percentile}% · {won} Siege ({tier})',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 16,
+      "keyLine": "brainPercentileShort: 'Top {percentile}% · {won} Siege',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 20,
+      "keyLine": "standard: '🎯 Standard',",
+      "suspicious": [
+        "Standard"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 27,
+      "keyLine": "timeAttack: { badge: 'SPEEDRUN', title: '⚡ Speedrun (Zeitangriff)', desc: 'Kämpfen Sie gegen die Uhr um die schnellste Bestzeit!', startBtn: 'Speedrun starten' },",
+      "suspicious": [
+        "SPEEDRUN"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 30,
+      "keyLine": "battle: { title: '1v1 Online-Duell', desc: 'Echtzeit-Match weltweit' },",
+      "suspicious": [
+        "Online"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 62,
+      "keyLine": "battleTitle: '1 1v1-Online/KI-Duell spielen', battleDesc: 'Nehmen Sie an 1 Echtzeit-1v1-Duell oder KI-Bot-Match teil.',",
+      "suspicious": [
+        "Online"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 63,
+      "keyLine": "speedrunTitle: '⚡ 1 Speedrun-Modus abschließen', speedrunDesc: 'Schließen Sie ein Speedrun-Rätsel mit Kombo-Beschleunigung ab.'",
+      "suspicious": [
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 103,
+      "keyLine": "auto: 'System-Standard',",
+      "suspicious": [
+        "Standard"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: 'Echtzeit-Weltranglisten mit Google Play Games einsehen.',",
+      "suspicious": [
+        "Play"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 150,
+      "keyLine": "speedrunBest: 'Speedrun-Bestzeit',",
+      "suspicious": [
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 184,
+      "keyLine": "percentilePrefix: 'Top ',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 191,
+      "keyLine": "grandMasterDesc: 'Top {percentile}% aller Spieler! Meisterhafte 1% deduktive Denkweise.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 193,
+      "keyLine": "mensaDesc: 'Top {percentile}% aller Spieler! Herausragende analytische Fähigkeiten.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 195,
+      "keyLine": "superiorDesc: 'Top {percentile}% aller Spieler! Scharfe Intuition und exzellente Problemlösung.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 197,
+      "keyLine": "aboveAverageDesc: 'Top {percentile}% aller Spieler! Stabiles und flexibles analytisches Denken.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 199,
+      "keyLine": "balancedDesc: 'Top {percentile}% aller Spieler! Harmonische Entwicklung aller 5 Denkbereiche.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 206,
+      "keyLine": "cancelBtn: 'Match abbrechen',",
+      "suspicious": [
+        "Match"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 208,
+      "keyLine": "foundOpponent: 'Gegner gefunden! Match beginnt in Kürze...',",
+      "suspicious": [
+        "Match"
+      ]
+    }
+  ],
+  "es-ES": [
+    {
+      "file": "achievements.js",
+      "line": 22,
+      "keyLine": "syncPlayGames: 'Sincronizar Google / Apple Play',",
+      "suspicious": [
+        "Play"
+      ]
+    },
+    {
+      "file": "achievements.js",
+      "line": 47,
+      "keyLine": "combo_streak_5: { title: 'Artista del combo', desc: 'Consigue un combo x5 en modo Speedrun' },",
+      "suspicious": [
+        "combo"
+      ]
+    },
+    {
+      "file": "achievements.js",
+      "line": 48,
+      "keyLine": "combo_streak_10: { title: 'Maestro del combo', desc: 'Consigue un combo x10 en modo Speedrun' },",
+      "suspicious": [
+        "combo"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 45,
+      "keyLine": "combo: '🔥 ¡{count} COMBO!',",
+      "suspicious": [
+        "COMBO"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 95,
+      "keyLine": "desc: '¡Top {percentile}% de jugadores! Razonamiento deductivo de élite insuperable.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 99,
+      "keyLine": "desc: '¡Top {percentile}% de jugadores! Extraordinaria capacidad de análisis lógico.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 103,
+      "keyLine": "desc: '¡Top {percentile}% de jugadores! Gran agilidad y resolución lógica.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 107,
+      "keyLine": "desc: '¡Top {percentile}% de jugadores! Pensamiento flexible y deductivo sólido.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 111,
+      "keyLine": "desc: '¡Top {percentile}% de jugadores! Desarrollo óptimo de las 5 capacidades cognitivas.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 10,
+      "keyLine": "topSolvers: 'Salón de la Fama TOP 10'",
+      "suspicious": [
+        "TOP"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 15,
+      "keyLine": "brainPercentile: 'Top {percentile}% · {won} Victorias ({tier})',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 16,
+      "keyLine": "brainPercentileShort: 'Top {percentile}% · {won} Victorias',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 20,
+      "keyLine": "\"standard\": \"🎯 Estándar\",",
+      "suspicious": [
+        "standard"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 21,
+      "keyLine": "\"ghost\": \"👻 Fantasma\",",
+      "suspicious": [
+        "ghost"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 30,
+      "keyLine": "battle: { title: 'Duelo 1v1 Online', desc: 'Multijugador en tiempo real' },",
+      "suspicious": [
+        "Online"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 62,
+      "keyLine": "battleTitle: 'Juega 1 Duelo 1v1 Online o vs IA', battleDesc: 'Participa en 1 duelo multijugador o partida de práctica.',",
+      "suspicious": [
+        "Online"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: \"Consulta los récords mundiales con Google Play Games.\",",
+      "suspicious": [
+        "Play"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 150,
+      "keyLine": "speedrunBest: \"Mejor Speedrun\",",
+      "suspicious": [
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 184,
+      "keyLine": "percentilePrefix: 'Top ',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 191,
+      "keyLine": "grandMasterDesc: '¡Top {percentile}% de todos los jugadores! Capacidad deductiva de nivel élite.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 193,
+      "keyLine": "mensaDesc: '¡Top {percentile}% de todos los jugadores! Capacidad analítica y lógica sobresaliente.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 195,
+      "keyLine": "superiorDesc: '¡Top {percentile}% de todos los jugadores! Gran intuición y resolución de problemas.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 197,
+      "keyLine": "aboveAverageDesc: '¡Top {percentile}% de todos los jugadores! Pensamiento flexible y deductivo.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 199,
+      "keyLine": "balancedDesc: '¡Top {percentile}% de todos los jugadores! Desarrollo integral en las 5 áreas cognitivas.',",
+      "suspicious": [
+        "Top"
+      ]
+    }
+  ],
+  "fr": [
+    {
+      "file": "achievements.js",
+      "line": 14,
+      "keyLine": "statsTab: 'Aperçu des stats',",
+      "suspicious": [
+        "stats"
+      ]
+    },
+    {
+      "file": "achievements.js",
+      "line": 19,
+      "keyLine": "syncPlayGames: 'Google Play & Game Center',",
+      "suspicious": [
+        "Play",
+        "Game"
+      ]
+    },
+    {
+      "file": "achievements.js",
+      "line": 36,
+      "keyLine": "note_master: { title: 'Maître des notes', desc: 'Utilisez activement les notes au crayon 50+ fois' },",
+      "suspicious": [
+        "notes"
+      ]
+    },
+    {
+      "file": "achievements.js",
+      "line": 44,
+      "keyLine": "combo_streak_5: { title: 'Artiste du combo', desc: 'Atteignez un combo de 5 en mode Speedrun' },",
+      "suspicious": [
+        "combo"
+      ]
+    },
+    {
+      "file": "achievements.js",
+      "line": 45,
+      "keyLine": "combo_streak_10: { title: 'Maestro du combo', desc: 'Atteignez un combo de 10 en mode Speedrun' },",
+      "suspicious": [
+        "combo"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 12,
+      "keyLine": "pause: 'Pause',",
+      "suspicious": [
+        "Pause"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 17,
+      "keyLine": "confirmLeaveGame: 'Voulez-vous mettre en pause et retourner à l’accueil ?'",
+      "suspicious": [
+        "pause"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 35,
+      "keyLine": "5: 'Expert'",
+      "suspicious": [
+        "Expert"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 42,
+      "keyLine": "combo: '🔥 {count} COMBO !',",
+      "suspicious": [
+        "COMBO"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 45,
+      "keyLine": "pauseTooltip: 'Mettre en pause',",
+      "suspicious": [
+        "pause"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 53,
+      "keyLine": "notes: 'Notes',",
+      "suspicious": [
+        "Notes"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 55,
+      "keyLine": "fastEntry: 'Mode Rapide',",
+      "suspicious": [
+        "Mode"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 59,
+      "keyLine": "pausedTitle: 'Partie en Pause',",
+      "suspicious": [
+        "Pause"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 92,
+      "keyLine": "desc: 'Top {percentile}% des joueurs ! Déduction magistrale digne du top 1% de l’élite.'",
+      "suspicious": [
+        "Top",
+        "top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 96,
+      "keyLine": "desc: 'Top {percentile}% des joueurs ! Esprit logique et capacité d’analyse exceptionnels.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 100,
+      "keyLine": "desc: 'Top {percentile}% des joueurs ! Intuition affûtée et brillante résolution de problèmes.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 104,
+      "keyLine": "desc: 'Top {percentile}% des joueurs ! Esprit analytique souple et robuste.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 108,
+      "keyLine": "desc: 'Top {percentile}% des joueurs ! Développement harmonieux des 5 piliers cognitifs.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 4,
+      "keyLine": "speedrunTab: 'Rang Speedrun',",
+      "suspicious": [
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 9,
+      "keyLine": "record: 'Mon record',",
+      "suspicious": [
+        "record"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 10,
+      "keyLine": "topSolvers: 'Hall of Fame Mondial TOP 10'",
+      "suspicious": [
+        "TOP"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 15,
+      "keyLine": "copiedToast: '🎉 Record copié dans le presse-papiers !',",
+      "suspicious": [
+        "Record"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 6,
+      "keyLine": "rivalTitle: 'Record Personnel ({time})',",
+      "suspicious": [
+        "Record"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 7,
+      "keyLine": "ghostHintNotice: '💡 L’utilisation d’un indice exclut la mise à jour du record PB.'",
+      "suspicious": [
+        "record"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 15,
+      "keyLine": "brainPercentile: 'Top {percentile}% · {won} Victoires ({tier})',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 16,
+      "keyLine": "brainPercentileShort: 'Top {percentile}% · {won} Victoires',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 20,
+      "keyLine": "standard: '🎯 Standard',",
+      "suspicious": [
+        "Standard"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 23,
+      "keyLine": "lockedToast: 'Terminez ce niveau au moins 1 fois pour débloquer ce mode.'",
+      "suspicious": [
+        "mode"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 61,
+      "keyLine": "advLv5Title: '[Lv.5 Expert] Réussir 1 Sudoku', advLv5Desc: 'Terminez la redoutable grille Lv.5 Expert pour atteindre l’élite.',",
+      "suspicious": [
+        "Expert"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 63,
+      "keyLine": "speedrunTitle: '⚡ Réussir 1 mode Speedrun', speedrunDesc: 'Complétez un puzzle en mode Speedrun avec accélération de combo.'",
+      "suspicious": [
+        "mode",
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 88,
+      "keyLine": "step2Title: '✏️ Étape 2 : Notes au crayon (Candidats)',",
+      "suspicious": [
+        "Notes"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 89,
+      "keyLine": "step2Desc: 'Activez [Notes] dans la barre d’outils et notez le candidat [3] pour cette case !',",
+      "suspicious": [
+        "Notes"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 90,
+      "keyLine": "step3Title: '🔒 Étape 3 : Mode Saisie Rapide',",
+      "suspicious": [
+        "Mode"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 93,
+      "keyLine": "step4Desc: 'Bravo ! Vous maîtrisez la saisie, les notes et le mode rapide.',",
+      "suspicious": [
+        "notes",
+        "mode"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: 'Consultez les classements mondiaux en direct avec Google Play Games.',",
+      "suspicious": [
+        "Play"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 150,
+      "keyLine": "speedrunBest: 'Meilleur Speedrun',",
+      "suspicious": [
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 184,
+      "keyLine": "percentilePrefix: 'Top ',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 191,
+      "keyLine": "grandMasterDesc: 'Top {percentile}% de tous les joueurs ! Déduction magistrale digne du top 1%.',",
+      "suspicious": [
+        "Top",
+        "top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 193,
+      "keyLine": "mensaDesc: 'Top {percentile}% de tous les joueurs ! Esprit logique et analytique d’exception.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 195,
+      "keyLine": "superiorDesc: 'Top {percentile}% de tous les joueurs ! Intuition vive et excellente résolution de problèmes.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 197,
+      "keyLine": "aboveAverageDesc: 'Top {percentile}% de tous les joueurs ! Esprit analytique stable et flexible.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 199,
+      "keyLine": "balancedDesc: 'Top {percentile}% de tous les joueurs ! Développement harmonieux des 5 piliers cognitifs.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 206,
+      "keyLine": "cancelBtn: 'Annuler le Match',",
+      "suspicious": [
+        "Match"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 208,
+      "keyLine": "foundOpponent: 'Adversaire trouvé ! Début du match dans un instant...',",
+      "suspicious": [
+        "match"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 209,
+      "keyLine": "autoMatchTitle: 'Match Rapide',",
+      "suspicious": [
+        "Match"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 225,
+      "keyLine": "aiModeLabel: 'Match d’entraînement IA (Lv.{level})',",
+      "suspicious": [
+        "Match"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 260,
+      "keyLine": "level4Desc: 'Robot Expert : Résolveur très rapide appliquant des stratégies avancées.',",
+      "suspicious": [
+        "Expert"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 292,
+      "keyLine": "desc: 'Apprenez pas à pas à remplir les cases et poser des notes.',",
+      "suspicious": [
+        "notes"
+      ]
+    }
+  ],
+  "hi": [
+    {
+      "file": "achievements.js",
+      "line": 19,
+      "keyLine": "syncPlayGames: 'Google Play और गेम सेंटर',",
+      "suspicious": [
+        "Play"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 7,
+      "keyLine": "ghostHintNotice: '💡 संकेत का उपयोग करने पर व्यक्तिगत सर्वश्रेष्ठ (PB) रिकॉर्ड में नहीं गिना जाएगा।'",
+      "suspicious": [
+        "PB"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 11,
+      "keyLine": "title: 'Sudoku',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 12,
+      "keyLine": "badge: 'PRO',",
+      "suspicious": [
+        "PRO"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 21,
+      "keyLine": "ghost: '👻 घोस्ट PB',",
+      "suspicious": [
+        "PB"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 105,
+      "keyLine": "en: 'English',",
+      "suspicious": [
+        "English"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 109,
+      "keyLine": "esES: 'Español',",
+      "suspicious": [
+        "Espa",
+        "ol"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 110,
+      "keyLine": "de: 'Deutsch',",
+      "suspicious": [
+        "Deutsch"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 111,
+      "keyLine": "fr: 'Français',",
+      "suspicious": [
+        "Fran",
+        "ais"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 112,
+      "keyLine": "pt: 'Português',",
+      "suspicious": [
+        "Portugu"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 113,
+      "keyLine": "it: 'Italiano',",
+      "suspicious": [
+        "Italiano"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: 'Google Play Games के साथ रीयल-टाइम वैश्विक रैंकिंग देखें।',",
+      "suspicious": [
+        "Play",
+        "Games"
+      ]
+    }
+  ],
+  "it": [
+    {
+      "file": "achievements.js",
+      "line": 19,
+      "keyLine": "syncPlayGames: 'Google Play & Game Center',",
+      "suspicious": [
+        "Play",
+        "Game"
+      ]
+    },
+    {
+      "file": "achievements.js",
+      "line": 44,
+      "keyLine": "combo_streak_5: { title: 'Artista delle Combo', desc: 'Raggiungi una combo da 5 in modalità Speedrun' },",
+      "suspicious": [
+        "Combo"
+      ]
+    },
+    {
+      "file": "achievements.js",
+      "line": 45,
+      "keyLine": "combo_streak_10: { title: 'Maestro delle Combo', desc: 'Raggiungi una combo da 10 in modalità Speedrun' },",
+      "suspicious": [
+        "Combo"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 42,
+      "keyLine": "combo: '🔥 {count} COMBO!',",
+      "suspicious": [
+        "COMBO"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 92,
+      "keyLine": "desc: 'Top {percentile}% dei giocatori! Deduzione logica magistrale degna dell’élite top 1%.'",
+      "suspicious": [
+        "Top",
+        "top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 96,
+      "keyLine": "desc: 'Top {percentile}% dei giocatori! Capacità logica e analitica eccezionale.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 100,
+      "keyLine": "desc: 'Top {percentile}% dei giocatori! Intuito acuto e brillante risoluzione dei problemi.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 104,
+      "keyLine": "desc: 'Top {percentile}% dei giocatori! Pensiero analitico flessibile e affidabile.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 108,
+      "keyLine": "desc: 'Top {percentile}% dei giocatori! Sviluppo armonioso di tutte le aree cognitive.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 3,
+      "keyLine": "classicTab: 'Rank Classico',",
+      "suspicious": [
+        "Rank"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 4,
+      "keyLine": "speedrunTab: 'Rank Speedrun',",
+      "suspicious": [
+        "Rank",
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 9,
+      "keyLine": "record: 'Mio Record',",
+      "suspicious": [
+        "Record"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 10,
+      "keyLine": "topSolvers: 'Hall of Fame Mondiale TOP 10'",
+      "suspicious": [
+        "TOP"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 15,
+      "keyLine": "copiedToast: '🎉 Record copiato negli appunti!',",
+      "suspicious": [
+        "Record"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 7,
+      "keyLine": "ghostHintNotice: '💡 L’uso dei suggerimenti esclude l’aggiornamento del record PB.'",
+      "suspicious": [
+        "record"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 15,
+      "keyLine": "brainPercentile: 'Top {percentile}% · {won} Vittorie ({tier})',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 16,
+      "keyLine": "brainPercentileShort: 'Top {percentile}% · {won} Vittorie',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 20,
+      "keyLine": "standard: '🎯 Standard',",
+      "suspicious": [
+        "Standard"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 30,
+      "keyLine": "battle: { title: 'Duello 1v1 Online', desc: 'Partite in tempo reale' },",
+      "suspicious": [
+        "Online"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 62,
+      "keyLine": "battleTitle: 'Gioca 1 Duello 1v1 Online o IA', battleDesc: 'Partecipa a 1 duello in tempo reale o partita contro l’IA.',",
+      "suspicious": [
+        "Online"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 63,
+      "keyLine": "speedrunTitle: '⚡ Completa 1 modalità Speedrun', speedrunDesc: 'Completa un puzzle in modalità Speedrun sfruttando le combo.'",
+      "suspicious": [
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 120,
+      "keyLine": "limitMistakesDesc: 'Game Over dopo 3 errori commessi',",
+      "suspicious": [
+        "Game"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: 'Consulta le classifiche mondiali in tempo reale con Google Play Games.',",
+      "suspicious": [
+        "Play"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 150,
+      "keyLine": "speedrunBest: 'Miglior Speedrun',",
+      "suspicious": [
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 184,
+      "keyLine": "percentilePrefix: 'Top ',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 191,
+      "keyLine": "grandMasterDesc: 'Top {percentile}% di tutti i giocatori! Raciocinio deduttivo magistrale degno dell’élite top 1%.',",
+      "suspicious": [
+        "Top",
+        "top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 193,
+      "keyLine": "mensaDesc: 'Top {percentile}% di tutti i giocatori! Capacità logica e analitica eccezionale.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 195,
+      "keyLine": "superiorDesc: 'Top {percentile}% di tutti i giocatori! Intuito acuto e brillante risoluzione dei problemi.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 197,
+      "keyLine": "aboveAverageDesc: 'Top {percentile}% di tutti i giocatori! Pensiero analitico flessibile e stabile.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 199,
+      "keyLine": "balancedDesc: 'Top {percentile}% di tutti i giocatori! Sviluppo armonioso di tutte le 5 aree cognitive.',",
+      "suspicious": [
+        "Top"
+      ]
+    }
+  ],
+  "ja": [
+    {
+      "file": "common.js",
+      "line": 42,
+      "keyLine": "combo: '🔥 {count} COMBO!',",
+      "suspicious": [
+        "COMBO"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 47,
+      "keyLine": "soundOn: '効果音OFF',",
+      "suspicious": [
+        "OFF"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 48,
+      "keyLine": "soundOff: '効果音ON'",
+      "suspicious": [
+        "ON"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 81,
+      "keyLine": "title: 'Sudoku Master',",
+      "suspicious": [
+        "Sudoku",
+        "Master"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 82,
+      "keyLine": "text: '🧩 Sudoku {mode} Lv.{level} {name}を[{time}]でクリア！ ランク: {rank} (ミス: {mistakes}回)。あなたの脳力に挑戦してみよう！',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 10,
+      "keyLine": "topSolvers: '世界殿堂入り TOP 10'",
+      "suspicious": [
+        "TOP"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 16,
+      "keyLine": "shareText: '🧩 Sudoku {mode} Lv.{level} {name}を[{time}]でクリア！ ランク: {rank} (ミス {mistakes}回)。あなたの脳力に挑戦してみよう！',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 37,
+      "keyLine": "title: 'Sudokuはお楽しみいただけていますか？',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 4,
+      "keyLine": "\"ahead\": \"{time} リード\",",
+      "suspicious": [
+        "ahead"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 5,
+      "keyLine": "\"behind\": \"{time} 遅れ\",",
+      "suspicious": [
+        "behind"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 6,
+      "keyLine": "\"rivalTitle\": \"自己最高記録 ({time})\",",
+      "suspicious": [
+        "rivalTitle"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 7,
+      "keyLine": "\"ghostHintNotice\": \"💡 ヒント使用のため、今回のPB記録更新は除外されます。\"",
+      "suspicious": [
+        "ghostHintNotice"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 11,
+      "keyLine": "title: 'Sudoku',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 12,
+      "keyLine": "badge: 'PRO',",
+      "suspicious": [
+        "PRO"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 20,
+      "keyLine": "\"standard\": \"🎯 通常\",",
+      "suspicious": [
+        "standard"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 21,
+      "keyLine": "\"ghost\": \"👻 ゴースト\",",
+      "suspicious": [
+        "ghost"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 22,
+      "keyLine": "\"delta\": \"⚡ デルタ\",",
+      "suspicious": [
+        "delta"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 23,
+      "keyLine": "\"lockedToast\": \"この難易度を1回以上クリアすると解放されます。\"",
+      "suspicious": [
+        "lockedToast"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 89,
+      "keyLine": "step2Desc: 'ツールバーで [メモ] をONにして候補数モードに切り替え、[3] をメモ！',",
+      "suspicious": [
+        "ON"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 105,
+      "keyLine": "en: 'English',",
+      "suspicious": [
+        "English"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 109,
+      "keyLine": "esES: 'Español',",
+      "suspicious": [
+        "Espa",
+        "ol"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 110,
+      "keyLine": "de: 'Deutsch',",
+      "suspicious": [
+        "Deutsch"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 111,
+      "keyLine": "fr: 'Français',",
+      "suspicious": [
+        "Fran",
+        "ais"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 112,
+      "keyLine": "pt: 'Português',",
+      "suspicious": [
+        "Portugu"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 113,
+      "keyLine": "it: 'Italiano',",
+      "suspicious": [
+        "Italiano"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: \"Google Play Gamesと連携して世界ランキングを確認できます。\",",
+      "suspicious": [
+        "Play",
+        "Games"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 265,
+      "keyLine": "tabs: {\"stage1\":\"第1段階\",\"stage2\":\"第2段階\",\"stage3\":\"第3段階\",\"stage4\":\"第4段階\",\"stage5\":\"第5段階\"},",
+      "suspicious": [
+        "stage"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 266,
+      "keyLine": "stageTitles: {\"stage1\":\"第1段階: 基本テクニック (シングル＆ライン)\",\"stage2\":\"第2段階: 中級テクニック (ペア＆交差排除)\",\"stage3\":\"第3段階: 上級テクニック (ウィング＆フィッシュ)\",\"stage4\":\"第4段階: 専門テクニック (カラーリング＆3Dメデューサ)\",\"stage5\":\"第5段階: マスターテクニック (UR、AIC＆ALS連鎖)\"},",
+      "suspicious": [
+        "stage"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 272,
+      "keyLine": "stage3: '第3段階: 上級テクニック (Wingシリーズ＆Fish)',",
+      "suspicious": [
+        "Wing",
+        "Fish"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 273,
+      "keyLine": "stage4: '第4段階: 専門家テクニック (Coloring＆3D Medusa)',",
+      "suspicious": [
+        "Coloring",
+        "Medusa"
+      ]
+    }
+  ],
+  "ko": [
+    {
+      "file": "common.js",
+      "line": 42,
+      "keyLine": "combo: '🔥 {count} COMBO!',",
+      "suspicious": [
+        "COMBO"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 10,
+      "keyLine": "topSolvers: '글로벌 명예의 전당 TOP 10'",
+      "suspicious": [
+        "TOP"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 16,
+      "keyLine": "shareText: '🧩 Sudoku {mode} Lv.{level} {name}를 [{time}]만에 클리어! 등급: {rank} (실수 {mistakes}회). 당신의 두뇌에 도전해보세요!',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 37,
+      "keyLine": "title: 'Sudoku 플레이는 즐거우신가요?',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 4,
+      "keyLine": "\"ahead\": \"{time} 앞섬\",",
+      "suspicious": [
+        "ahead"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 5,
+      "keyLine": "\"behind\": \"{time} 뒤처짐\",",
+      "suspicious": [
+        "behind"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 6,
+      "keyLine": "\"rivalTitle\": \"내 최고기록 ({time})\",",
+      "suspicious": [
+        "rivalTitle"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 7,
+      "keyLine": "\"ghostHintNotice\": \"💡 힌트 사용으로 이번 판의 PB 신기록 갱신이 제외됩니다.\"",
+      "suspicious": [
+        "ghostHintNotice"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 11,
+      "keyLine": "title: 'Sudoku',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 12,
+      "keyLine": "badge: 'PRO',",
+      "suspicious": [
+        "PRO"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 20,
+      "keyLine": "\"standard\": \"🎯 일반\",",
+      "suspicious": [
+        "standard"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 21,
+      "keyLine": "\"ghost\": \"👻 고스트\",",
+      "suspicious": [
+        "ghost"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 22,
+      "keyLine": "\"delta\": \"⚡ 델타타임\",",
+      "suspicious": [
+        "delta"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 23,
+      "keyLine": "\"lockedToast\": \"해당 난이도를 1회 이상 클리어하면 활성화됩니다.\"",
+      "suspicious": [
+        "lockedToast"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 105,
+      "keyLine": "en: 'English',",
+      "suspicious": [
+        "English"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 109,
+      "keyLine": "esES: 'Español',",
+      "suspicious": [
+        "Espa",
+        "ol"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 110,
+      "keyLine": "de: 'Deutsch',",
+      "suspicious": [
+        "Deutsch"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 111,
+      "keyLine": "fr: 'Français',",
+      "suspicious": [
+        "Fran",
+        "ais"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 112,
+      "keyLine": "pt: 'Português',",
+      "suspicious": [
+        "Portugu"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 113,
+      "keyLine": "it: 'Italiano',",
+      "suspicious": [
+        "Italiano"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: \"Google Play 게임 서비스 연동으로 글로벌 랭킹을 실시간으로 확인하세요.\",",
+      "suspicious": [
+        "Play"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 265,
+      "keyLine": "tabs: {\"stage1\":\"1단계\",\"stage2\":\"2단계\",\"stage3\":\"3단계\",\"stage4\":\"4단계\",\"stage5\":\"5단계\"},",
+      "suspicious": [
+        "stage"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 266,
+      "keyLine": "stageTitles: {\"stage1\":\"1단계: 기본 테크닉 (기초 싱글 & 라인)\",\"stage2\":\"2단계: 중급 테크닉 (블록 페어 & 인터섹션)\",\"stage3\":\"3단계: 고급 테크닉 (윙 시리즈 & 피쉬 기법)\",\"stage4\":\"4단계: 전문가 테크닉 (컬러링 & 3D 메두사)\",\"stage5\":\"5단계: 마스터 테크닉 (UR, AIC & ALS 체인)\"},",
+      "suspicious": [
+        "stage"
+      ]
+    }
+  ],
+  "pt": [
+    {
+      "file": "achievements.js",
+      "line": 19,
+      "keyLine": "syncPlayGames: 'Google Play & Game Center',",
+      "suspicious": [
+        "Play",
+        "Game"
+      ]
+    },
+    {
+      "file": "achievements.js",
+      "line": 44,
+      "keyLine": "combo_streak_5: { title: 'Artista do Combo', desc: 'Atinja um combo de 5 no modo Speedrun' },",
+      "suspicious": [
+        "Combo"
+      ]
+    },
+    {
+      "file": "achievements.js",
+      "line": 45,
+      "keyLine": "combo_streak_10: { title: 'Maestro do Combo', desc: 'Atinja um combo de 10 no modo Speedrun' },",
+      "suspicious": [
+        "Combo"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 42,
+      "keyLine": "combo: '🔥 {count} COMBO!',",
+      "suspicious": [
+        "COMBO"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 92,
+      "keyLine": "desc: 'Top {percentile}% dos jogadores! Raciocínio dedutivo de elite no topo de 1%.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 96,
+      "keyLine": "desc: 'Top {percentile}% dos jogadores! Capacidade lógica e analítica excepcional.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 100,
+      "keyLine": "desc: 'Top {percentile}% dos jogadores! Intuição aguçada e brilhante resolução de problemas.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 104,
+      "keyLine": "desc: 'Top {percentile}% dos jogadores! Pensamento analítico flexível e estável.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 108,
+      "keyLine": "desc: 'Top {percentile}% dos jogadores! Desenvolvimento harmonioso de todas as áreas cognitivas.'",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 3,
+      "keyLine": "classicTab: 'Rank Clássico',",
+      "suspicious": [
+        "Rank"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 4,
+      "keyLine": "speedrunTab: 'Rank Speedrun',",
+      "suspicious": [
+        "Rank",
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 10,
+      "keyLine": "topSolvers: 'Hall da Fama Global TOP 10'",
+      "suspicious": [
+        "TOP"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 13,
+      "keyLine": "leaderboardBtn: '🏆 Ver Ranking Global',",
+      "suspicious": [
+        "Ranking"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 16,
+      "keyLine": "shareText: '🧩 Resolvi o Sudoku {mode} Nv.{level} {name} em [{time}]! Rank: {rank} ({mistakes} erros). Desafie seu QI cerebral!',",
+      "suspicious": [
+        "Rank"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 39,
+      "keyLine": "submitBtn: 'Avaliar na Play Store',",
+      "suspicious": [
+        "Play"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 15,
+      "keyLine": "brainPercentile: 'Top {percentile}% · {won} Vitórias ({tier})',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 16,
+      "keyLine": "brainPercentileShort: 'Top {percentile}% · {won} Vitórias',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 30,
+      "keyLine": "battle: { title: 'Duelo 1v1 Online', desc: 'Partidas em tempo real' },",
+      "suspicious": [
+        "Online"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 62,
+      "keyLine": "battleTitle: 'Jogar 1 Duelo 1v1 Online ou IA', battleDesc: 'Participe de 1 duelo em tempo real ou partida contra IA.',",
+      "suspicious": [
+        "Online"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 63,
+      "keyLine": "speedrunTitle: '⚡ Concluir 1 modo Speedrun', speedrunDesc: 'Complete um puzzle no modo Speedrun aproveitando combos.'",
+      "suspicious": [
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: 'Veja os rankings globais em tempo real com o Google Play Games.',",
+      "suspicious": [
+        "Play"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 150,
+      "keyLine": "speedrunBest: 'Melhor Speedrun',",
+      "suspicious": [
+        "Speedrun"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 155,
+      "keyLine": "leaderboardTab: 'Ranking Global',",
+      "suspicious": [
+        "Ranking"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 184,
+      "keyLine": "percentilePrefix: 'Top ',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 191,
+      "keyLine": "grandMasterDesc: 'Top {percentile}% de todos os jogadores! Raciocínio dedutivo de elite no topo de 1%.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 193,
+      "keyLine": "mensaDesc: 'Top {percentile}% de todos os jogadores! Capacidade lógica e analítica excepcional.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 195,
+      "keyLine": "superiorDesc: 'Top {percentile}% de todos os jogadores! Intuição aguçada e brilhante resolução de problemas.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 197,
+      "keyLine": "aboveAverageDesc: 'Top {percentile}% de todos os jogadores! Pensamento analítico flexível e estável.',",
+      "suspicious": [
+        "Top"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 199,
+      "keyLine": "balancedDesc: 'Top {percentile}% de todos os jogadores! Desenvolvimento harmonioso de todas as 5 áreas cognitivas.',",
+      "suspicious": [
+        "Top"
+      ]
+    }
+  ],
+  "ru": [
+    {
+      "file": "achievements.js",
+      "line": 19,
+      "keyLine": "syncPlayGames: 'Google Play & Game Center',",
+      "suspicious": [
+        "Play",
+        "Game",
+        "Center"
+      ]
+    },
+    {
+      "file": "common.js",
+      "line": 6,
+      "keyLine": "confirm: 'OK',",
+      "suspicious": [
+        "OK"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 37,
+      "keyLine": "title: 'Нравится Sudoku?',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 39,
+      "keyLine": "submitBtn: 'Оценить в Google Play',",
+      "suspicious": [
+        "Play"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 7,
+      "keyLine": "ghostHintNotice: '💡 Использование подсказок исключает обновление рекорда PB.'",
+      "suspicious": [
+        "PB"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 11,
+      "keyLine": "title: 'Sudoku',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 12,
+      "keyLine": "badge: 'PRO',",
+      "suspicious": [
+        "PRO"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 21,
+      "keyLine": "ghost: '👻 Призрак PB',",
+      "suspicious": [
+        "PB"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 67,
+      "keyLine": "title: 'Отключение рекламы и Premium',",
+      "suspicious": [
+        "Premium"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 70,
+      "keyLine": "benefitsTitle: '👑 Преимущества Premium',",
+      "suspicious": [
+        "Premium"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 76,
+      "keyLine": "alreadyPurchased: 'У вас уже активен Premium! 🎉',",
+      "suspicious": [
+        "Premium"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 105,
+      "keyLine": "en: 'English',",
+      "suspicious": [
+        "English"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 109,
+      "keyLine": "esES: 'Español',",
+      "suspicious": [
+        "Espa",
+        "ol"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 110,
+      "keyLine": "de: 'Deutsch',",
+      "suspicious": [
+        "Deutsch"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 111,
+      "keyLine": "fr: 'Français',",
+      "suspicious": [
+        "Fran",
+        "ais"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 112,
+      "keyLine": "pt: 'Português',",
+      "suspicious": [
+        "Portugu"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 113,
+      "keyLine": "it: 'Italiano',",
+      "suspicious": [
+        "Italiano"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: 'Смотрите глобальные таблицы лидеров в Google Play Games.',",
+      "suspicious": [
+        "Play",
+        "Games"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 172,
+      "keyLine": "shareText: '[Анализ Sudoku IQ]\\nМой Sudoku IQ: {iq} ({percentile})\\nРанг: {tier}\\nПрокачай логику в Suidoku прямо сейчас!',",
+      "suspicious": [
+        "Sudoku",
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 187,
+      "keyLine": "shareTitle: 'Мой отчет Sudoku IQ',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 278,
+      "keyLine": "stage3: 'Этап 3: Серии Wing и метод Fish',",
+      "suspicious": [
+        "Wing",
+        "Fish"
+      ]
+    }
+  ],
+  "zh-CN": [
+    {
+      "file": "common.js",
+      "line": 45,
+      "keyLine": "combo: '🔥 {count} COMBO!',",
+      "suspicious": [
+        "COMBO"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 10,
+      "keyLine": "topSolvers: '全球名人堂 TOP 10'",
+      "suspicious": [
+        "TOP"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 19,
+      "keyLine": "shareText: '🧩 我以 [{time}] 破解了 Sudoku {mode} Lv.{level} {name}！评级：{rank}（失误 {mistakes} 次）。快来挑战你的逻辑极限！',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 40,
+      "keyLine": "title: '喜欢 Sudoku 吗？',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 7,
+      "keyLine": "ghostHintNotice: '💡 由于使用了提示，本局将不计入个人最佳记录（PB）。'",
+      "suspicious": [
+        "PB"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 11,
+      "keyLine": "title: 'Sudoku',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 12,
+      "keyLine": "badge: 'PRO',",
+      "suspicious": [
+        "PRO"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 21,
+      "keyLine": "ghost: '👻 幽灵 PB',",
+      "suspicious": [
+        "PB"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 22,
+      "keyLine": "delta: '⚡ Delta 步调',",
+      "suspicious": [
+        "Delta"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 105,
+      "keyLine": "en: 'English',",
+      "suspicious": [
+        "English"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 109,
+      "keyLine": "esES: 'Español',",
+      "suspicious": [
+        "Espa",
+        "ol"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 110,
+      "keyLine": "de: 'Deutsch',",
+      "suspicious": [
+        "Deutsch"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 111,
+      "keyLine": "fr: 'Français',",
+      "suspicious": [
+        "Fran",
+        "ais"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 112,
+      "keyLine": "pt: 'Português',",
+      "suspicious": [
+        "Portugu"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 113,
+      "keyLine": "it: 'Italiano',",
+      "suspicious": [
+        "Italiano"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: '连接 Google Play 游戏服务即可即时查看全球排名。',",
+      "suspicious": [
+        "Play"
+      ]
+    }
+  ],
+  "zh-TW": [
+    {
+      "file": "common.js",
+      "line": 45,
+      "keyLine": "combo: '🔥 {count} COMBO!',",
+      "suspicious": [
+        "COMBO"
+      ]
+    },
+    {
+      "file": "leaderboard.js",
+      "line": 10,
+      "keyLine": "topSolvers: '全球名人堂 TOP 10'",
+      "suspicious": [
+        "TOP"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 19,
+      "keyLine": "shareText: '🧩 我以 [{time}] 破解了 Sudoku {mode} Lv.{level} {name}！評級：{rank}（失誤 {mistakes} 次）。快來挑戰你的邏輯極限！',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "modals.js",
+      "line": 40,
+      "keyLine": "title: '喜歡 Sudoku 嗎？',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 7,
+      "keyLine": "ghostHintNotice: '💡 由于使用了提示，本局將不計入个人最佳記錄（PB）。'",
+      "suspicious": [
+        "PB"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 11,
+      "keyLine": "title: 'Sudoku',",
+      "suspicious": [
+        "Sudoku"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 12,
+      "keyLine": "badge: 'PRO',",
+      "suspicious": [
+        "PRO"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 21,
+      "keyLine": "ghost: '👻 幽靈 PB',",
+      "suspicious": [
+        "PB"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 22,
+      "keyLine": "delta: '⚡ Delta 步調',",
+      "suspicious": [
+        "Delta"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 105,
+      "keyLine": "en: 'English',",
+      "suspicious": [
+        "English"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 109,
+      "keyLine": "esES: 'Español',",
+      "suspicious": [
+        "Espa",
+        "ol"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 110,
+      "keyLine": "de: 'Deutsch',",
+      "suspicious": [
+        "Deutsch"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 111,
+      "keyLine": "fr: 'Français',",
+      "suspicious": [
+        "Fran",
+        "ais"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 112,
+      "keyLine": "pt: 'Português',",
+      "suspicious": [
+        "Portugu"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 113,
+      "keyLine": "it: 'Italiano',",
+      "suspicious": [
+        "Italiano"
+      ]
+    },
+    {
+      "file": "screens.js",
+      "line": 147,
+      "keyLine": "leaderboardNotice: '連接 Google Play 游戏服务即可即時查看全球排名。',",
+      "suspicious": [
+        "Play"
+      ]
+    }
+  ]
+}

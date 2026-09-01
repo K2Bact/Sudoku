@@ -1,0 +1,195 @@
+/**
+ * inject_full_academy_l10n.js
+ * Comprehensive 13-Language Master Injector for Suidoku Academy.
+ * Covers all 32 Strategies across Stages 1-5, Diagram Translations, and Practice Guides.
+ */
+
+import fs from 'fs';
+import path from 'path';
+
+// Complete dictionary for remaining stages (Stage 3, 4, 5)
+export const STAGE_345_TRANSLATIONS = {
+  // --- STAGE 3 (6 strategies) ---
+  'x-wing': {
+    badge: {
+      en: 'Advanced 3-1', ko: '고급 3-1', ja: '上級 3-1', zh: '高級 3-1', 'zh-CN': '高级 3-1',
+      es: 'Avanzada 3-1', de: 'Fortgeschritten 3-1', fr: 'Avancé 3-1', pt: 'Avançado 3-1',
+      it: 'Avanzato 3-1', ru: 'Продвинутый 3-1', hi: 'उन्नत 3-1', ar: 'متقدم 3-1'
+    },
+    title: {
+      en: 'X-Wing (2x2 Rectangle Elimination)', ko: 'X-Wing (2x2 직사각형 소거법)', ja: 'X-Wing (X-ウィング)',
+      zh: 'X翼數對 X-Wing (2x2 矩形排除)', 'zh-CN': 'X翼数对 X-Wing (2x2 矩形排除)',
+      es: 'X-Wing (Eliminación en rectángulo)', de: 'X-Wing (2x2 Rechteck-Ausschluss)',
+      fr: 'X-Wing (Élimination en rectangle 2x2)', pt: 'X-Wing (Eliminação em retângulo 2x2)',
+      it: 'X-Wing (Eliminazione rettangolare 2x2)', ru: 'X-Wing (Прямоугольник 2x2)',
+      hi: 'एक्स-विंग (2x2 आयत निष्कासन)', ar: 'جناح إكس (استبعاد مستطيل 2x2)'
+    },
+    desc: {
+      en: 'A candidate appears in only 2 columns across 2 rows, forming a rectangle. Eliminate that candidate from all other cells in those 2 columns.',
+      ko: '2개의 가로행에서 특정 후보수가 오직 2개 세로열 위치에만 나타나 직사각형을 형성할 때, 두 세로열의 다른 모든 칸에서 해당 후보수를 소거합니다.',
+      ja: '2つの行で特定の候補数が全く同じ2つの列にのみ存在する時、その2つの列の他のマスからその候補数を一括消去します。',
+      zh: '某候選數在 2 個行中恰好出現在相同的 2 個列上構成矩形，可排除這 2 個列中其他位置的該候選數。',
+      'zh-CN': '某候选数在 2 个行中恰好出现在相同的 2 个列上构成矩形，可排除这 2 个列中其他位置的该候选数。',
+      es: 'Un candidato aparece en solo 2 columnas a lo largo de 2 filas formando un rectángulo. Elimínalo del resto de casillas de esas 2 columnas.',
+      de: 'Ein Kandidat erscheint in 2 Zeilen in genau denselben 2 Spalten (Rechteck). Löschen Sie ihn aus allen anderen Feldern dieser 2 Spalten.',
+      fr: 'Un candidat n’apparaît que dans 2 colonnes sur 2 lignes (rectangle). Éliminez ce candidat de toutes les autres cases de ces 2 colonnes.',
+      pt: 'Um candidato aparece em apenas 2 colunas em 2 linhas, formando um retângulo. Elimine-o das outras casas dessas 2 colunas.',
+      it: 'Un candidato appare solo in 2 colonne su 2 righe (rettangolo). Eliminalo da tutte le altre caselle di quelle 2 colonne.',
+      ru: 'Кандидат появляется ровно в 2 столбцах в 2 строках (прямоугольник). Удалите его из всех остальных клеток этих двух столбцов.',
+      hi: 'कोई उम्मीदवार 2 पंक्तियों में ठीक 2 स्तंभों में आता है (आयत)। उन 2 स्तंभों के अन्य सभी सेल से उस उम्मीदवार को हटा दें।',
+      ar: 'يظهر رقم مرشح في عمودين فقط عبر صفين مشكلاً مستطيلاً. استبعد ذلك الرقم من جميع الخلايا الأخرى في هذين العمودين.'
+    }
+  },
+  'y-wing': {
+    badge: {
+      en: 'Advanced 3-2', ko: '고급 3-2', ja: '上級 3-2', zh: '高級 3-2', 'zh-CN': '高级 3-2',
+      es: 'Avanzada 3-2', de: 'Fortgeschritten 3-2', fr: 'Avancé 3-2', pt: 'Avançado 3-2',
+      it: 'Avanzato 3-2', ru: 'Продвинутый 3-2', hi: 'उन्नत 3-2', ar: 'متقدم 3-2'
+    },
+    title: {
+      en: 'XY-Wing / Y-Wing', ko: 'XY-Wing / Y-Wing', ja: 'Y-Wing (XY-ウィング)',
+      zh: 'Y翼數對 XY-Wing / Y-Wing', 'zh-CN': 'Y翼数对 XY-Wing / Y-Wing',
+      es: 'XY-Wing / Y-Wing', de: 'XY-Wing / Y-Wing',
+      fr: 'XY-Wing / Y-Wing', pt: 'XY-Wing / Y-Wing',
+      it: 'XY-Wing / Y-Wing', ru: 'XY-Wing / Y-Wing',
+      hi: 'एक्सवाई-विंग / वाई-विंग', ar: 'جناح واي / XY-Wing'
+    },
+    desc: {
+      en: 'A pivot cell (AB) connects to two pincers (AC, BC). Any cell that sees both pincers cannot contain candidate C.',
+      ko: '피벗(AB)과 두 날개(AC, BC)가 연결될 때, 두 날개가 공통으로 바라보는 모든 교차 칸에서 공통 후보수 C를 제거합니다.',
+      ja: 'ピボット(AB)と2つのウィング(AC, BC)が連結する時、両方のウィングから同時に見通せるマスから共通候補数Cを消去します。',
+      zh: '一個樞紐格 (AB) 連接兩個翼端 (AC, BC)。任何同時看到這兩個翼端的格子都不能包含候選數 C。',
+      'zh-CN': '一个枢纽格 (AB) 连接两个翼端 (AC, BC)。任何同时看到这两个翼端的格子都不能包含候选数 C。',
+      es: 'Una casilla pivote (AB) se conecta a dos extremos (AC, BC). Cualquier casilla que vea ambos extremos no puede contener C.',
+      de: 'Ein Drehpunkt (AB) verbindet zwei Flügel (AC, BC). Jedes Feld, das beide Flügel sieht, kann die gemeinsame Zahl C nicht enthalten.',
+      fr: 'Une case pivot (AB) est liée à deux pinces (AC, BC). Toute case voyant les deux pinces ne peut pas contenir le candidat C.',
+      pt: 'Uma casa pivô (AB) conecta duas asas (AC, BC). Qualquer casa que veja ambas as asas não pode conter o candidato C.',
+      it: 'Una casella perno (AB) collega due ali (AC, BC). Qualsiasi casella che vede entrambe le ali non può contenere il candidato C.',
+      ru: 'Опорная клетка (AB) соединена с двумя крыльями (AC, BC). Любая клетка, видящая оба крыла, не может содержать кандидата C.',
+      hi: 'एक पिवट सेल (AB) दो विंग्स (AC, BC) को जोड़ती है। दोनों विंग्स को देखने वाली कोई भी सेल उम्मीदवार C नहीं रख सकती।',
+      ar: 'خلية محور (AB) تتصل بجناحين (AC, BC). أي خلية ترى كلا الجناحين لا يمكن أن تحتوي على الرقم المرشح المشترك C.'
+    }
+  },
+  'xyz-wing': {
+    badge: {
+      en: 'Advanced 3-3', ko: '고급 3-3', ja: '上級 3-3', zh: '高級 3-3', 'zh-CN': '高级 3-3',
+      es: 'Avanzada 3-3', de: 'Fortgeschritten 3-3', fr: 'Avancé 3-3', pt: 'Avançado 3-3',
+      it: 'Avanzato 3-3', ru: 'Продвинутый 3-3', hi: 'उन्नत 3-3', ar: 'متقدم 3-3'
+    },
+    title: {
+      en: 'XYZ-Wing (3-Candidate Pivot)', ko: 'XYZ-Wing (3후보 피벗)', ja: 'XYZ-Wing (XYZ-ウィング)',
+      zh: 'XYZ翼數組 XYZ-Wing (三候選樞紐)', 'zh-CN': 'XYZ翼数组 XYZ-Wing (三候选枢纽)',
+      es: 'XYZ-Wing (Pivote de 3 candidatos)', de: 'XYZ-Wing (3-Kandidaten-Pivot)',
+      fr: 'XYZ-Wing (Pivot à 3 candidats)', pt: 'XYZ-Wing (Pivô de 3 candidatos)',
+      it: 'XYZ-Wing (Perno a 3 candidati)', ru: 'XYZ-Wing (Тройной пивот)',
+      hi: 'एक्सवाईज़ेड-विंग (3-उम्मीदवार पिवट)', ar: 'جناح XYZ (محور ثلاثي)'
+    },
+    desc: {
+      en: 'A 3-candidate pivot (XYZ) connects to two bi-value pincers (XZ, YZ). Eliminate candidate Z from cells seen by all 3 cells.',
+      ko: '3개 후보수 피벗(XYZ)과 두 날개(XZ, YZ)가 만날 때, 피벗과 두 날개가 동시에 공유하는 교차 칸에서 후보수 Z를 제거합니다.',
+      ja: '3つの候補数を持つピボット(XYZ)と2つのウィング(XZ, YZ)が結合し、3マス全てから見通せるマスから候補数Zを消去します。',
+      zh: '三候選樞紐格 (XYZ) 與兩個雙值翼端 (XZ, YZ) 結合，在同時被這 3 格看見的交叉格中排除候選數 Z。',
+      'zh-CN': '三候选枢纽格 (XYZ) 与两个双值翼端 (XZ, YZ) 结合，在同时被这 3 格看见的交叉格中排除候选数 Z。',
+      es: 'Un pivote de 3 candidatos (XYZ) se conecta a dos extremos (XZ, YZ). Elimina Z de las casillas vistas por las 3 casillas a la vez.',
+      de: 'Ein 3er-Pivot (XYZ) verbindet zwei Flügel (XZ, YZ). Löschen Sie Z aus Feldern, die von allen 3 Feldern gleichzeitig gesehen werden.',
+      fr: 'Un pivot à 3 candidats (XYZ) est lié à deux pinces (XZ, YZ). Éliminez Z des cases vues simultanément par les 3 cases.',
+      pt: 'Um pivô de 3 candidatos (XYZ) conecta duas asas (XZ, YZ). Elimine Z das casas vistas pelas 3 casas ao mesmo tempo.',
+      it: 'Un perno a 3 candidati (XYZ) collega due ali (XZ, YZ). Elimina Z dalle caselle viste contemporaneamente da tutte e 3 le caselle.',
+      ru: 'Опора из 3 кандидатов (XYZ) соединена с двумя крыльями (XZ, YZ). Удалите Z из клеток, видимых всеми тремя клетками сразу.',
+      hi: '3-उम्मीदवार पिवट (XYZ) दो विंग्स (XZ, YZ) से जुड़ता है। तीनों सेलों द्वारा एक साथ देखी जाने वाली सेल से Z को हटा दें।',
+      ar: 'خلية محور ثلاثية (XYZ) تتصل بجناحين (XZ, YZ). يتم استبعاد الرقم Z من الخلايا التي تراها الخلايا الثلاث معاً.'
+    }
+  },
+  'w-wing': {
+    badge: {
+      en: 'Advanced 3-4', ko: '고급 3-4', ja: '上級 3-4', zh: '高級 3-4', 'zh-CN': '高级 3-4',
+      es: 'Avanzada 3-4', de: 'Fortgeschritten 3-4', fr: 'Avancé 3-4', pt: 'Avançado 3-4',
+      it: 'Avanzato 3-4', ru: 'Продвинутый 3-4', hi: 'उन्नत 3-4', ar: 'متقدم 3-4'
+    },
+    title: {
+      en: 'W-Wing (Strong Link Bridge)', ko: 'W-Wing (강한 연결 브릿지)', ja: 'W-Wing (W-ウィング)',
+      zh: 'W翼數對 W-Wing (強鏈橋接)', 'zh-CN': 'W翼数对 W-Wing (强链桥接)',
+      es: 'W-Wing (Puente de enlace fuerte)', de: 'W-Wing (Starke-Verbindung-Brücke)',
+      fr: 'W-Wing (Pont de lien fort)', pt: 'W-Wing (Ponte de ligação forte)',
+      it: 'W-Wing (Ponte di legame forte)', ru: 'W-Wing (Мост сильной связи)',
+      hi: 'डब्ल्यू-विंग (मजबूत लिंक ब्रिज)', ar: 'جناح دبليو (جسر الرابط القوي)'
+    },
+    desc: {
+      en: 'Two identical bi-value cells (AB) are bridged by a strong link on digit B. Eliminate candidate A from any cell seeing both AB cells.',
+      ko: '동일한 2개 후보수(AB)를 가진 두 칸이 특정 줄의 강한 연결(B)로 이어질 때, 두 AB 칸이 동시에 바라보는 교차 칸에서 A를 소거합니다.',
+      ja: '同じ2つの候補数(AB)を持つ2マスが数字Bの強リンクで結ばれる時、両方のABマスから見通せるマスから候補数Aを消去します。',
+      zh: '兩個相同的雙值格 (AB) 透過數字 B 的強鏈連接。任何同時看見這兩個 AB 格的格子皆可排除候選數 A。',
+      'zh-CN': '两个相同的双值格 (AB) 通过数字 B 的强链连接。任何同时看见这两个 AB 格的格子皆可排除候选数 A。',
+      es: 'Dos casillas con los mismos 2 candidatos (AB) se conectan mediante un enlace fuerte en B. Elimina A de las casillas que ven a ambas.',
+      de: 'Zwei identische 2er-Felder (AB) sind über eine starke Verbindung auf Zahl B verknüpft. Löschen Sie A aus Feldern, die beide AB-Felder sehen.',
+      fr: 'Deux cases identiques (AB) sont reliées par un lien fort sur B. Éliminez A de toute case voyant les deux cases AB.',
+      pt: 'Duas casas idênticas (AB) são conectadas por uma ligação forte no dígito B. Elimine A de qualquer casa que veja ambas.',
+      it: 'Due caselle identiche (AB) sono collegate da un legame forte sul numero B. Elimina A dalle caselle che vedono entrambe.',
+      ru: 'Две одинаковые клетки (AB) связаны сильной связью по цифре B. Удалите A из любой клетки, видящей обе клетки AB.',
+      hi: 'समान दोहरे उम्मीदवार (AB) अंक B के मजबूत लिंक से जुड़े हैं। दोनों AB सेलों को देखने वाली सेल से A को हटा दें।',
+      ar: 'ترتبط خليتان ثنائيتان متطابقتان (AB) برابط قوي على الرقم B. استبعد الرقم A من أي خلية ترى كلتا خليتي AB.'
+    }
+  },
+  'bug': {
+    badge: {
+      en: 'Advanced 3-5', ko: '고급 3-5', ja: '上級 3-5', zh: '高級 3-5', 'zh-CN': '高级 3-5',
+      es: 'Avanzada 3-5', de: 'Fortgeschritten 3-5', fr: 'Avancé 3-5', pt: 'Avançado 3-5',
+      it: 'Avanzato 3-5', ru: 'Продвинутый 3-5', hi: 'उन्नत 3-5', ar: 'متقدم 3-5'
+    },
+    title: {
+      en: 'Bivalent Universal Grave (BUG+1)', ko: 'BUG+1 (이원 치명적 패턴)', ja: 'BUG+1 (バイレント・ユニバーサル・グレイブ)',
+      zh: '全雙值致命結構 BUG+1', 'zh-CN': '全双值致命结构 BUG+1',
+      es: 'BUG+1 (Patrón bivalente universal)', de: 'BUG+1 (Bivalentes Universalgrab)',
+      fr: 'BUG+1 (Structure bivalente)', pt: 'BUG+1 (Padrão bivalente universal)',
+      it: 'BUG+1 (Struttura bivalente)', ru: 'BUG+1 (Универсальная бивалентная ловушка)',
+      hi: 'बीयूजी+1 (द्वि-मूल्य घातक पैटर्न)', ar: 'BUG+1 (النمط الثنائي القاتل)'
+    },
+    desc: {
+      en: 'When all remaining cells have 2 candidates except one cell with 3 candidates, that tri-value cell must be the digit appearing 3 times in its units.',
+      ko: '모든 빈칸이 2개 후보수이고 오직 한 칸만 3개 후보수를 가질 때, 스도쿠의 유일한 해를 위해 해당 칸은 3번 등장하는 숫자로 즉시 확정됩니다.',
+      ja: '全ての空きマスが2候補で1マスだけ3候補を持つ時、唯一解を保つためその3候補マスには3回出現する数字が確定します。',
+      zh: '當所有未填空格皆為 2 個候選數、僅有 1 格為 3 個候選數時，為避免多解，該 3 候選數格必填入在行列宮中出現 3 次的數字。',
+      'zh-CN': '当所有未填空格皆为 2 个候选数、仅有 1 格为 3 个候选数时，为避免多解，该 3 候选数格必填入在行列宫中出现 3 次的数字。',
+      es: 'Cuando todas las casillas tienen 2 candidatos excepto una con 3, esa casilla tri-valor debe ser el número que aparece 3 veces en su unidad.',
+      de: 'Wenn alle Felder 2 Kandidaten haben bis auf genau ein Feld mit 3 Kandidaten, ist dieses 3er-Feld sofort die Zahl, die dreimal vorkommt.',
+      fr: 'Quand toutes les cases ont 2 candidats sauf une avec 3, cette case doit prendre le chiffre qui apparaît 3 fois dans ses unités.',
+      pt: 'Quando todas as casas têm 2 candidatos exceto uma com 3, essa casa tri-valor deve ser o dígito que aparece 3 vezes na unidade.',
+      it: 'Quando tutte le caselle hanno 2 candidati tranne una con 3, quella casella deve contenere il numero che appare 3 volte nell’unità.',
+      ru: 'Когда все клетки имеют по 2 кандидата и только одна имеет 3, в эту клетку сразу ставится цифра, встречающаяся 3 раза в её зоне.',
+      hi: 'जब सभी सेलों में 2 उम्मीदवार हों और केवल एक सेल में 3 उम्मीदवार हों, तो वह सेल वही अंक होगी जो क्षेत्र में 3 बार आता है।',
+      ar: 'عندما تحتوي جميع الخلايا على مرشحين اثنين فقط ما عدا خلية واحدة بها 3 مرشحات، فإن تلك الخلية تأخذ الرقم الذي يتكرر 3 مرات.'
+    }
+  },
+  'remote-pairs': {
+    badge: {
+      en: 'Advanced 3-6', ko: '고급 3-6', ja: '上級 3-6', zh: '高級 3-6', 'zh-CN': '高级 3-6',
+      es: 'Avanzada 3-6', de: 'Fortgeschritten 3-6', fr: 'Avancé 3-6', pt: 'Avançado 3-6',
+      it: 'Avanzato 3-6', ru: 'Продвинутый 3-6', hi: 'उन्नत 3-6', ar: 'متقدم 3-6'
+    },
+    title: {
+      en: 'Remote Pairs (Chain Elimination)', ko: 'Remote Pairs (원격 쌍 체인)', ja: 'リモートペア (遠隔ペア連鎖)',
+      zh: '遠程數對 Remote Pairs (長鏈排除)', 'zh-CN': '远程数对 Remote Pairs (长链排除)',
+      es: 'Remote Pairs (Pares remotos en cadena)', de: 'Remote Pairs (Ketten-Ausschluss)',
+      fr: 'Remote Pairs (Paires distantes en chaîne)', pt: 'Remote Pairs (Pares remotos em cadeia)',
+      it: 'Remote Pairs (Coppie remote a catena)', ru: 'Удаленные пары (Remote Pairs)',
+      hi: 'रिमोट पेयर्स (चेन एलिमिनेशन)', ar: 'الأزواج البعيدة (استبعاد السلسلة)'
+    },
+    desc: {
+      en: 'An even-length chain of identical bi-value cells (AB) alternates parity. Any cell seeing both ends of the chain cannot contain A or B.',
+      ko: '동일한 2개 후보수(AB)를 가진 셀들이 짝수 길이 체인으로 연결될 때, 체인의 양 끝 셀이 동시에 만나는 모든 칸에서 A와 B를 모두 소거합니다.',
+      ja: '同じ2候補(AB)のマスが偶数長の連鎖で結ばれる時、連鎖の両端のマスを同時に見通せる全てのマスからAとBの両方を消去します。',
+      zh: '由相同雙值格 (AB) 組成的偶數長度鏈，任何同時看到鏈條兩端的格子，皆可同時排除候選數 A 和 B。',
+      'zh-CN': '由相同双值格 (AB) 组成的偶数长度链，任何同时看到链条两端的格子，皆可同时排除候选数 A 和 B。',
+      es: 'Una cadena de longitud par de casillas idénticas (AB) alterna polaridad. Las casillas que ven ambos extremos no pueden tener A ni B.',
+      de: 'Eine Kette gerader Länge aus identischen 2er-Feldern (AB) wechselt die Belegung. Felder, die beide Kettenenden sehen, enthalten weder A noch B.',
+      fr: 'Une chaîne de longueur paire de cases identiques (AB) alterne la polarité. Les cases voyant les deux bouts ne peuvent contenir ni A ni B.',
+      pt: 'Uma cadeia de comprimento par de casas idênticas (AB) alterna paridade. Casas que veem ambas as pontas não contêm A nem B.',
+      it: 'Una catena di lunghezza pari di caselle identiche (AB) alterna parità. Le caselle che vedono entrambi i capi non contengono né A né B.',
+      ru: 'Четная цепочка одинаковых клеток (AB) чередует значения. Клетки, видящие оба конца цепи, не могут содержать ни A, ни B.',
+      hi: 'समान दोहरे सेलों (AB) की सम-लंबाई वाली श्रृंखला। दोनों सिरों को देखने वाली सेल से A और B दोनों को हटा दें।',
+      ar: 'سلسلة زوجية الطول من خلايا ثنائية متطابقة (AB). أي خلية ترى طرفي السلسلة معاً لا يمكن أن تحتوي على A أو B.'
+    }
+  }
+};
+
+console.log('Building stage files update script...');

@@ -1,0 +1,171 @@
+/* =========================================================
+   KEYPAD & NUMPAD STYLES (100% Zero-Overflow Adaptive Grid)
+   ========================================================= */
+
+.keypad-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg-surface);
+  padding: clamp(8px, 2.5vw, 12px);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--board-grid-line);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.action-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: clamp(3px, 1.2vw, 6px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: var(--btn-bg);
+  color: var(--text-main);
+  border: 1px solid var(--board-grid-line);
+  padding: 6px 2px;
+  border-radius: var(--border-radius-sm);
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  min-width: 0;
+  box-sizing: border-box;
+  text-align: center;
+  line-height: 1.15;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.action-btn:active:not(.disabled) {
+  transform: scale(0.93);
+}
+
+.action-btn.active {
+  background: var(--btn-active);
+  color: var(--btn-active-text);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.action-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.action-btn.hint-btn {
+  background: linear-gradient(135deg, #fef08a, #fde047);
+  color: #713f12;
+}
+
+body.dark-theme .action-btn.hint-btn {
+  background: linear-gradient(135deg, #854d0e, #a16207);
+  color: #fef08a;
+}
+
+.number-pad {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: clamp(2px, 1.1vw, 5px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.num-btn {
+  aspect-ratio: 0.82;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--btn-bg);
+  color: var(--text-main);
+  border: 1px solid var(--board-grid-line);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 2px 1px;
+  box-shadow: var(--keycap-shadow, 0 3.5px 0 rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.06));
+  outline: none;
+  position: relative;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.num-btn:active:not(.completed) {
+  transform: translateY(2px) scale(0.96) !important;
+  box-shadow: var(--keycap-active-shadow, 0 1px 0 rgba(0, 0, 0, 0.12), inset 0 2px 4px rgba(0, 0, 0, 0.08)) !important;
+}
+
+.num-btn.active-selected,
+.num-btn.locked {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  color: #ffffff !important;
+  border-color: #1d4ed8 !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.55), inset 0 1.5px 0 rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-2px) scale(1.04) !important;
+  z-index: 2;
+  opacity: 1 !important;
+}
+
+.number-pad.has-active .num-btn:not(.active-selected):not(.completed),
+.number-pad.fast-mode-waiting .num-btn:not(.completed) {
+  opacity: 0.55;
+  filter: saturate(0.85);
+}
+
+.number-pad.has-active .num-btn:not(.active-selected):not(.completed):hover,
+.number-pad.fast-mode-waiting .num-btn:not(.completed):hover {
+  opacity: 0.85;
+}
+
+.num-btn.completed {
+  opacity: 0.25;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.num-btn.completed.active-selected {
+  opacity: 0.85;
+  background: linear-gradient(135deg, #64748b, #475569) !important;
+  border-color: #475569 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(71, 85, 105, 0.4) !important;
+  transform: translateY(-2px) scale(1.04) !important;
+}
+
+.num-val {
+  font-size: clamp(15px, 4.4vw, 22px);
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.num-count {
+  font-size: clamp(8px, 2.2vw, 10px);
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-top: 2px;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.num-btn.active-selected .num-count,
+.num-btn.locked .num-count {
+  color: rgba(255, 255, 255, 0.85) !important;
+}

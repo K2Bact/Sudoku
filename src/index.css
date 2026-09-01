@@ -1,0 +1,294 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+:root {
+  --font-sans: 'Outfit', 'Noto Sans KR', sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-mono: 'Space Grotesk', monospace;
+  --border-radius-sm: 8px;
+  --border-radius-md: 14px;
+  --border-radius-lg: 22px;
+
+  /* Global Theme Universal Accents & Safe Fallbacks */
+  --accent-primary: #3b82f6;
+  --accent-primary-hover: #2563eb;
+  --text-primary: var(--text-main);
+  --border-main: var(--board-grid-line);
+  --card-bg: var(--bg-surface);
+}
+
+/* =========================================================
+   STYLE 1: 🏺 Clay & Warm Ceramic (후보 A: 클래식 웜 세라믹 & 클레이)
+   따뜻한 무광 점토/도자기 키캡과 3D 물리 베벨, 묵직한 타건감
+   ========================================================= */
+body.theme-clay {
+  --bg-primary: #f5f0e6;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #e6dac6;
+  --card-bg: #ffffff;
+  --text-main: #292524;
+  --text-primary: #292524;
+  --text-muted: #57534e;
+  --text-given: #1c1917;
+  --text-user: #0284c7;
+
+  --accent-primary: #0284c7;
+  --accent-primary-hover: #0369a1;
+
+  --board-bg: #ffffff;
+  --board-grid-line: #c8bdae;
+  --border-main: #c8bdae;
+  --board-thick-line: #292524;
+
+  --cell-selected: #fef08a;
+  --cell-related: #f5eedb;
+  --cell-same-val: #bae6fd;
+  --cell-error: #fee2e2;
+  --text-error: #dc2626;
+
+  --btn-bg: #eadfc9;
+  --btn-hover: #dcceb5;
+  --btn-active: #0284c7;
+  --btn-active-text: #ffffff;
+
+  --keycap-shadow: 0 3.5px 0 #bfae93, 0 5px 10px rgba(68, 64, 60, 0.16), inset 0 1.5px 0 rgba(255, 255, 255, 0.9);
+  --keycap-active-shadow: 0 1px 0 #bfae93, inset 0 2px 5px rgba(68, 64, 60, 0.22);
+  --board-inset-shadow: inset 0 2px 6px rgba(68, 64, 60, 0.12), 0 4px 14px rgba(68, 64, 60, 0.08);
+
+  --shadow-sm: 0 2px 4px rgba(68, 64, 60, 0.08);
+  --shadow-md: 0 4px 12px rgba(68, 64, 60, 0.12);
+  --shadow-lg: 0 10px 24px rgba(68, 64, 60, 0.16);
+}
+
+/* =========================================================
+   STYLE 2: 🌌 Soft Matte Resin & Dark (후보 B: 소프트 매트 레진 & 미드나잇 다크)
+   고급 무광 레진 코팅 질감과 은은한 화이트/블루 조명
+   ========================================================= */
+body.theme-matte-dark,
+body.theme-dark {
+  --bg-primary: #0f172a;
+  --bg-surface: #1e293b;
+  --bg-surface-elevated: #334155;
+  --card-bg: #1e293b;
+  --text-main: #f8fafc;
+  --text-primary: #f8fafc;
+  --text-muted: #cbd5e1;
+  --text-given: #ffffff;
+  --text-user: #38bdf8;
+
+  --accent-primary: #38bdf8;
+  --accent-primary-hover: #0ea5e9;
+
+  --board-bg: #0b1120;
+  --board-grid-line: #475569;
+  --border-main: #475569;
+  --board-thick-line: #94a3b8;
+
+  --cell-selected: #1e3a8a;
+  --cell-related: #1e293b;
+  --cell-same-val: #0369a1;
+  --cell-error: #7f1d1d;
+  --text-error: #fca5a5;
+
+  --btn-bg: #1e293b;
+  --btn-hover: #334155;
+  --btn-active: #0284c7;
+  --btn-active-text: #ffffff;
+
+  --keycap-shadow: 0 3.5px 0 #050811, 0 6px 16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --keycap-active-shadow: 0 1px 0 #050811, inset 0 2px 6px rgba(0, 0, 0, 0.7);
+  --board-inset-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.4);
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.6);
+}
+
+/* =========================================================
+   STYLE 3: 🧊 Pure Claymorphism & Cushion (후보 C: 퓨어 클레이모피즘 & 로얄블루 쿠션)
+   글로벌 1위 상용 앱 스타일의 둥글고 매끄러운 화이트 세라믹 쿠션
+   ========================================================= */
+body.theme-pure-ceramic {
+  --bg-primary: #f1f5f9;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #e2e8f0;
+  --card-bg: #ffffff;
+  --text-main: #0f172a;
+  --text-primary: #0f172a;
+  --text-muted: #475569;
+  --text-given: #0f172a;
+  --text-user: #2563eb;
+
+  --accent-primary: #2563eb;
+  --accent-primary-hover: #1d4ed8;
+
+  --board-bg: #ffffff;
+  --board-grid-line: #cbd5e1;
+  --border-main: #cbd5e1;
+  --board-thick-line: #1e293b;
+
+  --cell-selected: #dbeafe;
+  --cell-related: #f1f5f9;
+  --cell-same-val: #bfdbfe;
+  --cell-error: #fee2e2;
+  --text-error: #dc2626;
+
+  --btn-bg: #ffffff;
+  --btn-hover: #f8fafc;
+  --btn-active: #2563eb;
+  --btn-active-text: #ffffff;
+
+  --keycap-shadow: 0 3.5px 0 #cbd5e1, 0 5px 12px rgba(15, 23, 42, 0.08), inset 0 1.5px 0 rgba(255, 255, 255, 1);
+  --keycap-active-shadow: 0 1px 0 #cbd5e1, inset 0 2px 5px rgba(15, 23, 42, 0.12);
+  --board-inset-shadow: inset 0 2px 6px rgba(15, 23, 42, 0.06), 0 4px 14px rgba(15, 23, 42, 0.05);
+
+  --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+/* =========================================================
+   STYLE 4: 📰 Classic Editorial Paper (클래식 퓨어 페이퍼)
+   정갈하고 눈이 편안한 스위스 에디토리얼 무광 종이 질감
+   ========================================================= */
+body.theme-editorial {
+  --bg-primary: #fcfbf9;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f0ebe1;
+  --card-bg: #ffffff;
+  --text-main: #1c1917;
+  --text-primary: #1c1917;
+  --text-muted: #44403c;
+  --text-given: #1c1917;
+  --text-user: #0f52ba;
+
+  --accent-primary: #0f52ba;
+  --accent-primary-hover: #0c4294;
+
+  --board-bg: #ffffff;
+  --board-grid-line: #d6d3d1;
+  --border-main: #d6d3d1;
+  --board-thick-line: #1c1917;
+
+  --cell-selected: #e8f0fe;
+  --cell-related: #f5f3ed;
+  --cell-same-val: #dbe8fb;
+  --cell-error: #fee2e2;
+  --text-error: #b91c1c;
+
+  --btn-bg: #faf7f2;
+  --btn-hover: #f0ebe1;
+  --btn-active: #1c1917;
+  --btn-active-text: #ffffff;
+
+  --keycap-shadow: 0 3px 0 #e7e5e4, 0 4px 8px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --keycap-active-shadow: 0 1px 0 #e7e5e4, inset 0 2px 4px rgba(0, 0, 0, 0.08);
+  --board-inset-shadow: inset 0 1.5px 4px rgba(0, 0, 0, 0.04), 0 3px 10px rgba(0, 0, 0, 0.04);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-x: hidden;
+}
+
+.app-viewport {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+  transition: max-width 0.25s ease;
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Tablet & Foldable Expansion (>= 600px) */
+@media (min-width: 600px) {
+  .app-viewport {
+    max-width: 620px;
+    padding: 0 10px;
+  }
+}
+
+/* Large Tablet & Desktop Expansion (>= 840px) */
+@media (min-width: 840px) {
+  .app-viewport {
+    max-width: 680px;
+    padding: 0 16px;
+  }
+}
+
+/* Global Unified Circular Icon Button (Home, In-Game, Sub-screens) */
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--board-grid-line);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+  background: var(--btn-hover);
+}
+
+.icon-btn .muted {
+  opacity: 0.5;
+}
+
+/* RTL Layout Adaptations */
+html[dir="rtl"] { text-align: right; }
+html[dir="rtl"] .sudoku-board-container,
+html[dir="rtl"] .sudoku-grid,
+html[dir="rtl"] .keypad-container,
+html[dir="rtl"] .keypad-grid {
+  direction: ltr !important;
+  unicode-bidi: isolate;
+}
+html[dir="rtl"] .icon-btn svg.lucide-arrow-left,
+html[dir="rtl"] .icon-btn svg.lucide-chevron-left {
+  transform: scaleX(-1);
+}

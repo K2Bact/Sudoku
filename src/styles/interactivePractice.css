@@ -1,0 +1,279 @@
+/* =========================================================
+   ACADEMY INTERACTIVE PRACTICE COACHING STYLES
+   ========================================================= */
+
+.interactive-practice-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--board-thick-line);
+  border-radius: var(--border-radius-md);
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+/* 3-Way Sub Tabs: Theory / Practice 1 / Practice 2 */
+.practice-mode-tabs {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.practice-tab-btn {
+  flex: 1;
+  background: var(--btn-bg);
+  border: 1.5px solid var(--board-grid-line);
+  padding: 8px 4px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--text-muted);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.18s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.practice-tab-btn.active {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 3px 8px rgba(59, 130, 246, 0.35);
+}
+
+.practice-tab-btn.active.tab-theory {
+  background: linear-gradient(135deg, #475569, #334155);
+  border-color: #475569;
+  box-shadow: 0 3px 8px rgba(71, 85, 105, 0.35);
+}
+
+/* Theory Diagram Integration in Practice Card - Unified Single Card */
+.theory-diagram-container {
+  width: 100%;
+}
+
+.theory-diagram-container .mini-grid-container {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  gap: 10px;
+  width: 100%;
+}
+
+.theory-diagram-container .mini-grid-label {
+  background: var(--btn-bg);
+  border-left: 4px solid #64748b;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.45;
+  color: var(--text-main);
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Practice Prompt & Guide Banner */
+.practice-guide-box {
+  background: var(--btn-bg);
+  border-left: 4px solid #3b82f6;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-main);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.practice-guide-box strong {
+  color: #3b82f6;
+}
+
+/* Glowing Cause/Clue Cell Animations */
+.mini-cell.cause-cell {
+  background: var(--bg-surface) !important;
+  color: var(--text-main) !important;
+  font-weight: 800;
+  border: 1.5px solid var(--board-thick-line);
+}
+
+@keyframes beaconPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+    border-color: #f59e0b;
+  }
+  50% {
+    box-shadow: 0 0 12px 3px rgba(245, 158, 11, 0.9);
+    border-color: #fbbf24;
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+    border-color: #f59e0b;
+  }
+}
+
+.mini-cell.target-interactive {
+  background: rgba(245, 158, 11, 0.12) !important;
+  border: 2px dashed #f59e0b !important;
+  cursor: pointer;
+  color: #f59e0b !important;
+  font-weight: 900;
+  font-size: 15px;
+  will-change: transform;
+  animation: beaconPulse 1.6s infinite ease-in-out;
+}
+
+.mini-cell.target-solved {
+  background: #22c55e !important;
+  color: #ffffff !important;
+  border: 2px solid #16a34a !important;
+  font-weight: 900;
+  font-size: 15px;
+  box-shadow: 0 0 14px rgba(34, 197, 94, 0.8) !important;
+  will-change: transform;
+  animation: successPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.mini-cell.target-error {
+  background: rgba(239, 68, 68, 0.25) !important;
+  color: #ef4444 !important;
+  border: 2px solid #ef4444 !important;
+  font-weight: 900;
+  font-size: 15px;
+}
+
+@keyframes successPop {
+  0% { transform: scale(0.8); }
+  60% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+@keyframes errorWiggle {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+.mini-cell.shake-error {
+  will-change: transform;
+  animation: errorWiggle 0.38s ease-in-out;
+}
+
+/* Practice Persistent Keypad */
+.practice-keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.practice-key-btn {
+  aspect-ratio: 1;
+  background: var(--btn-bg);
+  border: 1.5px solid var(--board-thick-line);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.practice-key-btn:active {
+  transform: translateY(2px);
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.practice-key-btn.key-solved {
+  background: #22c55e !important;
+  border-color: #16a34a !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
+  transform: scale(1.08);
+}
+
+.practice-key-btn.key-error {
+  background: #ef4444 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+}
+
+/* Feedback Banners */
+.practice-success-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1.5px solid #22c55e;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #16a34a;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.practice-error-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1.5px solid #ef4444;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #ef4444;
+  font-size: 11.5px;
+  font-weight: 800;
+  will-change: transform;
+  animation: errorWiggle 0.35s ease-in-out;
+}
+
+.practice-hint-prompt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 4px;
+}
+
+.practice-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.practice-retry-btn:active {
+  opacity: 0.8;
+}

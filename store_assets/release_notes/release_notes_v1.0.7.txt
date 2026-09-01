@@ -1,0 +1,43 @@
+================================================================================
+[Google Play Console 릴리스 노트 / Release Notes - v1.0.7 (Version Code 9)]
+================================================================================
+
+<ko-KR>
+- [신규] 스페인어(es-ES) 전면 지원 추가
+- [개선] 1v1 실시간 대전 순수 실제 유저 매칭 시스템 적용
+- [개선] 상단 슬라이드 1v1 재대결 신청 및 수락 알림 배너 추가
+- [개선] 승리 모달 및 통계/리포트 화면 테두리 디자인 개선
+- [수정] 모바일 렌더링 성능 최적화 및 안정성 강화
+</ko-KR>
+
+<en-US>
+- [New] Full Spanish (es-ES) localization support added
+- [Improved] 100% real-player 1v1 PvP matchmaking engine
+- [Improved] Top sliding rematch request & instant accept banner
+- [Improved] Cleaned up border lines in Victory and Stats modal screens
+- [Fixed] Mobile GPU rendering optimization and overall stability improvements
+</en-US>
+
+<ja-JP>
+- [新規] スペイン語（es-ES）の完全ローカライズを追加
+- [改善] 1v1リアルタイム対戦の完全実ユーザーマッチング適用
+- [改善] 画面上部スライド再戦リクエスト＆即時承諾バナー追加
+- [改善] 勝利モーダルおよび統計レポートのボーダーデザイン改善
+- [修正] モバイルGPU描画パフォーマンスの最適化と安定性向上
+</ja-JP>
+
+<zh-TW>
+- [新增] 全面支援繁體中文及西班牙語（es-ES）
+- [優化] 1v1 即時對戰採用純真人玩家配對系統
+- [優化] 新增頂部滑動再戰請求與一鍵接受通知橫幅
+- [優化] 修復勝利彈窗與統計報表邊框線條重疊問題
+- [修復] 提升手機 GPU 渲染效能與系統整體穩定性
+</zh-TW>
+
+<es-ES>
+- [Novedad] Soporte completo de localización en español (es-ES)
+- [Mejora] Emparejamiento 1v1 en tiempo real 100% con jugadores reales
+- [Mejora] Banner superior deslizante para solicitar y aceptar revanchas al instante
+- [Mejora] Diseño pulido de bordes en pantallas de victoria y estadísticas
+- [Corrección] Optimización de rendimiento GPU móvil y mejoras de estabilidad general
+</es-ES>

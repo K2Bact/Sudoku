@@ -1,0 +1,36 @@
+[앱 이름 (App name - 최대 30자)]
+Sudoku - Casse-tête logique
+
+[간단한 설명 (Short description - 최대 80자)]
+Sudoku classique, 32 techniques, rapport de QI et défis quotidiens 365
+
+[자세한 설명 (Full description - 최대 4000자)]
+Sudoku Master est un jeu de puzzle et d'entraînement cérébral haut de gamme conçu pour tous les passionnés de logique.
+
+Découvrez le plaisir de la déduction pure avec 32 techniques authentiques enseignées pas à pas.
+
+━━━━━━━━━━━━━━━━━━━━━
+🌟 LES ATOUTS DE SUDOKU
+━━━━━━━━━━━━━━━━━━━━━
+
+🧩 1. 5 Niveaux de Difficulté Classiques
+- De Très Facile à Maître
+- Grilles 100% uniques et solubles par pure déduction logique
+- 4 thèmes visuels reposants et élégants
+
+🎓 2. Académie Sudoku en 32 Leçons
+- Apprenez toutes les techniques étape par étape
+- Débutant : Hidden Singles, Paires nues
+- Avancé : X-Wing, Swordfish, Jellyfish, XY-Wing
+- Expert : 3D Medusa, Unique Rectangle, chaînes AIC et ALS
+
+⚔️ 3. Duel 1v1 en Temps Réel et Matchs IA
+- Défiez des joueurs du monde entier ou affrontez nos robots IA ultra-rapides.
+
+🧠 4. Rapport de QI Cérébral Personnalisé
+- Analyse précise de vos 5 piliers cognitifs : concentration, logique, vitesse, endurance et précision.
+
+📅 5. Défis Quotidiens 365 Jours
+- Un nouveau défi chaque jour et des trophées mensuels à débloquer.
+
+Téléchargez Sudoku dès maintenant et boostez votre cerveau au quotidien !

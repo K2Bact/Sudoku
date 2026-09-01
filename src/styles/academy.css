@@ -1,0 +1,165 @@
+/* =========================================================
+   ACADEMY STYLES (스도쿠 정석 아카데미 스타일)
+   ========================================================= */
+@import './academyMiniGrids.css';
+@import './interactivePractice.css';
+
+.academy-tab-bar {
+  display: flex;
+  overflow-x: auto;
+  gap: 6px;
+  background: var(--bg-surface);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--board-grid-line);
+  scrollbar-width: none;
+}
+
+.academy-tab-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.academy-tab-bar .seg-tab-btn {
+  flex: 1 0 auto;
+  min-width: 64px;
+  box-sizing: border-box;
+  background: var(--btn-bg);
+  color: var(--text-muted);
+  border: 1px solid var(--board-grid-line);
+  font-family: inherit;
+  font-size: clamp(10.5px, 2.8vw, 12px);
+  font-weight: 800;
+  padding: 7px 10px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.academy-tab-bar .seg-tab-btn.active {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 3px 10px rgba(59, 130, 246, 0.35);
+}
+
+.academy-scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stage-banner-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--board-grid-line);
+  border-radius: var(--border-radius-md);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 12px;
+}
+
+.stage-banner-card .tab-section-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  font-size: clamp(14px, 3.8vw, 17px);
+  font-weight: 900;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.stage-title-main {
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.stage-title-sub {
+  font-size: 0.9em;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.strategy-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.strategy-item-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--board-grid-line);
+  border-radius: var(--border-radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.strategy-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.strategy-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.strategy-badge.beginner { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.strategy-badge.intermediate { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.strategy-badge.advanced { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.strategy-badge.expert { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+.strategy-badge.master { background: linear-gradient(135deg, #a855f7, #7e22ce); }
+
+.strategy-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin: 0;
+  flex: 1;
+}
+
+.strat-main-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.25;
+  word-break: keep-all;
+}
+
+.strat-sub-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1.2;
+  word-break: keep-all;
+}
+
+.strategy-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.strategy-diagram-wrap {
+  margin-top: 4px;
+}

@@ -1,0 +1,89 @@
+/* =========================================================
+   STATS & SUMMARY STYLES
+   ========================================================= */
+@import './brainReport.css';
+@import './calendar.css';
+
+/* Common Card Container */
+.stats-card {
+  background: var(--bg-surface);
+  padding: 16px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--board-grid-line);
+  box-shadow: var(--shadow-md);
+}
+
+/* Stats Summary Grid */
+.stats-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 10px 0 4px;
+  box-sizing: border-box;
+}
+
+.summary-card {
+  background: var(--btn-bg);
+  padding: 12px 6px;
+  text-align: center;
+  border: 1px solid var(--board-grid-line);
+  border-radius: var(--border-radius-sm);
+  box-sizing: border-box;
+}
+
+.sum-val {
+  font-size: 18px;
+  font-weight: 900;
+  display: block;
+}
+
+.sum-lbl {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  display: block;
+}
+
+/* Best Times List */
+.best-times-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.best-time-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--btn-bg);
+  padding: 10px 12px;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--board-grid-line);
+}
+
+.level-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lvl-badge {
+  font-size: 10px;
+  font-weight: 800;
+  background: #3b82f6;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.lvl-name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.best-time-val {
+  font-size: 14px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}

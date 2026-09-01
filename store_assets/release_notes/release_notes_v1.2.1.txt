@@ -1,0 +1,78 @@
+<en-US>
+• Major localization overhaul across global languages (Chinese, Italian, Portuguese, Russian).
+• Refined 5-Stage Sudoku Academy taxonomy and master techniques.
+• Polished Brain IQ radar chart and responsive mobile UI button layouts.
+• Performance optimizations and overall stability improvements.
+</en-US>
+<ar>
+• تحسينات شاملة في الترجمة وتجربة المستخدم عبر عدة لغات.
+• تحديث هيكل أكاديمية السودوكو لتعليم 32 تقنية متقدمة بـ 5 مراحل.
+• تحسين عرض مخطط تقرير الذكاء (IQ) وتنسيق الأزرار للشاشات المختلفة.
+• تحسينات عامة في الأداء واستقرار اللعبة.
+</ar>
+<de-DE>
+• Umfassendes Lokalisierungs-Upgrade und verbesserte Übersetzungen.
+• Aktualisierte 5-Stufen-Struktur der Sudoku-Akademie mit 32 Meistertechniken.
+• Optimiertes IQ-Radardiagramm und verbesserte Button-Layouts auf Mobilgeräten.
+• Leistungsoptimierungen und verbesserte Systemstabilität.
+</de-DE>
+<es-ES>
+• Gran actualización de localización y mejoras en las traducciones globales.
+• Estructura perfeccionada de la Academia Sudoku con 32 técnicas maestras en 5 fases.
+• Optimización del gráfico de radar de CI y diseño de botones en pantalla.
+• Mejoras de rendimiento, estabilidad y corrección de errores menores.
+</es-ES>
+<fr-FR>
+• Mise à niveau majeure des traductions et de la localisation globale.
+• Nouvelle structure en 5 étapes pour l'Académie Sudoku (32 techniques des maîtres).
+• Affichage optimisé du graphique de QI et des boutons de l'interface mobile.
+• Amélioration des performances et de la stabilité globale.
+</fr-FR>
+<hi-IN>
+• वैश्विक भाषाओं के लिए अनुवाद और स्थानीयकरण में बड़ा सुधार।
+• 32 मास्टर तकनीकों के साथ सुडोकू अकादमी की 5-चरणीय संरचना अपडेट की गई।
+• IQ रडار चार्ट और मोबाइल बटन लेआउट में दृश्य सुधार।
+• गेम प्रदर्शन और स्थिरता में वृद्धि।
+</hi-IN>
+<it-IT>
+• Revisione linguistica completa in italiano: Report QI e navigazione ottimizzati.
+• Accademia Sudoku aggiornata con la struttura ufficiale in 5 fasi e 32 tecniche.
+• Grafico radar del QI e pulsanti dell'interfaccia perfezionati per ogni schermo.
+• Miglioramenti di stabilità e prestazioni generali.
+</it-IT>
+<ja-JP>
+• 多言語ローカライズの品質向上とテキスト表現の精密化。
+• 32のマスターテクニックを学べる数独アカデミーの5段階構成を刷新。
+• 脳IQレーダーチャートの表示最適化およびUIレイアウトの調整。
+• パフォーマンスの向上とアプリの安定性改善。
+</ja-JP>
+<ko-KR>
+• 다국어 번역 전수 정밀 감수 및 텍스트 품질 대폭 강화.
+• 32가지 정통 해법을 체계화한 스도쿠 아카데미 5단계 커리큘럼 개선.
+• 두뇌 분석(IQ) 레이더 차트 가독성 및 모바일 버튼 레이아웃 최적화.
+• 게임 실행 안정성 향상 및 성능 최적화.
+</ko-KR>
+<pt-BR>
+• Revisão completa em português do Brasil: termos, precisão e privacidade Zero-PII.
+• Estrutura aprimorada da Academia Sudoku com 5 etapas e 32 técnicas de mestre.
+• Gráfico de radar do QI cerebral e botões da interface otimizados para telas móveis.
+• Melhorias de desempenho e estabilidade do aplicativo.
+</pt-BR>
+<zh-CN>
+• 简体中文全量精细校对：数独专业术语与 Zero-PII 隐私说明优化。
+• 全新升级数独学院 5 大进阶阶段与 32 种大师解题技巧。
+• 大脑 IQ 报告雷达图与移动端界面按钮排版全面优化。
+• 提升游戏运行流畅度与系统稳定性。
+</zh-CN>
+<zh-TW>
+• 全面強化在地化翻譯品質與專業術語準確性。
+• 升級數獨學院 5 大教學階段與 32 種大師解法結構。
+• 優化大腦 IQ 雷達圖顯示效果與操作按鈕排版。
+• 提升遊戲運行效能與連線穩定度。
+</zh-TW>
+<ru-RU>
+• Полный аудит и обновление русского языка: соответствие стандартам Google Play.
+• Обновлена 5-этапная структура Академии судоку с 32 мастерскими техниками.
+• Оптимизированы оси радар-графика IQ и верстка кнопок интерфейса.
+• Улучшена общая стабильность и производительность приложения.
+</ru-RU>

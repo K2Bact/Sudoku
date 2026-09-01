@@ -1,0 +1,2858 @@
+[
+  {
+    "lang": "ja",
+    "key": "common.share.text",
+    "desc": "Common Action & Nav Buttons",
+    "len": 94,
+    "maxLen": 18,
+    "text": "🧩 Sudoku {mode} Lv.{level} {name}を[{time}]でクリア！ ランク: {rank} (ミス: {mistakes}回)。あなたの脳力に挑戦してみよう！"
+  },
+  {
+    "lang": "de",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 89,
+    "maxLen": 18,
+    "text": "Top {percentile}% aller Spieler! Scharfe Intuition und außergewöhnliche Kombinationsgabe."
+  },
+  {
+    "lang": "pt",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 89,
+    "maxLen": 18,
+    "text": "Top {percentile}% dos jogadores! Desenvolvimento harmonioso de todas as áreas cognitivas."
+  },
+  {
+    "lang": "fr",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 87,
+    "maxLen": 18,
+    "text": "Top {percentile}% des joueurs ! Intuition affûtée et brillante résolution de problèmes."
+  },
+  {
+    "lang": "it",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 85,
+    "maxLen": 18,
+    "text": "Top {percentile}% dei giocatori! Deduzione logica magistrale degna dell’élite top 1%."
+  },
+  {
+    "lang": "pt",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 85,
+    "maxLen": 18,
+    "text": "Top {percentile}% dos jogadores! Intuição aguçada e brilhante resolução de problemas."
+  },
+  {
+    "lang": "de",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 84,
+    "maxLen": 18,
+    "text": "Top {percentile}% aller Spieler! Überragende logische und analytische Denkfähigkeit."
+  },
+  {
+    "lang": "it",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 84,
+    "maxLen": 18,
+    "text": "Top {percentile}% dei giocatori! Intuito acuto e brillante risoluzione dei problemi."
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 83,
+    "maxLen": 18,
+    "text": "¡Top {percentile}% de jugadores! Desarrollo óptimo de las 5 capacidades cognitivas."
+  },
+  {
+    "lang": "fr",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 83,
+    "maxLen": 18,
+    "text": "Top {percentile}% des joueurs ! Esprit logique et capacité d’analyse exceptionnels."
+  },
+  {
+    "lang": "fr",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 81,
+    "maxLen": 18,
+    "text": "Top {percentile}% des joueurs ! Développement harmonieux des 5 piliers cognitifs."
+  },
+  {
+    "lang": "de",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 80,
+    "maxLen": 18,
+    "text": "Top {percentile}% aller Spieler! Flexible und robuste Problemlösungsfähigkeiten."
+  },
+  {
+    "lang": "fr",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 80,
+    "maxLen": 18,
+    "text": "Top {percentile}% des joueurs ! Déduction magistrale digne du top 1% de l’élite."
+  },
+  {
+    "lang": "de",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 79,
+    "maxLen": 18,
+    "text": "Top {percentile}% aller Spieler! Meisterhafte logische Deduktion der besten 1%."
+  },
+  {
+    "lang": "de",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 79,
+    "maxLen": 18,
+    "text": "Top {percentile}% aller Spieler! Ausgewogene Entwicklung aller Denkfähigkeiten."
+  },
+  {
+    "lang": "hi",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 79,
+    "maxLen": 18,
+    "text": "शीर्ष {percentile}% खिलाड़ी! तेज अंतर्ज्ञान और समस्या सुलझाने की अद्भुत क्षमता।"
+  },
+  {
+    "lang": "it",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 79,
+    "maxLen": 18,
+    "text": "⚠️ Il numero {num} esiste già nello stesso quadrante / riga / colonna! {suffix}"
+  },
+  {
+    "lang": "it",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 79,
+    "maxLen": 18,
+    "text": "Top {percentile}% dei giocatori! Sviluppo armonioso di tutte le aree cognitive."
+  },
+  {
+    "lang": "fr",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 78,
+    "maxLen": 18,
+    "text": "⚠️ Le chiffre {num} existe déjà dans le même bloc / ligne / colonne ! {suffix}"
+  },
+  {
+    "lang": "ru",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 78,
+    "maxLen": 18,
+    "text": "Топ {percentile}% игроков! Гармоничное развитие всех ключевых когнитивных зон."
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 77,
+    "maxLen": 18,
+    "text": "¡Top {percentile}% de jugadores! Razonamiento deductivo de élite insuperable."
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 77,
+    "maxLen": 18,
+    "text": "¡Top {percentile}% de jugadores! Extraordinaria capacidad de análisis lógico."
+  },
+  {
+    "lang": "ru",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 77,
+    "maxLen": 18,
+    "text": "Топ {percentile}% игроков! Выдающиеся аналитические и логические способности."
+  },
+  {
+    "lang": "it",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 76,
+    "maxLen": 18,
+    "text": "Top {percentile}% dei giocatori! Pensiero analitico flessibile e affidabile."
+  },
+  {
+    "lang": "pt",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 76,
+    "maxLen": 18,
+    "text": "Top {percentile}% dos jogadores! Raciocínio dedutivo de elite no topo de 1%."
+  },
+  {
+    "lang": "en",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 75,
+    "maxLen": 18,
+    "text": "⚠️ Number {num} already exists in the same 3x3 box / row / column! {suffix}"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 75,
+    "maxLen": 18,
+    "text": "Iniciando el entrenamiento cerebral con potencial de crecimiento ilimitado."
+  },
+  {
+    "lang": "hi",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 75,
+    "maxLen": 18,
+    "text": "शीर्ष {percentile}% खिलाड़ी! सभी 5 संज्ञानात्मक क्षेत्रों का संतुलित विकास।"
+  },
+  {
+    "lang": "pt",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 75,
+    "maxLen": 18,
+    "text": "Top {percentile}% dos jogadores! Capacidade lógica e analítica excepcional."
+  },
+  {
+    "lang": "ru",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 75,
+    "maxLen": 18,
+    "text": "Топ {percentile}% игроков! Острая интуиция и быстрое решение сложных задач."
+  },
+  {
+    "lang": "ar",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 74,
+    "maxLen": 18,
+    "text": "أفضل {percentile}% من اللاعبين! تفكير استنتاجي نخبوي لأعلى 1% من العباقرة."
+  },
+  {
+    "lang": "de",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 74,
+    "maxLen": 18,
+    "text": "⚠️ Zahl {num} existiert bereits im selben Block / Zeile / Spalte! {suffix}"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 73,
+    "maxLen": 18,
+    "text": "¡Top {percentile}% de jugadores! Pensamiento flexible y deductivo sólido."
+  },
+  {
+    "lang": "it",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 73,
+    "maxLen": 18,
+    "text": "Top {percentile}% dei giocatori! Capacità logica e analitica eccezionale."
+  },
+  {
+    "lang": "pt",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 73,
+    "maxLen": 18,
+    "text": "Top {percentile}% dos jogadores! Pensamento analítico flexível e estável."
+  },
+  {
+    "lang": "ru",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 73,
+    "maxLen": 18,
+    "text": "Топ {percentile}% игроков! Элитная логика и дедукция на уровне лучших 1%."
+  },
+  {
+    "lang": "de",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 72,
+    "maxLen": 18,
+    "text": "⚠️ Das Spielfeld ist voll, enthält jedoch noch Fehler. Bitte überprüfen!"
+  },
+  {
+    "lang": "en",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 72,
+    "maxLen": 18,
+    "text": "Top {percentile}% of players! Elite 1% master-level deductive reasoning."
+  },
+  {
+    "lang": "en",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 72,
+    "maxLen": 18,
+    "text": "Top {percentile}% of players! Stable and well-balanced reasoning skills."
+  },
+  {
+    "lang": "en",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 70,
+    "maxLen": 18,
+    "text": "Top {percentile}% of players! Sharp and exceptional logical reasoning."
+  },
+  {
+    "lang": "fr",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 70,
+    "maxLen": 18,
+    "text": "⚠️ La grille est pleine mais contient des erreurs. Veuillez vérifier !"
+  },
+  {
+    "lang": "ar",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 69,
+    "maxLen": 18,
+    "text": "⚠️ الرقم {num} موجود بالفعل في نفس المربع أو الصف أو العمود! {suffix}"
+  },
+  {
+    "lang": "hi",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 69,
+    "maxLen": 18,
+    "text": "शीर्ष {percentile}% खिलाड़ी! उत्कृष्ट विश्लेषणात्मक व तार्किक बुद्धि।"
+  },
+  {
+    "lang": "pt",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 69,
+    "maxLen": 18,
+    "text": "⚠️ O número {num} já existe no mesmo bloco / linha / coluna! {suffix}"
+  },
+  {
+    "lang": "ar",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 68,
+    "maxLen": 18,
+    "text": "أفضل {percentile}% من اللاعبين! استنتاج منطقي استثنائي من فئة مينسا."
+  },
+  {
+    "lang": "ar",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 68,
+    "maxLen": 18,
+    "text": "أفضل {percentile}% من اللاعبين! مهارات استنتاج منطقية متزنة ومستقرة."
+  },
+  {
+    "lang": "en",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 68,
+    "maxLen": 18,
+    "text": "Top {percentile}% of players! Superior Mensa-tier logical deduction."
+  },
+  {
+    "lang": "fr",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 68,
+    "maxLen": 18,
+    "text": "Top {percentile}% des joueurs ! Esprit analytique souple et robuste."
+  },
+  {
+    "lang": "hi",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 68,
+    "maxLen": 18,
+    "text": "⚠️ इस ब्लॉक/पंक्ति/स्तंभ में संख्या {num} पहले से मौजूद है! {suffix}"
+  },
+  {
+    "lang": "pt",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 68,
+    "maxLen": 18,
+    "text": "⚠️ O número {num} não é a solução correta para esta célula! {suffix}"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 67,
+    "maxLen": 18,
+    "text": "⚠️ ¡El número {num} coincide en fila, columna y cuadrante! {suffix}"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 67,
+    "maxLen": 18,
+    "text": "¡Top {percentile}% de jugadores! Gran agilidad y resolución lógica."
+  },
+  {
+    "lang": "fr",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 67,
+    "maxLen": 18,
+    "text": "⚠️ Le chiffre {num} existe déjà dans le [bloc 3x3 {box}] ! {suffix}"
+  },
+  {
+    "lang": "ru",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 67,
+    "maxLen": 18,
+    "text": "Топ {percentile}% игроков! Гибкое и стабильное логическое мышление."
+  },
+  {
+    "lang": "ar",
+    "key": "common.common.confirmLeaveGame",
+    "desc": "Common Action & Nav Buttons",
+    "len": 66,
+    "maxLen": 18,
+    "text": "هل أنت متأكد من رغبتك في إيقاف اللعبة مؤقتاً والعودة إلى الرئيسية؟"
+  },
+  {
+    "lang": "de",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 66,
+    "maxLen": 18,
+    "text": "Logische Grundlagen im Aufbau mit unbegrenztem Wachstumspotenzial."
+  },
+  {
+    "lang": "en",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 66,
+    "maxLen": 18,
+    "text": "Top {percentile}% of players! Flexible and robust problem solving."
+  },
+  {
+    "lang": "fr",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 66,
+    "maxLen": 18,
+    "text": "⚠️ Le chiffre {num} n’est pas la solution de cette case ! {suffix}"
+  },
+  {
+    "lang": "pt",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 66,
+    "maxLen": 18,
+    "text": "Fase inicial de treinamento com potencial infinito de crescimento."
+  },
+  {
+    "lang": "hi",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 65,
+    "maxLen": 18,
+    "text": "शीर्ष {percentile}% खिलाड़ी! शीर्ष 1% की अद्वितीय तार्किक क्षमता।"
+  },
+  {
+    "lang": "it",
+    "key": "common.themes.editorialDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 65,
+    "maxLen": 18,
+    "text": "Tono carta editoriale svizzera, nitido e rilassante per gli occhi"
+  },
+  {
+    "lang": "it",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 65,
+    "maxLen": 18,
+    "text": "⚠️ Il numero {num} esiste già nel [quadrante 3x3 {box}]! {suffix}"
+  },
+  {
+    "lang": "it",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 65,
+    "maxLen": 18,
+    "text": "⚠️ Il numero {num} non è la soluzione di questa casella! {suffix}"
+  },
+  {
+    "lang": "pt",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 65,
+    "maxLen": 18,
+    "text": "⚠️ O tabuleiro está cheio, mas contém erros. Verifique novamente!"
+  },
+  {
+    "lang": "ar",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 64,
+    "maxLen": 18,
+    "text": "أفضل {percentile}% من اللاعبين! قدرة مرنة وقوية على حل المشكلات."
+  },
+  {
+    "lang": "de",
+    "key": "common.common.confirmLeaveGame",
+    "desc": "Common Action & Nav Buttons",
+    "len": 64,
+    "maxLen": 18,
+    "text": "Möchten Sie das Spiel pausieren und zur Startseite zurückkehren?"
+  },
+  {
+    "lang": "en",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 64,
+    "maxLen": 18,
+    "text": "⚠️ The board is full, but some cells have errors. Please review!"
+  },
+  {
+    "lang": "fr",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 64,
+    "maxLen": 18,
+    "text": "⚠️ Le chiffre {num} existe déjà dans la colonne {col} ! {suffix}"
+  },
+  {
+    "lang": "hi",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 64,
+    "maxLen": 18,
+    "text": "⚠️ [{box} 3x3 ब्लॉक] में संख्या {num} पहले से मौजूद है! {suffix}"
+  },
+  {
+    "lang": "de",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 62,
+    "maxLen": 18,
+    "text": "⚠️ Zahl {num} existiert bereits im [3x3-Block {box}]! {suffix}"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 62,
+    "maxLen": 18,
+    "text": "⚠️ ¡El número {num} no es correcto para esta casilla! {suffix}"
+  },
+  {
+    "lang": "fr",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 62,
+    "maxLen": 18,
+    "text": "⚠️ Le chiffre {num} existe déjà dans la ligne {row} ! {suffix}"
+  },
+  {
+    "lang": "it",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 62,
+    "maxLen": 18,
+    "text": "⚠️ Lo schema è completo ma contiene degli errori. Ricontrolla!"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 61,
+    "maxLen": 18,
+    "text": "⚠️ ¡El número {num} ya está en el cuadrante [{box}]! {suffix}"
+  },
+  {
+    "lang": "ru",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 61,
+    "maxLen": 18,
+    "text": "⚠️ Число {num} уже есть в этом блоке/строке/столбце! {suffix}"
+  },
+  {
+    "lang": "de",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 60,
+    "maxLen": 18,
+    "text": "⚠️ Zahl {num} ist nicht die Lösung für dieses Feld! {suffix}"
+  },
+  {
+    "lang": "fr",
+    "key": "common.themes.editorialDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 60,
+    "maxLen": 18,
+    "text": "Ton papier éditorial suisse, clair et reposant pour les yeux"
+  },
+  {
+    "lang": "en",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 59,
+    "maxLen": 18,
+    "text": "⚠️ Number {num} already exists in [{box} 3x3 box]! {suffix}"
+  },
+  {
+    "lang": "en",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 59,
+    "maxLen": 18,
+    "text": "⚠️ Number {num} is not the solution for this cell! {suffix}"
+  },
+  {
+    "lang": "en",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 59,
+    "maxLen": 18,
+    "text": "Developing logic foundation with infinite growth potential."
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 59,
+    "maxLen": 18,
+    "text": "⚠️ ¡El número {num} ya existe en la columna {col}! {suffix}"
+  },
+  {
+    "lang": "hi",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 59,
+    "maxLen": 18,
+    "text": "⚠️ पंक्ति {row} में संख्या {num} पहले से मौजूद है! {suffix}"
+  },
+  {
+    "lang": "it",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 59,
+    "maxLen": 18,
+    "text": "⚠️ Il numero {num} esiste già nella colonna {col}! {suffix}"
+  },
+  {
+    "lang": "it",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 59,
+    "maxLen": 18,
+    "text": "Fase iniziale di sviluppo logico con potenziale illimitato."
+  },
+  {
+    "lang": "ru",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 59,
+    "maxLen": 18,
+    "text": "Начальный этап тренировок с огромным потенциалом для роста."
+  },
+  {
+    "lang": "fr",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 58,
+    "maxLen": 18,
+    "text": "Développement des fondations logiques au potentiel infini."
+  },
+  {
+    "lang": "hi",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 58,
+    "maxLen": 18,
+    "text": "⚠️ स्तंभ {col} में संख्या {num} पहले से मौजूद है! {suffix}"
+  },
+  {
+    "lang": "hi",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 58,
+    "maxLen": 18,
+    "text": "प्रारंभिक अभ्यास चरण, निरंतर खेल से आईक्यू तेजी से बढ़ेगा!"
+  },
+  {
+    "lang": "it",
+    "key": "common.themes.matteDarkDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 58,
+    "maxLen": 18,
+    "text": "Finitura in resina opaca premium con soffusa luce notturna"
+  },
+  {
+    "lang": "ko",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 58,
+    "maxLen": 18,
+    "text": "전체 플레이어 중 상위 {percentile}%! 멘사 레벨의 뛰어난 논리적 분석력을 보여주고 있습니다."
+  },
+  {
+    "lang": "pt",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 58,
+    "maxLen": 18,
+    "text": "⚠️ O número {num} já existe no [bloco 3x3 {box}]! {suffix}"
+  },
+  {
+    "lang": "ru",
+    "key": "common.themes.editorialDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 58,
+    "maxLen": 18,
+    "text": "Швейцарская типографика и комфортный для глаз бумажный тон"
+  },
+  {
+    "lang": "ar",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 57,
+    "maxLen": 18,
+    "text": "⚠️ الرقم {num} موجود بالفعل في [مربع 3×3 {box}]! {suffix}"
+  },
+  {
+    "lang": "de",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 57,
+    "maxLen": 18,
+    "text": "⚠️ Zahl {num} existiert bereits in Spalte {col}! {suffix}"
+  },
+  {
+    "lang": "ko",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 57,
+    "maxLen": 18,
+    "text": "전체 스도쿠 플레이어 중 상위 {percentile}%! 극소수만 도달하는 1% 마스터급 추론력입니다."
+  },
+  {
+    "lang": "ko",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 57,
+    "maxLen": 18,
+    "text": "전체 플레이어 중 상위 {percentile}%! 날카로운 직관과 우수한 문제 해결 능력을 지녔습니다."
+  },
+  {
+    "lang": "ko",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 57,
+    "maxLen": 18,
+    "text": "전체 플레이어 중 상위 {percentile}%! 5대 인지 능력이 고르게 발달한 모범적인 상태입니다."
+  },
+  {
+    "lang": "pt",
+    "key": "common.themes.editorialDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 57,
+    "maxLen": 18,
+    "text": "Tom de papel editorial suíço, limpo e suave para os olhos"
+  },
+  {
+    "lang": "ru",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 57,
+    "maxLen": 18,
+    "text": "⚠️ Поле заполнено, но содержит ошибки. Проверьте еще раз!"
+  },
+  {
+    "lang": "de",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 56,
+    "maxLen": 18,
+    "text": "⚠️ Zahl {num} existiert bereits in Zeile {row}! {suffix}"
+  },
+  {
+    "lang": "en",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 56,
+    "maxLen": 18,
+    "text": "⚠️ Number {num} already exists in column {col}! {suffix}"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 56,
+    "maxLen": 18,
+    "text": "⚠️ ¡El número {num} ya existe en la fila {row}! {suffix}"
+  },
+  {
+    "lang": "fr",
+    "key": "common.common.exitAppPrompt",
+    "desc": "Common Action & Nav Buttons",
+    "len": 56,
+    "maxLen": 18,
+    "text": "Appuyez à nouveau sur Retour pour quitter l’application."
+  },
+  {
+    "lang": "hi",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 56,
+    "maxLen": 18,
+    "text": "शीर्ष {percentile}% खिलाड़ी! लचीली और स्थिर तार्किक सोच।"
+  },
+  {
+    "lang": "it",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 56,
+    "maxLen": 18,
+    "text": "⚠️ Il numero {num} esiste già nella riga {row}! {suffix}"
+  },
+  {
+    "lang": "ar",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 55,
+    "maxLen": 18,
+    "text": "⚠️ الرقم {num} ليس هو الحل الصحيح لهذه الخلية! {suffix}"
+  },
+  {
+    "lang": "ar",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 55,
+    "maxLen": 18,
+    "text": "أفضل {percentile}% من اللاعبين! تفكير منطقي حاد ومتميز."
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 55,
+    "maxLen": 18,
+    "text": "⚠️ El tablero está completo pero hay casillas erróneas."
+  },
+  {
+    "lang": "ko",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 55,
+    "maxLen": 18,
+    "text": "전체 플레이어 중 상위 {percentile}%! 안정적이고 유연한 사고방식으로 퍼즐을 해결합니다."
+  },
+  {
+    "lang": "ar",
+    "key": "common.themes.clayDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 54,
+    "maxLen": 18,
+    "text": "أزرار سيراميكية غير لامعة مع تأثير ثلاثي الأبعاد ملموس"
+  },
+  {
+    "lang": "ar",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 54,
+    "maxLen": 18,
+    "text": "⚠️ اللوحة ممتلئة ولكن بها بعض الأخطاء. يُرجى المراجعة!"
+  },
+  {
+    "lang": "fr",
+    "key": "common.common.confirmLeaveGame",
+    "desc": "Common Action & Nav Buttons",
+    "len": 54,
+    "maxLen": 18,
+    "text": "Voulez-vous mettre en pause et retourner à l’accueil ?"
+  },
+  {
+    "lang": "ar",
+    "key": "common.themes.matteDarkDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 53,
+    "maxLen": 18,
+    "text": "تصميم فاخر من الراتنج غير اللامع مع إضاءة ليلية هادئة"
+  },
+  {
+    "lang": "ar",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 53,
+    "maxLen": 18,
+    "text": "⚠️ الرقم {num} موجود بالفعل في العمود {col}! {suffix}"
+  },
+  {
+    "lang": "en",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 53,
+    "maxLen": 18,
+    "text": "⚠️ Number {num} already exists in row {row}! {suffix}"
+  },
+  {
+    "lang": "fr",
+    "key": "common.themes.matteDarkDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 53,
+    "maxLen": 18,
+    "text": "Finition résine mate premium avec doux éclat nocturne"
+  },
+  {
+    "lang": "hi",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 53,
+    "maxLen": 18,
+    "text": "⚠️ संख्या {num} इस सेल का सही उत्तर नहीं है! {suffix}"
+  },
+  {
+    "lang": "it",
+    "key": "common.common.exitAppPrompt",
+    "desc": "Common Action & Nav Buttons",
+    "len": 53,
+    "maxLen": 18,
+    "text": "Premi di nuovo Indietro per uscire dall’applicazione."
+  },
+  {
+    "lang": "ko",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 53,
+    "maxLen": 18,
+    "text": "⚠️ 같은 3x3 박스 및 가로/세로줄에 이미 숫자 {num}이(가) 있습니다! {suffix}"
+  },
+  {
+    "lang": "pt",
+    "key": "common.themes.matteDarkDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 53,
+    "maxLen": 18,
+    "text": "Acabamento premium em resina com suave brilho noturno"
+  },
+  {
+    "lang": "pt",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 53,
+    "maxLen": 18,
+    "text": "⚠️ O número {num} já existe na coluna {col}! {suffix}"
+  },
+  {
+    "lang": "ru",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 53,
+    "maxLen": 18,
+    "text": "⚠️ Число {num} уже есть в [блоке 3x3 {box}]! {suffix}"
+  },
+  {
+    "lang": "pt",
+    "key": "common.common.confirmLeaveGame",
+    "desc": "Common Action & Nav Buttons",
+    "len": 52,
+    "maxLen": 18,
+    "text": "Tem certeza de que deseja pausar e voltar ao início?"
+  },
+  {
+    "lang": "pt",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 52,
+    "maxLen": 18,
+    "text": "⚠️ O número {num} já existe na linha {row}! {suffix}"
+  },
+  {
+    "lang": "ru",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 52,
+    "maxLen": 18,
+    "text": "⚠️ Число {num} не подходит для этой клетки! {suffix}"
+  },
+  {
+    "lang": "ar",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 51,
+    "maxLen": 18,
+    "text": "⚠️ الرقم {num} موجود بالفعل في الصف {row}! {suffix}"
+  },
+  {
+    "lang": "ar",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 51,
+    "maxLen": 18,
+    "text": "بناء الأساس المنطقي مع إمكانيات نمو ذهني لا نهائية."
+  },
+  {
+    "lang": "hi",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 51,
+    "maxLen": 18,
+    "text": "⚠️ बोर्ड भरा है लेकिन कुछ गलतियां हैं। पुनः जांचें!"
+  },
+  {
+    "lang": "pt",
+    "key": "common.common.exitAppPrompt",
+    "desc": "Common Action & Nav Buttons",
+    "len": 51,
+    "maxLen": 18,
+    "text": "Pressione Voltar novamente para sair do aplicativo."
+  },
+  {
+    "lang": "de",
+    "key": "common.themes.editorialDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 50,
+    "maxLen": 18,
+    "text": "Klares, augenfreundliches Schweizer Zeitungspapier"
+  },
+  {
+    "lang": "en",
+    "key": "common.common.confirmLeaveGame",
+    "desc": "Common Action & Nav Buttons",
+    "len": 50,
+    "maxLen": 18,
+    "text": "Are you sure you want to pause and return to Home?"
+  },
+  {
+    "lang": "en",
+    "key": "common.themes.clayDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 50,
+    "maxLen": 18,
+    "text": "Warm ceramic matte keycaps with 3D tactile physics"
+  },
+  {
+    "lang": "en",
+    "key": "common.themes.matteDarkDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 50,
+    "maxLen": 18,
+    "text": "Premium matte resin finish with soft midnight glow"
+  },
+  {
+    "lang": "de",
+    "key": "common.common.exitAppPrompt",
+    "desc": "Common Action & Nav Buttons",
+    "len": 49,
+    "maxLen": 18,
+    "text": "Drücken Sie erneut Zurück, um die App zu beenden."
+  },
+  {
+    "lang": "de",
+    "key": "common.themes.matteDarkDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 49,
+    "maxLen": 18,
+    "text": "Premium-Mattharz mit sanftem Mitternachtsleuchten"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.common.exitAppPrompt",
+    "desc": "Common Action & Nav Buttons",
+    "len": 49,
+    "maxLen": 18,
+    "text": "Pulsa Atrás otra vez para salir de la aplicación."
+  },
+  {
+    "lang": "fr",
+    "key": "common.themes.clayDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 49,
+    "maxLen": 18,
+    "text": "Touches céramiques mates avec physique tactile 3D"
+  },
+  {
+    "lang": "ja",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 49,
+    "maxLen": 18,
+    "text": "全プレイヤーの上位{percentile}%！ ごく少数だけが到達する1%マスター級の論理力です。"
+  },
+  {
+    "lang": "ja",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 49,
+    "maxLen": 18,
+    "text": "全プレイヤーの上位{percentile}%！ メンサレベルの優れた論理的分析力を発揮しています。"
+  },
+  {
+    "lang": "ko",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 49,
+    "maxLen": 18,
+    "text": "⚠️ [{box} 3x3 박스]에 이미 숫자 {num}이(가) 있습니다! {suffix}"
+  },
+  {
+    "lang": "ru",
+    "key": "common.themes.clayDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 49,
+    "maxLen": 18,
+    "text": "Матовые клавиши из глины с тактильным 3D-эффектом"
+  },
+  {
+    "lang": "ru",
+    "key": "common.themes.matteDarkDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 49,
+    "maxLen": 18,
+    "text": "Глубокий темный оттенок с мягким ночным свечением"
+  },
+  {
+    "lang": "ru",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 49,
+    "maxLen": 18,
+    "text": "⚠️ Число {num} уже есть в столбце {col}! {suffix}"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.common.confirmLeaveGame",
+    "desc": "Common Action & Nav Buttons",
+    "len": 48,
+    "maxLen": 18,
+    "text": "¿Deseas abandonar la partida y volver al inicio?"
+  },
+  {
+    "lang": "hi",
+    "key": "common.common.confirmLeaveGame",
+    "desc": "Common Action & Nav Buttons",
+    "len": 48,
+    "maxLen": 18,
+    "text": "क्या आप खेल रोककर होम स्क्रीन पर जाना चाहते हैं?"
+  },
+  {
+    "lang": "ja",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 48,
+    "maxLen": 18,
+    "text": "全プレイヤーの上位{percentile}%！ 5つの認知能力が均等に発達した理想的な状態です。"
+  },
+  {
+    "lang": "ru",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 48,
+    "maxLen": 18,
+    "text": "⚠️ Число {num} уже есть в строке {row}! {suffix}"
+  },
+  {
+    "lang": "ar",
+    "key": "common.themes.pureCeramicDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 47,
+    "maxLen": 18,
+    "text": "أزرار وسائدية ناعمة ودائرية من السيراميك الأبيض"
+  },
+  {
+    "lang": "fr",
+    "key": "common.themes.pureCeramicDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 47,
+    "maxLen": 18,
+    "text": "Touches coussinées blanches lisses et arrondies"
+  },
+  {
+    "lang": "en",
+    "key": "common.themes.editorialDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 46,
+    "maxLen": 18,
+    "text": "Clean, eye-friendly Swiss editorial paper tone"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.themes.pureCeramicDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 46,
+    "maxLen": 18,
+    "text": "Elegantes teclas de porcelana blanca acolchada"
+  },
+  {
+    "lang": "hi",
+    "key": "common.common.exitAppPrompt",
+    "desc": "Common Action & Nav Buttons",
+    "len": 46,
+    "maxLen": 18,
+    "text": "ऐप से बाहर निकलने के लिए बैक बटन दोबारा दबाएं।"
+  },
+  {
+    "lang": "ja",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 46,
+    "maxLen": 18,
+    "text": "全プレイヤーの上位{percentile}%！ 鋭い直感と優れた問題解決能力を持っています。"
+  },
+  {
+    "lang": "ko",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 46,
+    "maxLen": 18,
+    "text": "⚠️ {row}번째 가로줄에 이미 숫자 {num}이(가) 있습니다! {suffix}"
+  },
+  {
+    "lang": "ko",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 46,
+    "maxLen": 18,
+    "text": "⚠️ {col}번째 세로줄에 이미 숫자 {num}이(가) 있습니다! {suffix}"
+  },
+  {
+    "lang": "ar",
+    "key": "common.themes.editorialDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 45,
+    "maxLen": 18,
+    "text": "مظهر ورقي أنيق ومريح للعين بنمط تحريري سويسري"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.themes.clayDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 45,
+    "maxLen": 18,
+    "text": "Teclas mates de arcilla cálida con textura 3D"
+  },
+  {
+    "lang": "it",
+    "key": "common.themes.clayDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 45,
+    "maxLen": 18,
+    "text": "Tasti in ceramica opaca con fisica tattile 3D"
+  },
+  {
+    "lang": "ja",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 45,
+    "maxLen": 18,
+    "text": "全プレイヤーの上位{percentile}%！ 安定した柔軟な思考でパズルを解いています。"
+  },
+  {
+    "lang": "ru",
+    "key": "common.themes.pureCeramicDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 45,
+    "maxLen": 18,
+    "text": "Скругленные гладкие клавиши из белой керамики"
+  },
+  {
+    "lang": "en",
+    "key": "common.themes.pureCeramicDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 44,
+    "maxLen": 18,
+    "text": "Smooth rounded white ceramic cushion keycaps"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.themes.editorialDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 44,
+    "maxLen": 18,
+    "text": "Diseño editorial sobrio con textura de papel"
+  },
+  {
+    "lang": "it",
+    "key": "common.themes.pureCeramicDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 44,
+    "maxLen": 18,
+    "text": "Tasti arrotondati in morbida ceramica bianca"
+  },
+  {
+    "lang": "ko",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 44,
+    "maxLen": 18,
+    "text": "두뇌 트레이닝을 막 시작한 단계입니다. 꾸준히 플레이할수록 지수가 급상승합니다!"
+  },
+  {
+    "lang": "pt",
+    "key": "common.themes.clayDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 44,
+    "maxLen": 18,
+    "text": "Teclas de cerâmica fosca com física tátil 3D"
+  },
+  {
+    "lang": "pt",
+    "key": "common.themes.pureCeramicDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 44,
+    "maxLen": 18,
+    "text": "Teclas arredondadas em cerâmica branca suave"
+  },
+  {
+    "lang": "de",
+    "key": "common.themes.clayDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 43,
+    "maxLen": 18,
+    "text": "Warme Keramiktasten mit fühlbarer 3D-Physik"
+  },
+  {
+    "lang": "ru",
+    "key": "common.common.exitAppPrompt",
+    "desc": "Common Action & Nav Buttons",
+    "len": 43,
+    "maxLen": 18,
+    "text": "Нажмите «Назад» еще раз для выхода из игры."
+  },
+  {
+    "lang": "it",
+    "key": "common.common.confirmLeaveGame",
+    "desc": "Common Action & Nav Buttons",
+    "len": 42,
+    "maxLen": 18,
+    "text": "Vuoi mettere in pausa e tornare alla Home?"
+  },
+  {
+    "lang": "ja",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 42,
+    "maxLen": 18,
+    "text": "⚠️ [{box} 3x3ブロック]にすでに{num}があります！ {suffix}"
+  },
+  {
+    "lang": "ru",
+    "key": "common.common.confirmLeaveGame",
+    "desc": "Common Action & Nav Buttons",
+    "len": 42,
+    "maxLen": 18,
+    "text": "Приостановить игру и вернуться на главную?"
+  },
+  {
+    "lang": "hi",
+    "key": "common.themes.matteDarkDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 40,
+    "maxLen": 18,
+    "text": "आंखों के लिए आरामदायक प्रीमियम डार्क लुक"
+  },
+  {
+    "lang": "ja",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 40,
+    "maxLen": 18,
+    "text": "⚠️ 同じ3x3ブロック・行・列にすでに{num}があります！ {suffix}"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 40,
+    "maxLen": 18,
+    "text": "⚠️ [{box} 3x3 九宫格] 内已存在数字 {num}！{suffix}"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.conflicts.boxDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 40,
+    "maxLen": 18,
+    "text": "⚠️ [{box} 3x3 九宮格] 內已存在數字 {num}！{suffix}"
+  },
+  {
+    "lang": "de",
+    "key": "common.themes.pureCeramicDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 39,
+    "maxLen": 18,
+    "text": "Glatte, abgerundete weiße Keramiktasten"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.themes.matteDarkDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 39,
+    "maxLen": 18,
+    "text": "Tono medianoche relajante para la vista"
+  },
+  {
+    "lang": "ko",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 39,
+    "maxLen": 18,
+    "text": "⚠️ 숫자 {num}은(는) 이 칸의 정답이 아닙니다! {suffix}"
+  },
+  {
+    "lang": "ko",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 39,
+    "maxLen": 18,
+    "text": "⚠️ 보드가 모두 채워졌으나 오답 칸이 있습니다. 다시 확인해 보세요!"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 39,
+    "maxLen": 18,
+    "text": "超越全体玩家前 {percentile}%！仅极少数人能达到的顶级极速推理力。"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.tiers.grandMaster.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 39,
+    "maxLen": 18,
+    "text": "超越全體玩家前 {percentile}%！僅極少數人能達到的頂級極速推理力。"
+  },
+  {
+    "lang": "hi",
+    "key": "common.themes.editorialDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 38,
+    "maxLen": 18,
+    "text": "स्विस टाइपोग्राफी और आरामदायक पेपर टोन"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 38,
+    "maxLen": 18,
+    "text": "超越全体玩家前 {percentile}%！具备敏锐直觉与优异的问题解决力。"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 38,
+    "maxLen": 18,
+    "text": "超越全体玩家前 {percentile}%！五大认知能力均衡发展的理想状态。"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.tiers.superior.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 38,
+    "maxLen": 18,
+    "text": "超越全體玩家前 {percentile}%！具備敏銳直覺與優異的問題解決力。"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.tiers.balanced.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 38,
+    "maxLen": 18,
+    "text": "超越全體玩家前 {percentile}%！五大認知能力均衡發展的理想狀態。"
+  },
+  {
+    "lang": "ar",
+    "key": "common.common.exitAppPrompt",
+    "desc": "Common Action & Nav Buttons",
+    "len": 37,
+    "maxLen": 18,
+    "text": "اضغط رجوع مرة أخرى للخروج من التطبيق."
+  },
+  {
+    "lang": "ja",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 37,
+    "maxLen": 18,
+    "text": "⚠️ ボードが埋まりましたが、間違いがあります。もう一度確認してください！"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 37,
+    "maxLen": 18,
+    "text": "超越全体玩家前 {percentile}%！展现门萨级别的卓越逻辑分析力。"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.tiers.mensa.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 37,
+    "maxLen": 18,
+    "text": "超越全體玩家前 {percentile}%！展現門薩級別的卓越邏輯分析力。"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 35,
+    "maxLen": 18,
+    "text": "(Fallo {count} | +10s penalización)"
+  },
+  {
+    "lang": "fr",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 35,
+    "maxLen": 18,
+    "text": "(Erreur {count} | +10s de pénalité)"
+  },
+  {
+    "lang": "hi",
+    "key": "common.themes.clayDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 35,
+    "maxLen": 18,
+    "text": "मैट सिरेमिक कीज़ और स्पर्श 3D अहसास"
+  },
+  {
+    "lang": "pt",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 35,
+    "maxLen": 18,
+    "text": "(Erro {count} | penalidade de +10s)"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 35,
+    "maxLen": 18,
+    "text": "超越全体玩家前 {percentile}%！以稳定灵活的思维破解谜题。"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.tiers.aboveAverage.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 35,
+    "maxLen": 18,
+    "text": "超越全體玩家前 {percentile}%！以穩定靈活的思維破解謎題。"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.board.tapToResume",
+    "desc": "Common Action & Nav Buttons",
+    "len": 34,
+    "maxLen": 18,
+    "text": "Toca la pantalla para continuar ▶️"
+  },
+  {
+    "lang": "ja",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 34,
+    "maxLen": 18,
+    "text": "⚠️ {row}行目にすでに{num}があります！ {suffix}"
+  },
+  {
+    "lang": "ja",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 34,
+    "maxLen": 18,
+    "text": "⚠️ {col}列目にすでに{num}があります！ {suffix}"
+  },
+  {
+    "lang": "en",
+    "key": "common.common.exitAppPrompt",
+    "desc": "Common Action & Nav Buttons",
+    "len": 33,
+    "maxLen": 18,
+    "text": "Press back again to exit the app."
+  },
+  {
+    "lang": "hi",
+    "key": "common.themes.pureCeramicDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 33,
+    "maxLen": 18,
+    "text": "सफेद सिरेमिक कीज के साथ 3D स्पर्श"
+  },
+  {
+    "lang": "it",
+    "key": "modals.modals.victory.leaderboardBtn",
+    "desc": "Modal Action Buttons",
+    "len": 33,
+    "maxLen": 20,
+    "text": "🏆 Visualizza Classifica Mondiale"
+  },
+  {
+    "lang": "it",
+    "key": "modals.modals.storeReview.submitBtn",
+    "desc": "Modal Action Buttons",
+    "len": 33,
+    "maxLen": 20,
+    "text": "Lascia una recensione sullo Store"
+  },
+  {
+    "lang": "ja",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 33,
+    "maxLen": 18,
+    "text": "⚠️ {num}はこのマスの正解ではありません！ {suffix}"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 33,
+    "maxLen": 18,
+    "text": "⚠️ 第 {row} 橫行已存在數字 {num}！{suffix}"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 33,
+    "maxLen": 18,
+    "text": "⚠️ 第 {col} 直列已存在數字 {num}！{suffix}"
+  },
+  {
+    "lang": "ar",
+    "key": "modals.modals.gameOver.reviveBtn",
+    "desc": "Modal Action Buttons",
+    "len": 32,
+    "maxLen": 20,
+    "text": "مشاهدة إعلان للإنعاش (+1 محاولة)"
+  },
+  {
+    "lang": "en",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 32,
+    "maxLen": 18,
+    "text": "(Mistake {count} | +10s penalty)"
+  },
+  {
+    "lang": "it",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 32,
+    "maxLen": 18,
+    "text": "(Errore {count} | penalità +10s)"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.conflicts.rowDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 32,
+    "maxLen": 18,
+    "text": "⚠️ 第 {row} 行已存在数字 {num}！{suffix}"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.conflicts.colDuplicate",
+    "desc": "Common Action & Nav Buttons",
+    "len": 32,
+    "maxLen": 18,
+    "text": "⚠️ 第 {col} 列已存在数字 {num}！{suffix}"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 32,
+    "maxLen": 18,
+    "text": "⚠️ 相同九宫格与行列中已存在数字 {num}！{suffix}"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.conflicts.multipleDuplicates",
+    "desc": "Common Action & Nav Buttons",
+    "len": 32,
+    "maxLen": 18,
+    "text": "⚠️ 相同九宮格與行列中已存在數字 {num}！{suffix}"
+  },
+  {
+    "lang": "ar",
+    "key": "modals.modals.victory.leaderboardBtn",
+    "desc": "Modal Action Buttons",
+    "len": 31,
+    "maxLen": 20,
+    "text": "🏆 عرض قائمة المتصدرين العالمية"
+  },
+  {
+    "lang": "es-ES",
+    "key": "modals.modals.gameOver.reviveBtn",
+    "desc": "Modal Action Buttons",
+    "len": 31,
+    "maxLen": 20,
+    "text": "Ver anuncio y revivir (+1 vida)"
+  },
+  {
+    "lang": "ja",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 31,
+    "maxLen": 18,
+    "text": "脳トレを始めたばかりの段階です。続けるほど指数が急上昇します！"
+  },
+  {
+    "lang": "de",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 30,
+    "maxLen": 18,
+    "text": "(Fehler {count} | +10s Strafe)"
+  },
+  {
+    "lang": "de",
+    "key": "modals.modals.victory.leaderboardBtn",
+    "desc": "Modal Action Buttons",
+    "len": 30,
+    "maxLen": 20,
+    "text": "🏆 Globale Bestenliste ansehen"
+  },
+  {
+    "lang": "hi",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 30,
+    "maxLen": 18,
+    "text": "(गलती {count} | +10 सेकंड दंड)"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 30,
+    "maxLen": 18,
+    "text": "⚠️ 数字 {num} 不是此格的正确答案！{suffix}"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.conflicts.notSolution",
+    "desc": "Common Action & Nav Buttons",
+    "len": 30,
+    "maxLen": 18,
+    "text": "⚠️ 數字 {num} 不是此格的正確答案！{suffix}"
+  },
+  {
+    "lang": "de",
+    "key": "common.themes.editorial",
+    "desc": "Common Action & Nav Buttons",
+    "len": 29,
+    "maxLen": 18,
+    "text": "📰 Klassisches Zeitungspapier"
+  },
+  {
+    "lang": "fr",
+    "key": "modals.modals.victory.leaderboardBtn",
+    "desc": "Modal Action Buttons",
+    "len": 29,
+    "maxLen": 20,
+    "text": "🏆 Voir le Classement Mondial"
+  },
+  {
+    "lang": "it",
+    "key": "common.themes.editorial",
+    "desc": "Common Action & Nav Buttons",
+    "len": 29,
+    "maxLen": 18,
+    "text": "📰 Carta di Giornale Classica"
+  },
+  {
+    "lang": "ja",
+    "key": "common.themes.editorialDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 29,
+    "maxLen": 18,
+    "text": "端正で目に優しいスイス・エディトリアル感性のペーパートーン"
+  },
+  {
+    "lang": "ko",
+    "key": "common.themes.editorialDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 29,
+    "maxLen": 18,
+    "text": "정갈하고 눈이 편안한 스위스 에디토리얼 감성 종이 톤"
+  },
+  {
+    "lang": "ru",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 29,
+    "maxLen": 18,
+    "text": "(Ошибка {count} | штраф +10с)"
+  },
+  {
+    "lang": "ar",
+    "key": "common.board.tapToResume",
+    "desc": "Common Action & Nav Buttons",
+    "len": 28,
+    "maxLen": 18,
+    "text": "انقر على الشاشة للاستئناف ▶️"
+  },
+  {
+    "lang": "ar",
+    "key": "common.tiers.grandMaster.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 28,
+    "maxLen": 18,
+    "text": "👑 أستاذ كبير (Grand Master)"
+  },
+  {
+    "lang": "en",
+    "key": "modals.modals.gameOver.reviveBtn",
+    "desc": "Modal Action Buttons",
+    "len": 28,
+    "maxLen": 20,
+    "text": "Watch Ad to Revive (+1 life)"
+  },
+  {
+    "lang": "es-ES",
+    "key": "modals.modals.victory.leaderboardBtn",
+    "desc": "Modal Action Buttons",
+    "len": 28,
+    "maxLen": 20,
+    "text": "🏆 Ver clasificación mundial"
+  },
+  {
+    "lang": "fr",
+    "key": "modals.modals.storeReview.submitBtn",
+    "desc": "Modal Action Buttons",
+    "len": 28,
+    "maxLen": 20,
+    "text": "Laisser un avis sur le Store"
+  },
+  {
+    "lang": "hi",
+    "key": "common.board.tapToResume",
+    "desc": "Common Action & Nav Buttons",
+    "len": 28,
+    "maxLen": 18,
+    "text": "जारी रखने के लिए टैप करें ▶️"
+  },
+  {
+    "lang": "ko",
+    "key": "common.common.exitAppPrompt",
+    "desc": "Common Action & Nav Buttons",
+    "len": 28,
+    "maxLen": 18,
+    "text": "뒤로가기 버튼을 한 번 더 누르면 앱이 종료됩니다."
+  },
+  {
+    "lang": "ar",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 27,
+    "maxLen": 18,
+    "text": "(خطأ {count} | عقوبة +10 ث)"
+  },
+  {
+    "lang": "fr",
+    "key": "common.themes.editorial",
+    "desc": "Common Action & Nav Buttons",
+    "len": 27,
+    "maxLen": 18,
+    "text": "📰 Papier Journal Classique"
+  },
+  {
+    "lang": "ko",
+    "key": "common.themes.clayDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 27,
+    "maxLen": 18,
+    "text": "따뜻한 점토 도자기 무광 키캡 & 3D 물리 손맛"
+  },
+  {
+    "lang": "ko",
+    "key": "common.themes.matteDarkDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 27,
+    "maxLen": 18,
+    "text": "눈이 편안한 미드나잇 톤 & 고급 무광 레진 질감"
+  },
+  {
+    "lang": "ru",
+    "key": "modals.modals.gameOver.reviveBtn",
+    "desc": "Modal Action Buttons",
+    "len": 27,
+    "maxLen": 20,
+    "text": "Смотреть рекламу (+1 жизнь)"
+  },
+  {
+    "lang": "de",
+    "key": "modals.modals.gameOver.reviveBtn",
+    "desc": "Modal Action Buttons",
+    "len": 26,
+    "maxLen": 20,
+    "text": "Werbung ansehen (+1 Leben)"
+  },
+  {
+    "lang": "de",
+    "key": "modals.modals.storeReview.submitBtn",
+    "desc": "Modal Action Buttons",
+    "len": 26,
+    "maxLen": 20,
+    "text": "Bewertung im Store abgeben"
+  },
+  {
+    "lang": "en",
+    "key": "modals.modals.victory.leaderboardBtn",
+    "desc": "Modal Action Buttons",
+    "len": 26,
+    "maxLen": 20,
+    "text": "🏆 View Global Leaderboard"
+  },
+  {
+    "lang": "fr",
+    "key": "common.tiers.aboveAverage.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 26,
+    "maxLen": 18,
+    "text": "💡 Au-dessus de la moyenne"
+  },
+  {
+    "lang": "ja",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 26,
+    "maxLen": 18,
+    "text": "(不正解 {count}回 | +10秒ペナルティ)"
+  },
+  {
+    "lang": "ko",
+    "key": "common.themes.pureCeramicDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 26,
+    "maxLen": 18,
+    "text": "투명하고 매끄러운 3D 화이트 도자기 쿠션 키캡"
+  },
+  {
+    "lang": "pt",
+    "key": "modals.modals.gameOver.reviveBtn",
+    "desc": "Modal Action Buttons",
+    "len": 26,
+    "maxLen": 20,
+    "text": "Assistir Anúncio (+1 vida)"
+  },
+  {
+    "lang": "ru",
+    "key": "common.board.tapToResume",
+    "desc": "Common Action & Nav Buttons",
+    "len": 26,
+    "maxLen": 18,
+    "text": "Нажмите для продолжения ▶️"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.themes.toast",
+    "desc": "Common Action & Nav Buttons",
+    "len": 25,
+    "maxLen": 18,
+    "text": "🎨 Tema cambiado a {name}"
+  },
+  {
+    "lang": "fr",
+    "key": "common.board.tapToResume",
+    "desc": "Common Action & Nav Buttons",
+    "len": 25,
+    "maxLen": 18,
+    "text": "Touchez pour reprendre ▶️"
+  },
+  {
+    "lang": "it",
+    "key": "modals.modals.gameOver.reviveBtn",
+    "desc": "Modal Action Buttons",
+    "len": 25,
+    "maxLen": 20,
+    "text": "Guarda Annuncio (+1 vita)"
+  },
+  {
+    "lang": "ja",
+    "key": "common.themes.matteDarkDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 25,
+    "maxLen": 18,
+    "text": "目に優しいミッドナイトトーン＆高級マットレジン質感"
+  },
+  {
+    "lang": "ar",
+    "key": "common.themes.toast",
+    "desc": "Common Action & Nav Buttons",
+    "len": 24,
+    "maxLen": 18,
+    "text": "🎨 تم التبديل إلى {name}"
+  },
+  {
+    "lang": "de",
+    "key": "common.board.tapToResume",
+    "desc": "Common Action & Nav Buttons",
+    "len": 24,
+    "maxLen": 18,
+    "text": "Tippen zum Fortsetzen ▶️"
+  },
+  {
+    "lang": "en",
+    "key": "common.themes.matteDark",
+    "desc": "Common Action & Nav Buttons",
+    "len": 24,
+    "maxLen": 18,
+    "text": "🌌 Soft Matte Resin Dark"
+  },
+  {
+    "lang": "fr",
+    "key": "common.tiers.developing.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 24,
+    "maxLen": 18,
+    "text": "🌱 Entraînement Cérébral"
+  },
+  {
+    "lang": "fr",
+    "key": "modals.modals.gameOver.reviveBtn",
+    "desc": "Modal Action Buttons",
+    "len": 24,
+    "maxLen": 20,
+    "text": "Regarder la pub (+1 vie)"
+  },
+  {
+    "lang": "hi",
+    "key": "modals.modals.victory.leaderboardBtn",
+    "desc": "Modal Action Buttons",
+    "len": 24,
+    "maxLen": 20,
+    "text": "🏆 वैश्विक रैंकिंग देखें"
+  },
+  {
+    "lang": "hi",
+    "key": "modals.modals.gameOver.reviveBtn",
+    "desc": "Modal Action Buttons",
+    "len": 24,
+    "maxLen": 20,
+    "text": "विज्ञापन देखें (+1 जीवन)"
+  },
+  {
+    "lang": "ja",
+    "key": "common.themes.clayDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 24,
+    "maxLen": 18,
+    "text": "温かみのあるマットな陶器キーキャップ＆3D立体感"
+  },
+  {
+    "lang": "ja",
+    "key": "common.themes.pureCeramicDesc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 24,
+    "maxLen": 18,
+    "text": "透明感のある滑らかな3Dホワイト陶器キーキャップ"
+  },
+  {
+    "lang": "ko",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 24,
+    "maxLen": 18,
+    "text": "(오답 {count}회 | +10초 패널티)"
+  },
+  {
+    "lang": "pt",
+    "key": "common.themes.editorial",
+    "desc": "Common Action & Nav Buttons",
+    "len": 24,
+    "maxLen": 18,
+    "text": "📰 Papel Jornal Clássico"
+  },
+  {
+    "lang": "de",
+    "key": "common.themes.toast",
+    "desc": "Common Action & Nav Buttons",
+    "len": 23,
+    "maxLen": 18,
+    "text": "🎨 Zu {name} gewechselt"
+  },
+  {
+    "lang": "de",
+    "key": "common.tiers.aboveAverage.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 23,
+    "maxLen": 18,
+    "text": "💡 Überdurchschnittlich"
+  },
+  {
+    "lang": "de",
+    "key": "common.tiers.balanced.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 23,
+    "maxLen": 18,
+    "text": "🎯 Ausgeglichener Geist"
+  },
+  {
+    "lang": "en",
+    "key": "common.board.tapToResume",
+    "desc": "Common Action & Nav Buttons",
+    "len": 23,
+    "maxLen": 18,
+    "text": "Tap screen to resume ▶️"
+  },
+  {
+    "lang": "en",
+    "key": "modals.modals.storeReview.submitBtn",
+    "desc": "Modal Action Buttons",
+    "len": 23,
+    "maxLen": 20,
+    "text": "Leave a Review on Store"
+  },
+  {
+    "lang": "it",
+    "key": "common.board.tapToResume",
+    "desc": "Common Action & Nav Buttons",
+    "len": 23,
+    "maxLen": 18,
+    "text": "Tocca per riprendere ▶️"
+  },
+  {
+    "lang": "ja",
+    "key": "common.common.exitAppPrompt",
+    "desc": "Common Action & Nav Buttons",
+    "len": 23,
+    "maxLen": 18,
+    "text": "戻るボタンをもう一度押すとアプリを終了します。"
+  },
+  {
+    "lang": "pt",
+    "key": "common.board.tapToResume",
+    "desc": "Common Action & Nav Buttons",
+    "len": 23,
+    "maxLen": 18,
+    "text": "Toque para continuar ▶️"
+  },
+  {
+    "lang": "pt",
+    "key": "common.themes.toast",
+    "desc": "Common Action & Nav Buttons",
+    "len": 23,
+    "maxLen": 18,
+    "text": "🎨 Tema {name} aplicado"
+  },
+  {
+    "lang": "ru",
+    "key": "common.board.resumeTooltip",
+    "desc": "Common Action & Nav Buttons",
+    "len": 23,
+    "maxLen": 18,
+    "text": "Нажмите для продолжения"
+  },
+  {
+    "lang": "ar",
+    "key": "common.themes.matteDark",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "🌌 راتنج غير لامع داكن"
+  },
+  {
+    "lang": "ar",
+    "key": "common.tiers.mensa.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "🧠 مستوى مينسا (Mensa)"
+  },
+  {
+    "lang": "de",
+    "key": "common.themes.clay",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "🏺 Warme Keramik & Ton"
+  },
+  {
+    "lang": "de",
+    "key": "common.themes.pureCeramic",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "🧊 Reines Claymorphism"
+  },
+  {
+    "lang": "en",
+    "key": "common.header.mistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "Mistakes {count}/{max}"
+  },
+  {
+    "lang": "en",
+    "key": "common.header.timeAttackMistake",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "Mistake {count} (+10s)"
+  },
+  {
+    "lang": "en",
+    "key": "common.themes.clay",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "🏺 Warm Ceramic & Clay"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.themes.editorial",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "📰 Papel Clásico Suizo"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.tiers.aboveAverage.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "💡 Superior a la Media"
+  },
+  {
+    "lang": "fr",
+    "key": "common.board.resumeTooltip",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "Touchez pour reprendre"
+  },
+  {
+    "lang": "fr",
+    "key": "common.themes.toast",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "🎨 Thème {name} activé"
+  },
+  {
+    "lang": "hi",
+    "key": "common.themes.pureCeramic",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "🧊 प्योर क्लेमॉर्फिज्म"
+  },
+  {
+    "lang": "hi",
+    "key": "common.themes.editorial",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "📰 क्लासिक समाचार पत्र"
+  },
+  {
+    "lang": "hi",
+    "key": "modals.modals.storeReview.submitBtn",
+    "desc": "Modal Action Buttons",
+    "len": 22,
+    "maxLen": 20,
+    "text": "प्ले स्टोर पर रेट करें"
+  },
+  {
+    "lang": "it",
+    "key": "common.tiers.developing.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "🌱 Allenamento Mentale"
+  },
+  {
+    "lang": "ko",
+    "key": "common.common.confirmLeaveGame",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "게임을 중단하고 홈으로 이동하시겠습니까?"
+  },
+  {
+    "lang": "pt",
+    "key": "common.themes.matteDark",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "🌌 Resina Escura Fosca"
+  },
+  {
+    "lang": "ru",
+    "key": "common.tiers.balanced.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "🎯 Сбалансированный ум"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "(错误 {count}次 | +10秒惩罚)"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "刚展开大脑训练，持续挑战将大幅提升逻辑指数！"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.conflicts.timeAttackSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "(錯誤 {count}次 | +10秒懲罰)"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.tiers.developing.desc",
+    "desc": "Common Action & Nav Buttons",
+    "len": 22,
+    "maxLen": 18,
+    "text": "剛展開大腦訓練，持續挑戰將大幅提升邏輯指數！"
+  },
+  {
+    "lang": "ar",
+    "key": "common.header.mistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "الأخطاء {count}/{max}"
+  },
+  {
+    "lang": "ar",
+    "key": "modals.modals.storeReview.submitBtn",
+    "desc": "Modal Action Buttons",
+    "len": 21,
+    "maxLen": 20,
+    "text": "كتابة تقييم في المتجر"
+  },
+  {
+    "lang": "de",
+    "key": "common.header.timeAttackMistake",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "Fehler {count} (+10s)"
+  },
+  {
+    "lang": "de",
+    "key": "common.board.resumeTooltip",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "Tippen zum Fortsetzen"
+  },
+  {
+    "lang": "en",
+    "key": "common.themes.toast",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "🎨 Switched to {name}"
+  },
+  {
+    "lang": "en",
+    "key": "common.themes.editorial",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "📰 Classic Pure Paper"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.themes.clay",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "🏺 Cerámica y Arcilla"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.themes.matteDark",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "🌌 Resina Oscura Mate"
+  },
+  {
+    "lang": "fr",
+    "key": "common.header.mistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "Erreurs {count}/{max}"
+  },
+  {
+    "lang": "fr",
+    "key": "common.header.timeAttackMistake",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "Erreur {count} (+10s)"
+  },
+  {
+    "lang": "fr",
+    "key": "common.themes.clay",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "🏺 Céramique & Argile"
+  },
+  {
+    "lang": "fr",
+    "key": "common.themes.matteDark",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "🌌 Résine Sombre Mate"
+  },
+  {
+    "lang": "hi",
+    "key": "common.header.mistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "गलतियां {count}/{max}"
+  },
+  {
+    "lang": "hi",
+    "key": "common.tiers.developing.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "🌱 मस्तिष्क प्रशिक्षण"
+  },
+  {
+    "lang": "it",
+    "key": "common.header.timeAttackMistake",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "Errore {count} (+10s)"
+  },
+  {
+    "lang": "it",
+    "key": "common.themes.clay",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "🏺 Ceramica & Argilla"
+  },
+  {
+    "lang": "it",
+    "key": "common.themes.matteDark",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "🌌 Resina Scura Opaca"
+  },
+  {
+    "lang": "pt",
+    "key": "modals.modals.victory.leaderboardBtn",
+    "desc": "Modal Action Buttons",
+    "len": 21,
+    "maxLen": 20,
+    "text": "🏆 Ver Ranking Global"
+  },
+  {
+    "lang": "pt",
+    "key": "modals.modals.storeReview.submitBtn",
+    "desc": "Modal Action Buttons",
+    "len": 21,
+    "maxLen": 20,
+    "text": "Avaliar na Play Store"
+  },
+  {
+    "lang": "ru",
+    "key": "common.header.timeAttackMistake",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "Ошибка {count} (+10с)"
+  },
+  {
+    "lang": "ru",
+    "key": "common.themes.pureCeramic",
+    "desc": "Common Action & Nav Buttons",
+    "len": 21,
+    "maxLen": 18,
+    "text": "🧊 Чистый клейморфизм"
+  },
+  {
+    "lang": "ru",
+    "key": "modals.modals.storeReview.submitBtn",
+    "desc": "Modal Action Buttons",
+    "len": 21,
+    "maxLen": 20,
+    "text": "Оценить в Google Play"
+  },
+  {
+    "lang": "ar",
+    "key": "common.board.pausedTitle",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "اللعبة متوقفة مؤقتاً"
+  },
+  {
+    "lang": "ar",
+    "key": "common.themes.clay",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "🏺 سيراميك وطين دافئ"
+  },
+  {
+    "lang": "de",
+    "key": "common.header.mistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "Fehler {count}/{max}"
+  },
+  {
+    "lang": "de",
+    "key": "common.themes.matteDark",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "🌌 Mattes Dunkelharz"
+  },
+  {
+    "lang": "en",
+    "key": "common.themes.pureCeramic",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "🧊 Pure Claymorphism"
+  },
+  {
+    "lang": "en",
+    "key": "common.conflicts.classicSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "(Mistakes {count}/3)"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.header.mistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "Fallos {count}/{max}"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.header.timeAttackMistake",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "Fallo {count} (+10s)"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.tiers.balanced.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "🎯 Mente Equilibrada"
+  },
+  {
+    "lang": "fr",
+    "key": "common.themes.pureCeramic",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "🧊 Claymorphisme Pur"
+  },
+  {
+    "lang": "fr",
+    "key": "common.tiers.superior.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "⚡ Logique Supérieure"
+  },
+  {
+    "lang": "hi",
+    "key": "common.themes.clay",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "🏺 सिरेमिक और मिट्टी"
+  },
+  {
+    "lang": "it",
+    "key": "common.header.mistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "Errori {count}/{max}"
+  },
+  {
+    "lang": "it",
+    "key": "common.board.resumeTooltip",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "Tocca per riprendere"
+  },
+  {
+    "lang": "it",
+    "key": "common.themes.pureCeramic",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "🧊 Claymorphism Puro"
+  },
+  {
+    "lang": "it",
+    "key": "common.tiers.balanced.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "🎯 Mente Equilibrata"
+  },
+  {
+    "lang": "ja",
+    "key": "common.share.copied",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "結果がクリップボードにコピーされました！"
+  },
+  {
+    "lang": "pt",
+    "key": "common.board.resumeTooltip",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "Toque para continuar"
+  },
+  {
+    "lang": "pt",
+    "key": "common.themes.clay",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "🏺 Cerâmica & Argila"
+  },
+  {
+    "lang": "pt",
+    "key": "common.themes.pureCeramic",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "🧊 Claymorphism Puro"
+  },
+  {
+    "lang": "pt",
+    "key": "common.tiers.balanced.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "🎯 Mente Equilibrada"
+  },
+  {
+    "lang": "ru",
+    "key": "common.header.mistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 20,
+    "maxLen": 18,
+    "text": "Ошибки {count}/{max}"
+  },
+  {
+    "lang": "ar",
+    "key": "common.header.timeAttackMistake",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "خطأ {count} (+10 ث)"
+  },
+  {
+    "lang": "ar",
+    "key": "common.header.pauseTooltip",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "إيقاف المؤقت مؤقتاً"
+  },
+  {
+    "lang": "ar",
+    "key": "common.conflicts.classicSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "(الأخطاء {count}/3)"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.board.resumeTooltip",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "Toca para continuar"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.themes.pureCeramic",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "🧊 Cerámica Pura 3D"
+  },
+  {
+    "lang": "es-ES",
+    "key": "common.tiers.developing.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "🌱 En Entrenamiento"
+  },
+  {
+    "lang": "fr",
+    "key": "common.keypad.fastEntryLocked",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "Verrouillé {number}"
+  },
+  {
+    "lang": "fr",
+    "key": "common.conflicts.classicSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "(Erreurs {count}/3)"
+  },
+  {
+    "lang": "fr",
+    "key": "common.tiers.balanced.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "🎯 Esprit Équilibré"
+  },
+  {
+    "lang": "hi",
+    "key": "common.header.timeAttackMistake",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "गलती {count} (+10s)"
+  },
+  {
+    "lang": "hi",
+    "key": "common.conflicts.classicSuffix",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "(गलतियां {count}/3)"
+  },
+  {
+    "lang": "hi",
+    "key": "common.tiers.balanced.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "🎯 संतुलित मस्तिष्क"
+  },
+  {
+    "lang": "it",
+    "key": "common.themes.toast",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "🎨 Passato a {name}"
+  },
+  {
+    "lang": "pt",
+    "key": "common.header.mistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "Erros {count}/{max}"
+  },
+  {
+    "lang": "pt",
+    "key": "common.header.timeAttackMistake",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "Erro {count} (+10s)"
+  },
+  {
+    "lang": "ru",
+    "key": "common.themes.clay",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "🏺 Керамика и глина"
+  },
+  {
+    "lang": "ru",
+    "key": "common.tiers.superior.title",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "⚡ Высокий интеллект"
+  },
+  {
+    "lang": "zh-CN",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "⚠️ 盘面已填满但有错误，请重新检查！"
+  },
+  {
+    "lang": "zh-TW",
+    "key": "common.conflicts.boardFullHasMistakes",
+    "desc": "Common Action & Nav Buttons",
+    "len": 19,
+    "maxLen": 18,
+    "text": "⚠️ 盤面已填滿但有錯誤，請重新檢查！"
+  }
+]

@@ -1,0 +1,41 @@
+[한국어 - ko-KR]
+• 🇩🇪 독일어(Deutsch) 전면 공식 지원 및 6개 국어 다국어 현지화 완성
+• Google Play Games 공식 SUDOKU IQ 글로벌 순위표 실시간 연동 지원
+• 무료 힌트 충전 후 스마트 힌트 숫자 즉시 자동 입력 시스템 적용
+• 고스트 PB / 델타 페이스 대결 안내 토스트 추가
+• 스토어 리뷰 다이렉트 이동 및 전반적인 퍼즐 조작 편의성 최적화
+
+[English - en-US]
+• Full official 🇩🇪 German (Deutsch) language support & 6-language localization
+• Official Google Play Games SUDOKU IQ Global Leaderboard integration
+• Enhanced free rewarded hint refill and instant auto-apply system
+• Added Ghost PB & Delta Pace race notice toast
+• Google Play Store direct review link & general puzzle UX enhancements
+
+[Deutsch - de-DE]
+• Vollständige offizielle 🇩🇪 deutsche Sprachunterstützung (Deutsch)
+• Google Play Games offizielle „SUDOKU IQ“-Weltrangliste in Echtzeit
+• Kostenlose Tipp-Aufladung mit sofortiger automatischer Zahleneingabe
+• Hinweis-Benachrichtigung bei Ghost-PB- und Delta-Geschwindigkeitsduellen
+• Direkter Link zu Store-Bewertungen und optimierte Puzzle-Bedienung
+
+[日本語 - ja-JP]
+• 🇩🇪 ドイツ語（Deutsch）の完全公式サポート＆全6言語のローカライズ完了
+• Google Play Games公式「SUDOKU IQ」グローバルリーダーボードのリアルタイム同期に対応
+• 無料ヒントチャージ後、おすすめマスへスマートヒント数字を即時自動入力する機能を追加
+• ゴーストPB / デルタタイム対戦時のヒント使用に関する案内トーストを追加
+• ストアレビューへのダイレクト遷移およびパズル操作性の最適化
+
+[繁體中文 - zh-TW]
+• 全面官方支援 🇩🇪 德語（Deutsch）及 6 國語言全球在地化
+• 支援 Google Play Games 官方「SUDOKU IQ」全球排行榜即時同步
+• 觀看廣告領取免費提示後，自動於推薦格子填入數字的即時應用系統
+• 新增幽靈 PB 與 Delta 速度對決時使用提示的通知提示框
+• 支援直達 Google Play 商店評分與整體操作體驗最佳化
+
+[Español - es-ES]
+• Compatibilidad oficial completa con el idioma 🇩🇪 alemán (Deutsch)
+• Integración con la tabla de clasificación global oficial SUDOKU IQ de Google Play Games
+• Sistema mejorado de recarga de pistas con colocación automática instantánea en el tablero
+• Notificación emergente al usar pistas durante desafíos contra el Fantasma (PB) y Delta
+• Enlace directo para reseñas en Google Play Store y optimizaciones generales de jugabilidad

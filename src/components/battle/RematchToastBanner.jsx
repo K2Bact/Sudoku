@@ -1,0 +1,88 @@
+import React, { useState, useEffect } from 'react';
+import { Swords, Check, X, Clock } from 'lucide-react';
+import { soundHaptic } from '../../utils/soundHaptic';
+import { useTranslation } from '../../i18n/i18nContext';
+
+export function RematchToastBanner({
+  requesterName,
+  onAccept,
+  onDecline
+}) {
+  const { t } = useTranslation();
+  const [secondsLeft, setSecondsLeft] = useState(15);
+
+  useEffect(() => {
+    soundHaptic.playWinSound?.();
+    const interval = setInterval(() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          if (onDecline) onDecline();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [onDecline]);
+
+  const handleAccept = () => {
+    soundHaptic.playSelectSound();
+    if (onAccept) onAccept();
+  };
+
+  const handleDecline = () => {
+    soundHaptic.playSelectSound();
+    if (onDecline) onDecline();
+  };
+
+  const progressPercent = (secondsLeft / 15) * 100;
+
+  return (
+    <div className="rematch-toast-wrapper">
+      <div className="rematch-toast-header">
+        <div className="rematch-toast-info">
+          <div className="rematch-icon-badge">
+            <Swords size={18} />
+          </div>
+          <h4 className="rematch-toast-title">
+            {t('rematchToast.title', { opponent: requesterName || t('battleResult.opponent') })}
+          </h4>
+        </div>
+        <div className="rematch-toast-timer">
+          <Clock size={12} />
+          <span>{t('rematchToast.countdown', { seconds: secondsLeft })}</span>
+        </div>
+      </div>
+
+      <div className="rematch-countdown-bar">
+        <div
+          className="rematch-countdown-fill"
+          style={{ width: `${progressPercent}%` }}
+        />
+      </div>
+
+      <div className="rematch-toast-actions">
+        <button
+          type="button"
+          className="rematch-btn rematch-btn-decline"
+          onClick={handleDecline}
+        >
+          <X size={15} />
+          <span>{t('rematchToast.declineBtn')}</span>
+        </button>
+        <button
+          type="button"
+          className="rematch-btn rematch-btn-accept"
+          onClick={handleAccept}
+        >
+          <Check size={16} />
+          <span>{t('rematchToast.acceptBtn')}</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default RematchToastBanner;

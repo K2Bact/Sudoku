@@ -1,0 +1,233 @@
+/* =========================================================
+   CALENDAR & DAILY MISSION STYLES (Modular Component)
+   ========================================================= */
+
+.daily-mission-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg-surface);
+  padding: 16px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--board-grid-line);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.mission-top-row { display: flex; justify-content: space-between; align-items: center; }
+.mission-title-group { display: flex; align-items: center; gap: 8px; }
+.mission-title-group h3 { font-size: 15px; font-weight: 800; margin: 0; color: var(--text-main); }
+
+.mission-tier-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
+}
+.mission-tier-badge.intermediate { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.mission-tier-badge.advanced { background: linear-gradient(135deg, #a855f7, #7e22ce); }
+
+.mission-body-box {
+  background: var(--btn-bg);
+  padding: 12px 14px;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--board-grid-line);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.mission-target-title { font-size: 14px; font-weight: 800; color: var(--text-main); margin: 0; }
+.mission-target-desc { font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.4; }
+
+.mission-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 2px;
+}
+.mission-reward-pill {
+  font-size: 11px;
+  font-weight: 700;
+  color: #eab308;
+  background: rgba(234, 179, 8, 0.12);
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.mission-completed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 8px 14px;
+  border-radius: var(--border-radius-sm);
+  width: 100%;
+  justify-content: center;
+}
+
+/* Badge Progress */
+.badge-progress-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-surface);
+  padding: 14px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--board-grid-line);
+  box-shadow: var(--shadow-md);
+}
+.badge-icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(234, 179, 8, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.badge-icon-box .unlocked { color: #eab308; }
+.badge-icon-box .locked { color: var(--text-muted); }
+.badge-info { flex: 1; min-width: 0; }
+.badge-info h4 { font-size: 14px; font-weight: 800; margin: 0 0 2px; }
+.badge-info p { font-size: 11.5px; color: var(--text-muted); margin: 0 0 6px; white-space: nowrap; }
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--board-grid-line);
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #eab308, #ca8a04);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+/* Calendar Grid */
+.calendar-card {
+  background: var(--bg-surface);
+  padding: 16px 12px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--board-grid-line);
+  box-shadow: var(--shadow-md);
+}
+.calendar-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+.calendar-title-group { display: flex; align-items: center; gap: 6px; }
+.calendar-title-group h4 { font-size: 14px; font-weight: 800; margin: 0; color: var(--text-main); }
+.calendar-month-badge {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-muted);
+  background: var(--btn-bg);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.calendar-weekdays-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.weekday-label { font-size: 11px; font-weight: 700; color: var(--text-muted); padding: 4px 0; }
+.weekday-label.sun { color: #ef4444; }
+.weekday-label.sat { color: #3b82f6; }
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+.calendar-day-empty { aspect-ratio: 1; visibility: hidden; }
+
+.calendar-day-btn {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 2px 4px;
+  background: var(--btn-bg);
+  border: 1px solid var(--board-grid-line);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.calendar-day-btn:active:not(.future):not(.completed) { transform: scale(0.92); }
+.calendar-day-btn .day-number { font-size: 12px; font-weight: 800; line-height: 1; color: var(--text-main); }
+.calendar-day-btn .day-stamp-slot { display: flex; align-items: center; justify-content: center; height: 14px; width: 14px; }
+
+.calendar-day-btn.today {
+  border: 2px solid #3b82f6;
+  background: rgba(59, 130, 246, 0.12);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.25);
+}
+.calendar-day-btn.today .day-number { color: #3b82f6; font-weight: 900; }
+.stamp-badge-today { display: flex; align-items: center; justify-content: center; }
+.today-glow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 0 6px #3b82f6;
+  will-change: transform;
+  animation: pulseGlow 1.5s infinite alternate;
+}
+@keyframes pulseGlow {
+  0% { transform: scale(0.85); opacity: 0.7; }
+  100% { transform: scale(1.2); opacity: 1; }
+}
+
+.calendar-day-btn.completed {
+  cursor: default;
+  border: 1.5px solid rgba(234, 179, 8, 0.65);
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.18), rgba(202, 138, 4, 0.08));
+}
+.calendar-day-btn.completed .day-number { color: #eab308; font-weight: 900; }
+.stamp-badge-completed { color: #eab308; display: flex; align-items: center; justify-content: center; }
+
+.calendar-day-btn.missed { opacity: 0.75; background: rgba(0, 0, 0, 0.08); }
+.stamp-badge-missed { color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
+.calendar-day-btn.future { opacity: 0.3; cursor: not-allowed; border-style: dashed; }
+.stamp-badge-empty { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: transparent; }
+
+/* Past Missed Unlock Info Notice */
+.calendar-past-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: var(--border-radius-sm);
+  padding: 10px 12px;
+  margin-top: 12px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+.calendar-past-notice-icon { color: #3b82f6; flex-shrink: 0; margin-top: 1px; }

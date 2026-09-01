@@ -1,0 +1,240 @@
+/**
+ * dailyChallenge.js
+ * Adaptive User Skill-based Daily Mission generator and monthly calendar storage manager.
+ */
+
+import { generatePuzzle } from '../engine/SudokuEngine.js';
+import { loadStats } from './storage.js';
+
+const DAILY_STORAGE_KEY = 'suidoku_daily_records_v1';
+
+// Get today's date key formatted as YYYY-MM-DD
+export function getTodayDateKey() {
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+// Determine user skill tier based on wins and clear history
+export function getUserSkillTier(stats = loadStats()) {
+  const wins = stats.gamesWon || 0;
+  const bestTimes = stats.bestTimes || {};
+
+  if (wins < 3 || (!bestTimes[3] && !bestTimes[4] && !bestTimes[5])) {
+    return 'beginner'; // New / Beginner
+  }
+  if (wins < 15 || (!bestTimes[4] && !bestTimes[5])) {
+    return 'intermediate'; // Intermediate
+  }
+  return 'advanced'; // Advanced / Master
+}
+
+/**
+ * Generate Adaptive Daily Mission for a given dateKey
+ * Tailored dynamically to the user's skill progression.
+ */
+export function getDailyMission(dateKey = getTodayDateKey(), stats = loadStats()) {
+  const tier = getUserSkillTier(stats);
+  const dayNum = parseInt(dateKey.replace(/-/g, ''), 10);
+  const missionTypeIdx = dayNum % 3; // 0, 1, or 2 for mission diversity
+
+  if (tier === 'beginner') {
+    if (missionTypeIdx === 0) {
+      return {
+        id: `mission_${dateKey}`,
+        dateKey,
+        tier: 'beginner',
+        type: 'level_clear',
+        minLevel: 1,
+        titleKey: 'daily.missions.beginnerLv1Title',
+        descKey: 'daily.missions.beginnerLv1Desc',
+        targetCount: 1,
+        actionType: 'play_level',
+        actionLevel: 1,
+        rewardHint: 1
+      };
+    } else if (missionTypeIdx === 1) {
+      return {
+        id: `mission_${dateKey}`,
+        dateKey,
+        tier: 'beginner',
+        type: 'level_clear',
+        minLevel: 2,
+        titleKey: 'daily.missions.beginnerLv2Title',
+        descKey: 'daily.missions.beginnerLv2Desc',
+        targetCount: 1,
+        actionType: 'play_level',
+        actionLevel: 2,
+        rewardHint: 1
+      };
+    } else {
+      return {
+        id: `mission_${dateKey}`,
+        dateKey,
+        tier: 'beginner',
+        type: 'play_battle',
+        minLevel: 1,
+        titleKey: 'daily.missions.battleTitle',
+        descKey: 'daily.missions.battleDesc',
+        targetCount: 1,
+        actionType: 'open_battle',
+        actionLevel: 1,
+        rewardHint: 1
+      };
+    }
+  } else if (tier === 'intermediate') {
+    if (missionTypeIdx === 0) {
+      return {
+        id: `mission_${dateKey}`,
+        dateKey,
+        tier: 'intermediate',
+        type: 'level_clear',
+        minLevel: 3,
+        titleKey: 'daily.missions.medLv3Title',
+        descKey: 'daily.missions.medLv3Desc',
+        targetCount: 1,
+        actionType: 'play_level',
+        actionLevel: 3,
+        rewardHint: 1
+      };
+    } else if (missionTypeIdx === 1) {
+      return {
+        id: `mission_${dateKey}`,
+        dateKey,
+        tier: 'intermediate',
+        type: 'speedrun',
+        minLevel: 3,
+        titleKey: 'daily.missions.speedrunTitle',
+        descKey: 'daily.missions.speedrunDesc',
+        targetCount: 1,
+        actionType: 'play_speedrun',
+        actionLevel: 3,
+        rewardHint: 1
+      };
+    } else {
+      return {
+        id: `mission_${dateKey}`,
+        dateKey,
+        tier: 'intermediate',
+        type: 'play_battle',
+        minLevel: 3,
+        titleKey: 'daily.missions.battleTitle',
+        descKey: 'daily.missions.battleDesc',
+        targetCount: 1,
+        actionType: 'open_battle',
+        actionLevel: 3,
+        rewardHint: 1
+      };
+    }
+  } else {
+    // Advanced / Master Tier
+    if (missionTypeIdx === 0) {
+      return {
+        id: `mission_${dateKey}`,
+        dateKey,
+        tier: 'advanced',
+        type: 'level_clear',
+        minLevel: 4,
+        titleKey: 'daily.missions.advLv4Title',
+        descKey: 'daily.missions.advLv4Desc',
+        targetCount: 1,
+        actionType: 'play_level',
+        actionLevel: 4,
+        rewardHint: 1
+      };
+    } else if (missionTypeIdx === 1) {
+      return {
+        id: `mission_${dateKey}`,
+        dateKey,
+        tier: 'advanced',
+        type: 'expert_clear',
+        minLevel: 5,
+        titleKey: 'daily.missions.advLv5Title',
+        descKey: 'daily.missions.advLv5Desc',
+        targetCount: 1,
+        actionType: 'play_level',
+        actionLevel: 5,
+        rewardHint: 1
+      };
+    } else {
+      return {
+        id: `mission_${dateKey}`,
+        dateKey,
+        tier: 'advanced',
+        type: 'play_battle',
+        minLevel: 4,
+        titleKey: 'daily.missions.battleTitle',
+        descKey: 'daily.missions.battleDesc',
+        targetCount: 1,
+        actionType: 'open_battle',
+        actionLevel: 4,
+        rewardHint: 1
+      };
+    }
+  }
+}
+
+// Generate deterministic seeded puzzle for daily date
+export function getDailyPuzzle(dateKey = getTodayDateKey()) {
+  const mission = getDailyMission(dateKey);
+  const targetLevel = mission.actionLevel || mission.minLevel || 3;
+  const puzzleData = generatePuzzle(targetLevel, dateKey);
+  return {
+    ...puzzleData,
+    dateKey,
+    level: targetLevel,
+    isDaily: true,
+  };
+}
+
+// Load daily completion records
+export function loadDailyRecords() {
+  try {
+    const data = localStorage.getItem(DAILY_STORAGE_KEY);
+    return data ? JSON.parse(data) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+// Save completed daily challenge record
+export function recordDailyCompletion(dateKey = getTodayDateKey(), timeSeconds = 0, mistakes = 0) {
+  const records = loadDailyRecords();
+  records[dateKey] = {
+    completed: true,
+    timeSeconds,
+    mistakes,
+    completedAt: new Date().toISOString(),
+  };
+
+  try {
+    localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(records));
+  } catch (e) {
+    console.error('Failed to save daily record:', e);
+  }
+  return records;
+}
+
+// Check if month badge is unlocked (requires 15+ completions in a month)
+export function getMonthlyBadgeProgress(year, month) {
+  const records = loadDailyRecords();
+  const prefix = `${year}-${String(month).padStart(2, '0')}`;
+  
+  let completedCount = 0;
+  Object.keys(records).forEach(key => {
+    if (key.startsWith(prefix) && records[key].completed) {
+      completedCount++;
+    }
+  });
+
+  const targetCount = 15;
+  const isUnlocked = completedCount >= targetCount;
+
+  return {
+    completedCount,
+    targetCount,
+    isUnlocked,
+  };
+}

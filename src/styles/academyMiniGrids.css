@@ -1,0 +1,273 @@
+/* =========================================================
+   ACADEMY MINI GRIDS & DIAGRAMS (Component Styles)
+   ========================================================= */
+
+.mini-grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: var(--btn-bg);
+  padding: 12px 10px;
+  border-radius: var(--border-radius-sm);
+  border: 1.5px solid var(--board-thick-line);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.mini-grid-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-main);
+  text-align: left;
+  line-height: 1.45;
+  word-break: keep-all;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.diagram-caption {
+  font-size: 12px;
+  color: var(--text-main);
+  text-align: left;
+  line-height: 1.55;
+  margin-top: 6px;
+  word-break: keep-all;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-surface);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 3.5px solid #3b82f6;
+}
+.diagram-caption strong { color: #3b82f6; font-weight: 800; }
+
+.box-section-tag {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-main);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--board-thick-line);
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin: 3px 0;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Fluid Row Grid */
+.mini-row-grid {
+  display: flex;
+  gap: clamp(2px, 0.9vw, 4px);
+  width: 100%;
+  max-width: 100%;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+.mini-row-grid.flex-4 { display: grid; grid-template-columns: repeat(4, 1fr); max-width: 220px; gap: 4px; }
+.mini-row-grid.flex-3 { display: grid; grid-template-columns: repeat(3, 1fr); max-width: 165px; gap: 4px; }
+
+/* Responsive Mini Cell - ALWAYS 1:1 SQUARE */
+.mini-cell {
+  flex: 1 1 0px;
+  min-width: 0;
+  max-width: 36px;
+  width: 100%;
+  aspect-ratio: 1 !important;
+  height: auto !important;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--board-thick-line);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(10.5px, 2.7vw, 13.5px);
+  font-weight: 800;
+  color: var(--text-main);
+  box-sizing: border-box;
+  box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.08);
+}
+.mini-row-grid.flex-4 .mini-cell,
+.mini-row-grid.flex-3 .mini-cell { max-width: 48px; }
+.mini-cell.note-grid-cell { background: var(--bg-surface); border: 1.5px solid var(--board-grid-line); padding: 1px; }
+.mini-cell.highlight-target {
+  background: #22c55e !important;
+  color: #ffffff !important;
+  font-weight: 900;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+}
+.mini-cell.disabled-cell { opacity: 0.6; background: var(--btn-bg); }
+.mini-cell.x-line, .mini-cell.x-vline { background: transparent; border: none; color: var(--text-muted); font-weight: 900; }
+
+/* 3x3 Candidate Notes Grid */
+.mini-note-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
+  gap: 0.5px;
+}
+.mini-note-grid span {
+  font-size: clamp(7px, 1.8vw, 9.5px);
+  font-weight: 800;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.mini-note-grid span.candidate-highlight {
+  color: #ffffff;
+  background: #3b82f6;
+  border-radius: 2px;
+  font-weight: 900;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.4);
+}
+.mini-note-grid span.candidate-erased {
+  color: #ef4444;
+  text-decoration: line-through;
+  font-weight: 900;
+  background: rgba(239, 68, 68, 0.18);
+  border-radius: 2px;
+}
+
+/* Mini Boards - Clean borders with natural cell aspect ratio */
+.mini-3x3-real-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  width: 100%;
+  max-width: 135px;
+  margin: 0 auto;
+  border: 2px solid var(--board-thick-line);
+  padding: 3px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background: var(--bg-surface);
+}
+.mini-3x3-real-board .mini-cell { width: 100%; max-width: none; flex: unset; border-radius: 4px; }
+
+.mini-4x4-xwing-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  width: 100%;
+  max-width: 175px;
+  margin: 0 auto;
+  border: 2px solid var(--board-thick-line);
+  padding: 3px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background: var(--bg-surface);
+}
+.mini-4x4-xwing-board .mini-cell { width: 100%; max-width: none; flex: unset; border-radius: 4px; }
+
+.mini-6x6-compact-board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2.5px;
+  width: 100%;
+  max-width: 230px;
+  margin: 0 auto;
+  border: 2px solid var(--board-thick-line);
+  padding: 4px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background: var(--bg-surface);
+}
+.mini-6x6-compact-board .mini-cell,
+.mini-6x6-compact-board .mini-9cell { width: 100%; max-width: none; flex: unset; border-radius: 3px; }
+
+/* High-Contrast Distinct 3x3 Block Boundary Dividers */
+.mini-6x6-compact-board > *:nth-child(6n + 3) { border-right: 3px solid #3b82f6 !important; }
+.mini-6x6-compact-board > *:nth-child(6n + 4) { border-left: 3px solid #3b82f6 !important; }
+.mini-6x6-compact-board > *:nth-child(n + 13):nth-child(-n + 18) { border-bottom: 3px solid #3b82f6 !important; }
+.mini-6x6-compact-board > *:nth-child(n + 19):nth-child(-n + 24) { border-top: 3px solid #3b82f6 !important; }
+
+/* 3x6 Integrated Two-Box Column Board (Pointing Pairs) */
+.mini-3x6-column-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5px;
+  width: 100%;
+  max-width: 135px;
+  margin: 0 auto;
+  border: 2.5px solid var(--board-thick-line);
+  padding: 3.5px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background: var(--bg-surface);
+}
+.mini-3x6-column-board .mini-cell { width: 100%; max-width: none; flex: unset; border-radius: 3px; }
+.mini-3x6-column-board > *:nth-child(n + 7):nth-child(-n + 9) { border-bottom: 3px solid #3b82f6 !important; }
+.mini-3x6-column-board > *:nth-child(n + 10):nth-child(-n + 12) { border-top: 3px solid #3b82f6 !important; }
+.mini-3x6-column-board .col-beam-cell {
+  background: rgba(59, 130, 246, 0.16) !important;
+  border-color: rgba(59, 130, 246, 0.6) !important;
+}
+
+/* 6x3 Integrated Horizontal Two-Box Board (Pointing Ex 2) */
+.mini-6x3-horizontal-board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2.5px;
+  width: 100%;
+  max-width: 250px;
+  margin: 0 auto;
+  border: 2.5px solid var(--board-thick-line);
+  padding: 3.5px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background: var(--bg-surface);
+}
+.mini-6x3-horizontal-board .mini-cell { width: 100%; max-width: none; flex: unset; border-radius: 3px; }
+.mini-6x3-horizontal-board > *:nth-child(6n + 3) { border-right: 3px solid #3b82f6 !important; }
+.mini-6x3-horizontal-board > *:nth-child(6n + 4) { border-left: 3px solid #3b82f6 !important; }
+
+.mini-9cell {
+  aspect-ratio: 1;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--board-thick-line);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-main);
+  box-sizing: border-box;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+.mini-9cell.source-5 { background: #3b82f6; color: #ffffff; font-weight: 900; }
+.mini-9cell.blocked-cell { color: #ef4444; background: rgba(239, 68, 68, 0.12); font-weight: 900; }
+.mini-9cell.open-cell { background: #fef08a; color: #ca8a04; font-weight: 900; }
+.mini-9cell.highlight-target { background: #22c55e; color: #ffffff; font-weight: 900; }
+
+.cross-step-tabs { display: flex; gap: 4px; width: 100%; margin-bottom: 6px; }
+.cross-tab-btn {
+  flex: 1;
+  background: var(--btn-bg);
+  border: 1px solid var(--board-grid-line);
+  padding: 6px 4px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+.cross-tab-btn.active {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.35);
+}
+.cross-step-pane { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; }

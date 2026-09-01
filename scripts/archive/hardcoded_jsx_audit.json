@@ -1,0 +1,226 @@
+[
+  {
+    "file": "src\\components\\AchievementsView.jsx",
+    "line": 101,
+    "type": "TERNARY_STRING",
+    "text": "? 'unlocked' : 'locked'",
+    "code": "className={`ach-card ${isUnlocked ? 'unlocked' : 'locked'} tier-${ach.tier}`}"
+  },
+  {
+    "file": "src\\components\\AdBanner.jsx",
+    "line": 15,
+    "type": "JSX_TEXT",
+    "text": "AdMob",
+    "code": "<span className=\"ad-tag\">AdMob</span>"
+  },
+  {
+    "file": "src\\components\\battle\\GhostRivalBanner.jsx",
+    "line": 32,
+    "type": "TERNARY_STRING",
+    "text": "? 'ahead' : 'behind'",
+    "code": "<div className={`ghost-rival-banner-container ${pace.isAhead ? 'ahead' : 'behind'}`}>"
+  },
+  {
+    "file": "src\\components\\battle\\GhostRivalBanner.jsx",
+    "line": 42,
+    "type": "TERNARY_STRING",
+    "text": "? 'pace-ahead' : 'pace-behind'",
+    "code": "<div className={`rival-pace-badge ${pace.isAhead ? 'pace-ahead' : 'pace-behind'}`}>"
+  },
+  {
+    "file": "src\\components\\battle\\GhostRivalBanner.jsx",
+    "line": 52,
+    "type": "TERNARY_STRING",
+    "text": "? 'GHOST' : 'PB'",
+    "code": "<span className=\"rival-label\">{rivalMode === 'ghost' ? 'GHOST' : 'PB'}</span>"
+  },
+  {
+    "file": "src\\components\\BattleHeader.jsx",
+    "line": 58,
+    "type": "TERNARY_STRING",
+    "text": "? 'text-purple' : 'text-blue'",
+    "code": "<span className={`battle-meta-pill ${isAIBattle ? 'text-purple' : 'text-blue'}`}>"
+  },
+  {
+    "file": "src\\components\\BattleHeader.jsx",
+    "line": 60,
+    "type": "TERNARY_STRING",
+    "text": "? 'AI' : 'PVP'",
+    "code": "<span>{isAIBattle ? 'AI' : 'PVP'}</span>"
+  },
+  {
+    "file": "src\\components\\BattleResultModal.jsx",
+    "line": 81,
+    "type": "TERNARY_STRING",
+    "text": "? 'victory' : 'warning'",
+    "code": "<div className={`modal-icon-header ${isIWon ? 'victory' : 'warning'}`}>"
+  },
+  {
+    "file": "src\\components\\BattleResultModal.jsx",
+    "line": 110,
+    "type": "TERNARY_STRING",
+    "text": "? 'text-yellow' : 'text-muted'",
+    "code": "<Flame size={16} className={isIWon ? 'text-yellow' : 'text-muted'} />"
+  },
+  {
+    "file": "src\\components\\BattleResultModal.jsx",
+    "line": 113,
+    "type": "TERNARY_STRING",
+    "text": "? 'positive' : 'negative'",
+    "code": "<div className={`mmr-val-pill ${isIWon ? 'positive' : 'negative'}`}>"
+  },
+  {
+    "file": "src\\components\\BrainReportScreen.jsx",
+    "line": 71,
+    "type": "JSX_TEXT",
+    "text": "Sudoku IQ",
+    "code": "<span className=\"iq-label\">Sudoku IQ</span>"
+  },
+  {
+    "file": "src\\components\\DailyChallengeScreen.jsx",
+    "line": 129,
+    "type": "TERNARY_STRING",
+    "text": "? 'unlocked' : 'locked'",
+    "code": "<div className=\"badge-icon-box\"><Award size={36} className={badgeProgress.isUnlocked ? 'unlocked' : 'locked'} /></div>"
+  },
+  {
+    "file": "src\\components\\GlobalLeaderboardView.jsx",
+    "line": 75,
+    "type": "TERNARY_STRING",
+    "text": "? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'var(--btn-bg)'",
+    "code": "background: category === LEADERBOARD_CATEGORIES.SPEEDRUN_CLASSIC ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'var(--btn-bg)',"
+  },
+  {
+    "file": "src\\components\\GlobalLeaderboardView.jsx",
+    "line": 94,
+    "type": "TERNARY_STRING",
+    "text": "? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'var(--btn-bg)'",
+    "code": "background: category === LEADERBOARD_CATEGORIES.SPEEDRUN_TIME_ATTACK ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'var(--btn-bg)',"
+  },
+  {
+    "file": "src\\components\\GlobalLeaderboardView.jsx",
+    "line": 113,
+    "type": "TERNARY_STRING",
+    "text": "? 'linear-gradient(135deg, #ef4444, #b91c1c)' : 'var(--btn-bg)'",
+    "code": "background: category === LEADERBOARD_CATEGORIES.PVP_MMR ? 'linear-gradient(135deg, #ef4444, #b91c1c)' : 'var(--btn-bg)',"
+  },
+  {
+    "file": "src\\components\\GlobalLeaderboardView.jsx",
+    "line": 132,
+    "type": "TERNARY_STRING",
+    "text": "? 'linear-gradient(135deg, #8b5cf6, #6d28d9)' : 'var(--btn-bg)'",
+    "code": "background: category === LEADERBOARD_CATEGORIES.BRAIN_IQ ? 'linear-gradient(135deg, #8b5cf6, #6d28d9)' : 'var(--btn-bg)',"
+  },
+  {
+    "file": "src\\components\\GlobalLeaderboardView.jsx",
+    "line": 162,
+    "type": "TERNARY_STRING",
+    "text": "? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'var(--btn-bg)'",
+    "code": "background: isSelected ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'var(--btn-bg)',"
+  },
+  {
+    "file": "src\\components\\GlobalLeaderboardView.jsx",
+    "line": 223,
+    "type": "TERNARY_STRING",
+    "text": "? 'rgba(59, 130, 246, 0.12)' : 'transparent'",
+    "code": "background: item.isMe ? 'rgba(59, 130, 246, 0.12)' : 'transparent',"
+  },
+  {
+    "file": "src\\components\\Keypad.jsx",
+    "line": 50,
+    "type": "TERNARY_STRING",
+    "text": "? 'ON' : 'OFF'",
+    "code": "<span>{t('keypad.notes')} {isNoteMode ? 'ON' : 'OFF'}</span>"
+  },
+  {
+    "file": "src\\components\\NewGameModal.jsx",
+    "line": 54,
+    "type": "TERNARY_STRING",
+    "text": "? 'rgba(59, 130, 246, 0.12)' : 'var(--btn-bg)'",
+    "code": "background: isSelected ? 'rgba(59, 130, 246, 0.12)' : 'var(--btn-bg)',"
+  },
+  {
+    "file": "src\\components\\SettingsScreen.jsx",
+    "line": 129,
+    "type": "TERNARY_STRING",
+    "text": "? 'on' : 'off'",
+    "code": "<div className={`settings-toggle-pill ${limitMistakes ? 'on' : 'off'}`}>"
+  },
+  {
+    "file": "src\\components\\SettingsScreen.jsx",
+    "line": 130,
+    "type": "TERNARY_STRING",
+    "text": "? 'ON' : 'OFF'",
+    "code": "{limitMistakes ? 'ON' : 'OFF'}"
+  },
+  {
+    "file": "src\\components\\SettingsScreen.jsx",
+    "line": 144,
+    "type": "TERNARY_STRING",
+    "text": "? 'on' : 'off'",
+    "code": "<div className={`settings-toggle-pill ${autoCheckMistakes ? 'on' : 'off'}`}>"
+  },
+  {
+    "file": "src\\components\\SettingsScreen.jsx",
+    "line": 145,
+    "type": "TERNARY_STRING",
+    "text": "? 'ON' : 'OFF'",
+    "code": "{autoCheckMistakes ? 'ON' : 'OFF'}"
+  },
+  {
+    "file": "src\\components\\SettingsScreen.jsx",
+    "line": 165,
+    "type": "TERNARY_STRING",
+    "text": "? 'on' : 'off'",
+    "code": "<div className={`settings-toggle-pill ${soundEnabled ? 'on' : 'off'}`}>"
+  },
+  {
+    "file": "src\\components\\SettingsScreen.jsx",
+    "line": 166,
+    "type": "TERNARY_STRING",
+    "text": "? 'ON' : 'OFF'",
+    "code": "{soundEnabled ? 'ON' : 'OFF'}"
+  },
+  {
+    "file": "src\\components\\SettingsScreen.jsx",
+    "line": 180,
+    "type": "TERNARY_STRING",
+    "text": "? 'on' : 'off'",
+    "code": "<div className={`settings-toggle-pill ${hapticEnabled ? 'on' : 'off'}`}>"
+  },
+  {
+    "file": "src\\components\\SettingsScreen.jsx",
+    "line": 181,
+    "type": "TERNARY_STRING",
+    "text": "? 'ON' : 'OFF'",
+    "code": "{hapticEnabled ? 'ON' : 'OFF'}"
+  },
+  {
+    "file": "src\\components\\StatsScreen.jsx",
+    "line": 68,
+    "type": "TERNARY_STRING",
+    "text": "? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'var(--btn-bg)'",
+    "code": "background: activeTab === 'stats' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'var(--btn-bg)',"
+  },
+  {
+    "file": "src\\components\\StatsScreen.jsx",
+    "line": 91,
+    "type": "TERNARY_STRING",
+    "text": "? 'linear-gradient(135deg, #8b5cf6, #6d28d9)' : 'var(--btn-bg)'",
+    "code": "background: activeTab === 'achievements' ? 'linear-gradient(135deg, #8b5cf6, #6d28d9)' : 'var(--btn-bg)',"
+  },
+  {
+    "file": "src\\components\\StatsScreen.jsx",
+    "line": 114,
+    "type": "TERNARY_STRING",
+    "text": "? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'var(--btn-bg)'",
+    "code": "background: activeTab === 'leaderboard' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'var(--btn-bg)',"
+  },
+  {
+    "file": "src\\components\\SudokuBoard.jsx",
+    "line": 90,
+    "type": "TERNARY_STRING",
+    "text": "? 'given-cell' : 'user-cell'",
+    "code": "${isInitial ? 'given-cell' : 'user-cell'}"
+  }
+]

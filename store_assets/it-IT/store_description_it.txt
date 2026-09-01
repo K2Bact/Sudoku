@@ -1,0 +1,43 @@
+[앱 이름 (App name - 최대 30자)]
+Sudoku - Rompicapo di logica
+
+[간단한 설명 (Short description - 최대 80자)]
+Sudoku classico, accademia con 32 tecniche, duelli 1v1 e 30 obiettivi.
+
+[자세한 설명 (Full description - 최대 4000자)]
+«Sudoku - Rompicapo di logica» è un gioco di puzzle numerici pensato sia per chi inizia sia per i grandi maestri del ragionamento deduttivo.
+Goditi un'esperienza tattile premium con tasti in ceramica 3D, 4 eleganti temi che rispettano i tuoi occhi e l'esclusiva «Accademia Sudoku», dove imparerai 32 tecniche autentiche spiegate passo dopo passo con diagrammi interattivi.
+
+━━━━━━━━━━━━━━━━━━━━━
+🌟 Caratteristiche principali
+━━━━━━━━━━━━━━━━━━━━━
+
+🧩 1. 5 livelli di difficoltà classici
+- Livelli: Molto Facile, Facile, Medio, Difficile e Maestro
+- Algoritmo avanzato con soluzione unica garantita al 100%
+- 4 temi premium: Argilla Calda, Notte Profonda, Ceramica Pura e Carta Classica
+
+🎓 2. Accademia Sudoku: 32 tecniche spiegate
+Guide interattive, passo dopo passo, per risolvere qualsiasi schema:
+- Base: Full House, Last Digit, Cross-Hatching, Naked Single, Hidden Single
+- Intermedie: Naked/Hidden Pairs, Pointing Pairs, Claiming Box, terne e quaterne
+- Avanzate: famiglia Wing (X-Wing, XY-Wing, XYZ-Wing, W-Wing, Two-String Kite, Turbot Fish)
+- Esperte: Swordfish, Jellyfish, Simple Colouring, 3D Medusa, Rettangolo Unico (UR)
+- Maestro: Sue de Coq, Exocet e catene AIC e ALS
+
+⚔️ 3. Duelli 1v1 in tempo reale e sfide contro l'IA
+- Matchmaking online sullo stesso schema, per una gara equa
+- Modalità allenamento contro bot IA su 5 livelli di difficoltà
+
+🏆 4. 30 obiettivi globali e Google Play Games
+- Sincronizzazione automatica con un solo tocco tramite Google Play Games
+- Sfide a cronometro, serie di combo, vittorie senza errori e livello Mensa
+
+🧠 5. Report QI
+- Un'analisi di 5 capacità cognitive: concentrazione, ragionamento logico, velocità di elaborazione, resistenza mentale e precisione
+
+📅 6. Sfida giornaliera e calendario di 365 giorni
+- Ogni giorno uno schema esclusivo per collezionare gli stemmi di maestro mensili
+- Recupera i giorni persi guardando un breve video
+
+Scarica ora «Sudoku - Rompicapo di logica» e allena la tua mente!

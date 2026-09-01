@@ -1,0 +1,106 @@
+import { chromium } from 'playwright';
+import { spawn, execSync } from 'child_process';
+import http from 'http';
+
+const PORT = 5195;
+const PREVIEW_URL = 'http://localhost:' + PORT;
+const VIEWPORT = { width: 360, height: 800 };
+
+function waitForServer(url, timeout = 10000) {
+  const start = Date.now();
+  return new Promise((resolve, reject) => {
+    const check = () => {
+      http.get(url, (res) => {
+        if (res.statusCode === 200) resolve();
+        else setTimeout(check, 200);
+      }).on('error', () => {
+        if (Date.now() - start > timeout) reject(new Error('Server timeout'));
+        else setTimeout(check, 200);
+      });
+    };
+    check();
+  });
+}
+
+async function run() {
+  console.log('Building Vite bundle...');
+  execSync('cmd /c npx vite build', { stdio: 'ignore' });
+
+  console.log('Starting preview server...');
+  const viteProcess = spawn('cmd', ['/c', 'npx vite preview --port ' + PORT], {
+    cwd: process.cwd(),
+    stdio: 'ignore'
+  });
+
+  try {
+    await waitForServer(PREVIEW_URL);
+    console.log('Connected to server');
+
+    const browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext({
+      viewport: VIEWPORT,
+      isMobile: true,
+      hasTouch: true
+    });
+
+    const page = await context.newPage();
+    await page.goto(PREVIEW_URL);
+
+    // Set up storage with a PB on level 3 for Time Attack
+    await page.evaluate(() => {
+      localStorage.setItem('suidoku_review_prompted', 'done');
+      localStorage.setItem('suidoku_daily_reward_v1', JSON.stringify({ claimedDate: new Date().toISOString().slice(0, 10) }));
+      localStorage.setItem('suidoku_ghost_records_v1', JSON.stringify({
+        classic: {},
+        timeAttack: {
+          3: {
+            bestSeconds: 66,
+            timeSeconds: 66,
+            hintsUsed: 0,
+            seed: 'test-seed'
+          }
+        }
+      }));
+    });
+    await page.reload();
+    await page.waitForTimeout(600);
+
+    // 1. Classic Mode Screenshot
+    await page.screenshot({ path: 'home_classic_verified.png' });
+    console.log('Saved home_classic_verified.png');
+
+    // 2. Click Time Attack Tab
+    await page.click('.time-attack-tab');
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: 'home_timeattack_pb_verified.png' });
+    console.log('Saved home_timeattack_pb_verified.png');
+
+    // 3. Click Ghost chip
+    await page.click('.ghost-chip');
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: 'home_timeattack_ghost_selected.png' });
+    console.log('Saved home_timeattack_ghost_selected.png');
+
+    // 4. Click Level 1 (No PB -> should show --:--)
+    await page.click('.level-chip-group button:nth-child(1)');
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: 'home_timeattack_nopb_verified.png' });
+    console.log('Saved home_timeattack_nopb_verified.png');
+
+    // 5. Click Survival (Time Limit) Tab
+    await page.click('.time-limit-tab');
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: 'home_survival_verified.png' });
+    console.log('Saved home_survival_verified.png');
+
+    await browser.close();
+    console.log('All screenshots captured successfully!');
+  } finally {
+    viteProcess.kill();
+  }
+}
+
+run().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

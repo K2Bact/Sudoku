@@ -1,0 +1,36 @@
+[앱 이름 (App name - 최대 30자)]
+Sudoku - Logik-Rätsel & Gehirn
+
+[간단한 설명 (Short description - 최대 80자)]
+Klassisches Sudoku, 32 Meister-Techniken, Gehirn-IQ & tägliche Herausforderungen
+
+[자세한 설명 (Full description - 최대 4000자)]
+Sudoku Master ist ein erstklassiges Logik- und Gehirntrainingsspiel für Anfänger und Profis gleichermaßen.
+
+Genießen Sie den puren Denkspaß, intuitive haptische Rückmeldung und eine integrierte Sudoku-Akademie mit 32 echten Meister-Techniken.
+
+━━━━━━━━━━━━━━━━━━━━━
+🌟 HIGHLIGHTS VON SUIDOKU
+━━━━━━━━━━━━━━━━━━━━━
+
+🧩 1. 5 Klassische Schwierigkeitsstufen
+- Von Sehr Einfach (Very Easy) bis Meister (Expert)
+- 100% mathematisch garantierte eindeutige Lösungen
+- 4 augenfreundliche Premium-Themes (Clay, Dark, Ceramic, Paper)
+
+🎓 2. Sudoku-Akademie mit 32 Techniken
+- Schritt-für-Schritt visuelles Training für Anfänger bis Großmeister
+- Singles, Naked/Hidden Pairs, Pointing Lines
+- Wings, X-Wing, Swordfish, Jellyfish, XY-Wing, XYZ-Wing
+- Profi: 3D Medusa, Unique Rectangle, AIC & ALS Chains
+
+⚔️ 3. Echtzeit 1v1 Battle & AI Bot Duell
+- Lösen Sie dasselbe Board gleichzeitig gegen weltweite Spieler oder smarte KI-Gegner!
+
+🧠 4. Detaillierter Gehirn-IQ-Bericht
+- Messen Sie Ihre 5 kognitiven Fähigkeiten: Fokus, Logik, Geschwindigkeit, Ausdauer und Genauigkeit.
+
+📅 5. 365 Tage Tägliche Herausforderungen
+- Jeden Tag ein neues Rätsel, Monatsabzeichen und lückenlose Kalender-Stempel.
+
+Laden Sie Sudoku Master jetzt herunter und trainieren Sie Ihr Gehirn jeden Tag aufs Neue!

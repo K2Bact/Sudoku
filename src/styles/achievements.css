@@ -1,0 +1,271 @@
+/* =========================================================
+   ACHIEVEMENTS COLLECTION & CELEBRATION TOAST STYLES
+   ========================================================= */
+
+.achievements-view-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Header Hero Card */
+.achievement-hero-card {
+  background: linear-gradient(135deg, #1e1b4b, #312e81) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  padding: 16px !important;
+}
+
+.hero-top-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.trophy-badge-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(251, 191, 36, 0.2);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trophy-icon {
+  color: #fbbf24;
+}
+
+.hero-text-col {
+  flex: 1;
+}
+
+.hero-title {
+  font-size: 16px;
+  font-weight: 900;
+  margin: 0 0 2px;
+  color: #ffffff;
+}
+
+.hero-progress-text {
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.points-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(251, 191, 36, 0.25);
+  color: #fef08a;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* Progress Track */
+.ach-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.ach-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #eab308, #10b981);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.hero-action-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-play-games-sync {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 800;
+  border-radius: 6px;
+}
+
+/* Category Filter Pills */
+.ach-category-pills {
+  display: flex;
+  overflow-x: auto;
+  gap: 6px;
+  padding: 2px 0 6px;
+  scrollbar-width: none;
+}
+
+.ach-category-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.cat-pill-btn {
+  flex: 1 0 auto;
+  background: var(--btn-bg);
+  color: var(--text-muted);
+  border: 1px solid var(--board-grid-line);
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.cat-pill-btn.active {
+  background: var(--btn-active);
+  color: var(--btn-active-text);
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+/* Achievements Cards List */
+.ach-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ach-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--board-grid-line);
+  border-radius: var(--border-radius-md);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.ach-card.unlocked { border-left: 4px solid #10b981; }
+.ach-card.unlocked.tier-gold { border-left-color: #f59e0b; }
+.ach-card.unlocked.tier-diamond { border-left-color: #38bdf8; }
+.ach-card.unlocked.tier-master { border-left-color: #a855f7; }
+
+.ach-card.locked {
+  opacity: 0.65;
+  filter: grayscale(0.5);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.ach-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--btn-bg);
+  border: 1px solid var(--board-grid-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ach-emoji { font-size: 20px; }
+.lock-icon { color: var(--text-muted); }
+.ach-card-info-col { flex: 1; min-width: 0; }
+
+.ach-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.ach-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.ach-tier-tag {
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--btn-bg);
+  color: var(--text-muted);
+}
+
+.ach-tier-tag.gold { color: #b45309; background: #fef3c7; }
+.ach-tier-tag.diamond { color: #0369a1; background: #e0f2fe; }
+.ach-tier-tag.master { color: #6b21a8; background: #f3e8ff; }
+
+.ach-desc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin: 0 0 6px;
+  line-height: 1.4;
+}
+
+.ach-status-footer { display: flex; align-items: center; font-size: 10.5px; }
+.ach-unlocked-badge { display: flex; align-items: center; gap: 4px; color: #10b981; font-weight: 700; }
+.ach-locked-badge { color: var(--text-muted); font-weight: 600; }
+
+/* Celebratory Achievement Floating Toast */
+.achievement-toast-floating {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  width: calc(100% - 24px);
+  max-width: 420px;
+  pointer-events: none;
+  will-change: transform;
+  animation: slideToastDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ach-toast-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  color: #ffffff;
+  border: 1.5px solid rgba(251, 191, 36, 0.6);
+  padding: 10px 14px;
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(251, 191, 36, 0.3);
+}
+
+.ach-toast-icon-wrap { font-size: 24px; }
+.ach-toast-text-col { flex: 1; min-width: 0; }
+.ach-toast-header { display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
+.ach-toast-badge-title { font-size: 10.5px; font-weight: 800; color: #fef08a; }
+.ach-toast-title { font-size: 13px; font-weight: 800; color: #ffffff; display: block; }
+
+.ach-toast-points-badge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(251, 191, 36, 0.25);
+  color: #fef08a;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@keyframes slideToastDown {
+  from { opacity: 0; transform: translate(-50%, -20px) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}

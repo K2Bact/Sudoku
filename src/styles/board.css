@@ -1,0 +1,204 @@
+/* =========================================================
+   SUDOKU BOARD STYLES (스도쿠 게임 보드 & 셀 스타일)
+   ========================================================= */
+@import './gameHeader.css';
+@import './keypad.css';
+
+/* Sudoku Board */
+.sudoku-board-container {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--bg-surface);
+  border-radius: var(--border-radius-md);
+  padding: 6px;
+  box-shadow: var(--board-inset-shadow, var(--shadow-md));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--board-grid-line);
+}
+
+.sudoku-board-container.paused {
+  background: var(--bg-surface);
+}
+
+.pause-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.pause-icon {
+  font-size: 40px;
+}
+
+.sudoku-grid {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 2.5px solid var(--board-thick-line);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.sudoku-row {
+  display: flex;
+  flex: 1;
+}
+
+.sudoku-cell {
+  flex: 1;
+  background: var(--board-bg);
+  border: 0.5px solid var(--board-grid-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  padding: 0;
+  outline: none;
+}
+
+.sudoku-cell:active {
+  transform: scale(0.94);
+}
+
+.sudoku-cell.border-right-thick {
+  border-right: 2.5px solid var(--board-thick-line);
+}
+
+.sudoku-cell.border-bottom-thick {
+  border-bottom: 2.5px solid var(--board-thick-line);
+}
+
+.sudoku-cell.given-cell .cell-number {
+  font-weight: 800;
+  color: var(--text-given);
+}
+
+.sudoku-cell.user-cell .cell-number {
+  font-weight: 800;
+  color: var(--text-user);
+}
+
+.sudoku-cell.pop-anim .cell-number {
+  will-change: transform;
+  animation: springPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes springPop {
+  0% { transform: scale(0.5); opacity: 0.5; }
+  70% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1.0); }
+}
+
+.sudoku-cell.selected {
+  background-color: var(--cell-selected) !important;
+  box-shadow: inset 0 0 0 2px #3b82f6;
+}
+
+.sudoku-cell.related-area {
+  background-color: var(--cell-related);
+}
+
+.sudoku-cell.same-value {
+  background-color: var(--cell-same-val) !important;
+}
+
+/* Gold Flash on input */
+.sudoku-cell.cell-gold-flash,
+.sudoku-cell.selected.cell-gold-flash,
+.sudoku-cell.same-value.cell-gold-flash {
+  background-color: #fef08a !important;
+  color: #854d0e !important;
+  box-shadow: inset 0 0 0 3px #eab308, 0 0 20px rgba(234, 179, 8, 0.9) !important;
+  will-change: transform;
+  animation: goldFlashPop 0.4s ease-out !important;
+  z-index: 50;
+}
+
+.sudoku-cell.cell-gold-flash .cell-number {
+  color: #854d0e !important;
+  font-weight: 900 !important;
+}
+
+@keyframes goldFlashPop {
+  0% { transform: scale(1.15); filter: brightness(1.2); }
+  50% { transform: scale(1.05); filter: brightness(1.05); }
+  100% { transform: scale(1.0); filter: brightness(1.0); }
+}
+
+.sudoku-cell.error-cell {
+  background-color: var(--cell-error) !important;
+  will-change: transform;
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.sudoku-cell.error-cell .cell-number {
+  color: var(--text-error) !important;
+}
+
+.sudoku-cell.conflicting-source-pulse {
+  background-color: #fee2e2 !important;
+  box-shadow: inset 0 0 0 3px #ef4444, 0 0 16px rgba(239, 68, 68, 0.8) !important;
+  will-change: transform;
+  animation: conflictPulse 0.4s infinite alternate ease-in-out;
+  z-index: 100;
+}
+
+@keyframes conflictPulse {
+  0% { transform: scale(1.0); background-color: #fef08a; color: #854d0e; }
+  100% { transform: scale(1.12); background-color: #ef4444; color: #ffffff; }
+}
+
+.cell-number {
+  font-size: clamp(20px, 5.5vw, 30px);
+  line-height: 1;
+}
+
+.cell-notes-grid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  padding: 2px;
+}
+
+.note-digit {
+  font-size: clamp(8px, 2.2vw, 11px);
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Tablet Responsive Sizing (>= 600px) */
+@media (min-width: 600px) {
+  .cell-number { font-size: clamp(26px, 4vw, 36px); }
+  .current-level-badge,
+  .mistakes-badge,
+  .timer-badge,
+  .restart-btn,
+  .new-game-btn {
+    font-size: 13px;
+    height: 38px;
+    padding: 6px 8px;
+  }
+}

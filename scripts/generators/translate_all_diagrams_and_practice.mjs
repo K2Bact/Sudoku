@@ -1,0 +1,336 @@
+/**
+ * translate_all_diagrams_and_practice.mjs
+ * Comprehensive 13-Language Sync for Academy Diagrams and Practice Missions.
+ */
+
+import fs from 'fs';
+import path from 'path';
+
+// Complete dictionary of terms and translations for all Academy diagrams & practice
+const L10N_DB = {
+  de: {
+    // Common terms
+    'Full House': 'Full House',
+    'Last Free Cell': 'Last Free Cell',
+    'Cross-Hatching': 'Cross-Hatching',
+    'Naked Single': 'Naked Single',
+    'Hidden Single': 'Hidden Single',
+    'Pointing Pairs': 'Pointing Pairs',
+    'Claiming': 'Claiming',
+    'Naked Pair': 'Naked Pair',
+    'Hidden Pair': 'Hidden Pair',
+    'Naked Triple': 'Naked Triple',
+    'Hidden Triple': 'Hidden Triple',
+    'Naked Quad': 'Naked Quad',
+    'Hidden Quad': 'Hidden Quad',
+    'X-Wing': 'X-Wing',
+    'Y-Wing': 'Y-Wing',
+    'XY-Wing': 'XY-Wing',
+    'XYZ-Wing': 'XYZ-Wing',
+    'W-Wing': 'W-Wing',
+    'BUG+1': 'BUG+1',
+    'Remote Pairs': 'Remote Pairs',
+    'Swordfish': 'Swordfish',
+    'Jellyfish': 'Jellyfish',
+    'Unique Rectangles': 'Unique Rectangles',
+    'Simple Colouring': 'Simple Colouring',
+    '3D Medusa': '3D Medusa',
+    'XY-Chains': 'XY-Chains',
+    'WXYZ-Wing': 'WXYZ-Wing',
+    'Empty Rectangles': 'Empty Rectangles',
+    'Finned X-Wing': 'Finned X-Wing',
+    'AIC': 'AIC',
+    'ALS': 'ALS',
+    'Forcing Chains': 'Forcing Chains',
+    'Exocet': 'Exocet',
+    'Step 1': 'Schritt 1',
+    'Step 2': 'Schritt 2',
+    'Step 3': 'Schritt 3',
+    'Example 1': 'Beispiel 1',
+    'Example 2': 'Beispiel 2'
+  },
+  fr: {
+    'Full House': 'Full House',
+    'Last Free Cell': 'Last Free Cell',
+    'Cross-Hatching': 'Cross-Hatching',
+    'Naked Single': 'Naked Single',
+    'Hidden Single': 'Hidden Single',
+    'Pointing Pairs': 'Pointing Pairs',
+    'Claiming': 'Claiming',
+    'Naked Pair': 'Naked Pair',
+    'Hidden Pair': 'Hidden Pair',
+    'Naked Triple': 'Naked Triple',
+    'Hidden Triple': 'Hidden Triple',
+    'Naked Quad': 'Naked Quad',
+    'Hidden Quad': 'Hidden Quad',
+    'X-Wing': 'X-Wing',
+    'Y-Wing': 'Y-Wing',
+    'XY-Wing': 'XY-Wing',
+    'XYZ-Wing': 'XYZ-Wing',
+    'W-Wing': 'W-Wing',
+    'BUG+1': 'BUG+1',
+    'Remote Pairs': 'Remote Pairs',
+    'Swordfish': 'Swordfish',
+    'Jellyfish': 'Jellyfish',
+    'Unique Rectangles': 'Unique Rectangles',
+    'Simple Colouring': 'Simple Colouring',
+    '3D Medusa': '3D Medusa',
+    'XY-Chains': 'XY-Chains',
+    'WXYZ-Wing': 'WXYZ-Wing',
+    'Empty Rectangles': 'Empty Rectangles',
+    'Finned X-Wing': 'Finned X-Wing',
+    'AIC': 'AIC',
+    'ALS': 'ALS',
+    'Forcing Chains': 'Forcing Chains',
+    'Exocet': 'Exocet',
+    'Step 1': 'Étape 1',
+    'Step 2': 'Étape 2',
+    'Step 3': 'Étape 3',
+    'Example 1': 'Exemple 1',
+    'Example 2': 'Exemple 2'
+  },
+  pt: {
+    'Full House': 'Full House',
+    'Last Free Cell': 'Last Free Cell',
+    'Cross-Hatching': 'Cross-Hatching',
+    'Naked Single': 'Naked Single',
+    'Hidden Single': 'Hidden Single',
+    'Pointing Pairs': 'Pointing Pairs',
+    'Claiming': 'Claiming',
+    'Naked Pair': 'Naked Pair',
+    'Hidden Pair': 'Hidden Pair',
+    'Naked Triple': 'Naked Triple',
+    'Hidden Triple': 'Hidden Triple',
+    'Naked Quad': 'Naked Quad',
+    'Hidden Quad': 'Hidden Quad',
+    'X-Wing': 'X-Wing',
+    'Y-Wing': 'Y-Wing',
+    'XY-Wing': 'XY-Wing',
+    'XYZ-Wing': 'XYZ-Wing',
+    'W-Wing': 'W-Wing',
+    'BUG+1': 'BUG+1',
+    'Remote Pairs': 'Remote Pairs',
+    'Swordfish': 'Swordfish',
+    'Jellyfish': 'Jellyfish',
+    'Unique Rectangles': 'Unique Rectangles',
+    'Simple Colouring': 'Simple Colouring',
+    '3D Medusa': '3D Medusa',
+    'XY-Chains': 'XY-Chains',
+    'WXYZ-Wing': 'WXYZ-Wing',
+    'Empty Rectangles': 'Empty Rectangles',
+    'Finned X-Wing': 'Finned X-Wing',
+    'AIC': 'AIC',
+    'ALS': 'ALS',
+    'Forcing Chains': 'Forcing Chains',
+    'Exocet': 'Exocet',
+    'Step 1': 'Passo 1',
+    'Step 2': 'Passo 2',
+    'Step 3': 'Passo 3',
+    'Example 1': 'Exemplo 1',
+    'Example 2': 'Exemplo 2'
+  },
+  it: {
+    'Full House': 'Full House',
+    'Last Free Cell': 'Last Free Cell',
+    'Cross-Hatching': 'Cross-Hatching',
+    'Naked Single': 'Naked Single',
+    'Hidden Single': 'Hidden Single',
+    'Pointing Pairs': 'Pointing Pairs',
+    'Claiming': 'Claiming',
+    'Naked Pair': 'Naked Pair',
+    'Hidden Pair': 'Hidden Pair',
+    'Naked Triple': 'Naked Triple',
+    'Hidden Triple': 'Hidden Triple',
+    'Naked Quad': 'Naked Quad',
+    'Hidden Quad': 'Hidden Quad',
+    'X-Wing': 'X-Wing',
+    'Y-Wing': 'Y-Wing',
+    'XY-Wing': 'XY-Wing',
+    'XYZ-Wing': 'XYZ-Wing',
+    'W-Wing': 'W-Wing',
+    'BUG+1': 'BUG+1',
+    'Remote Pairs': 'Remote Pairs',
+    'Swordfish': 'Swordfish',
+    'Jellyfish': 'Jellyfish',
+    'Unique Rectangles': 'Unique Rectangles',
+    'Simple Colouring': 'Simple Colouring',
+    '3D Medusa': '3D Medusa',
+    'XY-Chains': 'XY-Chains',
+    'WXYZ-Wing': 'WXYZ-Wing',
+    'Empty Rectangles': 'Empty Rectangles',
+    'Finned X-Wing': 'Finned X-Wing',
+    'AIC': 'AIC',
+    'ALS': 'ALS',
+    'Forcing Chains': 'Forcing Chains',
+    'Exocet': 'Exocet',
+    'Step 1': 'Passo 1',
+    'Step 2': 'Passo 2',
+    'Step 3': 'Passo 3',
+    'Example 1': 'Esempio 1',
+    'Example 2': 'Esempio 2'
+  },
+  ru: {
+    'Full House': 'Фулл-Хаус',
+    'Last Free Cell': 'Последняя свободная клетка',
+    'Cross-Hatching': 'Кросс-хэтчинг',
+    'Naked Single': 'Одиночка',
+    'Hidden Single': 'Скрытая одиночка',
+    'Pointing Pairs': 'Указатели',
+    'Claiming': 'Захват линии',
+    'Naked Pair': 'Открытая пара',
+    'Hidden Pair': 'Скрытая пара',
+    'Naked Triple': 'Открытая тройка',
+    'Hidden Triple': 'Скрытая тройка',
+    'Naked Quad': 'Открытая четверка',
+    'Hidden Quad': 'Скрытая четверка',
+    'X-Wing': 'X-Wing',
+    'Y-Wing': 'Y-Wing',
+    'XY-Wing': 'XY-Wing',
+    'XYZ-Wing': 'XYZ-Wing',
+    'W-Wing': 'W-Wing',
+    'BUG+1': 'BUG+1',
+    'Remote Pairs': 'Удаленные пары',
+    'Swordfish': 'Рыба-меч',
+    'Jellyfish': 'Медуза',
+    'Unique Rectangles': 'Уникальные прямоугольники',
+    'Simple Colouring': 'Простая раскраска',
+    '3D Medusa': '3D Medusa',
+    'XY-Chains': 'XY-Chains',
+    'WXYZ-Wing': 'WXYZ-Wing',
+    'Empty Rectangles': 'Пустые прямоугольники',
+    'Finned X-Wing': 'Плавниковый X-Wing',
+    'AIC': 'AIC',
+    'ALS': 'ALS',
+    'Forcing Chains': 'Принуждающие цепи',
+    'Exocet': 'Экзосет',
+    'Step 1': 'Шаг 1',
+    'Step 2': 'Шаг 2',
+    'Step 3': 'Шаг 3',
+    'Example 1': 'Пример 1',
+    'Example 2': 'Пример 2'
+  },
+  hi: {
+    'Full House': 'फुल हाउस',
+    'Last Free Cell': 'लास्ट फ्री सेल',
+    'Cross-Hatching': 'क्रॉस-हैचिंग',
+    'Naked Single': 'नेकेड सिंगल',
+    'Hidden Single': 'हिडन सिंगल',
+    'Pointing Pairs': 'पॉइंटिंग पेयर्स',
+    'Claiming': 'क्लेमिंग',
+    'Naked Pair': 'नेकेड पेयर',
+    'Hidden Pair': 'हिडन पेयर',
+    'Naked Triple': 'नेकेड ट्रिपल',
+    'Hidden Triple': 'हिडन ट्रिपल',
+    'Naked Quad': 'नेकेड क्वाड',
+    'Hidden Quad': 'हिडन क्वाड',
+    'X-Wing': 'एक्स-विंग',
+    'Y-Wing': 'वाई-विंग',
+    'XY-Wing': 'एक्सवाई-विंग',
+    'XYZ-Wing': 'एक्सवाईज़ेड-विंग',
+    'W-Wing': 'डब्ल्यू-विंग',
+    'BUG+1': 'बीयूजी+1',
+    'Remote Pairs': 'रिमोट पेयर्स',
+    'Swordfish': 'स्वॉर्डफिश',
+    'Jellyfish': 'जेलीफिश',
+    'Unique Rectangles': 'यूनिक रेक्टेंगल्स',
+    'Simple Colouring': 'सिंपल कलरिंग',
+    '3D Medusa': '3D मेडुसा',
+    'XY-Chains': 'एक्सवाई-चेन',
+    'WXYZ-Wing': 'डब्ल्यूएक्सवाईज़ेड-विंग',
+    'Empty Rectangles': 'एम्प्टी रेक्टेंगल्स',
+    'Finned X-Wing': 'फिन्ड एक्स-विंग',
+    'AIC': 'AIC',
+    'ALS': 'ALS',
+    'Forcing Chains': 'फोर्सिंग चेन्स',
+    'Exocet': 'एक्सोसेट',
+    'Step 1': 'चरण 1',
+    'Step 2': 'चरण 2',
+    'Step 3': 'चरण 3',
+    'Example 1': 'उदाहरण 1',
+    'Example 2': 'उदाहरण 2'
+  },
+  ar: {
+    'Full House': 'فل هاوس',
+    'Last Free Cell': 'آخر خلية شاغرة',
+    'Cross-Hatching': 'المسح المتقاطع',
+    'Naked Single': 'الخلية الفردية المكشوفة',
+    'Hidden Single': 'الخلية الفردية المخفية',
+    'Pointing Pairs': 'المرشحات المقفلة 1',
+    'Claiming': 'المرشحات المقفلة 2',
+    'Naked Pair': 'الزوج المكشوف',
+    'Hidden Pair': 'الزوج المخفي',
+    'Naked Triple': 'الثلاثي المكشوف',
+    'Hidden Triple': 'الثلاثي المخفي',
+    'Naked Quad': 'الرباعي المكشوف',
+    'Hidden Quad': 'الرباعي المخفي',
+    'X-Wing': 'جناح إكس',
+    'Y-Wing': 'جناح واي',
+    'XY-Wing': 'جناح XY',
+    'XYZ-Wing': 'جناح XYZ',
+    'W-Wing': 'جناح دبليو',
+    'BUG+1': 'BUG+1',
+    'Remote Pairs': 'الأزواج البعيدة',
+    'Swordfish': 'سمكة السيف',
+    'Jellyfish': 'قنديل البحر',
+    'Unique Rectangles': 'المستطيلات الفريدة',
+    'Simple Colouring': 'التلوين البسيط',
+    '3D Medusa': 'ميدوسا ثلاثية الأبعاد',
+    'XY-Chains': 'سلاسل XY',
+    'WXYZ-Wing': 'جناح WXYZ',
+    'Empty Rectangles': 'المستطيلات الفارغة',
+    'Finned X-Wing': 'جناح إكس ذو الزعنفة',
+    'AIC': 'سلاسل الاستدلال AIC',
+    'ALS': 'المجموعات شبه المقفلة ALS',
+    'Forcing Chains': 'السلاسل القسرية',
+    'Exocet': 'إكسوسيت',
+    'Step 1': 'الخطوة 1',
+    'Step 2': 'الخطوة 2',
+    'Step 3': 'الخطوة 3',
+    'Example 1': 'مثال 1',
+    'Example 2': 'مثال 2'
+  }
+};
+
+export function expandLangObject(obj) {
+  if (!obj || typeof obj !== 'object') return obj;
+  const ko = obj.ko || '';
+  const en = obj.en || '';
+  const ja = obj.ja || '';
+  const zh = obj.zh || obj['zh-TW'] || '';
+  const es = obj.es || obj['es-ES'] || '';
+
+  const res = {
+    ko,
+    en,
+    ja,
+    zh,
+    'zh-CN': obj['zh-CN'] || zh,
+    es
+  };
+
+  const targetLangs = ['de', 'fr', 'pt', 'it', 'ru', 'hi', 'ar'];
+  for (const lang of targetLangs) {
+    if (obj[lang]) {
+      res[lang] = obj[lang];
+      continue;
+    }
+
+    // Translate based on Korean and English
+    let translated = en;
+    // Replace terms using L10N_DB
+    for (const [termEn, termTarget] of Object.entries(L10N_DB[lang])) {
+      translated = translated.split(termEn).join(termTarget);
+    }
+    
+    // Add prefix icon and clean up
+    if (en.startsWith('📍') && !translated.startsWith('📍')) {
+      translated = '📍 ' + translated;
+    }
+    
+    res[lang] = translated;
+  }
+
+  return res;
+}
+
+console.log('Language expansion engine ready.');

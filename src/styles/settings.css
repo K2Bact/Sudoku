@@ -1,0 +1,256 @@
+/* =========================================================
+   SETTINGS SCREEN STYLES (설정 화면 프리미엄 카드 & 토글 스타일)
+   ========================================================= */
+
+.settings-screen-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  box-sizing: border-box;
+}
+
+.settings-content-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 14px 12px 30px;
+}
+
+/* Section Header */
+.settings-section-header {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 6px 4px;
+}
+
+.settings-section-hint {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 6px 4px 0;
+  font-weight: 500;
+}
+
+/* Grouped Card Container (iOS / OneUI Style) */
+.settings-card-group {
+  background: var(--bg-surface);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--board-grid-line);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual Setting Row */
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--board-grid-line);
+  transition: background-color 0.15s ease;
+  user-select: none;
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row.clickable {
+  cursor: pointer;
+}
+
+.settings-row.clickable:active {
+  background-color: var(--btn-hover);
+}
+
+.settings-row-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Icon Badge with Pastel Tint */
+.settings-icon-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.settings-icon-badge.blue { background: rgba(59, 130, 246, 0.14); color: #3b82f6; }
+.settings-icon-badge.yellow { background: rgba(245, 158, 11, 0.14); color: #f59e0b; }
+.settings-icon-badge.purple { background: rgba(168, 85, 247, 0.14); color: #a855f7; }
+.settings-icon-badge.green { background: rgba(34, 197, 94, 0.14); color: #22c55e; }
+.settings-icon-badge.red { background: rgba(239, 68, 68, 0.14); color: #ef4444; }
+.settings-icon-badge.gray { background: rgba(100, 116, 139, 0.14); color: #64748b; }
+
+.settings-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.settings-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* Smooth Modern Toggle Switch */
+.toggle-switch {
+  width: 44px;
+  height: 25px;
+  border-radius: 999px;
+  background: var(--btn-bg);
+  border: 1px solid var(--board-grid-line);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.toggle-switch.active {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: #2563eb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+.toggle-thumb {
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #ffffff;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toggle-switch.active .toggle-thumb {
+  transform: translateX(19px);
+}
+
+/* Theme Selection 4-Card Grid */
+.settings-theme-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px;
+}
+
+.theme-chip-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--btn-bg);
+  border: 1.5px solid var(--board-grid-line);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.theme-chip-card:active {
+  transform: scale(0.96);
+}
+
+.theme-chip-card.active {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.08);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.theme-chip-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-color-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.theme-name-text {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+/* Language Selection Segment */
+.language-seg-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  padding: 8px;
+}
+
+.language-pill-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border-radius: 9px;
+  background: var(--btn-bg);
+  border: 1px solid var(--board-grid-line);
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.language-pill-btn:active {
+  transform: scale(0.96);
+}
+
+.language-pill-btn.active {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  color: #ffffff !important;
+  border: 1.5px solid #2563eb !important;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4) !important;
+}
+
+/* App Info Footer */
+.settings-footer {
+  text-align: center;
+  padding: 10px 0 20px;
+}
+
+.settings-footer .version-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--btn-bg);
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--board-grid-line);
+}
