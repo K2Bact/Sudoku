@@ -34,3 +34,12 @@ keystore.properties
 .env.*
 !.env.example
 google-services.json
+
+# Build artifacts — rebuildable, and Play Console already holds every release.
+# Nine .aab files (281 MB) had been committed here; GitHub warns above 50 MB and
+# refuses above 100 MB, so the next release would have been blocked outright.
+# They carry no signing key — the .RSA inside is the signature and the public
+# certificate — but they do not belong in source control either way.
+release_archive/
+*.aab
+*.apk
