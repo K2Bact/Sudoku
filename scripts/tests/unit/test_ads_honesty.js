@@ -133,6 +133,27 @@ assert.deepStrictEqual(stragglers.filter((f) => !f.endsWith('adsService.js')), [
   `Still importing the deleted admobService: ${stragglers.join(', ')}`);
 console.log('  ✅ No references remain');
 
+// ── 8. The interstitial stays rare ────────────────────────────────────────
+console.log('▶ 8. The post-game interstitial is capped at an hour');
+const svc = read('src/services/adsService.js')
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/\/\/.*$/gm, '');
+
+const capMatch = svc.match(/MIN_INTERSTITIAL_INTERVAL_MS\s*=\s*([^;]+);/);
+assert(capMatch, 'adsService must define MIN_INTERSTITIAL_INTERVAL_MS');
+const capMs = Function(`"use strict"; return (${capMatch[1]});`)();
+assert(capMs >= 60 * 60 * 1000,
+  `The post-game interstitial cooldown is ${Math.round(capMs / 60000)} minutes; ` +
+  'it must be at least 60. This is the only ad that takes the screen from a ' +
+  'player who did nothing but win, and its length belongs to the advertiser, ' +
+  'not to us — frequency is the only dial we hold. Shortening it is a decision ' +
+  'to interrupt more often, not a tuning detail.');
+console.log(`  ✅ Cooldown is ${Math.round(capMs / 60000)} minutes`);
+
+assert(/if\s*\(this\.isAdsRemoved\(\)\)\s*return false;/.test(svc),
+  'A player who removed ads must never meet the interstitial');
+console.log('  ✅ Never shown to a player who removed ads');
+
 console.log('\n======================================================');
 console.log('🎉 Ad honesty gate passed — nothing claims an ad it cannot serve.');
 console.log('======================================================');

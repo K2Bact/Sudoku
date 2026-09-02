@@ -21,7 +21,11 @@ import { getBillingProvider } from '../billing/index.js';
 
 const AD_REMOVED_KEY = 'suidoku_remove_ads_purchased_v1';
 const LAST_INTERSTITIAL_TIME_KEY = 'suidoku_last_interstitial_time_v1';
-const MIN_INTERSTITIAL_INTERVAL_MS = 3 * 60 * 1000;
+// One hour. The interstitial is the only ad that takes the screen away from a
+// player who did nothing wrong — they just won — and its length is the
+// advertiser's to choose, not ours. Frequency is the only dial we hold, so it
+// is set where the ad is a rare interruption rather than a toll on winning.
+const MIN_INTERSTITIAL_INTERVAL_MS = 60 * 60 * 1000;
 
 class AdsService {
   /** Which provider is live: 'fake' during closed testing, 'admob' at release. */
