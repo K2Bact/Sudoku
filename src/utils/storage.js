@@ -4,7 +4,7 @@
  */
 
 const GAME_STATE_KEY = 'suidoku_game_state_v1';
-const USER_STATS_KEY = 'suidoku_user_stats_v1';
+export const USER_STATS_KEY = 'suidoku_user_stats_v1';
 const SETTINGS_KEY = 'suidoku_settings_v1';
 
 // Save current active game state
@@ -97,11 +97,19 @@ export function loadStats() {
 }
 
 // Record completed game stats
-export function recordGameWin(level, timeInSeconds, mode = 'classic') {
+export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}) {
   const stats = loadStats();
   stats.gamesPlayed = (stats.gamesPlayed || 0) + 1;
   stats.gamesWon = (stats.gamesWon || 0) + 1;
-  
+
+  // Cumulative counters the achievement engine reads. Without these written here
+  // it fell back to single-game context and could never exceed 1, so every
+  // "N flawless wins" / "combo N" badge above the first was unreachable.
+  if (extra.isFlawless) stats.flawlessWins = (stats.flawlessWins || 0) + 1;
+  if (typeof extra.comboCount === 'number') {
+    stats.maxCombo = Math.max(stats.maxCombo || 0, extra.comboCount);
+  }
+
   let isNewRecord = false;
 
   if (mode === 'timeAttack') {

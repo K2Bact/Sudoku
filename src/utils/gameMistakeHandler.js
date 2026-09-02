@@ -1,6 +1,6 @@
-import { soundHaptic } from './soundHaptic';
-import { recordGameLoss } from './storage';
-import { detectSudokuConflict } from '../engine/conflictDetector';
+import { soundHaptic } from './soundHaptic.js';
+import { recordGameLoss } from './storage.js';
+import { detectSudokuConflict } from '../engine/conflictDetector.js';
 
 export function handleMistakeLogic({
   nextBoard,

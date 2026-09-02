@@ -7,11 +7,16 @@ export const leaderboard = {
     myStanding: 'Minha Posição Atual',
     unranked: 'Sem Classificação',
     record: 'Meu Recorde',
-    topSolvers: 'Hall da Fama Global TOP 10'
+    topSolvers: 'Níveis de referência',
+    openPlayGames: 'Ver classificação completa no Play Jogos'
   },
   cloudSync: {
     sectionTitle: '☁️ Backup em Nuvem & Sincronização',
     autoSyncNotice: '💡 Seu progresso é salvo automaticamente a cada vitória. Use [Restaurar Dados] em novos dispositivos.',
+    playGamesConnect: 'Conectar Play Jogos',
+    playGamesConnectDesc: 'Necessário para classificações e backup na nuvem',
+    playGamesConnected: 'Conectado como {name}',
+    playGamesFailed: 'Não foi possível conectar. Tente novamente mais tarde.',
     backupTitle: 'Fazer Backup na Nuvem',
     backupDesc: 'Salve seu progresso, estatísticas e conquistas com segurança na nuvem.',
     backupSuccess: 'Backup em nuvem concluído com sucesso! ✅',

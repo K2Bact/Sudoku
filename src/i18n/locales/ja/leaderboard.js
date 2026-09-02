@@ -7,11 +7,16 @@ export const leaderboard = {
     myStanding: '現在の順位',
     unranked: 'ランク外',
     record: '自己ベスト',
-    topSolvers: '世界殿堂入り TOP 10'
+    topSolvers: '実力の目安',
+    openPlayGames: 'Play ゲームで全体順位を見る'
   },
   cloudSync: {
     sectionTitle: '☁️ クラウド保存＆アカウント同期',
     autoSyncNotice: '💡 パズルクリア時に自動バックアップされます。端末変更時は[データ復元]で読み込めます。',
+    playGamesConnect: 'Play ゲームに接続',
+    playGamesConnectDesc: 'リーダーボードとクラウドバックアップに必要です',
+    playGamesConnected: '{name} として接続中',
+    playGamesFailed: '接続できませんでした。しばらくしてからもう一度お試しください。',
     backupTitle: '今すぐクラウドにバックアップ',
     backupDesc: '現在の進捗、統計、実績を安全にクラウドへ保存します。',
     backupSuccess: 'クラウドバックアップが完了しました！ ✅',

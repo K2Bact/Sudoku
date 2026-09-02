@@ -22,28 +22,39 @@ export function useGameTimer({
   const comboTimeoutRef = useRef(null);
   const floatTimeoutRef = useRef(null);
 
+  // Callers pass a fresh inline callback on every render. Holding it in a ref keeps
+  // it out of the interval effect's deps, so the 1s tick is never torn down and
+  // restarted mid-count (which let rapid taps stall the clock indefinitely).
+  const onTimeLimitExpireRef = useRef(onTimeLimitExpire);
+  onTimeLimitExpireRef.current = onTimeLimitExpire;
+
   // Main Timer Interval
   useEffect(() => {
-    let interval = null;
-    if (!isPaused && !isGameOver && !isVictory) {
-      interval = setInterval(() => {
-        setTimerSeconds(prev => {
-          if (gameMode === 'timeLimit') {
-            if (prev <= 1) {
-              clearInterval(interval);
-              if (onTimeLimitExpire) onTimeLimitExpire();
-              return 0;
-            }
-            return prev - 1;
-          }
-          return prev + 1;
-        });
-      }, 1000);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isPaused, isGameOver, isVictory, gameMode, onTimeLimitExpire]);
+    if (isPaused || isGameOver || isVictory) return undefined;
+
+    const interval = setInterval(() => {
+      setTimerSeconds(prev => {
+        if (gameMode === 'timeLimit') {
+          return prev <= 1 ? 0 : prev - 1;
+        }
+        return prev + 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isPaused, isGameOver, isVictory, gameMode]);
+
+  // Survival countdown reaching zero ends the game. Kept out of the state updater
+  // above so that updater stays pure. Fires on the 1 -> 0 transition only, so
+  // clearing isGameOver later (e.g. returning home) cannot re-trigger the loss.
+  const prevTimerSecondsRef = useRef(timerSeconds);
+  useEffect(() => {
+    const prev = prevTimerSecondsRef.current;
+    prevTimerSecondsRef.current = timerSeconds;
+    if (gameMode !== 'timeLimit' || timerSeconds > 0 || prev === 0) return;
+    if (isGameOver || isVictory) return;
+    if (onTimeLimitExpireRef.current) onTimeLimitExpireRef.current();
+  }, [timerSeconds, gameMode, isGameOver, isVictory]);
 
   // Combo reset timeout
   const resetComboTimer = () => {

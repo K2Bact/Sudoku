@@ -7,11 +7,16 @@ export const leaderboard = {
     myStanding: 'Мое текущее место',
     unranked: 'Вне рейтинга',
     record: 'Мой рекорд',
-    topSolvers: 'Мировой Зал Славы ТОП-10'
+    topSolvers: 'Ориентиры мастерства',
+    openPlayGames: 'Открыть полный рейтинг в Play Играх'
   },
   cloudSync: {
     sectionTitle: '☁️ Облачное сохранение и синхронизация',
     autoSyncNotice: '💡 Прогресс сохраняется в облаке автоматически. Используйте [Восстановить данные] на новом устройстве.',
+    playGamesConnect: 'Подключить Play Игры',
+    playGamesConnectDesc: 'Нужно для рейтингов и облачной копии',
+    playGamesConnected: 'Подключено как {name}',
+    playGamesFailed: 'Не удалось подключиться. Повторите попытку позже.',
     backupTitle: 'Сохранить в облако',
     backupDesc: 'Безопасно сохраните статистику, подсказки и достижения в облаке.',
     backupSuccess: 'Облачное сохранение успешно выполнено! ✅',

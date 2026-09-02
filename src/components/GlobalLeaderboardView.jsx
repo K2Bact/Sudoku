@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Zap, Brain, Swords, Globe, RefreshCw } from 'lucide-react';
+import { playGamesService } from '../services/playGamesService';
 import { leaderboardService, LEADERBOARD_CATEGORIES } from '../services/leaderboardService.js';
 import { useTranslation } from '../i18n/i18nContext';
 import { soundHaptic } from '../utils/soundHaptic';

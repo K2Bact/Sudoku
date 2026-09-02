@@ -9,9 +9,7 @@ import {
   Info,
   ChevronRight,
   AlertTriangle,
-  Eye,
-  CloudUpload,
-  CloudDownload
+  Eye
 } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
 import { PrivacyPolicyModal } from './modals/PrivacyPolicyModal';
@@ -19,8 +17,9 @@ import { ThemeSelectorSection } from './settings/ThemeSelectorSection';
 import { LanguageSelectorSection } from './settings/LanguageSelectorSection';
 import { soundHaptic } from '../utils/soundHaptic';
 import { loadSettings, saveSettings, clearGameState } from '../utils/storage';
-import { cloudSyncService } from '../services/cloudSyncService';
+import { AccountSection } from './settings/AccountSection';
 import { useTranslation } from '../i18n/i18nContext';
+import { useConfirm, useNotify } from './common/ConfirmProvider';
 import { APP_INFO } from '../config/appInfo';
 
 export function SettingsScreen({
@@ -31,18 +30,23 @@ export function SettingsScreen({
   onSelectTheme
 }) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
+  const notify = useNotify();
   const currentSettings = loadSettings();
   const [hapticEnabled, setHapticEnabled] = useState(soundHaptic.hapticEnabled);
   const [limitMistakes, setLimitMistakes] = useState(currentSettings.limitMistakes ?? true);
   const [autoCheckMistakes, setAutoCheckMistakes] = useState(currentSettings.autoCheckMistakes ?? true);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
-  const [syncStatus, setSyncStatus] = useState(null);
 
   const handleToggleHaptic = () => {
     soundHaptic.playSelectSound();
     const next = !hapticEnabled;
     setHapticEnabled(next);
     soundHaptic.setHapticEnabled(next);
+    // Persist it. Every other toggle in this file already did; this one only
+    // updated React state and the in-memory singleton, so turning vibration off
+    // came back on at the next launch.
+    saveSettings({ ...loadSettings(), hapticEnabled: next });
   };
 
   const handleToggleLimitMistakes = () => {
@@ -59,42 +63,15 @@ export function SettingsScreen({
     saveSettings({ ...loadSettings(), autoCheckMistakes: next });
   };
 
-  const handleCloudBackup = async () => {
-    soundHaptic.playSelectSound();
-    setSyncStatus('backingUp');
-    const res = await cloudSyncService.saveToCloud();
-    if (res.success) {
-      setSyncStatus('backupSuccess');
-      setTimeout(() => setSyncStatus(null), 3500);
-    } else {
-      setSyncStatus('backupFail');
-    }
-  };
 
-  const handleCloudRestore = async () => {
-    soundHaptic.playSelectSound();
-    if (window.confirm(t('cloudSync.restoreConfirm'))) {
-      setSyncStatus('restoring');
-      const res = await cloudSyncService.restoreFromCloud();
-      if (res.success) {
-        setSyncStatus('restoreSuccess');
-        setTimeout(() => {
-          window.location.reload();
-        }, 1200);
-      } else {
-        alert(res.message || t('cloudSync.noData'));
-        setSyncStatus(null);
-      }
-    }
-  };
 
-  const handleResetData = () => {
+  const handleResetData = async () => {
     soundHaptic.playSelectSound();
-    if (window.confirm(t('settings.resetConfirm'))) {
+    if (await confirm(t('settings.resetConfirm'))) {
       try {
         localStorage.clear();
         clearGameState();
-        alert(t('settings.resetSuccess'));
+        await notify(t('settings.resetSuccess'));
         window.location.reload();
       } catch (e) {
         console.error('Failed to reset data:', e);
@@ -184,40 +161,8 @@ export function SettingsScreen({
           </div>
         </div>
 
-        {/* Section 3: Cloud Save & Account Sync */}
-        <div>
-          <div className="settings-section-header">{t('cloudSync.sectionTitle')}</div>
-          <div className="settings-card-group">
-            <div className="settings-row clickable" onClick={handleCloudBackup}>
-              <div className="settings-row-left">
-                <div className="settings-icon-badge blue">
-                  <CloudUpload size={18} />
-                </div>
-                <div className="settings-text-col">
-                  <span className="settings-title">{t('cloudSync.backupTitle')}</span>
-                  <p className="settings-subtitle">
-                    {syncStatus === 'backupSuccess' ? t('cloudSync.backupSuccess') : t('cloudSync.backupDesc')}
-                  </p>
-                </div>
-              </div>
-              <ChevronRight size={18} className="text-muted" />
-            </div>
-
-            <div className="settings-row clickable" onClick={handleCloudRestore}>
-              <div className="settings-row-left">
-                <div className="settings-icon-badge purple">
-                  <CloudDownload size={18} />
-                </div>
-                <div className="settings-text-col">
-                  <span className="settings-title">{t('cloudSync.restoreTitle')}</span>
-                  <p className="settings-subtitle">{t('cloudSync.restoreDesc')}</p>
-                </div>
-              </div>
-              <ChevronRight size={18} className="text-muted" />
-            </div>
-          </div>
-          <p className="settings-section-hint">{t('cloudSync.autoSyncNotice')}</p>
-        </div>
+        {/* Section 3: Play Games account + cloud backup */}
+        <AccountSection />
 
         {/* Section 4: Themes */}
         <ThemeSelectorSection theme={theme} onSelectTheme={onSelectTheme} />

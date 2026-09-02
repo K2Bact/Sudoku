@@ -5,6 +5,7 @@ import {
   autoRemoveNotes,
   cloneGrid
 } from '../../../src/engine/SudokuEngine.js';
+import { ensureValidSolution } from '../../../src/hooks/useGameInput.js';
 
 console.log('======================================================');
 console.log('🧪 Testing Sudoku Mathematical Integrity & Puzzle Solvability');
@@ -81,4 +82,23 @@ for (let r = 3; r <= 5; r++) {
 assert(cleanedNotes[0][0].includes(5), 'Cell (0, 0) outside peer zone must retain note 5');
 console.log('  ✅ Auto-Remove Notes peer-zone isolation mathematically verified');
 
-console.log('\n🎉 [PASS] Sudoku Mathematical Integrity & Solver Engine 100% Verified!\n');
+// 3. ensureValidSolution Immutability & Array Return Integrity
+console.log('\n▶ 3. Testing ensureValidSolution Immutability & Valid Array Return...');
+
+const freshEmptyGrid = Array(9).fill(null).map(() => Array(9).fill(0));
+const solvedGrid = ensureValidSolution(freshEmptyGrid, null);
+
+// Must return an Array (NOT a boolean true/false)
+assert(Array.isArray(solvedGrid), 'ensureValidSolution must return a 2D Array, NEVER a boolean');
+assert.strictEqual(solvedGrid.length, 9, 'Solved grid must have 9 rows');
+assert(isValidSudokuGrid(solvedGrid), 'ensureValidSolution must return a 100% valid solved Sudoku grid');
+
+// Input grid MUST NOT be mutated in place
+for (let r = 0; r < 9; r++) {
+  for (let c = 0; c < 9; c++) {
+    assert.strictEqual(freshEmptyGrid[r][c], 0, `freshEmptyGrid[${r}][${c}] must remain 0 (Zero Mutation)`);
+  }
+}
+console.log('  ✅ ensureValidSolution returns valid 9x9 solution array with zero state mutation');
+
+console.log('\n🎉 [PASS] Sudoku Mathematical Integrity, Immutability & Solver Engine 100% Verified!\n');

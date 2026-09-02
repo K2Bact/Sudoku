@@ -3,10 +3,13 @@ import { Calendar as CalendarIcon, Award, CheckCircle2, Lock, Target, Gift, Zap,
 import { ScreenHeader } from './common/ScreenHeader';
 import { loadDailyRecords, getTodayDateKey, getMonthlyBadgeProgress, getDailyMission } from '../utils/dailyChallenge';
 import { soundHaptic } from '../utils/soundHaptic';
+import { adsService } from '../services/adsService';
 import { useTranslation } from '../i18n/i18nContext';
+import { useNotify } from './common/ConfirmProvider';
 
 export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyMission, onSelectDate }) {
   const { t } = useTranslation();
+  const notify = useNotify();
   const records = loadDailyRecords();
   const todayKey = getTodayDateKey();
   const todayMission = getDailyMission(todayKey);
@@ -23,28 +26,22 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
 
   const [pendingUnlockDate, setPendingUnlockDate] = useState(null);
   const [watchingAdForDate, setWatchingAdForDate] = useState(null);
-  const [adSecondsRemaining, setAdSecondsRemaining] = useState(10);
 
-  useEffect(() => {
-    let timer = null;
-    if (watchingAdForDate) {
-      setAdSecondsRemaining(10);
-      timer = setInterval(() => {
-        setAdSecondsRemaining((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            const targetDate = watchingAdForDate;
-            setWatchingAdForDate(null);
-            if (onStartDailyPuzzle) onStartDailyPuzzle(targetDate);
-            else if (onSelectDate) onSelectDate(targetDate);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    return () => { if (timer) clearInterval(timer); };
-  }, [watchingAdForDate, onStartDailyPuzzle, onSelectDate]);
+  /**
+   * Unlocking a past puzzle costs one rewarded ad. This used to run a ten-second
+   * interval of its own and unlock when it hit zero, which meant no ad service
+   * was ever involved and the countdown was the whole feature. It now waits on
+   * adsService, so the placeholder and a real AdMob ad both drive it, and a
+   * player who dismisses a real ad early gets nothing.
+   */
+  const handleUnlockWithAd = async (targetDate) => {
+    setWatchingAdForDate(targetDate);
+    const { rewarded } = await adsService.showRewarded();
+    setWatchingAdForDate(null);
+    if (!rewarded) return;
+    if (onStartDailyPuzzle) onStartDailyPuzzle(targetDate);
+    else if (onSelectDate) onSelectDate(targetDate);
+  };
 
   const handleStartMissionClick = () => {
     soundHaptic.playSelectSound();
@@ -62,7 +59,7 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
 
     if (dayNum > todayDateNum) {
       soundHaptic.playSelectSound();
-      alert(t('daily.futureAlert'));
+      notify(t('daily.futureAlert'));
       return;
     }
 
@@ -140,10 +137,7 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
         {watchingAdForDate && (
           <div className="inline-ad" style={{ flexDirection: 'column', gap: '8px' }}>
             <div className="spinner"></div>
-            <p style={{ fontWeight: '800', color: '#eab308' }}>{t('daily.unlockingAd', { seconds: adSecondsRemaining })}</p>
-            <div className="progress-track" style={{ width: '80%', height: '4px' }}>
-              <div className="progress-fill" style={{ width: `${((10 - adSecondsRemaining) / 10) * 100}%` }} />
-            </div>
+            <p style={{ fontWeight: '800', color: '#eab308' }}>{t('daily.unlockingAd')}</p>
           </div>
         )}
 
@@ -207,7 +201,7 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
                 onClick={() => {
                   const target = pendingUnlockDate;
                   setPendingUnlockDate(null);
-                  setWatchingAdForDate(target);
+                  handleUnlockWithAd(target);
                 }}
               >
                 <Zap size={16} />

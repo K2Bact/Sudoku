@@ -145,7 +145,7 @@ export function GameScreen({
         />
       </main>
 
-      <AdBanner onOpenRemoveAds={onOpenRemoveAds} refreshTrigger={adRefreshTrigger} />
+      <AdBanner onOpenRemoveAdsModal={onOpenRemoveAds} refreshTrigger={adRefreshTrigger} />
     </div>
   );
 }

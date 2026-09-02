@@ -1,23 +1,33 @@
 import React, { useState } from 'react';
 import { ShieldCheck, CheckCircle2, ShoppingBag } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
-import { admobService } from '../services/admobService';
+import { adsService } from '../services/adsService';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
+import { useNotify } from './common/ConfirmProvider';
 
-export function RemoveAdsScreen({ onBack, onAdsRemovedPurchased }) {
+export function RemoveAdsScreen({ onBack, onPurchaseSuccess }) {
   const { t } = useTranslation();
+  const notify = useNotify();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handlePurchase = () => {
     soundHaptic.playSelectSound();
     setIsProcessing(true);
     setTimeout(() => {
-      admobService.purchaseRemoveAds();
+      adsService.purchaseRemoveAds();
       setIsProcessing(false);
-      onAdsRemovedPurchased();
-      alert(t('removeAds.successToast'));
-      onBack();
+      notify(t('removeAds.successToast'));
+      // This called onAdsRemovedPurchased, a prop the router never passes (it
+      // passes onPurchaseSuccess). The TypeError was thrown inside this timeout
+      // where no error boundary could catch it, so the entitlement was granted
+      // and then nothing else ran: no message, no navigation, player stranded.
+      //
+      // onPurchaseSuccess navigates home itself, so onBack must NOT also run —
+      // two returns would pop past the screen the player came from. onBack stays
+      // on the header arrow for players who leave without buying.
+      if (onPurchaseSuccess) onPurchaseSuccess();
+      else onBack();
     }, 1500);
   };
 

@@ -38,7 +38,7 @@ export const screens = {
     header: 'Tägliche Herausforderungen ({month})',
     badgeTitle: '{month} Meister',
     badgeDesc: '{completed} / {target} gelöst (Ziel: 15+)',
-    unlockingAd: '📺 Altes Rätsel wird freigeschaltet ({seconds}s)...',
+    unlockingAd: '📺 Altes Rätsel wird freigeschaltet...',
     calendarTitle: '📅 365-Tage-Kalender',
     futureAlert: 'Zukünftige Rätsel sind noch nicht freigeschaltet.',
     pastUnlockNotice: '💡 Verpasste vergangene Tage (🔒) können jederzeit durch ein kurzes Werbevideo freigeschaltet werden.',
@@ -75,7 +75,7 @@ export const screens = {
     restoreBtn: 'Wiederherstellen',
     alreadyPurchased: 'Du besitzt den Premium-Zugang bereits! 🎉',
     processing: '💳 Wird verarbeitet...',
-    purchaseBtn: 'Werbung entfernen ({price})',
+    purchaseBtn: 'Werbung entfernen',
     successToast: '🎉 Werbung dauerhaft entfernt!',
     buySuccess: 'Kauf erfolgreich abgeschlossen! Vielen Dank.',
     restoreSuccess: 'Käufe erfolgreich wiederhergestellt.',
@@ -209,7 +209,9 @@ export const screens = {
     autoMatchTitle: 'Schnellduell',
     autoMatchDesc: 'Schnelles Matchmaking mit weltweiten Spielern',
     mmrBadge: 'Skill-Matchmaking · Siegquote: {rate}%',
-    findOpponentBtn: 'Gegner suchen'
+    findOpponentBtn: 'Gegner suchen',
+    noOpponentFound: 'Kein Gegner gefunden. Stattdessen gegen die KI spielen?',
+    playAiInstead: 'Gegen die KI'
   },
   battleResult: {
     victoryTitle: '1v1 Duell-Sieg!',
@@ -293,5 +295,5 @@ export const screens = {
       startBtn: 'Tutorial starten'
     }
   },
-  adBanner: { sponsor: 'Offizielle Google AdMob Werbeanzeige', removeBtn: 'Werbung entfernen', officialSponsored: 'Offizielle Google AdMob Werbeanzeige', removeAdsBtn: 'Werbung entfernen' }
+  adBanner: { placeholderTag: 'TEST', placeholderText: 'Werbefläche (keine Werbung)', removeBtn: 'Werbung entfernen' }
 };

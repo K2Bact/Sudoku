@@ -49,6 +49,8 @@ export const modals = {
       title: 'Recarregar Dicas Grátis',
       desc: 'Assista a um vídeo curto para\nreceber +1 dica imediatamente.',
       watchAd: 'Assistir Anúncio (+1 Dica)',
+      adWatching: '📺 A reproduzir anúncio…',
+      adPlaceholder: '📺 Espaço de anúncio (sem anúncio)',
       chancesLeft: 'Recargas restantes neste jogo: {remaining}/{max}',
       maxReached: 'Recargas por anúncio limitadas a 2 por partida.',
       later: 'Mais tarde'

@@ -4,7 +4,10 @@
  * and Progression Reward Transactions.
  */
 
-const WALLET_STORAGE_KEY = 'suidoku_user_wallet_v1';
+import { getTodayDateKey, daysBetweenKeys } from './dateKey.js';
+
+// Exported so sync/backup code cannot drift onto a different key string.
+export const WALLET_STORAGE_KEY = 'suidoku_user_wallet_v1';
 
 const DEFAULT_WALLET = {
   hints: 3,                 // Initial welcome bonus
@@ -91,7 +94,8 @@ export function addHints(amount, reason = 'reward') {
  */
 export function claimDailyAttendance() {
   const wallet = loadWallet();
-  const today = new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
+  // Local-time day key, shared with the daily challenge so both reset together
+  const today = getTodayDateKey();
 
   if (wallet.lastDailyClaimDate === today) {
     return null; // Already claimed today
@@ -99,9 +103,7 @@ export function claimDailyAttendance() {
 
   // Calculate streak
   if (wallet.lastDailyClaimDate) {
-    const lastDate = new Date(wallet.lastDailyClaimDate);
-    const currentDate = new Date(today);
-    const diffDays = Math.round((currentDate - lastDate) / (1000 * 60 * 60 * 24));
+    const diffDays = daysBetweenKeys(wallet.lastDailyClaimDate, today);
 
     if (diffDays === 1) {
       wallet.streakDays += 1;

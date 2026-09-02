@@ -38,7 +38,7 @@ export const screens = {
     header: 'デイリーチャレンジ ({month}月)',
     badgeTitle: '{month}月マスターバッジ',
     badgeDesc: '{completed}/{target} · 目標15',
-    unlockingAd: '📺 広告視聴中 ({seconds}秒)... 過去のパズルを解除',
+    unlockingAd: '📺 広告視聴中... 過去のパズルを解除',
     calendarTitle: '📅 365日カレンダー',
     futureAlert: '未来の日付のパズルはまだ解除されていません。',
     pastUnlockNotice: '💡 見逃した過去の日付(🔒)は、短い広告を視聴することでいつでも解除してスタンプを獲得できます。',
@@ -75,7 +75,7 @@ export const screens = {
     restoreBtn: '購入履歴の復元',
     alreadyPurchased: 'すでにプレミアムメンバーシップをお持ちです！ 🎉',
     processing: '💳 決済処理中...',
-    purchaseBtn: '広告を永久削除 ({price})',
+    purchaseBtn: '広告を永久削除',
     successToast: '🎉 広告が正常に永久削除されました！',
     buySuccess: '購入が正常に完了しました！ありがとうございます。',
     restoreSuccess: '購入履歴が正常に復元されました。',
@@ -209,7 +209,9 @@ export const screens = {
     autoMatchTitle: 'リアルタイム高速マッチ',
     autoMatchDesc: '世界中のプレイヤーと1:1スピード対戦',
     mmrBadge: '実力マッチング · 勝率 {rate}%',
-    findOpponentBtn: '対戦相手を探す'
+    findOpponentBtn: '対戦相手を探す',
+    noOpponentFound: '対戦相手が見つかりませんでした。AIと対戦しますか?',
+    playAiInstead: 'AIと対戦'
   },
   battleResult: {
     victoryTitle: '1v1 バトル勝利！',
@@ -287,5 +289,5 @@ export const screens = {
       startBtn: 'チュートリアル開始'
     }
   },
-  adBanner: { sponsor: 'Google AdMob 公式スポンサー広告', removeBtn: '広告非表示', officialSponsored: 'Google AdMob 公式スポンサー広告', removeAdsBtn: '広告非表示' }
+  adBanner: { placeholderTag: 'テスト', placeholderText: '広告スペース（配信なし）', removeBtn: '広告非表示' }
 };

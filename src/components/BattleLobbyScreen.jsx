@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Swords, Users, ShieldCheck, Globe } from 'lucide-react';
+import { Swords, Users, ShieldCheck, Globe, Bot } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
 import { loadStats } from '../utils/storage';
 import { soundHaptic } from '../utils/soundHaptic';
@@ -9,7 +9,9 @@ export function BattleLobbyScreen({
   onBack,
   onStartQuickMatch,
   isSearching: isSearchingProp,
-  onCancelSearch: onCancelSearchProp
+  onCancelSearch: onCancelSearchProp,
+  matchTimedOut = false,
+  onPlayAiInstead
 }) {
   const { t } = useTranslation();
   const [internalSearching, setInternalSearching] = useState(false);
@@ -41,6 +43,11 @@ export function BattleLobbyScreen({
     });
   };
 
+  const handlePlayAi = () => {
+    soundHaptic.playSelectSound();
+    if (onPlayAiInstead) onPlayAiInstead(3);
+  };
+
   return (
     <div className="battle-lobby-container">
       {/* Top Mobile App Navigation Bar */}
@@ -53,7 +60,26 @@ export function BattleLobbyScreen({
 
       {/* Main Full-Screen Scrollable Content Area */}
       <div className="screen-scroll-content">
-        {isSearching ? (
+        {matchTimedOut && !isSearching ? (
+          /* The search ended with nobody on the other side. Say so and offer the
+             AI match, instead of leaving the player staring at a radar forever. */
+          <div className="match-searching-wrapper">
+            <div className="match-radar-card" style={{ gap: '14px', padding: '22px 18px' }}>
+              <div className="radar-status-badge">
+                <Globe size={13} className="text-muted flex-shrink-0" />
+                <span style={{ wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+                  {t('battleLobby.noOpponentFound')}
+                </span>
+              </div>
+              <button type="button" className="btn btn-primary w-100" onClick={handlePlayAi}>
+                <Bot size={16} /> {t('battleLobby.playAiInstead')}
+              </button>
+              <button type="button" className="btn btn-secondary w-100" onClick={handleCancelSearch}>
+                {t('common.close')}
+              </button>
+            </div>
+          </div>
+        ) : isSearching ? (
           <div className="match-searching-wrapper">
             <div className="match-radar-card">
               {/* Radar Live Status Tag */}

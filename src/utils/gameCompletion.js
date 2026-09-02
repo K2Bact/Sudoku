@@ -1,10 +1,10 @@
-import { recordGameWin, loadStats } from './storage';
-import { recordDailyCompletion, getDailyMission, getTodayDateKey, loadDailyRecords } from './dailyChallenge';
-import { loadWallet, addHints } from './wallet';
-import { recordGhostRun } from './ghostManager';
-import { checkAndUnlockAchievements } from './achievementManager';
-import { iqStatsService } from '../services/iqStatsService';
-import { playGamesService } from '../services/playGamesService';
+import { recordGameWin, loadStats } from './storage.js';
+import { recordDailyCompletion, getDailyMission, getTodayDateKey, loadDailyRecords } from './dailyChallenge.js';
+import { loadWallet, addHints } from './wallet.js';
+import { recordGhostRun } from './ghostManager.js';
+import { checkAndUnlockAchievements } from './achievementManager.js';
+import { iqStatsService } from '../services/iqStatsService.js';
+import { playGamesService } from '../services/playGamesService.js';
 
 export function handleGameWinLogic({
   level,
@@ -27,7 +27,10 @@ export function handleGameWinLogic({
 }) {
   setIsVictory(true);
   clearGameState();
-  recordGameWin(level, timerSeconds, gameMode);
+  recordGameWin(level, timerSeconds, gameMode, {
+    isFlawless: mistakes === 0,
+    comboCount
+  });
 
   // Record Ghost & Delta Time PB (strictly requires 0 hints used)
   recordGhostRun(gameMode, level, {

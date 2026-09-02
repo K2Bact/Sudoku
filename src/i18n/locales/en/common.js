@@ -6,6 +6,7 @@ export const common = {
     confirm: 'OK',
     cancel: 'Cancel',
     restart: 'Restart',
+    restartConfirm: 'Restart this puzzle?',
     newGame: 'New Game',
     home: 'Home',
     save: 'Save',
@@ -14,7 +15,8 @@ export const common = {
     loading: 'Loading...',
     error: 'Error',
     exitAppPrompt: 'Press back again to exit the app.',
-    confirmLeaveGame: 'Are you sure you want to pause and return to Home?'
+    confirmLeaveGame: 'Are you sure you want to pause and return to Home?',
+    shareUnavailable: "Sharing isn't available on this device."
   },
   calendar: {
     days: {
@@ -52,6 +54,7 @@ export const common = {
     erase: 'Erase',
     notes: 'Notes',
     hint: 'Hint',
+    rewardHint: '+1 Hint',
     fastEntry: 'Fast Mode',
     fastEntryLocked: 'Locked {number}'
   },

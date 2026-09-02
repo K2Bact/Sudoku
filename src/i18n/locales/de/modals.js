@@ -49,6 +49,8 @@ export const modals = {
       title: 'Kostenlose Tipps aufladen',
       desc: 'Kurze Werbung ansehen,\num sofort +1 Tipp zu erhalten.',
       watchAd: 'Werbung ansehen (+1 Tipp)',
+      adWatching: '📺 Werbung läuft…',
+      adPlaceholder: '📺 Werbeplatzhalter (keine Werbung)',
       chancesLeft: 'Verbleibende Aufladungen: {remaining}/{max}',
       maxReached: 'Tipp-Aufladungen per Werbung sind auf 2 pro Spiel begrenzt.',
       later: 'Später'

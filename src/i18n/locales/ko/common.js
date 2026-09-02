@@ -6,6 +6,7 @@ export const common = {
     confirm: '확인',
     cancel: '취소',
     restart: '다시시작',
+    restartConfirm: '이 퍼즐을 다시 시작할까요?',
     newGame: '새 게임',
     home: '메인 홈',
     save: '저장',
@@ -14,7 +15,8 @@ export const common = {
     loading: '로딩 중...',
     error: '오류',
     exitAppPrompt: '뒤로가기 버튼을 한 번 더 누르면 앱이 종료됩니다.',
-    confirmLeaveGame: '게임을 중단하고 홈으로 이동하시겠습니까?'
+    confirmLeaveGame: '게임을 중단하고 홈으로 이동하시겠습니까?',
+    shareUnavailable: '공유할 수 없습니다. 이 기기에서는 지원되지 않습니다.'
   },
   calendar: {
     days: {
@@ -52,6 +54,7 @@ export const common = {
     erase: '지우개',
     notes: '메모',
     hint: '힌트',
+    rewardHint: '+1 힌트',
     fastEntry: '빠른입력',
     fastEntryLocked: '{number}번 고정'
   },

@@ -1,10 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { saveGameState } from '../utils/storage';
 import { soundHaptic } from '../utils/soundHaptic';
+
+// Bounds how stale the saved clock can get between meaningful moves. The board
+// itself is saved the moment it changes; this only exists so a game abandoned
+// mid-think does not resume with a badly out-of-date timer.
+const CLOCK_FLUSH_MS = 10000;
 
 /**
  * useGameLifecycle.js
  * Handles auto-saving, page visibility changes, app suspend/resume audio, and auto-pause.
+ *
+ * Saving is driven by *changes*, not by the clock. Listing timerSeconds as an
+ * effect dependency used to serialise the whole board, notes and solution to
+ * localStorage once per second, and tear down / re-register the visibility
+ * listeners just as often — pure main-thread jank on low-end devices.
  */
 export function useGameLifecycle({
   board,
@@ -18,30 +28,17 @@ export function useGameLifecycle({
   isFastEntryMode,
   lockedNumber,
   adHintsUsedThisGame = 0,
+  hintsUsedCount = 0,
   activeScreen,
   isGameOver,
   isVictory,
   activeBattleRoom,
   setIsPaused
 }) {
-  // Continuous Auto-Save on Board Modifications
-  useEffect(() => {
-    if (activeScreen === 'game' && !isGameOver && !isVictory && !activeBattleRoom) {
-      saveGameState({
-        board,
-        initialBoard,
-        solutionBoard,
-        notes,
-        mistakes,
-        timerSeconds,
-        level,
-        gameMode,
-        isFastEntryMode,
-        lockedNumber,
-        adHintsUsedThisGame
-      });
-    }
-  }, [
+  // Mirror of the live state, so the effects below can read the newest values
+  // without naming them as dependencies (which is what caused the per-second work).
+  const latest = useRef();
+  latest.current = {
     board,
     initialBoard,
     solutionBoard,
@@ -53,33 +50,75 @@ export function useGameLifecycle({
     isFastEntryMode,
     lockedNumber,
     adHintsUsedThisGame,
+    hintsUsedCount,
+    activeScreen,
+    isGameOver,
+    isVictory,
+    activeBattleRoom,
+    setIsPaused
+  };
+
+  const saveNow = useRef();
+  saveNow.current = () => {
+    const s = latest.current;
+    if (!s || s.activeScreen !== 'game' || s.isGameOver || s.isVictory || s.activeBattleRoom) return;
+    saveGameState({
+      board: s.board,
+      initialBoard: s.initialBoard,
+      solutionBoard: s.solutionBoard,
+      notes: s.notes,
+      mistakes: s.mistakes,
+      timerSeconds: s.timerSeconds,
+      level: s.level,
+      gameMode: s.gameMode,
+      isFastEntryMode: s.isFastEntryMode,
+      lockedNumber: s.lockedNumber,
+      adHintsUsedThisGame: s.adHintsUsedThisGame,
+      // Without this a player could use hints, relaunch, and still register a
+      // "zero-hint" personal best — the Ghost PB policy was bypassable.
+      hintsUsedCount: s.hintsUsedCount
+    });
+  };
+
+  // 1. Save whenever something the player actually did changes. Note the absence
+  //    of timerSeconds here — that is the whole point of the hook's design.
+  useEffect(() => {
+    saveNow.current();
+  }, [
+    board,
+    initialBoard,
+    solutionBoard,
+    notes,
+    mistakes,
+    level,
+    gameMode,
+    isFastEntryMode,
+    lockedNumber,
+    adHintsUsedThisGame,
     activeScreen,
     isGameOver,
     isVictory,
     activeBattleRoom
   ]);
 
-  // Mobile Lifecycle (Visibility Change & Pagehide): Auto-Pause, Save Flush & Audio Sleep
+  // 2. Low-frequency clock flush, so an idle game keeps a roughly current timer.
+  //    Ten seconds instead of one is a ~90% cut in writes.
+  useEffect(() => {
+    if (activeScreen !== 'game' || isGameOver || isVictory || activeBattleRoom) return undefined;
+    const id = setInterval(() => saveNow.current(), CLOCK_FLUSH_MS);
+    return () => clearInterval(id);
+  }, [activeScreen, isGameOver, isVictory, activeBattleRoom]);
+
+  // 3. Mobile lifecycle: auto-pause, flush the save, and put audio to sleep.
+  //    Registered once for the life of the hook; the handler reads from `latest`.
   useEffect(() => {
     const handleVisibilityChange = () => {
+      const s = latest.current;
       if (document.visibilityState === 'hidden') {
         soundHaptic.suspend();
-        if (activeScreen === 'game' && !isGameOver && !isVictory && !activeBattleRoom) {
-          setIsPaused(true);
-          if (board.some(r => r.some(c => c !== 0))) {
-            saveGameState({
-              board,
-              initialBoard,
-              solutionBoard,
-              notes,
-              mistakes,
-              timerSeconds,
-              level,
-              gameMode,
-              isFastEntryMode,
-              lockedNumber
-            });
-          }
+        if (s.activeScreen === 'game' && !s.isGameOver && !s.isVictory && !s.activeBattleRoom) {
+          if (s.setIsPaused) s.setIsPaused(true);
+          if (s.board.some(row => row.some(cell => cell !== 0))) saveNow.current();
         }
       } else if (document.visibilityState === 'visible') {
         soundHaptic.resume();
@@ -93,21 +132,5 @@ export function useGameLifecycle({
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('pagehide', handleVisibilityChange);
     };
-  }, [
-    activeScreen,
-    isGameOver,
-    isVictory,
-    activeBattleRoom,
-    board,
-    initialBoard,
-    solutionBoard,
-    notes,
-    mistakes,
-    timerSeconds,
-    level,
-    gameMode,
-    isFastEntryMode,
-    lockedNumber,
-    setIsPaused
-  ]);
+  }, []);
 }

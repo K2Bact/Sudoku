@@ -49,6 +49,8 @@ export const modals = {
       title: '無料ヒントの補充',
       desc: '短い広告を視聴すると、\n無料ヒントが1個補充されます。',
       watchAd: '広告を見てヒント獲得 (+1個)',
+      adWatching: '📺 広告を再生中…',
+      adPlaceholder: '📺 広告スペース（配信なし）',
       chancesLeft: 'このゲームの残り補充: {remaining}/{max}回',
       maxReached: '広告によるヒント補充は1ゲームあたり最大2回までです。',
       later: '後で'

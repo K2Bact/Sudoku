@@ -94,16 +94,37 @@ assert(!homeContent.includes('<Ghost size={12} />'), 'HomeScreen removed duplica
 console.log('\n▶ Testing AI Bot Immediate Loop Termination on Match Finish...');
 const battleServiceContent = readFileSync('src/firebase/battleService.js', 'utf8');
 const aiBotContent = readFileSync('src/engine/aiBotService.js', 'utf8');
+// The AI match loop moved out of battleService into aiBattleSession so the PvP
+// path holds only peer-to-peer concerns. The guarantees below are unchanged;
+// only their file changed.
+const aiSessionContent = readFileSync('src/firebase/aiBattleSession.js', 'utf8');
 
-assert(battleServiceContent.includes('aiBotService.stopMatch()'), 'battleService explicitly calls aiBotService.stopMatch on match completion');
-assert(battleServiceContent.includes("this.currentRoom.status === 'finished' || this.currentRoom.winner"), 'battleService ignores bot updates once match is finished');
+assert(
+  battleServiceContent.includes('aiBotService.stopMatch()') || aiSessionContent.includes('aiBotService.stopMatch()'),
+  'the AI match loop is explicitly stopped on completion'
+);
+assert(
+  aiSessionContent.includes("room.status === 'finished' || room.winner"),
+  'aiBattleSession ignores bot updates once the match is finished'
+);
+assert(
+  aiSessionContent.includes('stillLive()'),
+  'aiBattleSession guards every bot callback behind a liveness check'
+);
 assert(aiBotContent.includes('this.intervalId = null'), 'aiBotService cleanly nullifies intervalId on stopMatch');
 
 // 6. AI Difficulty Balance & Humanized Solving Pace Audit
 console.log('\n▶ Testing AI Difficulty Balance & 3-Mistake Disqualification...');
 assert(aiBotContent.includes('AI_LEVEL_PROFILES'), 'aiBotService defines structured AI_LEVEL_PROFILES');
 assert(aiBotContent.includes('this.botState.mistakes >= 3'), 'aiBotService allows bot to be disqualified on 3 mistakes');
-assert(battleServiceContent.includes("botState.mistakes >= 3 && !this.currentRoom.winner"), 'battleService awards win to player when AI bot gets disqualified');
+assert(
+  aiSessionContent.includes("botState.mistakes >= 3") && aiSessionContent.includes("finish('me', 'opponent_mistakes')"),
+  'aiBattleSession awards the win to the player when the bot is disqualified on 3 mistakes'
+);
+assert(
+  aiSessionContent.includes('if (!room || room.winner) return false'),
+  'aiBattleSession never overwrites a result that has already been decided'
+);
 
 // 7. Multilingual Auto-Equalizer Zero-Layout-Shift Audit
 console.log('\n▶ Testing Multilingual Auto-Equalizer Zero-Layout-Shift System...');

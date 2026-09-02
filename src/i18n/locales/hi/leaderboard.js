@@ -7,11 +7,16 @@ export const leaderboard = {
     myStanding: 'मेरी वर्तमान रैंक',
     unranked: 'बिना रैंक',
     record: 'मेरा रिकॉर्ड',
-    topSolvers: 'वैश्विक हॉल ऑफ फेम टॉप 10'
+    topSolvers: 'कौशल मानक',
+    openPlayGames: 'Play गेम्स में पूरी रैंकिंग देखें'
   },
   cloudSync: {
     sectionTitle: '☁️ क्लाउड बैकअप और सिंक',
     autoSyncNotice: '💡 प्रत्येक जीत पर प्रगति स्वतः सहेजी जाती है। नए फोन पर [डेटा पुनर्स्थापित] का उपयोग करें।',
+    playGamesConnect: 'Play गेम्स कनेक्ट करें',
+    playGamesConnectDesc: 'लीडरबोर्ड और क्लाउड बैकअप के लिए आवश्यक',
+    playGamesConnected: '{name} के रूप में कनेक्टेड',
+    playGamesFailed: 'कनेक्ट नहीं हो सका। कृपया बाद में पुनः प्रयास करें।',
     backupTitle: 'क्लाउड में अभी सहेजें',
     backupDesc: 'अपनी प्रगति, आंकड़े और उपलब्धियां सुरक्षित रूप से क्लाउड पर सहेजें।',
     backupSuccess: 'क्लाउड बैकअप सफलतापूर्वक पूरा हुआ! ✅',

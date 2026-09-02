@@ -69,7 +69,7 @@ export function Keypad({
           ) : (
             <button type="button" className="action-btn hint-btn reward-ad-hint" onClick={onGetHint} title={t('modals.hintReward.watchAd')}>
               <PlayCircle size={20} style={{ color: '#3b82f6' }} />
-              <span style={{ color: '#3b82f6', fontWeight: '800' }}>+1 Hint</span>
+              <span style={{ color: '#3b82f6', fontWeight: '800' }}>{t('keypad.rewardHint')}</span>
             </button>
           )
         )}

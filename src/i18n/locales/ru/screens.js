@@ -38,7 +38,7 @@ export const screens = {
     header: 'Испытания ({month})',
     badgeTitle: 'Мастер {month}',
     badgeDesc: '{completed}/{target} · Цель 15',
-    unlockingAd: '📺 Разблокировка прошлого дня ({seconds}с)...',
+    unlockingAd: '📺 Разблокировка прошлого дня...',
     calendarTitle: '📅 Календарь 365 дней',
     futureAlert: 'Будущие испытания еще недоступны.',
     pastUnlockNotice: '💡 Пропущенные дни (🔒) можно открыть просмотром короткого видео.',
@@ -75,7 +75,7 @@ export const screens = {
     restoreBtn: 'Восстановить',
     alreadyPurchased: 'У вас уже активен Premium! 🎉',
     processing: '💳 Обработка платежа...',
-    purchaseBtn: 'Убрать рекламу ({price})',
+    purchaseBtn: 'Убрать рекламу',
     successToast: '🎉 Реклама успешно отключена!',
     buySuccess: 'Покупка успешно завершена! Спасибо за поддержку.',
     restoreSuccess: 'Покупки успешно восстановлены.',
@@ -209,7 +209,9 @@ export const screens = {
     autoMatchTitle: 'Быстрый матч',
     autoMatchDesc: 'Мгновенный подбор соперников со всего мира',
     mmrBadge: 'Подбор по навыку · Винрейт: {rate}%',
-    findOpponentBtn: 'Искать соперника'
+    findOpponentBtn: 'Искать соперника',
+    noOpponentFound: 'Соперник не найден. Сыграть против ИИ?',
+    playAiInstead: 'Играть с ИИ'
   },
   battleResult: {
     victoryTitle: 'Победа в дуэли 1v1!',
@@ -293,5 +295,5 @@ export const screens = {
       startBtn: 'Начать урок'
     }
   },
-  adBanner: { sponsor: 'Официальная реклама Google AdMob', removeBtn: 'Без рекламы', officialSponsored: 'Официальная реклама Google AdMob', removeAdsBtn: 'Без рекламы' }
+  adBanner: { placeholderTag: 'ТЕСТ', placeholderText: 'Рекламное место (без рекламы)', removeBtn: 'Без рекламы' }
 };

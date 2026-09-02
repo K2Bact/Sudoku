@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   generatePuzzle,
   cloneGrid,
@@ -102,6 +102,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     isFastEntryMode,
     lockedNumber,
     adHintsUsedThisGame,
+    hintsUsedCount,
     activeScreen,
     isGameOver,
     isVictory,
@@ -109,7 +110,13 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     setIsPaused
   });
 
+  // Cell-by-cell pace of the current run: [{ time, count }]. ghostManager can
+  // replay this to race the player against their own past self, but nothing ever
+  // recorded it, so Ghost mode fell back to a flat average-pace approximation.
+  const runTimelineRef = useRef([]);
+
   const resetGameState = () => {
+    runTimelineRef.current = [];
     setHintsUsedCount(0);
     setAdHintsUsedThisGame(0);
     setHintsRemaining(loadWallet().hints);
@@ -173,6 +180,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
       setLevel(saved.level || requestedLevel || 3);
       setGameMode(saved.gameMode || 'classic');
       setAdHintsUsedThisGame(saved.adHintsUsedThisGame || 0);
+      setHintsUsedCount(saved.hintsUsedCount || 0);
       setHintsRemaining(loadWallet().hints);
       if (typeof saved.isFastEntryMode === 'boolean') setIsFastEntryMode(saved.isFastEntryMode);
       if (saved.lockedNumber !== undefined) setLockedNumber(saved.lockedNumber);
@@ -234,6 +242,8 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     adHintsUsedThisGame,
     rivalMode,
     showToast,
+    runTimelineRef,
+    comboCount,
     t
   });
 
@@ -267,7 +277,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     isFastEntryMode, handleToggleFastEntryMode,
     mistakes, setMistakes, hasRevived, setHasRevived,
     timerSeconds, setTimerSeconds, comboCount, timeFloatingText,
-    isGameOver, setIsGameOver, isVictory, conflictInfo, flashCell,
+    isGameOver, setIsGameOver, isVictory, setIsVictory, conflictInfo, flashCell,
     history, remainingCounts,
     hintsRemaining, showHintRewardModal, setShowHintRewardModal,
     adHintsUsedThisGame,

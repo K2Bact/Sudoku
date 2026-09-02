@@ -45,13 +45,72 @@ assert(payload.syncedAt > 0, 'syncedAt must be positive timestamp');
 assert(typeof payload.stats === 'object', 'Backup payload must include stats object');
 console.log('  ✅ 1. cloudSyncService payload schema & Zero-PII compliance passed');
 
-// Test cloud save & restore cycle
+// Test cloud save & restore cycle.
+//
+// Asserting only `success === true` proves nothing here: saveToCloud returns that
+// unconditionally, so the check passes even if the function body is deleted. What
+// follows instead writes real data through the app's own modules, wipes local
+// storage to imitate a new device, restores, and demands the data back.
+const wallet = await import('../../../src/utils/wallet.js');
+const daily = await import('../../../src/utils/dailyChallenge.js');
+const ghost = await import('../../../src/utils/ghostManager.js');
+const { USER_STATS_KEY } = await import('../../../src/utils/storage.js');
+
+localStorage.clear();
+wallet.addHints(7, 'reward');                                   // 3 welcome + 7
+daily.recordDailyCompletion('2026-09-01', 123, 0);
+ghost.recordGhostRun('classic', 3, { timeSeconds: 200, hintsUsed: 0, totalEmptyCells: 45 });
+localStorage.setItem(USER_STATS_KEY, JSON.stringify({
+  gamesPlayed: 20,
+  gamesWon: 15,
+  bestTimes: { 1: 90, 2: 150, 3: 210 },
+  timeAttackBestTimes: { 1: 80 },
+  timeLimitBestTimes: { 1: 70, 2: 110 },   // survival records
+  timeLimitSurvivalWins: 5
+}));
+
+const backupPayload = cloudSyncService.compileBackupPayload();
+assert(backupPayload.wallet && backupPayload.wallet.hints === 10,
+  'Backup must carry the real wallet — a mismatched storage key silently backs up nothing');
+assert(backupPayload.daily && Object.keys(backupPayload.daily).length === 1,
+  'Backup must carry the real daily records');
+assert(backupPayload.ghost, 'Backup must carry ghost PB records');
+
 const saveRes = await cloudSyncService.saveToCloud();
-assert(saveRes.success === true, 'saveToCloud must succeed');
+assert(saveRes.success === true, 'saveToCloud must report success');
+
+// Restoring over existing local data must not drop fields it does not know about
+await cloudSyncService.restoreFromCloud();
+const merged = JSON.parse(localStorage.getItem(USER_STATS_KEY));
+assert(merged.timeLimitBestTimes && merged.timeLimitBestTimes[1] === 70,
+  'Merge restore erased timeLimitBestTimes — survival records must survive a restore');
+
+// Reinstall on the SAME device: game data is gone, the backup and the player's
+// anonymous id survive. The id has to be carried across the wipe deliberately —
+// it identifies the save slot, and it is now unique per device. (It used to be
+// the constant 'anon_node_test' for everyone, which is exactly the bug that made
+// every signed-out player share one slot; this test used to pass only because of
+// it.) A genuinely new device has no local blob at all and restores through the
+// Play Games snapshot instead, which is the path exercised on hardware.
+const anonUidKey = 'suidoku_anon_uid_v1';
+const anonUid = localStorage.getItem(anonUidKey);
+const cloudKey = `suidoku_cloud_save_${cloudSyncService.getEffectiveUserId()}`;
+const blob = localStorage.getItem(cloudKey);
+localStorage.clear();
+if (anonUid) localStorage.setItem(anonUidKey, anonUid);
+localStorage.setItem(cloudKey, blob);
 
 const restoreRes = await cloudSyncService.restoreFromCloud();
 assert(restoreRes.success === true, 'restoreFromCloud must succeed when cloud data exists');
-console.log('  ✅ 2. cloudSyncService save & restore round-trip passed');
+
+const restored = JSON.parse(localStorage.getItem(USER_STATS_KEY));
+assert(restored.gamesWon === 15, `gamesWon must come back (got ${restored.gamesWon})`);
+assert(restored.timeLimitBestTimes?.[1] === 70, 'Survival best times must come back');
+assert(wallet.loadWallet().hints === 10, `Wallet must come back (got ${wallet.loadWallet().hints})`);
+assert(Object.keys(daily.loadDailyRecords()).length === 1, 'Daily records must come back');
+assert(ghost.getGhostForModeLevel('classic', 3)?.bestSeconds === 200, 'Ghost PB must come back');
+localStorage.clear();
+console.log('  ✅ 2. cloudSyncService round-trip restores stats, wallet, daily & ghost intact');
 
 // 2. Verify leaderboardService & iqStatsService
 const { leaderboardService, LEADERBOARD_CATEGORIES } = await import('../../../src/services/leaderboardService.js');
@@ -173,11 +232,21 @@ for (const lang of languages) {
   assert(modalContent.includes('maxReached:'), `Language [${lang}] missing modals.hintReward.maxReached`);
 }
 
+// Cloud backup and the Play Games connection live in settings/AccountSection.jsx;
+// SettingsScreen renders it. Both halves are asserted so neither can be dropped.
 const settingsScreen = fs.readFileSync(path.join(rootDir, 'src', 'components', 'SettingsScreen.jsx'), 'utf8');
-assert(settingsScreen.includes('cloudSyncService'), 'SettingsScreen must integrate cloudSyncService');
-assert(settingsScreen.includes('handleCloudBackup'), 'SettingsScreen must provide handleCloudBackup');
-assert(settingsScreen.includes('handleCloudRestore'), 'SettingsScreen must provide handleCloudRestore');
-assert(settingsScreen.includes('cloudSync.autoSyncNotice'), 'SettingsScreen must display autoSyncNotice');
+const accountSection = fs.readFileSync(path.join(rootDir, 'src', 'components', 'settings', 'AccountSection.jsx'), 'utf8');
+assert(settingsScreen.includes('<AccountSection'), 'SettingsScreen must render the account/cloud section');
+assert(accountSection.includes('cloudSyncService'), 'AccountSection must integrate cloudSyncService');
+assert(accountSection.includes('saveToCloud') && accountSection.includes('restoreFromCloud'),
+  'AccountSection must offer both backup and restore');
+assert(/res\.method === 'play_games'/.test(accountSection),
+  'Backup must report success only when the data actually reached Play Games — saveToCloud returns success:true even for a device-local write');
+assert(/signIn\(\s*true\s*\)/.test(accountSection),
+  'AccountSection must offer an INTERACTIVE Play Games sign-in; silent-only leaves new installs permanently locked out of leaderboards and cloud backup');
+assert(accountSection.includes('handleCloudBackup'), 'AccountSection must provide handleCloudBackup');
+assert(accountSection.includes('handleCloudRestore'), 'AccountSection must provide handleCloudRestore');
+assert(accountSection.includes('cloudSync.autoSyncNotice'), 'AccountSection must display autoSyncNotice');
 
 console.log('  ✅ 5. Component integration, Zero-Overflow, 2-Ad Hint Limit & No-Hint Safety contracts verified');
 console.log('🏆 [QA Gate 13] Global Leaderboards, Cloud Save, 2-Ad Hint Limit & No-Hint Safety Audit PASSED 100%!\n');

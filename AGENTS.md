@@ -10,9 +10,30 @@
 
 ---
 
-## 📏 2. [CRITICAL] STRICT < 300 LINES PER FILE
-* Every single file inside `src/` (`*.js`, `*.jsx`, `*.css`) **MUST REMAIN UNDER 300 LINES AT ALL TIMES**.
-* If a file approaches 270 lines, proactively decompose it into sub-components or utility hooks.
+## 📏 2. [CRITICAL] ONE FILE, ONE SET OF RESPONSIBILITIES
+
+**The rule is about separating responsibilities. The line budget only tells you when to look.**
+
+| Scope | Warn | Fail |
+|---|---|---|
+| Logic (`*.js`, `*.jsx`) | 200 code lines | 280 code lines |
+| Styles (`*.css`) | — | 320 code lines |
+
+* **Comments and blank lines are NOT counted.** Explain as much as the code needs; the
+  budget is for logic only.
+* **Never shorten a comment to get under the limit.** That is not a fix — it makes the
+  code less clear while leaving the real problem in place. This actually happened on
+  2026-09-02: `battleService.js` hit 302 lines and a comment was compressed back to 299,
+  while the file went on doing matchmaking, progress, rematch and AI battles all at once.
+  When it crossed the line again it was split into `aiBattleSession.js`, and *that* was
+  the fix.
+* **When a file is flagged, ask what it does — not how long it is.** The gate prints the
+  file's top-level units so you can see the seams. If you cannot name each unit's single
+  job in one phrase, that is where to split.
+* `src/i18n/` and `src/data/` are **excluded**: flat translation and puzzle tables have no
+  responsibilities to separate.
+* Enforced by QA gate `0-1` (`scripts/tests/unit/test_file_responsibility.js`). The warning
+  tier is a standing backlog, not noise — files on it should shrink over time, not grow.
 
 ---
 

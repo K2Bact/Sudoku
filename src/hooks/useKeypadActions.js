@@ -1,6 +1,6 @@
-import { cloneGrid, calculateRemainingCounts, getSmartHint } from '../engine/SudokuEngine';
-import { soundHaptic } from '../utils/soundHaptic';
-import { loadWallet, consumeHint } from '../utils/wallet';
+import { cloneGrid, calculateRemainingCounts, getSmartHint } from '../engine/SudokuEngine.js';
+import { soundHaptic } from '../utils/soundHaptic.js';
+import { loadWallet, consumeHint } from '../utils/wallet.js';
 
 export function useKeypadActions({
   board,

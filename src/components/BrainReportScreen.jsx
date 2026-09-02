@@ -26,12 +26,14 @@ export function BrainReportScreen({ onBack }) {
     ? (t(`brainReport.tiers.${report.tierKey}Desc`, { percentile: report.topPercentile }) || t(`tiers.${report.tierKey}.desc`, { percentile: report.topPercentile }) || report.tierDescription)
     : report.tierDescription;
 
+  // Every sub-score is computed from recorded play. See calculateCognitiveProfile.
+  const profile = iqStatsService.calculateCognitiveProfile(stats);
   const attributes = [
-    { label: t('brainReport.speed'), val: won > 0 ? '85/100' : '60/100', icon: <Zap size={18} className="text-yellow" /> },
-    { label: t('brainReport.logic'), val: won > 0 ? '92/100' : '65/100', icon: <Brain size={18} className="text-purple" /> },
+    { label: t('brainReport.speed'), val: `${profile.speed}/100`, icon: <Zap size={18} className="text-yellow" /> },
+    { label: t('brainReport.logic'), val: `${profile.logic}/100`, icon: <Brain size={18} className="text-purple" /> },
     { label: t('brainReport.accuracy'), val: `${winRate}%`, icon: <Target size={18} className="text-red" /> },
-    { label: t('brainReport.durability'), val: won > 5 ? '88/100' : '70/100', icon: <Shield size={18} className="text-green" /> },
-    { label: t('brainReport.focus'), val: played > 0 ? '90/100' : '50/100', icon: <Eye size={18} className="text-blue" /> }
+    { label: t('brainReport.durability'), val: `${profile.endurance}/100`, icon: <Shield size={18} className="text-green" /> },
+    { label: t('brainReport.focus'), val: `${profile.focus}/100`, icon: <Eye size={18} className="text-blue" /> }
   ];
 
   const handleShareIQ = async () => {
@@ -49,6 +51,10 @@ export function BrainReportScreen({ onBack }) {
     });
     if (res.method === 'clipboard') {
       setShareToast(t('brainReport.copiedToast'));
+      setTimeout(() => setShareToast(null), 2500);
+    } else if (res.method === 'none') {
+      // Every share path failed. Say so — silence reads as a dead button.
+      setShareToast(t('common.shareUnavailable'));
       setTimeout(() => setShareToast(null), 2500);
     }
   };

@@ -10,7 +10,7 @@ import { RemoveAdsScreen } from '../RemoveAdsScreen';
 import { SettingsScreen } from '../SettingsScreen';
 import { GameScreen } from './GameScreen';
 import { hasSavedGameState } from '../../utils/storage';
-import { admobService } from '../../services/admobService';
+import { adsService } from '../../services/adsService';
 import { battleService } from '../../firebase/battleService';
 
 export function AppScreenRouter({
@@ -30,6 +30,8 @@ export function AppScreenRouter({
   setActiveBattleRoom,
   onStartQuickMatch,
   isMatchSearching,
+  matchTimedOut,
+  onPlayAiInstead,
   onCancelQuickMatch,
   setAdRefreshTrigger,
   setTheme,
@@ -112,6 +114,8 @@ export function AppScreenRouter({
         <BattleLobbyScreen
           onBack={() => returnToParent(false)}
           isSearching={isMatchSearching}
+          matchTimedOut={matchTimedOut}
+          onPlayAiInstead={onPlayAiInstead}
           onCancelSearch={onCancelQuickMatch}
           onStartQuickMatch={onStartQuickMatch || ((lvl, cb) => {
             battleService.startQuickMatch(lvl, (room) => {
@@ -141,7 +145,7 @@ export function AppScreenRouter({
         <RemoveAdsScreen
           onBack={() => returnToParent(true)}
           onPurchaseSuccess={() => {
-            admobService.setAdsRemoved(true);
+            adsService.setAdsRemoved(true);
             setAdRefreshTrigger(prev => prev + 1);
             returnToParent(true);
           }}

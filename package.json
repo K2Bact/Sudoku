@@ -7,10 +7,10 @@
     "dev": "vite --host",
     "build": "vite build",
     "lint": "oxlint",
-    "qa": "node scripts/run_all_qa.js",
-    "test:ui": "node scripts/check_ui_overflow.js",
-    "test:e2e": "node scripts/run_e2e_tests.js",
-    "build:aab": "node scripts/build_release_aab.js",
+    "qa": "node scripts/tests/run_all_qa.js",
+    "test:ui": "node scripts/tests/ui/check_ui_overflow.js",
+    "test:e2e": "node scripts/tests/run_e2e_tests.js",
+    "build:aab": "node scripts/store/build_release_aab.js",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -18,7 +18,9 @@
     "@capacitor/app": "^8.1.1",
     "@capacitor/core": "^8.5.0",
     "@capacitor/share": "^8.0.1",
+    "@idleflowgames/capacitor-play-games": "^0.2.1",
     "canvas-confetti": "^1.9.4",
+    "firebase": "^12.18.0",
     "lucide-react": "^1.31.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"

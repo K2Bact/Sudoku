@@ -88,3 +88,41 @@ Whenever the user requests a new verification, bug check, or audit rule (e.g., "
    - Immediately register the new test step into `scripts/tests/run_all_qa.js` or `validator.mjs`.
    - Run `node scripts/tests/run_all_qa.js` to ensure 100% PASS (0 errors) across both existing and newly added verification rules.
 
+---
+
+## ⚡ 7. Core Engineering Standards & Defect Prevention (Mandatory Guidelines)
+Whenever implementing features, fixing bugs, or refactoring code:
+1. **Zero State Mutation & Return Contract**:
+   - Helper functions (e.g. solvers, validators) MUST NEVER mutate state arrays in-place. Always perform operations on deep copies (e.g. `cloneGrid()`).
+   - Functions returning solution arrays must explicitly return the grid object, NEVER a raw boolean (`true`/`false`).
+2. **React Interval & Timer Stability**:
+   - External callbacks passed into `useEffect` intervals (e.g. `onTimeLimitExpire`) must be wrapped in `useRef` to prevent unneeded interval teardown/reset during rapid user taps.
+   - Game over state transitions (e.g. countdown expiration) must use transition guards (1 ➔ 0 only) to prevent duplicate defeat invocations upon navigation.
+   - Never call a side effect from inside a `setState` updater. Updaters must stay pure; move the
+     effect into its own `useEffect` keyed on the resulting value.
+3. **Cross-Component Metric Scale Consistency**:
+   - When the same metric is rendered in two places (e.g. my vs. opponent progress), both must be
+     computed on an identical denominator. Board progress uses **initially-empty cells**, never all 81
+     cells — the latter starts the bar at the puzzle's given-clue ratio (30~62%) instead of 0%.
+4. **One Source of Truth for "Today"**:
+   - Every daily system (challenge, attendance streak, monthly badge) must derive its day key from
+     `src/utils/dateKey.js` (`getTodayDateKey`), which is **local time**. Never use
+     `toISOString().split('T')[0]` — that keys the day off UTC and desynchronises resets by the
+     timezone offset (09:00 in KST).
+5. **Security & Signing Key Isolation**:
+   - Release keystore files (`.jks`), passwords, and alias secrets must NEVER be committed to Git. Store secrets in `keystore.properties` (or environment variables) and ensure `.gitignore` coverage.
+6. **Data Key Consistency Across Services**:
+   - Always verify exact localStorage key matches (e.g. `suidoku_user_wallet_v1`, `suidoku_daily_records_v1`) across storage, wallet, and sync services before committing.
+7. **Node ESM Import Extension Compliance** (scoped — read the scope before mass-editing):
+   - Node's ESM resolver does not guess extensions; Vite's does. The rule therefore binds
+     **only on modules reachable from a test entry point** (`scripts/tests/**`), not on all of `src/`.
+   - Any module on that graph must spell relative imports out in full (`from './storage.js'`).
+   - `src/` currently holds ~219 extension-less imports across ~73 files that are reached only
+     through Vite. Those are correct as-is — **do NOT bulk-rewrite them.** Rewriting files no test
+     imports produces a large diff with zero behavioural benefit.
+   - When a new test pulls in a module that was previously app-only, add extensions along that
+     newly-reachable path only.
+   - Enforced automatically by QA gate `0-3` (`test_esm_import_extensions.js`), which walks the real
+     import graph from every test entry point. Trust the gate over manual inspection.
+
+

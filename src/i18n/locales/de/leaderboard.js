@@ -7,11 +7,16 @@ export const leaderboard = {
     myStanding: 'Meine aktuelle Platzierung',
     unranked: 'Ohne Rang',
     record: 'Mein Rekord',
-    topSolvers: 'Globale Ruhmeshalle TOP 10'
+    topSolvers: 'Leistungs-Richtwerte',
+    openPlayGames: 'Vollständige Rangliste in Play Games ansehen'
   },
   cloudSync: {
     sectionTitle: '☁️ Cloud-Speicher & Konto-Synchronisation',
     autoSyncNotice: '💡 Der Spielfortschritt wird nach jedem gelösten Rätsel automatisch gesichert. Nutzen Sie [Daten wiederherstellen] auf neuen Geräten.',
+    playGamesConnect: 'Play Games verbinden',
+    playGamesConnectDesc: 'Für Bestenlisten und Cloud-Backup erforderlich',
+    playGamesConnected: 'Verbunden als {name}',
+    playGamesFailed: 'Verbindung fehlgeschlagen. Bitte später erneut versuchen.',
     backupTitle: 'Jetzt in der Cloud sichern',
     backupDesc: 'Speichern Sie Ihren Fortschritt, Statistiken und Erfolge sicher in der Cloud.',
     backupSuccess: 'Cloud-Sicherung erfolgreich abgeschlossen! ✅',

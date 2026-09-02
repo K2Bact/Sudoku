@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowLeft, Play, Pause, RotateCcw, Palette, Volume2, VolumeX, Settings, Zap } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
+import { useConfirm } from './common/ConfirmProvider';
 
 export function Header({
   level,
@@ -23,6 +24,7 @@ export function Header({
   onToggleSound
 }) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
 
   const formatTime = (secs) => {
     const m = Math.floor(secs / 60);
@@ -30,19 +32,22 @@ export function Header({
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  const handleHomeClick = (e) => {
+  // window.confirm drew these with hardcoded English OK/Cancel buttons under a
+  // translated question. See common/ConfirmProvider.jsx.
+  const handleHomeClick = async (e) => {
     e?.preventDefault?.();
     e?.stopPropagation?.();
     soundHaptic.playSelectSound();
-    if (window.confirm(t('common.confirmLeaveGame'))) {
-      if (onReturnHome) {
-        onReturnHome();
-      }
+    if (await confirm(t('common.confirmLeaveGame'))) {
+      if (onReturnHome) onReturnHome();
     }
   };
 
-  const handleRestartConfirm = () => {
-    if (window.confirm(t('common.restart') + '?')) {
+  // Was t('common.restart') + '?' — a question mark glued onto a label. Arabic
+  // and every other language that punctuates differently got it wrong, and no
+  // translator could fix it because the sentence never existed as a key.
+  const handleRestartConfirm = async () => {
+    if (await confirm(t('common.restartConfirm'))) {
       if (onRestart) onRestart();
     }
   };

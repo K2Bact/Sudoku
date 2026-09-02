@@ -8,7 +8,6 @@
  */
 
 const ANON_UID_KEY = 'suidoku_anon_uid_v1';
-const GLOBAL_DISTRIBUTION_CACHE_KEY = 'suidoku_global_dist_cache_v1';
 
 // Mathematical error function approximation (Abramowitz and Stegun 7.1.26)
 function erf(x) {
@@ -40,7 +39,11 @@ class IQStatsService {
   // Generate opaque, random client UUID with zero linkage to personal identity
   getOrCreateAnonUid() {
     try {
-      if (typeof localStorage !== 'undefined') return 'anon_node_test';
+      // The guard was inverted here: it returned the literal 'anon_node_test'
+      // whenever localStorage EXISTED, which is always true in a browser or
+      // WebView. Every signed-out player therefore shared one id — one cloud-save
+      // slot and one leaderboard name ("Guest_TEST") between all of them.
+      if (typeof localStorage === 'undefined') return 'anon_no_storage';
       let uid = localStorage.getItem(ANON_UID_KEY);
       if (!uid) {
         uid = 'anon_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
@@ -146,26 +149,53 @@ class IQStatsService {
   }
 
   /**
-   * Anonymously sync current IQ stats with global database (zero personal info transmitted)
+   * Five cognitive sub-scores, each derived from stats the game actually records.
+   *
+   * These used to be two-value step functions — `won > 0 ? '85/100' : '60/100'` —
+   * so a player's first win pinned them for good and no amount of play moved them.
+   * Every value below moves with real progress; a brand-new player sits near the
+   * floor rather than at a flattering constant.
    */
-  async syncAnonymousIQRecord(iqScore, gamesWon, winRate) {
-    const anonymousPayload = {
-      anonUid: this.anonUid,
-      iq: Math.round(iqScore),
-      won: gamesWon,
-      winRate: Math.round(winRate),
-      ts: Date.now()
-    };
+  calculateCognitiveProfile(stats = {}) {
+    const clamp = (n) => Math.max(15, Math.min(99, Math.round(n)));
+    const played = Number(stats.gamesPlayed) || 0;
+    const won = Number(stats.gamesWon) || 0;
+    const bestTimes = stats.bestTimes || {};
+    const flawless = Number(stats.flawlessWins) || 0;
+    const survival = Number(stats.timeLimitSurvivalWins) || 0;
+    const maxCombo = Number(stats.maxCombo) || 0;
 
-    try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(GLOBAL_DISTRIBUTION_CACHE_KEY, JSON.stringify(anonymousPayload));
-      }
-    } catch (e) {
-      console.warn('Failed to cache anonymous IQ record:', e);
+    // SPEED — clear time measured against each level's own par time
+    const PAR = { 1: 240, 2: 360, 3: 480, 4: 720, 5: 1080 };
+    const ratios = [];
+    for (let lv = 1; lv <= 5; lv++) {
+      const t = bestTimes[lv];
+      if (t > 0) ratios.push(t / PAR[lv]);
     }
+    const avgRatio = ratios.length ? ratios.reduce((a, b) => a + b, 0) / ratios.length : null;
+    const speed = avgRatio === null ? 15 : clamp(100 - avgRatio * 55);
 
-    return anonymousPayload;
+    // LOGIC — hardest level cleared, plus how much of the ladder is covered
+    let maxLevel = 0;
+    let levelsCleared = 0;
+    for (let lv = 1; lv <= 5; lv++) {
+      if (bestTimes[lv] > 0) {
+        levelsCleared++;
+        maxLevel = lv;
+      }
+    }
+    const logic = maxLevel === 0 ? 15 : clamp(28 + maxLevel * 10 + levelsCleared * 4);
+
+    // ACCURACY — win rate over every game started
+    const accuracy = played === 0 ? 15 : clamp((won / played) * 100);
+
+    // ENDURANCE — survival-mode wins, tempered by overall volume
+    const endurance = played === 0 ? 15 : clamp(25 + survival * 8 + Math.min(28, played * 0.6));
+
+    // FOCUS — share of wins taken without a single mistake, plus combo peak
+    const focus = won === 0 ? 15 : clamp(35 + (flawless / won) * 50 + Math.min(14, maxCombo * 1.4));
+
+    return { speed, logic, accuracy, endurance, focus };
   }
 }
 

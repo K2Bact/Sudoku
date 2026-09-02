@@ -6,7 +6,10 @@ import { useTranslation } from '../i18n/i18nContext';
 import { recordDailyCompletion, getDailyMission, getTodayDateKey, loadDailyRecords } from '../utils/dailyChallenge';
 import { addHints } from '../utils/wallet';
 
+import { ratingDeltaFor } from '../utils/battleRating';
+
 export function BattleResultModal({
+  lastRatingChange,
   room,
   winner,
   opponentName,
@@ -111,7 +114,9 @@ export function BattleResultModal({
               <span className="mmr-label">{t('battleResult.ratingChange')}</span>
             </div>
             <div className={`mmr-val-pill ${isIWon ? 'positive' : 'negative'}`}>
-              {isIWon ? '+25 MMR' : '-12 MMR'}
+              {lastRatingChange
+                ? `${lastRatingChange.delta >= 0 ? '+' : ''}${lastRatingChange.delta} MMR`
+                : `${isIWon ? '+' : ''}${ratingDeltaFor(isIWon, room?.level || 3)} MMR`}
             </div>
           </div>
         )}

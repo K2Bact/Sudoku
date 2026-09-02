@@ -38,7 +38,7 @@ export const screens = {
     header: 'Desafíos diarios ({month})',
     badgeTitle: 'Maestro de {month}',
     badgeDesc: '{completed}/{target} · Meta 15',
-    unlockingAd: '📺 Desbloqueando puzle pasado ({seconds}s)...',
+    unlockingAd: '📺 Desbloqueando puzle pasado...',
     calendarTitle: '📅 Calendario de 365 días',
     futureAlert: 'Los puzles futuros aún no están desbloqueados.',
     pastUnlockNotice: '💡 Las fechas pasadas (🔒) se pueden desbloquear viendo un breve anuncio.',
@@ -82,7 +82,7 @@ export const screens = {
     restoreBtn: 'Restaurar compras',
     alreadyPurchased: '¡Ya tienes el acceso Premium! 🎉',
     processing: '💳 Procesando...',
-    purchaseBtn: 'Eliminar anuncios ({price})',
+    purchaseBtn: 'Eliminar anuncios',
     successToast: '🎉 ¡Anuncios eliminados para siempre!',
     buySuccess: '¡Compra completada con éxito! Gracias por tu apoyo.',
     restoreSuccess: 'Compras restauradas con éxito.',
@@ -216,7 +216,9 @@ export const screens = {
     autoMatchTitle: 'Partida rápida',
     autoMatchDesc: 'Emparejamiento veloz 1:1 con jugadores de todo el mundo',
     mmrBadge: 'Emparejamiento por nivel · Victorias: {rate}%',
-    findOpponentBtn: 'Buscar oponente'
+    findOpponentBtn: 'Buscar oponente',
+    noOpponentFound: 'No se encontró rival. ¿Jugar contra la IA?',
+    playAiInstead: 'Jugar contra la IA'
   },
   battleResult: {
     victoryTitle: '¡Victoria en duelo 1v1!',
@@ -300,5 +302,5 @@ export const screens = {
       startBtn: 'Iniciar tutorial'
     }
   },
-  adBanner: { sponsor: 'Anuncio patrocinado oficial de Google AdMob', removeBtn: 'Sin anuncios', officialSponsored: 'Anuncio patrocinado oficial de Google AdMob', removeAdsBtn: 'Sin anuncios' }
+  adBanner: { placeholderTag: 'PRUEBA', placeholderText: 'Espacio de anuncio (sin anuncio)', removeBtn: 'Sin anuncios' }
 };

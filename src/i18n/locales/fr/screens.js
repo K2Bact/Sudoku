@@ -38,7 +38,7 @@ export const screens = {
     header: 'Défis quotidiens ({month})',
     badgeTitle: 'Maître {month}',
     badgeDesc: '{completed}/{target} · Obj. 15',
-    unlockingAd: '📺 Déverrouillage du défi passé ({seconds}s)...',
+    unlockingAd: '📺 Déverrouillage du défi passé...',
     calendarTitle: '📅 Calendrier 365 jours',
     futureAlert: 'Les défis futurs ne sont pas encore débloqués.',
     pastUnlockNotice: '💡 Les jours manqués (🔒) peuvent être débloqués à tout moment en regardant une courte vidéo.',
@@ -75,7 +75,7 @@ export const screens = {
     restoreBtn: 'Restaurer les achats',
     alreadyPurchased: 'Vous possédez déjà l’accès Premium ! 🎉',
     processing: '💳 Traitement en cours...',
-    purchaseBtn: 'Supprimer les pubs ({price})',
+    purchaseBtn: 'Supprimer les pubs',
     successToast: '🎉 Publicités supprimées définitivement !',
     buySuccess: 'Achat effectué avec succès ! Merci !',
     restoreSuccess: 'Achats restaurés avec succès.',
@@ -209,7 +209,9 @@ export const screens = {
     autoMatchTitle: 'Match rapide',
     autoMatchDesc: 'Appariement rapide avec des joueurs du monde entier',
     mmrBadge: 'Match équilibré · Victoires : {rate}%',
-    findOpponentBtn: 'Chercher un duel'
+    findOpponentBtn: 'Chercher un duel',
+    noOpponentFound: 'Aucun adversaire trouvé. Jouer contre l’IA ?',
+    playAiInstead: 'Affronter l’IA'
   },
   battleResult: {
     victoryTitle: 'Victoire en duel 1v1 !',
@@ -293,5 +295,5 @@ export const screens = {
       startBtn: 'Démarrer le tutoriel'
     }
   },
-  adBanner: { sponsor: 'Annonce sponsorisée officielle Google AdMob', removeBtn: 'Sans pub', officialSponsored: 'Annonce sponsorisée officielle Google AdMob', removeAdsBtn: 'Sans pub' }
+  adBanner: { placeholderTag: 'TEST', placeholderText: 'Emplacement pub (aucune pub)', removeBtn: 'Sans pub' }
 };

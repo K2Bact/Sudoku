@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { App as CapacitorApp } from '@capacitor/app';
 import { soundHaptic } from '../utils/soundHaptic';
+import { useConfirm } from '../components/common/ConfirmProvider';
 
 /**
  * 4-Tier Hardware Back Button & Popstate Navigation Stack
@@ -9,6 +10,12 @@ import { soundHaptic } from '../utils/soundHaptic';
 export function useBackStack(props) {
   const stateRef = useRef(props);
   stateRef.current = props;
+
+  // The back handler is registered once and reads everything through refs, so
+  // the confirm function goes through one too rather than into the dep array.
+  const confirmFn = useConfirm();
+  const confirmRef = useRef(confirmFn);
+  confirmRef.current = confirmFn;
 
   const lastBackPressTimeRef = useRef(0);
   const isHandlingBackRef = useRef(false);
@@ -103,21 +110,25 @@ export function useBackStack(props) {
       // 3. Priority 3: Active Gameplay Screen (activeScreen === 'game')
       if (activeScreen === 'game') {
         soundHaptic.playSelectSound();
+        // The back handler has to say NOW whether it consumed the event, so it
+        // returns true immediately and finishes the work when the player
+        // answers. window.confirm() could block and answer inline; an in-app
+        // modal cannot, and pretending otherwise would let the event fall
+        // through to Android and close the app behind the question.
         if (activeBattleRoom) {
           const isAIBattle = activeBattleRoom?.isAIBattle || activeBattleRoom?.opponentName?.includes('AI') || activeBattleRoom?.opponentName?.toLowerCase().includes('bot');
-          const confirmMsg = t('battleHeader.confirmLeave');
-          if (window.confirm(confirmMsg)) {
+          confirmRef.current(t('battleHeader.confirmLeave')).then((ok) => {
+            if (!ok) return;
             battleService.leaveRoom();
             aiBotService.stopMatch();
             setActiveScreen(isAIBattle ? 'aiBattle' : 'battleLobby');
-          }
+          });
           return true;
         }
 
-        const confirmMsg = t('common.confirmLeaveGame');
-        if (window.confirm(confirmMsg)) {
-          setActiveScreen('home');
-        }
+        confirmRef.current(t('common.confirmLeaveGame')).then((ok) => {
+          if (ok) setActiveScreen('home');
+        });
         return true;
       }
 

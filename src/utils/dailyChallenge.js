@@ -5,17 +5,13 @@
 
 import { generatePuzzle } from '../engine/SudokuEngine.js';
 import { loadStats } from './storage.js';
+import { getTodayDateKey } from './dateKey.js';
 
-const DAILY_STORAGE_KEY = 'suidoku_daily_records_v1';
+// Exported so sync/backup code cannot drift onto a different key string.
+export const DAILY_STORAGE_KEY = 'suidoku_daily_records_v1';
 
-// Get today's date key formatted as YYYY-MM-DD
-export function getTodayDateKey() {
-  const now = new Date();
-  const yyyy = now.getFullYear();
-  const mm = String(now.getMonth() + 1).padStart(2, '0');
-  const dd = String(now.getDate()).padStart(2, '0');
-  return `${yyyy}-${mm}-${dd}`;
-}
+// Re-exported so existing importers keep resolving it from here
+export { getTodayDateKey };
 
 // Determine user skill tier based on wins and clear history
 export function getUserSkillTier(stats = loadStats()) {

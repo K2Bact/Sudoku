@@ -43,5 +43,8 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- soundHaptic.js calls navigator.vibrate(); Android silently ignores it
+         without this permission, so every haptic in the game did nothing. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 </manifest>

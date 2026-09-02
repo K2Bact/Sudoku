@@ -92,6 +92,10 @@ export function VictoryModal({
     if (res.method === 'clipboard') {
       setShareToast(t('modals.victory.copiedToast'));
       setTimeout(() => setShareToast(null), 2500);
+    } else if (res.method === 'none') {
+      // Every share path failed. Say so — silence reads as a dead button.
+      setShareToast(t('common.shareUnavailable'));
+      setTimeout(() => setShareToast(null), 2500);
     }
   };
 

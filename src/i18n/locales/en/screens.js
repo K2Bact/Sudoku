@@ -38,7 +38,7 @@ export const screens = {
     header: 'Daily Challenges ({month})',
     badgeTitle: '{month} Master',
     badgeDesc: '{completed}/{target} · Goal 15',
-    unlockingAd: '📺 Unlocking past puzzle ({seconds}s)...',
+    unlockingAd: '📺 Unlocking past puzzle...',
     calendarTitle: '📅 365-Day Calendar',
     futureAlert: 'Future puzzles are not unlocked yet.',
     pastUnlockNotice: '💡 Missed past dates (🔒) can be unlocked anytime by watching a short video ad.',
@@ -75,7 +75,7 @@ export const screens = {
     restoreBtn: 'Restore Purchases',
     alreadyPurchased: 'You already have Premium Access! 🎉',
     processing: '💳 Processing...',
-    purchaseBtn: 'Remove Ads ({price})',
+    purchaseBtn: 'Remove Ads',
     successToast: '🎉 Ads permanently removed!',
     buySuccess: 'Purchase completed successfully! Thank you.',
     restoreSuccess: 'Purchases restored successfully.',
@@ -209,7 +209,9 @@ export const screens = {
     autoMatchTitle: 'Quick Match',
     autoMatchDesc: 'Speed matching with players worldwide',
     mmrBadge: 'Skill-Based Match · Win Rate {rate}%',
-    findOpponentBtn: 'Find Opponent'
+    findOpponentBtn: 'Find Opponent',
+    noOpponentFound: 'No opponent found. Play against the AI instead?',
+    playAiInstead: 'Battle the AI'
   },
   battleResult: {
     victoryTitle: '1v1 Battle Victory!',
@@ -293,5 +295,5 @@ export const screens = {
       startBtn: 'Start Tutorial'
     }
   },
-  adBanner: { sponsor: 'Official Google AdMob Sponsored Ad', removeBtn: 'Remove Ads', officialSponsored: 'Official Google AdMob Sponsored Ad', removeAdsBtn: 'Remove Ads' }
+  adBanner: { placeholderTag: 'TEST', placeholderText: 'Ad space (no ad served)', removeBtn: 'Remove Ads' }
 };

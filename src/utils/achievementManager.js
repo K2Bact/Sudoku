@@ -1,5 +1,6 @@
 import { ACHIEVEMENTS_LIST } from '../data/achievementsData.js';
 import { loadStats } from './storage.js';
+import { loadWallet } from './wallet.js';
 import { playGamesService } from '../services/playGamesService.js';
 
 const STORAGE_KEY = 'sudoku_achievements_v1';
@@ -35,7 +36,10 @@ export function checkAndUnlockAchievements(ctx = {}) {
   const won = stats.gamesWon || 0;
   const flawlessCount = stats.flawlessWins || (ctx.isFlawless ? 1 : 0);
   const survivalWins = stats.timeLimitSurvivalWins || 0;
-  const dailyStreak = stats.dailyStreak || 0;
+  // The attendance streak lives in the wallet, which is where claimDailyAttendance
+  // maintains it. Reading stats.dailyStreak — a field nothing has ever written —
+  // pinned this at 0 and made the 7-day badge permanently unreachable.
+  const dailyStreak = loadWallet().streakDays || 0;
   const maxCombo = Math.max(stats.maxCombo || 0, ctx.comboCount || 0);
 
   ACHIEVEMENTS_LIST.forEach((ach) => {

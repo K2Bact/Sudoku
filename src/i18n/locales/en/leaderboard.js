@@ -7,11 +7,16 @@ export const leaderboard = {
     myStanding: 'My Current Standing',
     unranked: 'Unranked',
     record: 'My Record',
-    topSolvers: 'Global Hall of Fame TOP 10'
+    topSolvers: 'Skill Benchmarks',
+    openPlayGames: 'View full ranking on Play Games'
   },
   cloudSync: {
     sectionTitle: '☁️ Cloud Save & Account Sync',
     autoSyncNotice: '💡 Game progress is automatically backed up upon puzzle clear. Use [Restore Data] on new devices.',
+    playGamesConnect: 'Connect Play Games',
+    playGamesConnectDesc: 'Required for leaderboards and cloud backup',
+    playGamesConnected: 'Connected as {name}',
+    playGamesFailed: 'Could not connect. Please try again later.',
     backupTitle: 'Backup to Cloud Now',
     backupDesc: 'Safely save your progress, stats, and achievements to the cloud.',
     backupSuccess: 'Cloud backup completed! ✅',

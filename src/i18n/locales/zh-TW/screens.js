@@ -38,7 +38,7 @@ export const screens = {
     header: '每日挑戰目標 ({month}月)',
     badgeTitle: '{month}月數獨大師徽章',
     badgeDesc: '已完成 {completed} / {target} 局（目標：15+ 局）',
-    unlockingAd: '📺 正在觀看廣告 ({seconds}秒)... 解鎖過往謎題',
+    unlockingAd: '📺 正在觀看廣告... 解鎖過往謎題',
     calendarTitle: '📅 365 日曆',
     futureAlert: '未來的謎題尚未開放挑戰。',
     pastUnlockNotice: '💡 錯過的過往謎題 (🔒) 可透過觀看簡短廣告隨時解鎖並補簽。',
@@ -75,7 +75,7 @@ export const screens = {
     restoreBtn: '恢復购買記錄',
     alreadyPurchased: '您已拥有頂級會員特权！ 🎉',
     processing: '💳 处理中...',
-    purchaseBtn: '永久去除廣告 ({price})',
+    purchaseBtn: '永久去除廣告',
     successToast: '🎉 已成功永久去除廣告！',
     buySuccess: '购買成功！感谢您的支持。',
     restoreSuccess: '购買記錄已成功恢復。',
@@ -209,7 +209,9 @@ export const screens = {
     autoMatchTitle: '快速匹配',
     autoMatchDesc: '與全球玩家進行 1:1 極速對決',
     mmrBadge: '實力匹配 · 當前勝率 {rate}%',
-    findOpponentBtn: '寻找對手'
+    findOpponentBtn: '寻找對手',
+    noOpponentFound: '找不到對手。要改與 AI 對戰嗎?',
+    playAiInstead: '與 AI 對戰'
   },
   battleResult: {
     victoryTitle: '1v1 對決勝利！',
@@ -293,5 +295,5 @@ export const screens = {
       startBtn: '開始教學'
     }
   },
-  adBanner: { sponsor: 'Google AdMob 官方贊助廣告', removeBtn: '去除廣告', officialSponsored: 'Google AdMob 官方贊助廣告', removeAdsBtn: '去除廣告' }
+  adBanner: { placeholderTag: '測試', placeholderText: '廣告版位（未投放）', removeBtn: '去除廣告' }
 };

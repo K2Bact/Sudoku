@@ -7,11 +7,16 @@ export const leaderboard = {
     myStanding: 'ترتيبي الحالي',
     unranked: 'غير مصنف',
     record: 'سجلي',
-    topSolvers: 'قائمة مشاهير العالم (أفضل 10)'
+    topSolvers: 'مستويات مرجعية',
+    openPlayGames: 'عرض الترتيب الكامل في ألعاب Play'
   },
   cloudSync: {
     sectionTitle: '☁️ الحفظ السحابي ومزامنة الحساب',
     autoSyncNotice: '💡 يتم حفظ تقدم اللعبة تلقائياً عند حل كل لغز. استخدم [استعادة البيانات] على الأجهزة الجديدة.',
+    playGamesConnect: 'ربط ألعاب Play',
+    playGamesConnectDesc: 'مطلوب لقوائم المتصدرين والنسخ الاحتياطي السحابي',
+    playGamesConnected: 'متصل باسم {name}',
+    playGamesFailed: 'تعذّر الاتصال. يُرجى المحاولة لاحقًا.',
     backupTitle: 'نسخ احتياطي إلى السحابة الآن',
     backupDesc: 'احفظ تقدمك وإحصائياتك وإنجازاتك بأمان على السحابة.',
     backupSuccess: 'اكتمل النسخ الاحتياطي السحابي بنجاح! ✅',

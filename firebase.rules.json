@@ -1,0 +1,68 @@
+{
+  "//": [
+    "Realtime Database security rules for Suidoku 1v1.",
+    "",
+    "Paste into Firebase console > Realtime Database > Rules, then Publish.",
+    "Kept in the repo so the rules are reviewable and versioned alongside the",
+    "transport that depends on them — the console is not a source of truth.",
+    "",
+    "The app is unauthenticated (no Firebase Auth), so these rules cannot identify",
+    "who is who. They therefore constrain SHAPE and SIZE rather than identity:",
+    "anyone can write, but only well-formed, small, short-lived records. Message",
+    "authenticity is checked a second time on the client in battleValidation.js —",
+    "roomId and senderId must match the room the player is actually in.",
+    "",
+    "GOTCHA, learned the hard way: a bare \"$other\": { \".validate\": false } does",
+    "NOT mean 'any child other than the named ones'. The wildcard matches EVERY",
+    "child, so it rejected playerId/level/timestamp too and every queue write",
+    "failed with PERMISSION_DENIED. Each allowed field must be named explicitly",
+    "alongside it, which is what the entries below do.",
+    "",
+    "This is deliberate for a closed test. Before a wider release, add Firebase",
+    "Anonymous Auth and tighten '.write' to \"auth != null\", so a bot cannot flood",
+    "the queue. Do NOT relax these to \".read\": true, \".write\": true — that is an",
+    "open database anyone on the internet can wipe or fill."
+  ],
+
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "queue": {
+      ".read": true,
+      "$playerId": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['playerId','playerName','level','timestamp'])",
+        "playerId": {
+          ".validate": "newData.isString() && newData.val() === $playerId && newData.val().length <= 64"
+        },
+        "playerName": {
+          ".validate": "newData.isString() && newData.val().length <= 64"
+        },
+        "level": {
+          ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 5"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": { ".validate": false }
+      }
+    },
+
+    "bus": {
+      ".read": true,
+      "$messageId": {
+        ".write": "!data.exists() || !newData.exists()",
+        ".validate": "newData.hasChildren(['type','senderId','_ts'])",
+        "type": { ".validate": "newData.isString() && newData.val().length <= 32" },
+        "senderId": { ".validate": "newData.isString() && newData.val().length <= 64" },
+        "_ts": { ".validate": "newData.isNumber()" },
+        "roomId": { ".validate": "newData.isString() && newData.val().length <= 64" },
+        "progressPct": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" },
+        "mistakes": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3" },
+        "level": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 5" },
+        "$other": { ".validate": true }
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@ export const common = {
     confirm: '確認',
     cancel: '取消',
     restart: '重新開始',
+    restartConfirm: '要重新開始這個謎題嗎？',
     newGame: '新遊戲',
     home: '主畫面',
     save: '儲存',
@@ -17,7 +18,8 @@ export const common = {
     loading: '載入中...',
     error: '錯誤',
     exitAppPrompt: '再次點擊返回鍵即可退出應用程式。',
-    confirmLeaveGame: '確定要中斷遊戲並返回主畫面嗎？'
+    confirmLeaveGame: '確定要中斷遊戲並返回主畫面嗎？',
+    shareUnavailable: '此裝置無法使用分享功能。'
   },
   calendar: {
     days: {
@@ -55,6 +57,7 @@ export const common = {
     erase: '清除',
     notes: '筆記',
     hint: '提示',
+    rewardHint: '+1 提示',
     fastEntry: '快速輸入',
     fastEntryLocked: '固定 {number}'
   },

@@ -38,7 +38,7 @@ export const screens = {
     header: '일일 도전 과제 ({month}월)',
     badgeTitle: '{month}월 스도쿠 마스터 배지',
     badgeDesc: '{completed} / {target}개 완료 (목표: 15개 이상)',
-    unlockingAd: '📺 광고 시청 중 ({seconds}초)... 지나간 퍼즐 해금',
+    unlockingAd: '📺 광고 시청 중... 지나간 퍼즐 해금',
     calendarTitle: '📅 365일 일일 달력',
     futureAlert: '미래 날짜의 퍼즐은 아직 해금되지 않았습니다.',
     pastUnlockNotice: '💡 놓친 지나간 날짜(🔒)는 짧은 광고를 시청하여 언제든 해금하고 출석 스탬프를 채울 수 있습니다.',
@@ -75,7 +75,7 @@ export const screens = {
     restoreBtn: '이전 구매 내역 복원',
     alreadyPurchased: '이미 프리미엄 멤버십을 보유하고 있습니다! 🎉',
     processing: '💳 결제 처리 중...',
-    purchaseBtn: '영구 제거하기 ({price})',
+    purchaseBtn: '영구 제거하기',
     successToast: '🎉 광고가 영구적으로 제거되었습니다!',
     buySuccess: '구매가 성공적으로 완료되었습니다! 감사합니다.',
     restoreSuccess: '구매 내역이 성공적으로 복원되었습니다.',
@@ -209,7 +209,9 @@ export const screens = {
     autoMatchTitle: '실시간 빠른 대전',
     autoMatchDesc: '전 세계 플레이어와 1:1 스피드 매칭',
     mmrBadge: '실력 기반 매칭 · 내 승률 {rate}%',
-    findOpponentBtn: '상대 찾기'
+    findOpponentBtn: '상대 찾기',
+    noOpponentFound: '상대를 찾지 못했습니다. AI와 대전할까요?',
+    playAiInstead: 'AI와 대전'
   },
   battleResult: {
     victoryTitle: '1v1 배틀 승리!',
@@ -287,5 +289,5 @@ export const screens = {
       startBtn: '튜토리얼 시작'
     }
   },
-  adBanner: { sponsor: 'Google AdMob 공식 후원 광고', removeBtn: '광고 제거', officialSponsored: 'Google AdMob 공식 후원 광고', removeAdsBtn: '광고 제거' }
+  adBanner: { placeholderTag: '테스트', placeholderText: '광고 자리 (실제 광고 없음)', removeBtn: '광고 제거' }
 };

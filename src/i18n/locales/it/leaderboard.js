@@ -7,11 +7,16 @@ export const leaderboard = {
     myStanding: 'Mia Posizione Attuale',
     unranked: 'Non Classificato',
     record: 'Mio Record',
-    topSolvers: 'Albo d’Oro Mondiale TOP 10'
+    topSolvers: 'Livelli di riferimento',
+    openPlayGames: 'Vedi la classifica completa su Play Giochi'
   },
   cloudSync: {
     sectionTitle: '☁️ Salvataggio Cloud & Sincronizzazione',
     autoSyncNotice: '💡 I tuoi progressi vengono salvati automaticamente ad ogni vittoria. Usa [Ripristina Dati] sui nuovi dispositivi.',
+    playGamesConnect: 'Connetti Play Giochi',
+    playGamesConnectDesc: 'Necessario per classifiche e backup nel cloud',
+    playGamesConnected: 'Connesso come {name}',
+    playGamesFailed: 'Impossibile connettersi. Riprova più tardi.',
     backupTitle: 'Salva nel Cloud Ora',
     backupDesc: 'Salva i tuoi progressi, statistiche e obiettivi in modo sicuro nel cloud.',
     backupSuccess: 'Salvataggio nel cloud completato con successo! ✅',

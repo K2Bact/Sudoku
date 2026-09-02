@@ -6,6 +6,7 @@ export const common = {
     confirm: 'موافق',
     cancel: 'إلغاء',
     restart: 'إعادة البدء',
+    restartConfirm: 'إعادة تشغيل هذه الأحجية؟',
     newGame: 'لعبة جديدة',
     home: 'الرئيسية',
     save: 'حفظ',
@@ -14,7 +15,8 @@ export const common = {
     loading: 'جارٍ التحميل...',
     error: 'خطأ',
     exitAppPrompt: 'اضغط رجوع مرة أخرى للخروج من التطبيق.',
-    confirmLeaveGame: 'هل أنت متأكد من رغبتك في إيقاف اللعبة مؤقتاً والعودة إلى الرئيسية؟'
+    confirmLeaveGame: 'هل أنت متأكد من رغبتك في إيقاف اللعبة مؤقتاً والعودة إلى الرئيسية؟',
+    shareUnavailable: 'المشاركة غير متاحة على هذا الجهاز.'
   },
   calendar: {
     days: {
@@ -52,6 +54,7 @@ export const common = {
     erase: 'مسح',
     notes: 'ملاحظات',
     hint: 'تلميح',
+    rewardHint: '+1 تلميح',
     fastEntry: 'الوضع السريع',
     fastEntryLocked: 'مغلق {number}'
   },

@@ -6,6 +6,7 @@ export const common = {
     confirm: '決定',
     cancel: 'キャンセル',
     restart: 'やり直す',
+    restartConfirm: 'このパズルを最初からやり直しますか？',
     newGame: '新しいゲーム',
     home: 'メインホーム',
     save: '保存',
@@ -14,7 +15,8 @@ export const common = {
     loading: '読み込み中...',
     error: 'エラー',
     exitAppPrompt: '戻るボタンをもう一度押すとアプリを終了します。',
-    confirmLeaveGame: 'ゲームを中断してホームに戻りますか？'
+    confirmLeaveGame: 'ゲームを中断してホームに戻りますか？',
+    shareUnavailable: 'この端末では共有できません。'
   },
   calendar: {
     days: {
@@ -52,6 +54,7 @@ export const common = {
     erase: '消去',
     notes: 'メモ',
     hint: 'ヒント',
+    rewardHint: '+1 ヒント',
     fastEntry: '連続入力',
     fastEntryLocked: '{number}番固定'
   },

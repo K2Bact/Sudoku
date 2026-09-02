@@ -38,7 +38,7 @@ export const screens = {
     header: 'दैनिक चुनौतियां ({month})',
     badgeTitle: '{month} मास्टर पदक',
     badgeDesc: '{completed}/{target} · लक्ष्य 15',
-    unlockingAd: '📺 पिछला दिन अनलॉक हो रहा है ({seconds}s)...',
+    unlockingAd: '📺 पिछला दिन अनलॉक हो रहा है...',
     calendarTitle: '📅 365-दिवसीय कैलेंडर',
     futureAlert: 'भविष्य की पहेलियां अभी उपलब्ध नहीं हैं।',
     pastUnlockNotice: '💡 छूटे हुए पिछले दिनों (🔒) को छोटा विज्ञापन देखकर अनलॉक किया जा सकता है।',
@@ -75,7 +75,7 @@ export const screens = {
     restoreBtn: 'खरीदारी पुनर्स्थापित करें',
     alreadyPurchased: 'आपके पास पहले से प्रीमियम लाभ हैं! 🎉',
     processing: '💳 प्रक्रिया जारी है...',
-    purchaseBtn: 'विज्ञापन हमेशा के लिए हटाएं ({price})',
+    purchaseBtn: 'विज्ञापन हमेशा के लिए हटाएं',
     successToast: '🎉 विज्ञापन सफलतापूर्वक हटा दिए गए!',
     buySuccess: 'खरीदारी सफल! आपके समर्थन के लिए धन्यवाद।',
     restoreSuccess: 'खरीदारी सफलतापूर्वक पुनर्स्थापित हो गई।',
@@ -209,7 +209,9 @@ export const screens = {
     autoMatchTitle: 'त्वरित मैच',
     autoMatchDesc: 'दुनिया भर के खिलाड़ियों के साथ 1:1 त्वरित मुकाबला',
     mmrBadge: 'कौशल आधारित मैच · जीत दर: {rate}%',
-    findOpponentBtn: 'प्रतिद्वंद्वी खोजें'
+    findOpponentBtn: 'प्रतिद्वंद्वी खोजें',
+    noOpponentFound: 'कोई प्रतिद्वंद्वी नहीं मिला। AI से खेलें?',
+    playAiInstead: 'AI से खेलें'
   },
   battleResult: {
     victoryTitle: '1v1 मुकाबले में जीत!',
@@ -293,5 +295,5 @@ export const screens = {
       startBtn: 'ट्यूटोरियल शुरू करें'
     }
   },
-  adBanner: { sponsor: 'Google AdMob आधिकारिक प्रायोजित विज्ञापन', removeBtn: 'विज्ञापन हटाएं', officialSponsored: 'Google AdMob आधिकारिक प्रायोजित विज्ञापन', removeAdsBtn: 'विज्ञापन हटाएं' }
+  adBanner: { placeholderTag: 'परीक्षण', placeholderText: 'विज्ञापन स्थान (कोई विज्ञापन नहीं)', removeBtn: 'विज्ञापन हटाएं' }
 };

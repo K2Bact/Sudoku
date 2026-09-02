@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { battleService } from '../firebase/battleService';
 import { soundHaptic } from '../utils/soundHaptic';
+import { applyBattleResult } from '../utils/battleRating';
 
 export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen, t }) {
   const [activeBattleRoom, setActiveBattleRoom] = useState(null);
@@ -11,6 +12,16 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
   const [isOpponentLeft, setIsOpponentLeft] = useState(false);
   const [isMatchSearching, setIsMatchSearching] = useState(false);
   const rematchTimerRef = useRef(null);
+  // Rating is applied once per finished match; the room subscription fires
+  // repeatedly while the result screen is up.
+  const ratedMatchRef = useRef(null);
+  // Same hazard, and it bit harder: rematchStatus is a state that STAYS
+  // 'accepted', while this subscription runs on every notifyListeners(). Acting
+  // on the value instead of the transition re-ran startNewGame on every update.
+  const handledRematchRef = useRef('idle');
+  const searchTimeoutRef = useRef(null);
+  const [matchTimedOut, setMatchTimedOut] = useState(false);
+  const [lastRatingChange, setLastRatingChange] = useState(null);
 
   useEffect(() => {
     // 1. Subscribe to Room State Updates
@@ -19,20 +30,42 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
 
       if (room && (room.status === 'completed' || room.status === 'finished')) {
         setShowBattleResultModal(true);
+        // Record the rating once. This subscription fires repeatedly while the
+        // result screen is open, and the room code identifies the match.
+        if (room.winner && ratedMatchRef.current !== room.code) {
+          ratedMatchRef.current = room.code;
+          setLastRatingChange(applyBattleResult(room.winner === 'me', room.level || 3));
+        }
       }
 
-      if (room && room.rematchStatus === 'accepted') {
-        setShowBattleResultModal(false);
-        setIncomingRematchRequest(null);
-        setIsRematchWaiting(false);
-        setIsOpponentLeft(false);
-        if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
-        showToast(t('battleResult.rematchAcceptedToast'), 2500);
-        startNewGame(room.level || 3, 'battle', { board: room.puzzle, solution: room.solution });
-      } else if (room && room.rematchStatus === 'declined') {
-        setIsRematchWaiting(false);
-        if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
-        showToast(t('battleResult.rematchRejectedToast'), 2500);
+      // Act on the CHANGE, not on the value. rematchStatus stays 'accepted'
+      // for the rest of the match, so running this branch whenever the value
+      // happens to be 'accepted' called startNewGame on every notifyListeners()
+      // — including the one sendProgress fires on each entry. The fresh board
+      // landed in the same React commit as the digit, so every input on a
+      // rematch board was silently discarded and the match was unplayable.
+      const rematchStatus = (room && room.rematchStatus) || 'idle';
+      // status alone is not enough: accepting two rematches in a row sets
+      // 'accepted' both times, which would look like no change at all.
+      const rematchKey = `${rematchStatus}:${(room && room.rematchSeq) || 0}`;
+      if (rematchKey !== handledRematchRef.current) {
+        handledRematchRef.current = rematchKey;
+
+        if (rematchStatus === 'accepted') {
+          setShowBattleResultModal(false);
+          setIncomingRematchRequest(null);
+          setIsRematchWaiting(false);
+          setIsOpponentLeft(false);
+          ratedMatchRef.current = null;
+          setLastRatingChange(null);
+          if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
+          showToast(t('battleResult.rematchAcceptedToast'), 2500);
+          startNewGame(room.level || 3, 'battle', { board: room.puzzle, solution: room.solution });
+        } else if (rematchStatus === 'declined') {
+          setIsRematchWaiting(false);
+          if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
+          showToast(t('battleResult.rematchRejectedToast'), 2500);
+        }
       }
     });
 
@@ -57,13 +90,40 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
     };
   }, [showToast, startNewGame, t]);
 
+  // How long to look before admitting nobody is coming. The search used to run
+  // forever: on the local transport no peer can ever appear, so the player sat on
+  // "searching for an opponent" until they backed out.
+  const SEARCH_TIMEOUT_MS = 12000;
+
+  const startAIFallback = (lvl) => {
+    setMatchTimedOut(false);
+    setIsMatchSearching(false);
+    battleService.leaveRoom();
+    battleService.startAIBattle(lvl, (room) => {
+      setActiveBattleRoom({ ...room });
+      startNewGame(lvl, 'aiBattle', { board: room.puzzle, solution: room.solution });
+      setActiveScreen('game');
+    });
+  };
+
   const handleStartQuickMatch = (lvl, onComplete) => {
     setIsOpponentLeft(false);
     setIsRematchWaiting(false);
     setIncomingRematchRequest(null);
+    setMatchTimedOut(false);
     setIsMatchSearching(true);
-    battleService.startQuickMatch(lvl, (room) => {
+
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    searchTimeoutRef.current = setTimeout(() => {
       setIsMatchSearching(false);
+      setMatchTimedOut(true);
+      battleService.leaveRoom();
+    }, SEARCH_TIMEOUT_MS);
+
+    battleService.startQuickMatch(lvl, (room) => {
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+      setIsMatchSearching(false);
+      setMatchTimedOut(false);
       if (onComplete) onComplete();
       setActiveBattleRoom({ ...room });
       startNewGame(lvl, 'battle', { board: room.puzzle, solution: room.solution });
@@ -73,6 +133,8 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
 
   const handleCancelQuickMatch = () => {
     soundHaptic.playSelectSound();
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    setMatchTimedOut(false);
     setIsMatchSearching(false);
     try {
       battleService.leaveRoom();
@@ -129,6 +191,8 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
 
   const cleanupBattleSession = () => {
     if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    setMatchTimedOut(false);
     setIsRematchWaiting(false);
     setIsMatchSearching(false);
     setIncomingRematchRequest(null);
@@ -156,6 +220,10 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
     rematchSecondsLeft,
     isOpponentLeft,
     isMatchSearching,
+    lastRatingChange,
+    matchTimedOut,
+    canMatchRealPlayers: battleService.canMatchRealPlayers,
+    startAIFallback,
     handleStartQuickMatch,
     handleCancelQuickMatch,
     handleRequestRematch,

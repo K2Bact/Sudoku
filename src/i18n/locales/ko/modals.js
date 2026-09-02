@@ -49,6 +49,8 @@ export const modals = {
       title: '무료 힌트 충전',
       desc: '짧은 광고를 시청하시면\n무료 힌트 1개가 즉시 충전됩니다.',
       watchAd: '광고 보고 힌트 받기 (+1개)',
+      adWatching: '📺 광고 재생 중…',
+      adPlaceholder: '📺 광고 자리 (실제 광고 없음)',
       chancesLeft: '이번 게임 남은 충전: {remaining}/{max}회',
       maxReached: '게임당 광고 힌트 충전은 최대 2회까지만 가능합니다.',
       later: '다음에'

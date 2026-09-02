@@ -11,6 +11,14 @@
 
 import { loadStats, getPlayGamesUser } from '../utils/storage.js';
 import { iqStatsService } from './iqStatsService.js';
+import { loadBattleProfile } from '../utils/battleRating.js';
+
+// Language-neutral percentile thresholds, so no translation is needed and no row
+// can be mistaken for another human being.
+const PERCENTILE_LABELS = [
+  'TOP 0.1%', 'TOP 0.5%', 'TOP 1%', 'TOP 3%', 'TOP 5%',
+  'TOP 10%', 'TOP 20%', 'TOP 30%', 'TOP 40%', 'TOP 50%'
+];
 
 export const LEADERBOARD_CATEGORIES = {
   SPEEDRUN_CLASSIC: 'speedrun_classic',
@@ -47,32 +55,41 @@ class LeaderboardService {
     }
   }
 
+  /**
+   * Benchmark rows the player measures themselves against.
+   *
+   * These used to carry invented player names ('S_Master_KR', 'DragonSolve', …)
+   * and country flags, presented under a "Global Hall of Fame" heading — players
+   * had no way to tell they were reading fiction. They are now labelled as the
+   * percentile thresholds they always were. Real global ranking comes from the
+   * Play Games leaderboard, which is one tap away in the UI.
+   */
   getMockRanks(category, subKey = 'lv3') {
     if (category === LEADERBOARD_CATEGORIES.BRAIN_IQ) {
       return [
-        { rank: 1, name: 'S_Master_KR', score: 156, tier: 'Grand Master', flag: '🇰🇷' },
-        { rank: 2, name: 'HexaLogic_JP', score: 152, tier: 'Grand Master', flag: '🇯🇵' },
-        { rank: 3, name: 'EulerMind_US', score: 149, tier: 'Mensa Level', flag: '🇺🇸' },
-        { rank: 4, name: 'QuantumSolve_TW', score: 145, tier: 'Mensa Level', flag: '🇹🇼' },
-        { rank: 5, name: 'AlphaBrain_ES', score: 142, tier: 'Mensa Level', flag: '🇪🇸' },
-        { rank: 6, name: 'NeoSudoku_99', score: 138, tier: 'Mensa Level', flag: '🌐' },
-        { rank: 7, name: 'LogicRider_KR', score: 135, tier: 'Superior', flag: '🇰🇷' },
-        { rank: 8, name: 'PuzzleZen_JP', score: 131, tier: 'Superior', flag: '🇯🇵' },
-        { rank: 9, name: 'SmartGrid_US', score: 128, tier: 'Superior', flag: '🇺🇸' },
-        { rank: 10, name: 'NovaTactics', score: 125, tier: 'Above Average', flag: '🌐' }
+        { rank: 1, name: PERCENTILE_LABELS[0], score: 156, tier: 'Grand Master', isBenchmark: true },
+        { rank: 2, name: PERCENTILE_LABELS[1], score: 152, tier: 'Grand Master', isBenchmark: true },
+        { rank: 3, name: PERCENTILE_LABELS[2], score: 149, tier: 'Mensa Level', isBenchmark: true },
+        { rank: 4, name: PERCENTILE_LABELS[3], score: 145, tier: 'Mensa Level', isBenchmark: true },
+        { rank: 5, name: PERCENTILE_LABELS[4], score: 142, tier: 'Mensa Level', isBenchmark: true },
+        { rank: 6, name: PERCENTILE_LABELS[5], score: 138, tier: 'Mensa Level', isBenchmark: true },
+        { rank: 7, name: PERCENTILE_LABELS[6], score: 135, tier: 'Superior', isBenchmark: true },
+        { rank: 8, name: PERCENTILE_LABELS[7], score: 131, tier: 'Superior', isBenchmark: true },
+        { rank: 9, name: PERCENTILE_LABELS[8], score: 128, tier: 'Superior', isBenchmark: true },
+        { rank: 10, name: PERCENTILE_LABELS[9], score: 125, tier: 'Above Average', isBenchmark: true }
       ];
     }
 
     if (category === LEADERBOARD_CATEGORIES.PVP_MMR) {
       return [
-        { rank: 1, name: 'DragonSolve', score: 2450, tier: 'Grand Master', flag: '🇰🇷' },
-        { rank: 2, name: 'ApexLogic', score: 2380, tier: 'Grand Master', flag: '🇯🇵' },
-        { rank: 3, name: 'FlashDigit', score: 2290, tier: 'Master', flag: '🇺🇸' },
-        { rank: 4, name: 'ZeroMistake', score: 2180, tier: 'Master', flag: '🇹🇼' },
-        { rank: 5, name: 'VortexPlayer', score: 2050, tier: 'Diamond', flag: '🇪🇸' },
-        { rank: 6, name: 'GridHero_01', score: 1940, tier: 'Platinum', flag: '🌐' },
-        { rank: 7, name: 'SwiftPencil', score: 1870, tier: 'Gold', flag: '🇰🇷' },
-        { rank: 8, name: 'SpeedCell_9', score: 1760, tier: 'Silver', flag: '🇯🇵' }
+        { rank: 1, name: PERCENTILE_LABELS[0], score: 2450, tier: 'Grand Master', isBenchmark: true },
+        { rank: 2, name: PERCENTILE_LABELS[1], score: 2380, tier: 'Grand Master', isBenchmark: true },
+        { rank: 3, name: PERCENTILE_LABELS[2], score: 2290, tier: 'Master', isBenchmark: true },
+        { rank: 4, name: PERCENTILE_LABELS[3], score: 2180, tier: 'Master', isBenchmark: true },
+        { rank: 5, name: PERCENTILE_LABELS[4], score: 2050, tier: 'Diamond', isBenchmark: true },
+        { rank: 6, name: PERCENTILE_LABELS[5], score: 1940, tier: 'Platinum', isBenchmark: true },
+        { rank: 7, name: PERCENTILE_LABELS[6], score: 1870, tier: 'Gold', isBenchmark: true },
+        { rank: 8, name: PERCENTILE_LABELS[7], score: 1760, tier: 'Silver', isBenchmark: true }
       ];
     }
 
@@ -86,18 +103,12 @@ class LeaderboardService {
     };
 
     const times = baseTimes[subKey] || baseTimes.lv3;
-    const names = [
-      'FlashPencil', 'SpeedDemon_KR', 'RapidSudoku_JP', 'GridRunner_US',
-      'LogicBlaze_TW', 'AeroSolver_ES', 'HyperGrid', 'NovaClick',
-      'ZenMatrix', 'SwiftCell'
-    ];
-    const flags = ['🇰🇷', '🇯🇵', '🇺🇸', '🇹🇼', '🇪🇸', '🌐', '🇰🇷', '🇯🇵', '🇺🇸', '🌐'];
 
     return times.map((t, idx) => ({
       rank: idx + 1,
-      name: names[idx] || `Solver_${idx + 1}`,
+      name: PERCENTILE_LABELS[idx],
       score: t,
-      flag: flags[idx] || '🌐',
+      isBenchmark: true,
       isTime: true
     }));
   }
@@ -172,13 +183,9 @@ class LeaderboardService {
       const report = iqStatsService.getPercentileReport(score);
       tier = report.tierTitle;
     } else if (category === LEADERBOARD_CATEGORIES.PVP_MMR) {
-      score = 1200;
-      try {
-        if (typeof localStorage !== 'undefined') {
-          const raw = localStorage.getItem('suidoku_battle_profile_v1');
-          if (raw) score = JSON.parse(raw).mmr || 1200;
-        }
-      } catch (_) {}
+      // Reads the profile battleRating.js maintains. This used to inline the key
+      // string and nothing ever wrote it, so every player showed a flat 1200.
+      score = loadBattleProfile().mmr;
       tier = score > 2000 ? 'Master' : score > 1500 ? 'Gold' : 'Silver';
     } else {
       // Speedrun times: Classic vs Time Attack isolation

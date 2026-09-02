@@ -52,6 +52,8 @@ export const modals = {
       title: 'Obtener pista gratis',
       desc: 'Mira un anuncio breve para recibir\n1 pista adicional de inmediato.',
       watchAd: 'Ver anuncio y obtener pista (+1)',
+      adWatching: '📺 Reproduciendo anuncio…',
+      adPlaceholder: '📺 Espacio de anuncio (sin anuncio)',
       chancesLeft: 'Recargas restantes: {remaining}/{max}',
       maxReached: 'Las recargas de pistas por anuncio están limitadas a 2 por partida.',
       later: 'Más tarde'

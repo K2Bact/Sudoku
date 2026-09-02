@@ -9,6 +9,7 @@ export const common = {
     confirm: 'Aceptar',
     cancel: 'Cancelar',
     restart: 'Reiniciar',
+    restartConfirm: '¿Reiniciar este puzle?',
     newGame: 'Nueva partida',
     home: 'Inicio',
     save: 'Guardar',
@@ -17,7 +18,8 @@ export const common = {
     loading: 'Cargando...',
     error: 'Error',
     exitAppPrompt: 'Pulsa Atrás otra vez para salir de la aplicación.',
-    confirmLeaveGame: '¿Deseas abandonar la partida y volver al inicio?'
+    confirmLeaveGame: '¿Deseas abandonar la partida y volver al inicio?',
+    shareUnavailable: 'No se puede compartir en este dispositivo.'
   },
   calendar: {
     days: {
@@ -55,6 +57,7 @@ export const common = {
     erase: 'Borrar',
     notes: 'Notas',
     hint: 'Pista',
+    rewardHint: '+1 pista',
     fastEntry: 'Entrada rápida',
     fastEntryLocked: 'Fijar {number}'
   },

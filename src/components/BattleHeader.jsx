@@ -1,6 +1,7 @@
 import React from 'react';
 import { Swords, Bot, AlertCircle, ArrowLeft, Timer } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
+import { useConfirm } from './common/ConfirmProvider';
 import { useTranslation } from '../i18n/i18nContext';
 
 export function BattleHeader({
@@ -12,6 +13,7 @@ export function BattleHeader({
   onLeaveBattle
 }) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
 
   const isAIBattle = room?.isAIBattle || room?.opponentName?.includes('AI') || room?.opponentName?.toLowerCase().includes('bot');
   const actualOpponentName = room?.opponentName || (isAIBattle ? t('home.modes.aiBattle.title') : t('battleResult.opponent'));
@@ -32,11 +34,13 @@ export function BattleHeader({
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleLeaveClick = (e) => {
+  // window.confirm here drew a native dialog with hardcoded English OK/Cancel
+  // buttons under a Korean question. See common/ConfirmProvider.jsx.
+  const handleLeaveClick = async (e) => {
     e?.preventDefault?.();
     e?.stopPropagation?.();
     soundHaptic.playSelectSound();
-    if (window.confirm(t('battleHeader.confirmLeave'))) {
+    if (await confirm(t('battleHeader.confirmLeave'))) {
       if (onLeaveBattle) onLeaveBattle();
     }
   };

@@ -52,6 +52,8 @@ export const modals = {
       title: '领取免费提示',
       desc: '观看简短广告即可立即获得\n免费提示 1 个。',
       watchAd: '观看广告领取 (+1)',
+      adWatching: '📺 广告播放中…',
+      adPlaceholder: '📺 广告位（未投放）',
       chancesLeft: '本局剩余补充次数: {remaining}/{max}',
       maxReached: '每局通过广告补充提示最多 2 次。',
       later: '稍后'

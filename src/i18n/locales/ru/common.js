@@ -6,6 +6,7 @@ export const common = {
     confirm: 'OK',
     cancel: 'Отмена',
     restart: 'Заново',
+    restartConfirm: 'Начать эту головоломку заново?',
     newGame: 'Новая игра',
     home: 'Главная',
     save: 'Сохранить',
@@ -14,7 +15,8 @@ export const common = {
     loading: 'Загрузка...',
     error: 'Ошибка',
     exitAppPrompt: 'Нажмите «Назад» еще раз для выхода из игры.',
-    confirmLeaveGame: 'Приостановить игру и вернуться на главную?'
+    confirmLeaveGame: 'Приостановить игру и вернуться на главную?',
+    shareUnavailable: 'Поделиться с этого устройства нельзя.'
   },
   calendar: {
     days: {
@@ -52,6 +54,7 @@ export const common = {
     erase: 'Стереть',
     notes: 'Заметки',
     hint: 'Подсказка',
+    rewardHint: '+1 подсказка',
     fastEntry: 'Быстрый ввод',
     fastEntryLocked: 'Фикс {number}'
   },

@@ -49,6 +49,8 @@ export const modals = {
       title: 'Free Hint Recharge',
       desc: 'Watch a short ad to\nreceive +1 Free Hint immediately.',
       watchAd: 'Watch Ad (+1 Hint)',
+      adWatching: '📺 Playing ad…',
+      adPlaceholder: '📺 Ad placeholder (no ad served)',
       chancesLeft: 'Refills left this game: {remaining}/{max}',
       maxReached: 'Hint refills via ads are limited to 2 per game.',
       later: 'Later'

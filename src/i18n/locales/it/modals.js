@@ -49,6 +49,8 @@ export const modals = {
       title: 'Ricarica Suggerimenti Gratis',
       desc: 'Guarda un breve annuncio per\nottenere subito +1 suggerimento.',
       watchAd: 'Guarda Annuncio (+1 Suggerimento)',
+      adWatching: '📺 Annuncio in riproduzione…',
+      adPlaceholder: '📺 Spazio annuncio (nessun annuncio)',
       chancesLeft: 'Ricariche rimaste in questa partita: {remaining}/{max}',
       maxReached: 'Le ricariche tramite annunci sono limitate a 2 per partita.',
       later: 'Più tardi'

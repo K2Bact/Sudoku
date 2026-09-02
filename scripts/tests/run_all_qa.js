@@ -19,15 +19,13 @@ function runStep(name, cmd) {
 // -----------------------------------------------------------------------------
 // [TIER 0] Code Quality & Static Analysis
 // -----------------------------------------------------------------------------
-runStep('0-1. Strict < 300 Lines per Code File Audit', 'node -e "' +
-  'import { readdirSync, readFileSync, statSync } from \'fs\';' +
-  'import { join } from \'path\';' +
-  'function walk(d) { let res = []; for (const n of readdirSync(d)) { const f = join(d, n); if (statSync(f).isDirectory()) res = res.concat(walk(f)); else res.push(f); } return res; }' +
-  'const bad = walk(\'src\').filter(f => !f.includes(\'i18n\') && !f.includes(\'data\') && (f.endsWith(\'.js\') || f.endsWith(\'.jsx\') || f.endsWith(\'.css\')) && readFileSync(f, \'utf8\').split(\'\\n\').length > 300);' +
-  'if (bad.length > 0) { console.error(\'Code files exceeding 300 lines:\', bad); process.exit(1); } else { console.log(\'All source code files < 300 lines!\'); }' +
-  '"');
+runStep('0-1. File Size & Responsibility Separation', 'node scripts/tests/unit/test_file_responsibility.js');
 
 runStep('0-2. Oxlint Static Code Analysis', 'npx oxlint');
+runStep('0-3. Node ESM Import Extension Compliance', 'node scripts/tests/unit/test_esm_import_extensions.js');
+runStep('0-4. No Committed Secrets or Signing Material', 'node scripts/tests/unit/test_no_committed_secrets.js');
+runStep('0-5. Firebase Config Reaches the Build (1v1 is live)', 'node scripts/tests/unit/test_firebase_config_present.js');
+runStep('0-6. Scan — Did the Signed-Up Player Turn Up?', 'node scripts/scan/run_scan.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 1] Global L10N Engine (13 Locales, 9 Gates + Profile)
@@ -44,6 +42,10 @@ runStep('2-4. Wallet Balance, Smart Hint & Attendance Streak Engine', 'node scri
 runStep('2-5. Academy 54 Interactive Missions Math & Logic Truth', 'node scripts/tests/unit/test_practice_missions.js');
 runStep('2-6. AI Battle vs 1v1 PvP Isolation & Popup Audit', 'node scripts/tests/unit/test_battle_ai_separation.js');
 runStep('2-7. Global Leaderboards & Cloud Account Save Safety', 'node scripts/tests/unit/test_cloud_leaderboard_safety.js');
+runStep('2-8. Battle Message Validation & Transport Contract', 'node scripts/tests/unit/test_battle_message_safety.js');
+runStep('2-9. 1v1 Matchmaking — Two Players Actually Meet', 'node scripts/tests/unit/test_battle_matchmaking.js');
+runStep('2-10. Ad Honesty & Provider Contract', 'node scripts/tests/unit/test_ads_honesty.js');
+runStep('2-11. No Native Dialogs (localised buttons)', 'node scripts/tests/unit/test_no_native_dialogs.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests
@@ -55,6 +57,8 @@ runStep('3-4. Theme Contrast & Button State Visibility Audit', 'node scripts/tes
 runStep('3-5. Home Layout Grid & Responsive Layout Audit', 'node scripts/tests/ui/test_home_layout.js');
 runStep('3-6. Android Hardware Back Button & Matchmaking Cancel', 'node scripts/tests/ui/test_back_navigation.js');
 runStep('3-7. Playwright 13-Language Visual UI Overflow Scan', 'node scripts/tests/ui/check_ui_overflow.js');
+runStep('3-8. Real Gameplay End-to-End (play, tap, win)', 'node scripts/tests/ui/test_gameplay_e2e.js');
+runStep('3-9. Ad Placements End-to-End (banner, purchase)', 'node scripts/tests/ui/test_ads_placements_e2e.js');
 
 console.log('======================================================');
 console.log('🎉 [QA MASTER PIPELINE] 100% PERFECT! ALL TIERS & GATES PASSED.');

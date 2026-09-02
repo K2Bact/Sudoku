@@ -1,6 +1,7 @@
 import React from 'react';
 import { GameOverModal } from '../GameOverModal';
 import { VictoryModal } from '../VictoryModal';
+import { adsService } from '../../services/adsService';
 import { BattleResultModal } from '../BattleResultModal';
 import { HintRewardModal } from '../HintRewardModal';
 import { DailyRewardModal } from '../DailyRewardModal';
@@ -38,11 +39,12 @@ export function GameModalsContainer({
   isRematchWaiting,
   rematchSecondsLeft,
   isOpponentLeft,
+  lastRatingChange,
   onCloseBattleResult,
   onRematchBattle,
   onLeaveBattleToHome,
 
-  // Hint Reward (AdMob)
+  // Hint Reward (rewarded ad)
   showHintRewardModal,
   adHintsUsed = 0,
   onCloseHintReward,
@@ -66,6 +68,23 @@ export function GameModalsContainer({
 }) {
   const isGameActive = activeScreen === 'game';
 
+  /**
+   * The post-game interstitial. Both exits from a finished game go through here,
+   * which is the placement the Remove Ads screen has always sold ("remove
+   * post-game interstitial ads") and the one nothing actually called — the
+   * service had a showInterstitial method with no caller anywhere in the app.
+   *
+   * The service applies its own frequency cap, and the placeholder provider
+   * resolves instantly, so during closed testing this changes nothing a tester
+   * can see. Navigation runs whether or not the ad succeeds; an ad failure must
+   * never trap the player on the victory screen.
+   */
+  const afterGameAd = (proceed) => {
+    Promise.resolve(adsService.showInterstitial())
+      .catch(() => {})
+      .finally(() => proceed && proceed());
+  };
+
   return (
     <>
       {/* 1. Game Over (Single Revive or Restart) - Single Player ONLY */}
@@ -85,8 +104,8 @@ export function GameModalsContainer({
           gameMode={gameMode}
           mistakes={mistakes}
           level={level}
-          onNextGame={() => onNextGame(level)}
-          onReturnHome={onReturnHome}
+          onNextGame={() => afterGameAd(() => onNextGame(level))}
+          onReturnHome={() => afterGameAd(onReturnHome)}
           onOpenLeaderboard={onOpenLeaderboard}
         />
       )}
@@ -98,6 +117,7 @@ export function GameModalsContainer({
           isRematchWaiting={isRematchWaiting}
           rematchSecondsLeft={rematchSecondsLeft}
           isOpponentLeft={isOpponentLeft}
+          lastRatingChange={lastRatingChange}
           onClose={onCloseBattleResult}
           onRematch={onRematchBattle}
           onReturnHome={onLeaveBattleToHome}

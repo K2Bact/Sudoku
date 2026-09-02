@@ -6,6 +6,7 @@ export const common = {
     confirm: 'OK',
     cancel: 'Abbrechen',
     restart: 'Neustart',
+    restartConfirm: 'Dieses Rätsel neu starten?',
     newGame: 'Neues Spiel',
     home: 'Startseite',
     save: 'Speichern',
@@ -14,7 +15,8 @@ export const common = {
     loading: 'Wird geladen...',
     error: 'Fehler',
     exitAppPrompt: 'Drücke erneut Zurück, um die App zu beenden.',
-    confirmLeaveGame: 'Möchtest du das Spiel pausieren und zur Startseite zurückkehren?'
+    confirmLeaveGame: 'Möchtest du das Spiel pausieren und zur Startseite zurückkehren?',
+    shareUnavailable: 'Teilen ist auf diesem Gerät nicht verfügbar.'
   },
   calendar: {
     days: {
@@ -52,6 +54,7 @@ export const common = {
     erase: 'Löschen',
     notes: 'Notizen',
     hint: 'Tipp',
+    rewardHint: '+1 Tipp',
     fastEntry: 'Schnellmodus',
     fastEntryLocked: 'Fixiert {number}'
   },

@@ -49,6 +49,8 @@ export const modals = {
       title: 'Recharge d’indices gratuits',
       desc: 'Regardez une courte vidéo pour\nobtenir immédiatement +1 indice.',
       watchAd: 'Regarder la pub (+1 indice)',
+      adWatching: '📺 Publicité en cours…',
+      adPlaceholder: '📺 Emplacement pub (aucune pub)',
       chancesLeft: 'Recharges restantes : {remaining}/{max}',
       maxReached: 'La recharge d’indices via pub est limitée à 2 par partie.',
       later: 'Plus tard'

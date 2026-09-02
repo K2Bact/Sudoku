@@ -6,6 +6,7 @@ export const common = {
     confirm: 'OK',
     cancel: 'Cancelar',
     restart: 'Reiniciar',
+    restartConfirm: 'Reiniciar este desafio?',
     newGame: 'Novo Jogo',
     home: 'Início',
     save: 'Salvar',
@@ -14,7 +15,8 @@ export const common = {
     loading: 'Carregando...',
     error: 'Erro',
     exitAppPrompt: 'Pressione Voltar novamente para sair do aplicativo.',
-    confirmLeaveGame: 'Tem certeza de que deseja pausar e voltar ao início?'
+    confirmLeaveGame: 'Tem certeza de que deseja pausar e voltar ao início?',
+    shareUnavailable: 'Não é possível compartilhar neste dispositivo.'
   },
   calendar: {
     days: {
@@ -52,6 +54,7 @@ export const common = {
     erase: 'Apagar',
     notes: 'Anotações',
     hint: 'Dica',
+    rewardHint: '+1 dica',
     fastEntry: 'Modo Rápido',
     fastEntryLocked: 'Fixado {number}'
   },

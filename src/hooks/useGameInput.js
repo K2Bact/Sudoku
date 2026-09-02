@@ -21,8 +21,10 @@ export function ensureValidSolution(initialGrid, existingSolution) {
   ) {
     return existingSolution;
   }
-  const solved = solveSudoku(initialGrid);
-  return solved || existingSolution;
+  // solveSudoku fills the grid in place and returns a boolean, so solve a copy
+  // and hand back that copy — never the boolean, and never the caller's grid.
+  const candidate = cloneGrid(initialGrid);
+  return solveSudoku(candidate) ? candidate : existingSolution;
 }
 
 export function useGameInput({
@@ -65,6 +67,8 @@ export function useGameInput({
   adHintsUsedThisGame = 0,
   rivalMode = 'standard',
   showToast,
+  runTimelineRef,
+  comboCount = 0,
   t
 }) {
   const conflictTimeoutRef = useRef(null);
@@ -192,6 +196,13 @@ export function useGameInput({
       soundHaptic.playPlaceNumberSound();
       setConflictInfo(null);
 
+      // Pace sample for Ghost mode: how many blanks were filled by this second.
+      if (runTimelineRef) {
+        const filled = nextBoard.reduce((acc, row, ri) =>
+          acc + row.filter((v, ci) => v !== 0 && initialBoard[ri][ci] === 0).length, 0);
+        runTimelineRef.current.push({ time: timerSeconds, count: filled });
+      }
+
       if (gameMode === 'timeAttack') {
         handleComboSuccess();
       } else if (gameMode === 'timeLimit') {
@@ -225,6 +236,8 @@ export function useGameInput({
         hintsUsed: hintsUsedCount || 0,
         initialBoard,
         solutionBoard: validSolution,
+        comboCount,
+        timeline: runTimelineRef ? runTimelineRef.current.slice() : [],
         totalEmptyCells: initialBoard.reduce((acc, row) => acc + row.filter(v => v === 0).length, 0)
       });
     } else if (!autoCheckMistakes && nextBoard.every(row => row.every(val => val !== 0))) {

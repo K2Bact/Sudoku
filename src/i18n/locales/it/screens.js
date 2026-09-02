@@ -38,7 +38,7 @@ export const screens = {
     header: 'Sfide Giornaliere ({month})',
     badgeTitle: 'Maestro {month}',
     badgeDesc: '{completed}/{target} · Obiettivo 15',
-    unlockingAd: '📺 Sblocco schema passato ({seconds}s)...',
+    unlockingAd: '📺 Sblocco schema passato...',
     calendarTitle: '📅 Calendario 365 Giorni',
     futureAlert: 'Gli schemi futuri non sono ancora sbloccati.',
     pastUnlockNotice: '💡 I giorni passati persi (🔒) possono essere sbloccati guardando un breve video.',
@@ -75,7 +75,7 @@ export const screens = {
     restoreBtn: 'Ripristina',
     alreadyPurchased: 'Hai già l’accesso Premium! 🎉',
     processing: '💳 Elaborazione in corso...',
-    purchaseBtn: 'Rimuovi Pubblicità ({price})',
+    purchaseBtn: 'Rimuovi Pubblicità',
     successToast: '🎉 Pubblicità rimossa con successo!',
     buySuccess: 'Acquisto completato con successo! Grazie per il supporto.',
     restoreSuccess: 'Acquisti ripristinati con successo.',
@@ -209,7 +209,9 @@ export const screens = {
     autoMatchTitle: 'Partita Rapida',
     autoMatchDesc: 'Matchmaking veloce con giocatori di tutto il mondo',
     mmrBadge: 'Match per abilità · Vittorie: {rate}%',
-    findOpponentBtn: 'Cerca Avversario'
+    findOpponentBtn: 'Cerca Avversario',
+    noOpponentFound: 'Nessun avversario trovato. Giocare contro l’IA?',
+    playAiInstead: 'Sfida l’IA'
   },
   battleResult: {
     victoryTitle: 'Vittoria nel Duello 1v1!',
@@ -293,5 +295,5 @@ export const screens = {
       startBtn: 'Avvia Tutorial'
     }
   },
-  adBanner: { sponsor: 'Annuncio sponsorizzato ufficiale Google AdMob', removeBtn: 'Senza Pubblicità', officialSponsored: 'Annuncio sponsorizzato ufficiale Google AdMob', removeAdsBtn: 'Senza Pubblicità' }
+  adBanner: { placeholderTag: 'TEST', placeholderText: 'Spazio pubblicitario (nessun annuncio)', removeBtn: 'Senza Pubblicità' }
 };

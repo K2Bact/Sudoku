@@ -48,6 +48,9 @@ export function App() {
     rematchSecondsLeft,
     isOpponentLeft,
     isMatchSearching,
+    matchTimedOut,
+    startAIFallback,
+    lastRatingChange,
     handleStartQuickMatch,
     handleCancelQuickMatch,
     handleRequestRematch,
@@ -228,6 +231,8 @@ export function App() {
         setActiveBattleRoom={setActiveBattleRoom}
         onStartQuickMatch={handleStartQuickMatch}
         isMatchSearching={isMatchSearching}
+        matchTimedOut={matchTimedOut}
+        onPlayAiInstead={startAIFallback}
         onCancelQuickMatch={handleCancelQuickMatch}
         setAdRefreshTrigger={setAdRefreshTrigger}
         setTheme={setTheme}
@@ -267,6 +272,7 @@ export function App() {
         isRematchWaiting={isRematchWaiting}
         rematchSecondsLeft={rematchSecondsLeft}
         isOpponentLeft={isOpponentLeft}
+        lastRatingChange={lastRatingChange}
         onCloseBattleResult={handleCloseBattleResult}
         onRematchBattle={handleRequestRematch}
         onLeaveBattleToHome={handleReturnHome}

@@ -6,6 +6,7 @@ export const common = {
     confirm: 'पुष्टि करें',
     cancel: 'रद्द करें',
     restart: 'पुनः प्रारंभ',
+    restartConfirm: 'इस पहेली को फिर से शुरू करें?',
     newGame: 'नया खेल',
     home: 'होम',
     save: 'सहेजें',
@@ -14,7 +15,8 @@ export const common = {
     loading: 'लोड हो रहा है...',
     error: 'त्रुटि',
     exitAppPrompt: 'ऐप से बाहर निकलने के लिए बैक बटन दोबारा दबाएं।',
-    confirmLeaveGame: 'क्या आप खेल रोककर होम स्क्रीन पर जाना चाहते हैं?'
+    confirmLeaveGame: 'क्या आप खेल रोककर होम स्क्रीन पर जाना चाहते हैं?',
+    shareUnavailable: 'इस डिवाइस पर साझा करना उपलब्ध नहीं है।'
   },
   calendar: {
     days: {
@@ -52,6 +54,7 @@ export const common = {
     erase: 'मिटाएं',
     notes: 'नोट्स',
     hint: 'संकेत',
+    rewardHint: '+1 संकेत',
     fastEntry: 'फास्ट एंट्री',
     fastEntryLocked: 'लॉक {number}'
   },

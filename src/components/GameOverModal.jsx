@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AlertTriangle, PlayCircle, RotateCcw, Home } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
+import { adsService } from '../services/adsService';
 import { useTranslation } from '../i18n/i18nContext';
 
 export function GameOverModal({ hasRevived = false, onRevive, onRestart, onReturnHome }) {
@@ -9,14 +10,16 @@ export function GameOverModal({ hasRevived = false, onRevive, onRestart, onRetur
 
   const canRevive = !hasRevived && Boolean(onRevive);
 
-  const handleWatchAd = () => {
+  // Goes through adsService so this placement works the same whether the fake
+  // provider or AdMob is live. It used to run its own setTimeout and grant the
+  // revive unconditionally, which meant the ad service was never consulted and
+  // a player who closed a real ad early would still be revived.
+  const handleWatchAd = async () => {
     soundHaptic.playSelectSound();
     setIsWatchingAd(true);
-    // Simulate watching 3-second AdMob rewarded video ad
-    setTimeout(() => {
-      setIsWatchingAd(false);
-      if (onRevive) onRevive();
-    }, 3000);
+    const { rewarded } = await adsService.showRewarded();
+    setIsWatchingAd(false);
+    if (rewarded && onRevive) onRevive();
   };
 
   const handleRestartClick = () => {
@@ -44,7 +47,10 @@ export function GameOverModal({ hasRevived = false, onRevive, onRestart, onRetur
         {isWatchingAd ? (
           <div className="inline-ad my-3">
             <div className="spinner"></div>
-            <p>📺 Watching rewarded ad... (3s)</p>
+            {/* Say which it is. While the placeholder provider is live there is
+                no advertiser, and telling the player otherwise is the same lie
+                the banner used to tell. See src/ads/index.js. */}
+            <p>{adsService.isReal ? t('modals.hintReward.adWatching') : t('modals.hintReward.adPlaceholder')}</p>
           </div>
         ) : (
           <div className="modal-actions-vertical w-100 mt-2">

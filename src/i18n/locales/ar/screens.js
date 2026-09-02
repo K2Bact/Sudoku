@@ -38,7 +38,7 @@ export const screens = {
     header: 'التحديات اليومية — شهر {month}',
     badgeTitle: 'شارة التفوق لشهر {month}',
     badgeDesc: 'تم إكمال {completed} / {target} (الهدف: 15+)',
-    unlockingAd: '📺 جارٍ فتح اللغز السابق ({seconds} ث)...',
+    unlockingAd: '📺 جارٍ فتح اللغز السابق...',
     calendarTitle: '📅 تقويم الـ 365 يوماً',
     futureAlert: 'الألغاز المستقبلية لم تُفتح بعد.',
     pastUnlockNotice: '💡 الأيام الفائتة (🔒) يمكن فتحها في أي وقت بمشاهدة إعلان فيديو قصير.',
@@ -75,7 +75,7 @@ export const screens = {
     restoreBtn: 'استعادة المشتريات السابقة',
     alreadyPurchased: 'أنت تمتلك العضوية المميزة بالفعل! 🎉',
     processing: '💳 جارٍ المعالجة...',
-    purchaseBtn: 'إزالة الإعلانات نهائياً ({price})',
+    purchaseBtn: 'إزالة الإعلانات نهائياً',
     successToast: '🎉 تمت إزالة الإعلانات نهائياً!',
     buySuccess: 'اكتملت عملية الشراء بنجاح! شكراً جزيلاً لدعمك.',
     restoreSuccess: 'تمت استعادة المشتريات السابقة بنجاح.',
@@ -209,7 +209,9 @@ export const screens = {
     autoMatchTitle: 'مباراة سريعة',
     autoMatchDesc: 'مطابقة سريعة مع لاعبين من مختلف أنحاء العالم',
     mmrBadge: 'مطابقة حسب المهارة · نسبة الفوز: {rate}%',
-    findOpponentBtn: 'ابحث عن منافس'
+    findOpponentBtn: 'ابحث عن منافس',
+    noOpponentFound: 'لم يتم العثور على خصم. اللعب ضد الذكاء الاصطناعي؟',
+    playAiInstead: 'اللعب ضد الذكاء الاصطناعي'
   },
   battleResult: {
     victoryTitle: 'انتصار في المبارزة!',
@@ -287,5 +289,5 @@ export const screens = {
       startBtn: 'بدء التدريب'
     }
   },
-  adBanner: { sponsor: 'إعلان رسمي برعاية Google AdMob', removeBtn: 'إزالة الإعلانات', officialSponsored: 'إعلان رسمي برعاية Google AdMob', removeAdsBtn: 'إزالة الإعلانات' }
+  adBanner: { placeholderTag: 'اختبار', placeholderText: 'مساحة إعلانية (بدون إعلان)', removeBtn: 'إزالة الإعلانات' }
 };

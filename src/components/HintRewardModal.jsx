@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Lightbulb, PlayCircle } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
+import { adsService } from '../services/adsService';
 import { useTranslation } from '../i18n/i18nContext';
 
 export function HintRewardModal({ isOpen, onClose, onRewardSuccess, adHintsUsed = 0, maxAdHints = 2 }) {
@@ -11,16 +12,16 @@ export function HintRewardModal({ isOpen, onClose, onRewardSuccess, adHintsUsed 
 
   const remaining = Math.max(0, maxAdHints - adHintsUsed);
 
-  const handleWatchAd = () => {
+  // See GameOverModal: the ad itself belongs to adsService, not to this modal.
+  const handleWatchAd = async () => {
     if (remaining <= 0) return;
     soundHaptic.playSelectSound();
     setIsWatchingAd(true);
-    // Simulate 3-second AdMob rewarded video ad
-    setTimeout(() => {
-      setIsWatchingAd(false);
-      soundHaptic.playCompleteChime();
-      if (onRewardSuccess) onRewardSuccess();
-    }, 3000);
+    const { rewarded } = await adsService.showRewarded();
+    setIsWatchingAd(false);
+    if (!rewarded) return;
+    soundHaptic.playCompleteChime();
+    if (onRewardSuccess) onRewardSuccess();
   };
 
   const handleClose = () => {
@@ -58,7 +59,10 @@ export function HintRewardModal({ isOpen, onClose, onRewardSuccess, adHintsUsed 
         {isWatchingAd ? (
           <div className="inline-ad my-3">
             <div className="spinner"></div>
-            <p>📺 Watching rewarded ad... (3s)</p>
+            {/* Say which it is. While the placeholder provider is live there is
+                no advertiser, and telling the player otherwise is the same lie
+                the banner used to tell. See src/ads/index.js. */}
+            <p>{adsService.isReal ? t('modals.hintReward.adWatching') : t('modals.hintReward.adPlaceholder')}</p>
           </div>
         ) : (
           <div className="modal-actions-vertical w-100 mt-2">

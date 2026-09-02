@@ -5,7 +5,8 @@
 
 import { loadStats } from './storage.js';
 
-const GHOST_STORAGE_KEY = 'suidoku_ghost_records_v1';
+// Exported so sync/backup code cannot drift onto a different key string.
+export const GHOST_STORAGE_KEY = 'suidoku_ghost_records_v1';
 
 export function loadGhostRecords() {
   try {
