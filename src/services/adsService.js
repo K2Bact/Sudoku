@@ -17,6 +17,7 @@
  */
 
 import { getAdProvider } from '../ads/index.js';
+import { getBillingProvider } from '../billing/index.js';
 
 const AD_REMOVED_KEY = 'suidoku_remove_ads_purchased_v1';
 const LAST_INTERSTITIAL_TIME_KEY = 'suidoku_last_interstitial_time_v1';
@@ -44,12 +45,41 @@ class AdsService {
     }
   }
 
+  /** Whether a purchase can actually be made. The UI must ask before offering. */
+  get canPurchase() {
+    return getBillingProvider().isAvailable;
+  }
+
+  /** The store's own localised price string, or null when nothing can be sold. */
+  async getRemoveAdsProduct() {
+    return getBillingProvider().getProduct();
+  }
+
   /**
-   * Records the entitlement. NOTE: nothing charges the player yet — there is no
-   * billing plugin in the project, so this grants Remove Ads for free. That is
-   * a known gap tracked separately, not an oversight to be "fixed" by deleting
-   * the screen; wire Google Play Billing here when it lands.
+   * Buy Remove Ads. The entitlement is written ONLY after the store confirms
+   * the purchase — never on the way there.
+   *
+   * The version this replaced wrote the flag first and announced success 1.5
+   * seconds later without a store, a product or a charge. Anything that grants
+   * before confirmation is not a purchase, it is a giveaway wearing one's
+   * clothes, and the player cannot tell the difference.
    */
+  async purchaseRemoveAds() {
+    const res = await getBillingProvider().purchase();
+    if (res.success && res.owned) this.setAdsRemoved(true);
+    return res;
+  }
+
+  /**
+   * A permanent product must survive a reinstall or a new phone, and our
+   * localStorage flag does not. The store is the record.
+   */
+  async restoreRemoveAds() {
+    const res = await getBillingProvider().restore();
+    if (res.owned) this.setAdsRemoved(true);
+    return res;
+  }
+
   setAdsRemoved(removed) {
     try {
       if (removed) localStorage.setItem(AD_REMOVED_KEY, 'true');
@@ -57,10 +87,6 @@ class AdsService {
     } catch (e) {
       console.warn('[ads] could not persist the remove-ads entitlement:', e?.message || e);
     }
-  }
-
-  purchaseRemoveAds() {
-    this.setAdsRemoved(true);
   }
 
   /** Frequency cap, so a player finishing several games is not buried in ads. */

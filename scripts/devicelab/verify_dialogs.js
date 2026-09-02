@@ -93,7 +93,12 @@ try {
   chk('미래 날짜 셀 발견', Boolean(future), future ? `${future.text}일` : '못 찾음');
   if (future) {
     snap = await tap(device, future, { what: `${future.text}일` });
-    chk('알림이 뜬다', snap.has(/해금되지|아직/), snap.labels.find((t) => /해금|아직/.test(t)));
+    // The pattern that decides and the text that is printed must be the same
+    // one. They were not, and the report showed a static paragraph containing
+    // "해금하고" while the check had matched the modal's "해금되지" — a passing
+    // check reading as though it had found the wrong thing.
+    const ALERT = /해금되지|아직/;
+    chk('알림이 뜬다', snap.has(ALERT), snap.labels.find((t) => ALERT.test(t)));
     assertLocalised(snap, '알림');
     chk('알림은 취소 버튼이 없다', snap.find('취소').length === 0);
     snap = await tapLabel(device, '확인');

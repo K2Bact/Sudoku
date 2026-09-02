@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ShieldCheck, CheckCircle2, ShoppingBag } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ShieldCheck, CheckCircle2, ShoppingBag, RotateCcw } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
 import { adsService } from '../services/adsService';
 import { soundHaptic } from '../utils/soundHaptic';
@@ -10,25 +10,68 @@ export function RemoveAdsScreen({ onBack, onPurchaseSuccess }) {
   const { t } = useTranslation();
   const notify = useNotify();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [product, setProduct] = useState(null);
+  const [owned, setOwned] = useState(() => adsService.isAdsRemoved());
 
-  const handlePurchase = () => {
+  // The price is whatever the store says for the account being charged —
+  // "₩3,300", "$2.49", "2,49 €". Symbol, separators and placement all differ by
+  // country, and formatting it here is how the button came to read
+  // "영구 제거하기 ({price})" in every language.
+  useEffect(() => {
+    let alive = true;
+    adsService.getRemoveAdsProduct().then((p) => {
+      if (!alive) return;
+      setProduct(p);
+      if (p?.owned) setOwned(true);
+    });
+    return () => { alive = false; };
+  }, []);
+
+  /**
+   * No timer and no simulated wait: the screen is busy exactly as long as the
+   * store takes, and adsService writes the entitlement only after the store
+   * confirms ownership.
+   *
+   * What this replaced ran a 1.5-second setTimeout, granted Remove Ads, and
+   * announced success — with no store, no product and no charge. It also called
+   * a prop the router never passes, so the TypeError landed inside the timeout
+   * where no error boundary catches it and the player was left on the screen
+   * having "bought" something.
+   */
+  const handlePurchase = async () => {
     soundHaptic.playSelectSound();
     setIsProcessing(true);
-    setTimeout(() => {
-      adsService.purchaseRemoveAds();
-      setIsProcessing(false);
-      notify(t('removeAds.successToast'));
-      // This called onAdsRemovedPurchased, a prop the router never passes (it
-      // passes onPurchaseSuccess). The TypeError was thrown inside this timeout
-      // where no error boundary could catch it, so the entitlement was granted
-      // and then nothing else ran: no message, no navigation, player stranded.
-      //
-      // onPurchaseSuccess navigates home itself, so onBack must NOT also run —
-      // two returns would pop past the screen the player came from. onBack stays
-      // on the header arrow for players who leave without buying.
+    const res = await adsService.purchaseRemoveAds();
+    setIsProcessing(false);
+
+    if (res.success) {
+      setOwned(true);
+      await notify(t('removeAds.buySuccess'));
+      // onPurchaseSuccess navigates home itself, so onBack must not also run —
+      // two returns would pop past the screen the player came from.
       if (onPurchaseSuccess) onPurchaseSuccess();
       else onBack();
-    }, 1500);
+      return;
+    }
+    // Backing out of the store dialog is a choice, not an error to report.
+    if (res.reason === 'cancelled') return;
+    await notify(t('removeAds.restoreFail'));
+  };
+
+  const handleRestore = async () => {
+    soundHaptic.playSelectSound();
+    setIsProcessing(true);
+    const res = await adsService.restoreRemoveAds();
+    setIsProcessing(false);
+
+    if (res.owned) {
+      setOwned(true);
+      await notify(t('removeAds.restoreSuccess'));
+      if (onPurchaseSuccess) onPurchaseSuccess();
+      else onBack();
+      return;
+    }
+    await notify(t('removeAds.restoreFail'));
   };
 
   return (
@@ -74,11 +117,28 @@ export function RemoveAdsScreen({ onBack, onPurchaseSuccess }) {
             <div className="spinner"></div>
             <p>{t('removeAds.processing')}</p>
           </div>
+        ) : owned ? (
+          <div className="inline-ad mt-4">
+            <CheckCircle2 size={18} className="text-green" />
+            <p>{t('removeAds.alreadyPurchased')}</p>
+          </div>
         ) : (
-          <button type="button" className="btn-modern btn-play-new btn-block purchase-btn mt-4" onClick={handlePurchase}>
-            <ShoppingBag size={18} />
-            <span>{t('removeAds.purchaseBtn')}</span>
-          </button>
+          <>
+            <button type="button" className="btn-modern btn-play-new btn-block purchase-btn mt-4" onClick={handlePurchase}>
+              <ShoppingBag size={18} />
+              {/* The store's own price string when it is known. Never one we
+                  format — that is how "({price})" reached the screen. */}
+              <span>{product?.price
+                ? t('removeAds.buyBtn', { price: product.price })
+                : t('removeAds.purchaseBtn')}</span>
+            </button>
+            {/* A permanent product has to survive a reinstall or a new phone,
+                and our localStorage flag does not. The store is the record. */}
+            <button type="button" className="btn btn-secondary btn-block mt-2 restore-btn" onClick={handleRestore}>
+              <RotateCcw size={16} />
+              <span>{t('removeAds.restoreBtn')}</span>
+            </button>
+          </>
         )}
       </div>
     </div>

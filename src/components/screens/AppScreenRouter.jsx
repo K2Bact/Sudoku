@@ -130,11 +130,18 @@ export function AppScreenRouter({
         />
       )}
 
-      {activeScreen === 'removeAds' && (
+      {/* The screen is not reachable unless a purchase can actually complete.
+          The entry button is already hidden in that case; this is the second
+          lock, because a screen that sells something nobody can buy is exactly
+          what shipped before — price placeholder, a fake "결제 처리 중", and the
+          product handed over free. */}
+      {activeScreen === 'removeAds' && adsService.canPurchase && (
         <RemoveAdsScreen
           onBack={() => returnToParent(true)}
           onPurchaseSuccess={() => {
-            adsService.setAdsRemoved(true);
+            // adsService already wrote the entitlement, and only after the
+            // store confirmed ownership. Setting it again here would be the
+            // router deciding a purchase happened, which is not its business.
             setAdRefreshTrigger(prev => prev + 1);
             returnToParent(true);
           }}

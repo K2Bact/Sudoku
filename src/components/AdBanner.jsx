@@ -41,10 +41,15 @@ export function AdBanner({ onOpenRemoveAdsModal, refreshTrigger }) {
           </>
         )}
       </div>
-      <button className="remove-ad-badge-btn" onClick={onOpenRemoveAdsModal} title={t('adBanner.removeBtn')}>
-        <ShieldCheck size={12} />
-        <span>{t('adBanner.removeBtn')}</span>
-      </button>
+      {/* No entry point unless a purchase can actually be completed. A button
+          leading to a store that cannot charge is worse than no button: the
+          player comes back believing they bought something. */}
+      {adsService.canPurchase && (
+        <button className="remove-ad-badge-btn" onClick={onOpenRemoveAdsModal} title={t('adBanner.removeBtn')}>
+          <ShieldCheck size={12} />
+          <span>{t('adBanner.removeBtn')}</span>
+        </button>
+      )}
     </div>
   );
 }

@@ -33,6 +33,7 @@ export const ALLOW = {
     { name: 'generateFullSolution', reason: 'SudokuEngine internal; gate 2-1 builds boards with it' },
     { name: 'AIBotService', reason: 'the class behind the aiBotService singleton the app imports' },
     { name: 'createAdProvider', reason: 'the ads seam, exercised by gate 2-10 without module state' },
+    { name: 'createBillingProvider', reason: 'the billing seam, exercised by gate 2-13 without module state' },
     { name: 'getAcademyText', reason: 'used by the academy translation generator in scripts/' },
     { name: 'ALL_PRACTICE_MISSIONS', reason: 'the mission corpus gate 2-5 validates' },
 
