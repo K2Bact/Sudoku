@@ -46,6 +46,7 @@ runStep('2-8. Battle Message Validation & Transport Contract', 'node scripts/tes
 runStep('2-9. 1v1 Matchmaking — Two Players Actually Meet', 'node scripts/tests/unit/test_battle_matchmaking.js');
 runStep('2-10. Ad Honesty & Provider Contract', 'node scripts/tests/unit/test_ads_honesty.js');
 runStep('2-11. No Native Dialogs (localised buttons)', 'node scripts/tests/unit/test_no_native_dialogs.js');
+runStep('2-12. Device Harness Refuses to Be Fooled', 'node scripts/tests/unit/test_devicelab_catches_lies.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests
