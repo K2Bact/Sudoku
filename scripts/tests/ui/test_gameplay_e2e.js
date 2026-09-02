@@ -179,7 +179,7 @@ async function run() {
   execSync(IS_WIN ? 'npm.cmd run build' : 'npm run build', { stdio: 'ignore' });
 
   console.log(`🚀 Starting preview server on ${PORT}...`);
-  const server = spawn(IS_WIN ? 'npx.cmd' : 'npx', ['vite', 'preview', '--port', String(PORT)], {
+  const server = spawn(IS_WIN ? 'npx.cmd' : 'npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], {
     cwd: process.cwd(),
     shell: true,
     stdio: 'ignore'

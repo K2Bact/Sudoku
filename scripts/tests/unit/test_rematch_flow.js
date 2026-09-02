@@ -4,10 +4,10 @@
  */
 
 import { chromium } from 'playwright';
-import { spawn } from 'child_process';
+import { spawn, execSync } from 'child_process';
 import http from 'http';
 
-const PORT = 5198;
+const PORT = 5203;
 const PREVIEW_URL = `http://localhost:${PORT}`;
 
 function waitForServer(url, timeout = 10000) {
@@ -28,7 +28,7 @@ function waitForServer(url, timeout = 10000) {
 
 async function run() {
   console.log('🚀 Starting Vite preview server...');
-  const vite = spawn('cmd', ['/c', `npx vite preview --port ${PORT}`], {
+  const vite = spawn('cmd', ['/c', `npx vite preview --port ${PORT} --strictPort`], {
     cwd: process.cwd(),
     stdio: 'ignore'
   });
@@ -109,6 +109,14 @@ async function run() {
     console.log('======================================================');
   } finally {
     vite.kill();
+    // vite.kill() stops the cmd wrapper, not the vite process under it, so the
+    // port stays listening. Leaked servers pile up across QA runs until a later
+    // gate cannot start its own. The port is the thing that has to come back.
+    try {
+      execSync(`npx.cmd kill-port ${PORT}`, { stdio: 'ignore' });
+    } catch (e) {
+      /* nothing listening — the outcome we wanted */
+    }
     await browser.close();
   }
 }

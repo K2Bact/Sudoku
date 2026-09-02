@@ -62,6 +62,7 @@ runStep('3-6. Android Hardware Back Button & Matchmaking Cancel', 'node scripts/
 runStep('3-7. Playwright 13-Language Visual UI Overflow Scan', 'node scripts/tests/ui/check_ui_overflow.js');
 runStep('3-8. Real Gameplay End-to-End (play, tap, win)', 'node scripts/tests/ui/test_gameplay_e2e.js');
 runStep('3-9. Ad Placements End-to-End (banner, purchase)', 'node scripts/tests/ui/test_ads_placements_e2e.js');
+runStep('3-10. 1v1 Matchmaking & Rematch End-to-End (two browsers)', 'node scripts/tests/unit/test_rematch_flow.js');
 
 console.log('======================================================');
 console.log('🎉 [QA MASTER PIPELINE] 100% PERFECT! ALL TIERS & GATES PASSED.');

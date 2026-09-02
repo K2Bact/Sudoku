@@ -81,7 +81,7 @@ async function run() {
   console.log('======================================================\n');
 
   const failures = [];
-  const server = spawn(IS_WIN ? 'npx.cmd' : 'npx', ['vite', 'preview', '--port', String(PORT)], {
+  const server = spawn(IS_WIN ? 'npx.cmd' : 'npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], {
     stdio: 'ignore',
     shell: IS_WIN
   });

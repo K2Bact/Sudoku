@@ -2,7 +2,7 @@ import { readFileSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 import assert from 'assert';
 import { chromium } from 'playwright';
-import { spawn } from 'child_process';
+import { spawn, execSync } from 'child_process';
 
 console.log('======================================================');
 console.log('🧪 QA Gate 15: Theme Contrast & Button State Visibility Audit');
@@ -236,6 +236,13 @@ async function runVisualContrastTest() {
         preview.kill('SIGTERM');
       }
     } catch (e) {}
+    // Killing the process tree still left this port listening after a QA run.
+    // The port is the thing that actually matters, so check it directly.
+    try {
+      execSync(`npx.cmd kill-port ${PORT}`, { stdio: 'ignore' });
+    } catch (e) {
+      /* nothing listening — the outcome we wanted */
+    }
   }
 }
 

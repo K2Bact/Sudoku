@@ -12,7 +12,7 @@
  */
 
 import { chromium } from 'playwright';
-import { spawn } from 'child_process';
+import { spawn, execSync } from 'child_process';
 import http from 'http';
 
 const PORT = 5199;
@@ -36,13 +36,27 @@ function waitForServer(url, timeout = 10000) {
   });
 }
 
+
+/**
+ * process.exit() skips finally, so cleanup has to happen before it. Every exit
+ * in this file goes through here.
+ *
+ * Killing the spawned process is not enough on Windows: it is spawned through a
+ * shell wrapper, so the signal stops the wrapper and the vite server underneath
+ * keeps the port. The port is what the next run needs back, so free that.
+ */
+function shutdownPreview(viteProcess) {
+  try { viteProcess.kill(); } catch (e) { /* already gone */ }
+  try { execSync(`npx.cmd kill-port ${PORT}`, { stdio: 'ignore' }); } catch (e) { /* nothing listening */ }
+}
+
 async function runScanner() {
   console.log('🚀 [UI Scanner] Building fresh Vite production assets...');
   const { execSync } = await import('child_process');
   execSync('npm.cmd run build', { stdio: 'inherit' });
 
   console.log('🚀 [UI Scanner] Starting Vite Preview Server on port', PORT);
-  const viteProcess = spawn('npx.cmd', ['vite', 'preview', '--port', String(PORT)], {
+  const viteProcess = spawn('npx.cmd', ['vite', 'preview', '--port', String(PORT), '--strictPort'], {
     cwd: process.cwd(),
     shell: true,
     stdio: 'ignore'
@@ -220,6 +234,7 @@ async function runScanner() {
 
     if (totalErrors === 0) {
       console.log('🎉 100% PERFECT! No text overflow, orphan lines, or card bloat detected across all languages!');
+      shutdownPreview(viteProcess);
       process.exit(0);
     } else {
       console.error('❌ LAYOUT DEFECTS DETECTED:');
@@ -227,14 +242,16 @@ async function runScanner() {
         console.error(`  [#${idx + 1}] Lang: ${err.lang.toUpperCase()} | Screen: ${err.screen} | Type: ${err.type}`);
         console.error(`       Text: "${err.text}" (Class: ${err.className})`);
       });
+      shutdownPreview(viteProcess);
       process.exit(1);
     }
   } finally {
-    viteProcess.kill();
+    shutdownPreview(viteProcess);
   }
 }
 
 runScanner().catch((e) => {
   console.error('Scanner error:', e);
+  shutdownPreview(viteProcess);
   process.exit(1);
 });

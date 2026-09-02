@@ -22,12 +22,26 @@ function waitForServer(url, timeout = 10000) {
   });
 }
 
+
+/**
+ * process.exit() skips finally, so cleanup has to happen before it. Every exit
+ * in this file goes through here.
+ *
+ * Killing the spawned process is not enough on Windows: it is spawned through a
+ * shell wrapper, so the signal stops the wrapper and the vite server underneath
+ * keeps the port. The port is what the next run needs back, so free that.
+ */
+function shutdownPreview(viteProcess) {
+  try { viteProcess.kill(); } catch (e) { /* already gone */ }
+  try { execSync(`npx.cmd kill-port ${PORT}`, { stdio: 'ignore' }); } catch (e) { /* nothing listening */ }
+}
+
 async function run() {
   console.log('Building Vite bundle...');
   execSync('cmd /c npx vite build', { stdio: 'ignore' });
 
   console.log('Starting preview server...');
-  const viteProcess = spawn('cmd', ['/c', 'npx vite preview --port ' + PORT], {
+  const viteProcess = spawn('cmd', ['/c', 'npx vite preview --port ' + PORT + ' --strictPort'], {
     cwd: process.cwd(),
     stdio: 'ignore'
   });
@@ -96,11 +110,12 @@ async function run() {
     await browser.close();
     console.log('All screenshots captured successfully!');
   } finally {
-    viteProcess.kill();
+    shutdownPreview(viteProcess);
   }
 }
 
 run().catch((e) => {
   console.error(e);
+  shutdownPreview(viteProcess);
   process.exit(1);
 });

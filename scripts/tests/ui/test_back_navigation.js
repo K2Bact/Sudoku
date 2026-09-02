@@ -34,13 +34,27 @@ function assert(condition, message) {
   }
 }
 
+
+/**
+ * process.exit() skips finally, so cleanup has to happen before it. Every exit
+ * in this file goes through here.
+ *
+ * Killing the spawned process is not enough on Windows: it is spawned through a
+ * shell wrapper, so the signal stops the wrapper and the vite server underneath
+ * keeps the port. The port is what the next run needs back, so free that.
+ */
+function shutdownPreview(viteProcess) {
+  try { viteProcess.kill(); } catch (e) { /* already gone */ }
+  try { execSync(`npx.cmd kill-port ${PORT}`, { stdio: 'ignore' }); } catch (e) { /* nothing listening */ }
+}
+
 async function run() {
   console.log('======================================================');
   console.log('QA Gate: Android Back Button & Radar Cancel Audit');
   console.log('======================================================');
 
   console.log('Starting Vite preview server on port ' + PORT);
-  const viteProcess = spawn('cmd', ['/c', 'npx vite preview --port ' + PORT], {
+  const viteProcess = spawn('cmd', ['/c', 'npx vite preview --port ' + PORT + ' --strictPort'], {
     cwd: process.cwd(),
     stdio: 'ignore'
   });
@@ -106,17 +120,20 @@ async function run() {
     console.log('======================================================');
 
     if (failed > 0) {
+      shutdownPreview(viteProcess);
       process.exit(1);
     } else {
       console.log('100% PERFECT! Android Back Button and Radar Cancel behavior verified!\n');
+      shutdownPreview(viteProcess);
       process.exit(0);
     }
   } finally {
-    viteProcess.kill();
+    shutdownPreview(viteProcess);
   }
 }
 
 run().catch((e) => {
   console.error('Fatal test error:', e);
+  shutdownPreview(viteProcess);
   process.exit(1);
 });

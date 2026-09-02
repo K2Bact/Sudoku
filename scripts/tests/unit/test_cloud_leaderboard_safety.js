@@ -249,4 +249,50 @@ assert(accountSection.includes('handleCloudRestore'), 'AccountSection must provi
 assert(accountSection.includes('cloudSync.autoSyncNotice'), 'AccountSection must display autoSyncNotice');
 
 console.log('  ✅ 5. Component integration, Zero-Overflow, 2-Ad Hint Limit & No-Hint Safety contracts verified');
+
+// ── 6. Backup keys come from the modules that own them ──────────────────────
+//
+// cloudSyncService used to re-type the storage keys as its own string literals,
+// and two of the three were wrong ('suidoku_wallet_state_v1',
+// 'suidoku_daily_challenge_v1'). Backup reported success while the wallet and
+// the daily records were never in the payload at all — a copy that silently
+// omits what it claims to save is worse than no backup, because the player
+// trusts it and stops worrying.
+//
+// A re-typed key looks correct in review; only the running app disagrees. So the
+// rule is structural: import the constant, never spell the string again.
+const cloudSyncSrc = fs.readFileSync('src/services/cloudSyncService.js', 'utf8');
+const OWNED_KEYS = [
+  ['WALLET_STORAGE_KEY', 'src/utils/wallet.js'],
+  ['DAILY_STORAGE_KEY', 'src/utils/dailyChallenge.js'],
+  ['GHOST_STORAGE_KEY', 'src/utils/ghostManager.js']
+];
+// Reading the import lines directly beats assembling a regex for them: a
+// template literal eats the backslashes, and a check that silently never
+// matches would pass while proving nothing.
+const cloudSyncImports = cloudSyncSrc
+  .split('\n')
+  .filter((l) => l.trim().startsWith('import'))
+  .join('\n');
+
+for (const [constName, owner] of OWNED_KEYS) {
+  assert(cloudSyncImports.includes(constName),
+    `cloudSyncService must import ${constName} from ${owner} rather than spelling ` +
+    'the key itself. Re-typed keys are how the wallet and daily records were ' +
+    'silently left out of every backup.');
+}
+
+// Achievements are reached through their module for the same reason, and it
+// matters more there: that key is 'sudoku_achievements_v1' — no 'i' — unlike
+// every other key in the app. Anyone re-typing it from memory gets it wrong.
+assert(cloudSyncImports.includes('loadUnlockedAchievements'),
+  'cloudSyncService must read achievements through achievementManager. Its key ' +
+  "is 'sudoku_achievements_v1', which does not match the 'suidoku_' prefix every " +
+  'other key uses — re-typing it from memory produces a key that reads nothing.');
+
+const retyped = [...cloudSyncSrc.matchAll(/'(suidoku_(?:user_wallet|daily_records|ghost_records)[a-z_0-9]*)'/g)];
+assert.deepStrictEqual(retyped.map((m) => m[1]), [],
+  'cloudSyncService spells an owned storage key as a literal: ' +
+  retyped.map((m) => m[1]).join(', ') + '. Import the constant instead.');
+console.log('  ✅ 6. Backup reads every owned key through its module, none re-typed');
 console.log('🏆 [QA Gate 13] Global Leaderboards, Cloud Save, 2-Ad Hint Limit & No-Hint Safety Audit PASSED 100%!\n');
