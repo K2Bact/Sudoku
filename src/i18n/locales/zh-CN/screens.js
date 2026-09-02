@@ -139,7 +139,7 @@ export const screens = {
       sec1Title: '1. 零个人数据收集', sec1Desc: '本应用无需注册，绝不收集个人数据。',
       sec2Title: '2. 本地存储与删除权利', sec2Desc: '游戏进度、提示数量、主题设置仅安全保存在您的设备本地。',
       sec3Title: '3. 1v1 对决与大脑指数', sec3Desc: '即时在线对战仅使用一次性匿名标识码与解题记录进行匹配。',
-      sec4Title: '4. 广告服务 (Google AdMob)', sec4Desc: '为维持免费提供，本应用采用 Google AdMob SDK。'
+      sec4Title: '4. 广告 (Google AdMob)', sec4Desc: '为保持游戏免费，本应用可能通过 Google AdMob SDK 展示广告。广告启用时，AdMob 可能收集广告标识符。测试版本仅显示带标注的占位内容，不投放实际广告。'
     }
   },
   stats: {

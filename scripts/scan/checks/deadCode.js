@@ -74,9 +74,15 @@ export function scanDeadCode(index) {
         severity: tests.length ? 'SUSPECT' : 'SUSPECT',
         kind: 'unusedExports',
         where: `${file} -> ${name}`,
-        detail: tests.length
-          ? `앱 코드 어디서도 안 쓰고 테스트(${tests[0]})만 씀 — 테스트되기 위해 존재하는 코드`
-          : '앱에서도 테스트에서도 아무도 안 씀'
+        // The wording matters. This check only knows that nothing OUTSIDE the
+        // file references the name — the module may well call it on every
+        // frame. Reading "unused" as "deletable" cost a broken daily-challenge
+        // gate: getUserSkillTier had no outside consumer and one inside caller.
+        // The fix for most of these is to drop `export`, not the function.
+        detail: (tests.length
+          ? `파일 밖에서는 테스트(${tests[0]})만 씀`
+          : '파일 밖에서 아무도 안 씀') +
+          ' — 같은 파일 안에서는 쓰일 수 있다. 보통 함수를 지우는 게 아니라 export 를 떼는 것이 답이다.'
       });
     }
   }

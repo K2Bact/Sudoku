@@ -139,7 +139,7 @@ export const screens = {
       sec1Title: '1. 개인정보 수집 거부', sec1Desc: '본 앱은 회원가입 절차가 없으며, 일체의 개인정보를 수집하지 않습니다.',
       sec2Title: '2. 로컬 데이터 보관 및 삭제 권리', sec2Desc: '게임 진행 상황, 힌트 수량, 테마 설정은 사용자의 스마트폰 로컬 저장소(localStorage)에만 안전하게 보관됩니다.',
       sec3Title: '3. 1v1 배틀 및 두뇌 지수 처리', sec3Desc: '실시간 1v1 대전 시 일회성 익명 토큰과 퍼즐 클리어 기록만을 매칭용으로 사용합니다.',
-      sec4Title: '4. 광고 서비스 (Google AdMob)', sec4Desc: '무료 게임 제공을 위해 Google AdMob SDK를 사용합니다.'
+      sec4Title: '4. 광고 (Google AdMob)', sec4Desc: '무료 제공을 위해 이 앱은 Google AdMob SDK 를 통해 광고를 표시할 수 있습니다. 광고가 활성화되면 AdMob 이 광고 식별자를 수집할 수 있습니다. 테스트 빌드에서는 표시된 자리표시자만 나오며 실제 광고는 제공되지 않습니다.'
     }
   },
   stats: {

@@ -7,7 +7,7 @@ import { adsService } from '../services/adsService';
 import { useTranslation } from '../i18n/i18nContext';
 import { useNotify } from './common/ConfirmProvider';
 
-export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyMission, onSelectDate }) {
+export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyMission }) {
   const { t } = useTranslation();
   const notify = useNotify();
   const records = loadDailyRecords();
@@ -40,7 +40,6 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
     setWatchingAdForDate(null);
     if (!rewarded) return;
     if (onStartDailyPuzzle) onStartDailyPuzzle(targetDate);
-    else if (onSelectDate) onSelectDate(targetDate);
   };
 
   const handleStartMissionClick = () => {
@@ -73,7 +72,6 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
 
     // 3. 오늘 미완료 퍼즐 시작
     if (onStartDailyPuzzle) onStartDailyPuzzle(dateKey);
-    else if (onSelectDate) onSelectDate(dateKey);
   };
 
   const weekdays = [

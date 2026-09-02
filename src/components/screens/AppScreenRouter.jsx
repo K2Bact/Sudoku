@@ -63,8 +63,6 @@ export function AppScreenRouter({
           onOpenSettings={() => navigateToScreen('settings')}
           onOpenBattleMatch={() => navigateToScreen('battleLobby')}
           onOpenAIBattle={() => navigateToScreen('aiBattle')}
-          hasSavedGame={hasSavedGameState()}
-          theme={theme}
           onCycleTheme={cycleTheme}
           soundEnabled={soundEnabled}
           onToggleSound={() => setSoundEnabled(prev => !prev)}
@@ -77,17 +75,12 @@ export function AppScreenRouter({
       {activeScreen === 'academy' && (
         <AcademyScreen
           onBack={() => returnToParent(false)}
-          onStartGuidedTutorial={startLiveGuidedTutorial}
         />
       )}
 
       {activeScreen === 'brainReport' && (
         <BrainReportScreen
           onBack={() => returnToParent(false)}
-          onStartTraining={() => {
-            setActiveScreen('game');
-            startNewGame(3);
-          }}
         />
       )}
 
@@ -103,10 +96,6 @@ export function AppScreenRouter({
         <StatsScreen
           onBack={() => returnToParent(false)}
           initialTab={statsInitialTab || 'stats'}
-          onPlayAgain={() => {
-            setActiveScreen('game');
-            startNewGame(3);
-          }}
         />
       )}
 

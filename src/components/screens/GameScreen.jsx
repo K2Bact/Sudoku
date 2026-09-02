@@ -86,7 +86,6 @@ export function GameScreen({
           onOpenNewGame={onOpenNewGame}
           onReturnHome={onReturnHome}
           onOpenSettings={onOpenSettings}
-          theme={theme}
           onCycleTheme={onCycleTheme}
           soundEnabled={soundEnabled}
           onToggleSound={onToggleSound}

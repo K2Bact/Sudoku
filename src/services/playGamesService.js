@@ -178,10 +178,6 @@ class PlayGamesService {
     }
   }
 
-  async showAchievements() {
-    return { success: false, reason: 'not_configured' };
-  }
-
   // ---- Saved Games (cloud backup) ----
 
   async saveSnapshot(name, data, description = '') {

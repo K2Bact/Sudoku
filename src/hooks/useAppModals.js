@@ -52,6 +52,5 @@ export function useAppModals(isVictory) {
     showStoreReviewModal,
     setShowStoreReviewModal,
     achievementToast,
-    setAchievementToast
   };
 }

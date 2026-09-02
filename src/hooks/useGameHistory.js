@@ -62,7 +62,6 @@ export function useGameHistory({
 
   return {
     history,
-    setHistory,
     pushHistory,
     handleUndo,
     resetHistory

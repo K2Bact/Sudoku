@@ -61,6 +61,9 @@ const findings = [
 
 const confirmed = findings.filter((f) => f.severity === 'CONFIRMED');
 const suspect = findings.filter((f) => f.severity === 'SUSPECT');
+// Inventory rather than defects — reported so nobody has to wonder, but kept
+// out of the two tiers that ask for action.
+const notes = findings.filter((f) => f.severity === 'NOTE');
 
 function report(list, title) {
   if (!list.length) return;
@@ -86,12 +89,20 @@ function report(list, title) {
 
 report(confirmed, '❌ CONFIRMED — 지금 깨져 있음');
 report(suspect, '⚠️  SUSPECT — 사람이 판단해야 함');
+if (notes.length && showAll) report(notes, 'ℹ️  NOTE — 참고 (동작에 영향 없음)');
+else if (notes.length) {
+  const byKind = new Map();
+  for (const n of notes) byKind.set(n.kind, (byKind.get(n.kind) || 0) + 1);
+  console.log('ℹ️  NOTE — 참고 (동작에 영향 없음)');
+  for (const [kind, count] of byKind) console.log(`  ▸ ${KIND_LABEL[kind] || kind}: ${count}건`);
+  console.log('  --all 로 전부 보기\n');
+}
 
 console.log('======================================================');
 if (confirmed.length) {
-  console.log(`❌ [SCAN] 확정 ${confirmed.length}건 / 의심 ${suspect.length}건`);
+  console.log(`❌ [SCAN] 확정 ${confirmed.length}건 / 의심 ${suspect.length}건 / 참고 ${notes.length}건`);
   console.log('======================================================');
   process.exit(1);
 }
-console.log(`✅ [SCAN] 확정 0건 / 의심 ${suspect.length}건`);
+console.log(`✅ [SCAN] 확정 0건 / 의심 ${suspect.length}건 / 참고 ${notes.length}건`);
 console.log('======================================================');

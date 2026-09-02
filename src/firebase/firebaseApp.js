@@ -38,9 +38,10 @@ export function getDatabase() {
   dbPromise = (async () => {
     try {
       const env = import.meta.env;
-      const [{ initializeApp, getApps }, rtdb] = await Promise.all([
+      const [{ initializeApp, getApps }, rtdb, auth] = await Promise.all([
         import('firebase/app'),
-        import('firebase/database')
+        import('firebase/database'),
+        import('firebase/auth')
       ]);
 
       const config = {
@@ -54,6 +55,29 @@ export function getDatabase() {
       };
 
       const app = getApps().length ? getApps()[0] : initializeApp(config);
+
+      // Sign in anonymously before handing the database back.
+      //
+      // The rules cannot tell one player from another today, so they constrain
+      // shape and size and let anyone write. That is survivable for a closed
+      // test and not for an open one: a script can fill the matchmaking queue
+      // with tickets nobody can match, and every real player then waits twelve
+      // seconds for an opponent that does not exist.
+      //
+      // An anonymous account is enough to fix that, because it gives the rules
+      // an `auth` to require. It is not a login — the player never sees it, and
+      // the id lives in the app's own storage.
+      //
+      // Failure here is deliberately not fatal. If the provider is not enabled
+      // in the console yet, 1v1 keeps working exactly as it does now against
+      // the current permissive rules; tightening them is the step that makes
+      // this mandatory, and it has to come second.
+      try {
+        await auth.signInAnonymously(auth.getAuth(app));
+      } catch (e) {
+        console.warn('[Firebase] anonymous sign-in unavailable:', e?.code || e?.message || e);
+      }
+
       return {
         db: rtdb.getDatabase(app),
         ref: rtdb.ref,

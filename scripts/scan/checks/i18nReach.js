@@ -86,7 +86,11 @@ export function scanI18nReach(index) {
     if (!reached) {
       if (isAllowed('orphanI18nKeys', key)) continue;
       findings.push({
-        severity: 'SUSPECT',
+        // Inventory, not a defect. An unreferenced string costs a few bytes and
+        // may be wanted the moment its feature is built — the billing copy below
+        // is waiting on exactly that. Filing these next to a prop nobody
+        // receives would bury the things that are actually broken.
+        severity: 'NOTE',
         kind: 'orphanI18nKeys',
         where: key,
         detail: `13개 언어에 번역돼 있는데 부르는 곳이 없음 — "${value.slice(0, 48)}"`

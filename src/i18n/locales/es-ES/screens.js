@@ -146,7 +146,7 @@ export const screens = {
       sec1Title: '1. Cero recopilación de datos', sec1Desc: 'Esta aplicación no requiere registro ni recopila datos personales.',
       sec2Title: '2. Almacenamiento local y derecho de supresión', sec2Desc: 'El progreso y las configuraciones se guardan de forma segura exclusivamente en tu dispositivo.',
       sec3Title: '3. Duelos 1v1 y análisis cerebral', sec3Desc: 'Las partidas multijugador utilizan tokens anónimos temporales y registros de finalización.',
-      sec4Title: '4. Servicios publicitarios (Google AdMob)', sec4Desc: 'Utilizamos el SDK de Google AdMob para ofrecer el juego de forma gratuita.'
+      sec4Title: '4. Publicidad (Google AdMob)', sec4Desc: 'Para mantener el juego gratuito, esta aplicación puede mostrar anuncios mediante el SDK de Google AdMob. Cuando la publicidad está activa, AdMob puede recopilar un identificador publicitario. Las versiones de prueba muestran un marcador señalizado y no publican anuncios reales.'
     }
   },
   stats: {

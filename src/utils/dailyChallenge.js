@@ -14,7 +14,12 @@ export const DAILY_STORAGE_KEY = 'suidoku_daily_records_v1';
 export { getTodayDateKey };
 
 // Determine user skill tier based on wins and clear history
-export function getUserSkillTier(stats = loadStats()) {
+
+/**
+ * 같은 파일의 getDailyMission 이 난이도를 고를 때 쓴다. 모듈 밖에서는
+ * 쓰이지 않으므로 export 하지 않는다.
+ */
+function getUserSkillTier(stats = loadStats()) {
   const wins = stats.gamesWon || 0;
   const bestTimes = stats.bestTimes || {};
 

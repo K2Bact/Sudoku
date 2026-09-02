@@ -139,7 +139,7 @@ export const screens = {
       sec1Title: '1. No Personal Data Collection', sec1Desc: 'This app requires no sign-up and collects zero personal data.',
       sec2Title: '2. Local Storage & Deletion Rights', sec2Desc: 'Game progress, hints, and theme settings are safely stored only in local storage.',
       sec3Title: '3. 1v1 Battles & Brain Index', sec3Desc: 'Only one-time anonymous tokens and completion records are used for matchmaking.',
-      sec4Title: '4. Advertising Services (Google AdMob)', sec4Desc: 'We use the Google AdMob SDK to provide a free gaming experience.'
+      sec4Title: '4. Advertising (Google AdMob)', sec4Desc: 'To keep the game free, this app may show ads through the Google AdMob SDK. When ads are active, AdMob may collect an advertising identifier. Test builds show a labelled placeholder and serve no ads.'
     }
   },
   stats: {

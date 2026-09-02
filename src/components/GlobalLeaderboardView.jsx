@@ -12,6 +12,21 @@ export function GlobalLeaderboardView() {
   const [rankings, setRankings] = useState([]);
   const [myRank, setMyRank] = useState(null);
   const [loading, setLoading] = useState(false);
+  // Only offered when Play Games can actually open its own leaderboard. The
+  // translation for this button existed in all thirteen languages with nothing
+  // rendering it and nothing calling showLeaderboards() — a button someone
+  // planned and never built. Wiring it is honest; showing it while signed out
+  // would just move the dead end one tap later.
+  const [canOpenPlayGames, setCanOpenPlayGames] = useState(false);
+  useEffect(() => {
+    setCanOpenPlayGames(playGamesService.isNative() && playGamesService.isAuthenticated);
+  }, []);
+
+  const handleOpenPlayGames = async () => {
+    soundHaptic.playSelectSound();
+    const res = await playGamesService.showLeaderboards();
+    if (!res.success) setCanOpenPlayGames(false);
+  };
 
   const loadData = async (cat, sub) => {
     setLoading(true);
@@ -243,6 +258,13 @@ export function GlobalLeaderboardView() {
           ))}
         </div>
       </div>
+
+      {canOpenPlayGames && (
+        <button type="button" className="btn-modern" onClick={handleOpenPlayGames}>
+          <Trophy size={14} />
+          <span>{t('leaderboard.openPlayGames')}</span>
+        </button>
+      )}
     </div>
   );
 }

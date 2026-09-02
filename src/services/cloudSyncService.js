@@ -31,8 +31,6 @@ const readJson = (key) => {
 const LAST_SYNC_KEY = 'suidoku_last_cloud_sync_v1';
 // Play Games saved-game slot. Stable: changing it orphans every existing backup.
 const SNAPSHOT_NAME = 'suidoku_progress_v1';
-const AUTO_SYNC_THROTTLE_MS = 60000; // 1 minute throttle
-let lastAutoSyncTime = 0;
 
 class CloudSyncService {
   getEffectiveUserId() {
@@ -238,12 +236,6 @@ class CloudSyncService {
   /**
    * Throttled auto sync triggered on game wins or milestone achievements
    */
-  autoSyncMilestone() {
-    const now = Date.now();
-    if (now - lastAutoSyncTime < AUTO_SYNC_THROTTLE_MS) return;
-    lastAutoSyncTime = now;
-    this.saveToCloud().catch(() => {});
-  }
 }
 
 export const cloudSyncService = new CloudSyncService();

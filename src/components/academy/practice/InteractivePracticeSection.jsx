@@ -81,7 +81,6 @@ export function InteractivePracticeSection({
             enteredVal={enteredVal}
             isSolved={isSolved}
             isError={isError}
-            lang={lang}
             onTargetCellTap={() => {
               try { soundHaptic.playSelectSound(); } catch (_) {}
             }}

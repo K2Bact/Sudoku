@@ -139,7 +139,7 @@ export const screens = {
       sec1Title: '1. 零個人數據收集', sec1Desc: '本應用無需註冊，絕不收集個人資料。',
       sec2Title: '2. 本地存储與刪除权利', sec2Desc: '遊戲進度、提示數量、主題設定仅安全保存在您的設備本地。',
       sec3Title: '3. 1v1 對決與大腦指數', sec3Desc: '即時在線對戰仅使用一次性匿名標识码進行匹配。',
-      sec4Title: '4. 廣告服務 (Google AdMob)', sec4Desc: '為维持免费提供，本應用采用 Google AdMob SDK。'
+      sec4Title: '4. 廣告 (Google AdMob)', sec4Desc: '為維持遊戲免費，本應用程式可能透過 Google AdMob SDK 顯示廣告。廣告啟用時，AdMob 可能收集廣告識別碼。測試版本僅顯示標註的佔位內容，不投放實際廣告。'
     }
   },
   stats: {

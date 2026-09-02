@@ -9,7 +9,7 @@ import { APP_INFO } from '../../config/appInfo';
  * Dopamine-timed 5-star review prompt for store ranking growth.
  * Directly routes users to the Google Play Store review page.
  */
-export function StoreReviewModal({ isOpen, onClose, onReviewSuccess }) {
+export function StoreReviewModal({ isOpen, onClose }) {
   const { t } = useTranslation();
   if (!isOpen) return null;
 
@@ -33,7 +33,6 @@ export function StoreReviewModal({ isOpen, onClose, onReviewSuccess }) {
       window.open(APP_INFO.playStoreUrl, '_blank', 'noopener,noreferrer');
     }
 
-    if (onReviewSuccess) onReviewSuccess();
     if (onClose) onClose();
   };
 

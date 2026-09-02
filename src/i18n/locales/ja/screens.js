@@ -139,7 +139,7 @@ export const screens = {
       sec1Title: '1. 個人情報の不収集', sec1Desc: '本アプリは会員登録が不要で、いかなる個人情報も収集しません。',
       sec2Title: '2. ローカル保管と削除の権利', sec2Desc: '進行状況や設定はお使いの端末のローカルストレージのみに保管されます。',
       sec3Title: '3. 1v1対戦と脳指数処理', sec3Desc: 'リアルタイム対戦時は一時的な匿名トークンとクリア記録のみを使用します。',
-      sec4Title: '4. 広告サービス (Google AdMob)', sec4Desc: '無料ゲーム提供のためGoogle AdMob SDKを使用しています。'
+      sec4Title: '4. 広告 (Google AdMob)', sec4Desc: 'ゲームを無料で提供するため、本アプリは Google AdMob SDK を通じて広告を表示することがあります。広告が有効な場合、AdMob が広告識別子を収集することがあります。テストビルドでは表示付きのプレースホルダーのみで、実際の広告は配信されません。'
     }
   },
   stats: {

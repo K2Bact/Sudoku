@@ -111,6 +111,20 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
     setIsRematchWaiting(false);
     setIncomingRematchRequest(null);
     setMatchTimedOut(false);
+
+    // The transport contract says to branch on this rather than assume (see
+    // firebase/transport/index.js). A build without Firebase config falls back
+    // to the same-device transport, where no opponent can ever arrive — so the
+    // radar would spin for twelve seconds against nobody and then say it found
+    // no one, which is true but arrived the slow way. Say it immediately, and
+    // offer the AI match the timeout path already offers.
+    if (!battleService.canMatchRealPlayers) {
+      setIsMatchSearching(false);
+      setMatchTimedOut(true);
+      if (onComplete) onComplete();
+      return;
+    }
+
     setIsMatchSearching(true);
 
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
@@ -222,7 +236,6 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
     isMatchSearching,
     lastRatingChange,
     matchTimedOut,
-    canMatchRealPlayers: battleService.canMatchRealPlayers,
     startAIFallback,
     handleStartQuickMatch,
     handleCancelQuickMatch,
