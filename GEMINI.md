@@ -126,3 +126,35 @@ Whenever implementing features, fixing bugs, or refactoring code:
      import graph from every test entry point. Trust the gate over manual inspection.
 
 
+
+---
+
+## 📋 8. Where the backlog lives — `docs/BACKLOG.md`
+
+**One file. Do not read `docs/archive/`.**
+
+`PROJECT_IDEAS_AND_BACKLOG.md` and `ROADMAP_AND_SPEC.md` were merged into
+`docs/BACKLOG.md` on 2026-09-02 and moved to `docs/archive/`. They are kept as a
+record, not as a reference.
+
+They had to be merged because they had drifted from the code. Three of the four
+"pre-release critical gates" were already done and still listed as pending:
+
+| The old doc said | The code actually holds |
+|---|---|
+| Swap AdMob test IDs for real ones | The test-ID table no longer exists; one `.env` line switches provider |
+| Replace virtual rankers with real data | Already replaced by percentile labels (`TOP 0.1%`) |
+| "Remaining Play Games IDs are safe placeholders" | No placeholders. One real ID plus honest no-ops |
+
+**Work that is finished but still listed as pending sends the next reader to do
+something that does not need doing.** So the rules for that file are:
+
+1. **Mark something done only after checking the code.** If you did not check,
+   write "미확인" — not a guess.
+2. **Do not delete finished items; change their status in place.** What was done
+   and why is what the next person needs.
+3. **Add new ideas to `docs/BACKLOG.md`. Never start a second list file.** The
+   moment there are two, nobody can tell which one is true — which is exactly
+   how the two archived files ended up contradicting the repository.
+4. Narrative — how a problem was found, fixed and verified — goes in
+   `../SudokuDiary.md`. `BACKLOG.md` holds only what remains to be done.

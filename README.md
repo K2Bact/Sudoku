@@ -49,7 +49,7 @@ node scratch/build_aab.js
 ```
 Sudoku/
  ├── android/              # Capacitor 안드로이드 네이티브 프로젝트 (Gradle, Keystore)
- ├── docs/                 # 기획 문서, 로드맵(ROADMAP_AND_SPEC.md), 개인정보처리방침
+ ├── docs/                 # BACKLOG.md(할 일 단일 원본), 기술 명세, 개인정보처리방침
  ├── public/               # 웹 파비콘, PWA 매니페스트, 앱 아이콘
  ├── scripts/              # E2E 테스트 및 자동화 스크립트
  ├── src/                  # 107개 모듈형 React 컴포넌트, 훅, 로직 (엄격 300줄 제한 준수)

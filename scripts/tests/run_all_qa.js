@@ -40,6 +40,7 @@ runStep('2-2. Deterministic PRNG & Daily Challenge Global Sync', 'node scripts/t
 runStep('2-3. Ghost PB Replay & Delta Pace Calculation Engine', 'node scripts/tests/unit/test_ghost_delta_mode.js');
 runStep('2-4. Wallet Balance, Smart Hint & Attendance Streak Engine', 'node scripts/tests/unit/test_wallet_and_hint_engine.js');
 runStep('2-5. Academy 54 Interactive Missions Math & Logic Truth', 'node scripts/tests/unit/test_practice_missions.js');
+runStep('2-5b. Academy Text Purity & Diagram Structure', 'node scripts/tests/unit/test_academy_purity.js');
 runStep('2-6. AI Battle vs 1v1 PvP Isolation & Popup Audit', 'node scripts/tests/unit/test_battle_ai_separation.js');
 runStep('2-7. Global Leaderboards & Cloud Account Save Safety', 'node scripts/tests/unit/test_cloud_leaderboard_safety.js');
 runStep('2-8. Battle Message Validation & Transport Contract', 'node scripts/tests/unit/test_battle_message_safety.js');
