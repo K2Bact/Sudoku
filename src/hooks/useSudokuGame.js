@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   generatePuzzle,
   cloneGrid,
@@ -11,7 +11,7 @@ import {
   clearGameState,
   recordGameLoss
 } from '../utils/storage.js';
-import { loadWallet, addHints } from '../utils/wallet.js';
+import { loadWallet, addHints, subscribeToWallet } from '../utils/wallet.js';
 import { useTranslation } from '../i18n/i18nContext.jsx';
 import { useGameTimer } from './useGameTimer.js';
 import { useGameHistory } from './useGameHistory.js';
@@ -47,6 +47,13 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
   const [rivalMode, setRivalMode] = useState('standard');
   const [ghostRecord, setGhostRecord] = useState(null);
   const [hintsUsedCount, setHintsUsedCount] = useState(0);
+
+  // The wallet announces every balance change; without this the number on
+  // screen is a hand-refreshed copy and any writer that forgets to refresh it
+  // leaves a stale count on the home screen. The manual refreshes below are now
+  // redundant but harmless, and they still cover a balance changed outside the
+  // wallet module (a cloud restore writes localStorage directly).
+  useEffect(() => subscribeToWallet(setHintsRemaining), []);
 
   // Sub-hook: Game Timer, Combos & Floating Indicators
   const {

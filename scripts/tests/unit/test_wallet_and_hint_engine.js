@@ -1,5 +1,10 @@
 import { generatePuzzle, getSmartHint } from '../../../src/engine/SudokuEngine.js';
-import { loadWallet, consumeHint, addHints, claimDailyAttendance } from '../../../src/utils/wallet.js';
+import { loadWallet, consumeHint, addHints, claimDailyAttendance, subscribeToWallet } from '../../../src/utils/wallet.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const SRC = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'src');
 
 // Polyfill localStorage for Node test runner
 const storageMap = new Map();
@@ -110,6 +115,92 @@ runTest('Daily Attendance: Claiming attendance grants bonus hint and sets streak
 
   const res2 = claimDailyAttendance();
   if (res2 !== null) throw new Error('Duplicate claim allowed on same day');
+});
+
+// 6. The exact sequence a player reported: home said 9, the game said 10.
+//    This runs before the broader broadcast test on purpose. runTest rethrows,
+//    so whichever case fails first is the only one that ever reports; putting
+//    the narrow reproduction second meant no mutation could ever prove it.
+runTest('Reported bug: the home screen count must not lag a claim made after mount', () => {
+  localStorage.clear();
+
+  // useSudokuGame reads the wallet once, in a useState initialiser, and holds
+  // the number as React state. This variable stands in for that state.
+  let onScreen = loadWallet().hints;
+  const stop = subscribeToWallet((hints) => { onScreen = hints; });
+
+  // useAppModals then claims attendance in a mount effect, which runs after
+  // that initialiser. Nothing between the two hooks passes the new balance
+  // along, so before the wallet announced its own changes the screen kept the
+  // stale number until an unrelated action happened to refresh it.
+  claimDailyAttendance();
+
+  const inWallet = loadWallet().hints;
+  if (onScreen !== inWallet) {
+    throw new Error(
+      `The screen shows ${onScreen} while the wallet holds ${inWallet}. The displayed count is a hand-refreshed copy again — the daily attendance claim happens after useSudokuGame reads the wallet, so the copy has to follow subscribeToWallet rather than wait for the next manual refresh.`
+    );
+  }
+  stop();
+});
+
+// 7. Every balance change reaches every subscriber, and unsubscribe stops it
+runTest('Broadcast: every balance change reaches subscribers, and unsubscribe stops it', () => {
+  localStorage.clear();
+  const seen = [];
+  const stop = subscribeToWallet((hints) => seen.push(hints));
+
+  addHints(2, 'reward');          // 3 -> 5
+  consumeHint();                  // 5 -> 4
+  claimDailyAttendance();         // 4 -> 5
+
+  const expected = [5, 4, 5];
+  if (seen.join(",") !== expected.join(",")) {
+    throw new Error(`Subscriber saw [${seen}] but the balance went [${expected}]`);
+  }
+  if (seen[seen.length - 1] !== loadWallet().hints) {
+    throw new Error(`Subscriber ended on ${seen[seen.length - 1]}, wallet holds ${loadWallet().hints}`);
+  }
+
+  stop();
+  addHints(1, 'reward');
+  if (seen.length !== expected.length) throw new Error('Unsubscribe did not stop the notifications');
+
+  // A listener that throws must not silence the others.
+  const survivors = [];
+  // The listener below throws on purpose; wallet.js logs it. Muted so a green
+  // pipeline stays free of stack traces that are not failures.
+  const realError = console.error;
+  console.error = () => {};
+  const stopA = subscribeToWallet(() => { throw new Error('deliberately broken listener'); });
+  const stopB = subscribeToWallet((h) => survivors.push(h));
+  addHints(1, 'reward');
+  console.error = realError;
+  stopA(); stopB();
+  if (survivors.length !== 1) throw new Error('A throwing listener stopped the others from being told');
+});
+
+// 8. The subscription itself, so deleting it fails here instead of on a phone
+runTest('Wiring: useSudokuGame subscribes to the wallet rather than only copying it', () => {
+  const hook = fs.readFileSync(path.join(SRC, 'hooks', 'useSudokuGame.js'), 'utf8');
+
+  // Strip comments before looking for the wiring. Reading the file as raw text
+  // means a commented-out line still matches — this check passed against
+  // `// useEffect(() => subscribeToWallet(...))` until that was caught by
+  // deliberately breaking the fix and watching the gate stay green.
+  const live = hook
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/(^|[^:])\/\/.*$/gm, '$1');
+  if (!/subscribeToWallet/.test(live)) {
+    throw new Error(
+      'useSudokuGame no longer subscribes to the wallet. hintsRemaining is then a copy refreshed by hand at each call site, and any writer that forgets leaves a stale count on the home screen — which is exactly how the attendance claim and the battle mission reward got missed.'
+    );
+  }
+  if (!/useEffect\(\s*\(\)\s*=>\s*subscribeToWallet/.test(live)) {
+    throw new Error(
+      'useSudokuGame imports subscribeToWallet but does not register it in a useEffect that returns the unsubscribe function.'
+    );
+  }
 });
 
 console.log('\n🎉 [PASS] Wallet, Hint Engine & Attendance Streak 100% Verified!\n');
