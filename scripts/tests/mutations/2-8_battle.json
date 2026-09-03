@@ -1,0 +1,24 @@
+{
+  "gate": "2-8",
+  "name": "Battle Message Validation & Transport Contract",
+  "command": "node scripts/tests/unit/test_battle_message_safety.js",
+  "greenMarker": "Battle Message Validation & Transport Contract Verified",
+  "mutations": [
+    {
+      "name": "a matchmaking ticket without a timestamp is accepted",
+      "why": "The timestamp is how a stale ticket is told from a live one. Without it a player is matched against someone who closed the app yesterday and waits out the whole countdown.",
+      "file": "src/firebase/battleValidation.js",
+      "find": "  if (typeof t.timestamp !== 'number') return false;",
+      "replace": "  // if (typeof t.timestamp !== 'number') return false;",
+      "expectFailure": "timestamp"
+    },
+    {
+      "name": "a ticket for the wrong difficulty is accepted",
+      "why": "Level matching is the only thing keeping a beginner out of an expert queue, where they lose every match and stop playing.",
+      "file": "src/firebase/battleValidation.js",
+      "find": "  if (level !== undefined && t.level !== level) return false;",
+      "replace": "  // if (level !== undefined && t.level !== level) return false;",
+      "expectFailure": "level"
+    }
+  ]
+}

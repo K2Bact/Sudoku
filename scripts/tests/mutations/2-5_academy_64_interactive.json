@@ -1,0 +1,17 @@
+{
+  "gate": "2-5",
+  "name": "Academy 64 Interactive Missions Math & Logic Truth",
+  "command": "node scripts/tests/unit/test_practice_missions.js",
+  "greenMarker": "INTERACTIVE MISSIONS ARE 100% VALIDATED",
+  "note": "This gate held a stale expected count of 27/54 for a while. Deleting a stage made the numbers agree and it printed PERFECT — a gate can reward the very deletion it exists to prevent, which is why the counts are asserted against constants now.",
+  "mutations": [
+    {
+      "name": "a whole practice stage is dropped from the aggregator",
+      "why": "This gate once held a stale expected count of 27/54. Removing a stage made the two numbers agree and it printed PERFECT — it rewarded the very deletion it existed to prevent. The counts are pinned to constants now, and this is the mutation that proves it.",
+      "file": "src/data/academy/practice/index.js",
+      "find": "import { STAGE1_PRACTICE } from './stage1Practice.js';",
+      "replace": "const STAGE1_PRACTICE = {};",
+      "expectFailure": "missions"
+    }
+  ]
+}

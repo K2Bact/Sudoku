@@ -1,0 +1,49 @@
+{
+  "gate": "2-7",
+  "name": "Global Leaderboards & Cloud Account Save Safety",
+  "command": "node scripts/tests/unit/test_cloud_leaderboard_safety.js",
+  "greenMarker": "Cloud Save, 2-Ad Hint Limit & No-Hint Safety Audit PASSED 100%",
+  "note": "A backup that silently omits what it claims to save is worse than no backup, because the player trusts it and stops keeping their own copy. cloudSyncService once re-typed two of three storage keys wrong and reported success anyway.",
+  "mutations": [
+    {
+      "name": "the wallet key is re-typed as a literal instead of imported",
+      "why": "This is the original defect verbatim. 'suidoku_wallet_state_v1' looks right in review; only the running app disagrees, and backup kept reporting success with the wallet missing from the payload.",
+      "file": "src/services/cloudSyncService.js",
+      "find": "import { WALLET_STORAGE_KEY } from '../utils/wallet.js';",
+      "replace": "const WALLET_STORAGE_KEY = 'suidoku_user_wallet_v1';",
+      "expectFailure": "must import WALLET_STORAGE_KEY"
+    },
+    {
+      "name": "achievements are read by a hand-written key",
+      "why": "That key is 'sudoku_achievements_v1' — no 'i' — unlike every other key in the app. Anyone re-typing it from memory gets it wrong and reads nothing.",
+      "file": "src/services/cloudSyncService.js",
+      "find": "import { loadUnlockedAchievements, saveUnlockedAchievements } from '../utils/achievementManager.js';",
+      "replace": "import { saveUnlockedAchievements } from '../utils/achievementManager.js';\nconst loadUnlockedAchievements = () => JSON.parse(localStorage.getItem('suidoku_achievements_v1') || '{}');",
+      "expectFailure": "must read achievements through achievementManager"
+    },
+    {
+      "name": "the backup payload loses its schema version",
+      "why": "Without a version the restore side cannot tell an old payload from a new one, and a shape change silently corrupts whatever it reads back.",
+      "file": "src/services/cloudSyncService.js",
+      "find": "      version: '1.1.2',",
+      "replace": "      version: undefined,",
+      "expectFailure": "must have version 1.1.2"
+    },
+    {
+      "name": "the two-ad hint limit per game is removed",
+      "why": "The cap is the whole ad economy. Without it a player can watch ads until the puzzle solves itself, and the difficulty curve and the IQ metric both become meaningless.",
+      "file": "src/hooks/useKeypadActions.js",
+      "find": "      if (adHintsUsedThisGame >= 2) {",
+      "replace": "      if (adHintsUsedThisGame >= 999) {",
+      "expectFailure": "2-hint ad limit per game"
+    },
+    {
+      "name": "hints become available in Time Attack",
+      "why": "Speedrun records are only comparable if nobody had help. A hint button there quietly invalidates every leaderboard entry in that category.",
+      "file": "src/hooks/useKeypadActions.js",
+      "find": "gameMode === 'timeAttack'",
+      "replace": "gameMode === 'neverThisMode'",
+      "expectFailure": "prevent hints in Time Attack"
+    }
+  ]
+}

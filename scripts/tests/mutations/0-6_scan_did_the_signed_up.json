@@ -1,0 +1,17 @@
+{
+  "gate": "0-6",
+  "name": "Scan — Did the Signed-Up Player Turn Up?",
+  "command": "node scripts/scan/run_scan.js",
+  "greenMarker": "[SCAN] 확정 0건",
+  "note": "Not a gate. A gate is handed a feature and asks whether it clears the bar; the scan asks whether anyone entered the race. Every gate here was green while the ad service had no callers at all.",
+  "mutations": [
+    {
+      "name": "a screen calls a method that does not exist",
+      "why": "The scan asks whether the players who signed up turned up. A renamed method leaves the call site pointing at nothing — it type-checks in no language here, passes every gate, and throws the first time a real person opens that screen.",
+      "file": "src/components/AdBanner.jsx",
+      "find": "adsService.isAdsRemoved()",
+      "replace": "adsService.isAdsRemovedNow()",
+      "expectFailure": "존재하지 않는 메서드"
+    }
+  ]
+}

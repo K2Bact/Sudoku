@@ -54,6 +54,16 @@ runStep('2-14. Privacy Claims Match Actual Behaviour', 'node scripts/tests/unit/
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests
 // -----------------------------------------------------------------------------
+// Tier 3 runs against a browser, and the browser is served dist/ by
+// `vite preview`. Without this build those gates check whatever was compiled
+// last, which is not necessarily the source sitting in the tree. A mutation
+// that deleted the matchmaking-cancel branch outright left gate 3-6 green for
+// exactly this reason — the changed code had never reached the bundle.
+//
+// The build takes well under a second. A tier that silently validates a stale
+// bundle costs considerably more than that.
+runStep('3-0. Build the bundle Tier 3 will actually test', 'npm run build');
+
 runStep('3-1. Forbidden Hardcoded Text Scanner in Source Code', 'node scripts/tests/ui/check_no_hardcoded_text.js');
 runStep('3-2. Android Manifest Zero-PII & Insets Security Contract', 'node scripts/tests/ui/test_android_manifest.js');
 runStep('3-3. Modal Box Borders & Non-Overlapping Action Layout', 'node scripts/tests/ui/test_modal_box_borders.js');

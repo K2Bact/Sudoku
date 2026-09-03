@@ -1,0 +1,18 @@
+{
+  "gate": "3-10",
+  "name": "1v1 Matchmaking & Rematch End-to-End (two browsers)",
+  "command": "node scripts/tests/unit/test_rematch_flow.js",
+  "greenMarker": "Real 1v1 Matchmaking & Rematch Flow Verified",
+  "note": "This gate ended in `.catch(console.error)`. A timeout printed a stack trace, exited 0, and the pipeline stayed green — proven by pointing it at a selector that does not exist. The catch now exits 1, and this mutation is what keeps that true.",
+  "mutations": [
+    {
+      "name": "rematch stops starting a fresh puzzle for both players",
+      "why": "Two people accept a rematch and get different boards, or no board. The gate has to reach the end and fail rather than time out quietly.",
+      "file": "src/firebase/battleService.js",
+      "find": "requestRematch",
+      "replace": "requestRematchRenamed",
+      "expectFailure": "rematch"
+    }
+  ],
+  "rebuild": true
+}

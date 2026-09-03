@@ -1,0 +1,16 @@
+{
+  "gate": "3-2",
+  "name": "Android Manifest Zero-PII & Insets Security Contract",
+  "command": "node scripts/tests/ui/test_android_manifest.js",
+  "greenMarker": "Android Native Manifest & Security Contracts 100% Verified",
+  "mutations": [
+    {
+      "name": "a permission the app does not need is declared",
+      "why": "Every permission has to be justified in the Data Safety form and in review. One that nothing uses is a review rejection and a privacy claim the app cannot support.",
+      "file": "android/app/src/main/AndroidManifest.xml",
+      "find": "    <application",
+      "replace": "    <uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />\n\n    <application",
+      "expectFailure": "permission"
+    }
+  ]
+}

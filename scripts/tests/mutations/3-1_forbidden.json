@@ -1,0 +1,16 @@
+{
+  "gate": "3-1",
+  "name": "Forbidden Hardcoded Text Scanner in Source Code",
+  "command": "node scripts/tests/ui/check_no_hardcoded_text.js",
+  "greenMarker": "Hardcode Scanner] PASSED",
+  "mutations": [
+    {
+      "name": "a visible string is typed into a component instead of translated",
+      "why": "It renders in Korean for a player who set the app to Spanish, and no locale file mentions it, so no translation pass will ever find it.",
+      "file": "src/components/DailyRewardModal.jsx",
+      "find": "export function DailyRewardModal({ rewardInfo, onConfirm }) {",
+      "replace": "export function DailyRewardModal({ rewardInfo, onConfirm }) {\n  const hardcoded = '출석 보상을 받았습니다';",
+      "expectFailure": "DailyRewardModal"
+    }
+  ]
+}

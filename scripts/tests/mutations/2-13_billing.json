@@ -1,0 +1,41 @@
+{
+  "gate": "2-13",
+  "name": "Billing Honesty (nothing sold that cannot be charged)",
+  "command": "node scripts/tests/unit/test_billing_honesty.js",
+  "greenMarker": "Billing gate passed",
+  "note": "Every mutation here restores a shape the screen actually had once: a purchase button with no store behind it, an entitlement granted by a timer, a price assembled locally.",
+  "mutations": [
+    {
+      "name": "the no-store provider claims it can take money",
+      "why": "isAvailable is what the UI asks before showing a purchase button. If it lies, the app offers a sale it cannot complete and the player's tap goes nowhere.",
+      "file": "src/billing/noBillingProvider.js",
+      "find": "  get isAvailable() {\n    return false;\n  }",
+      "replace": "  get isAvailable() {\n    return true;\n  }",
+      "expectFailure": "must never report that it can take money"
+    },
+    {
+      "name": "the entitlement is granted on success alone, without ownership",
+      "why": "This is the exact shape that turned the remove-ads screen into a giveaway announcing itself as a sale. A store can return success for a flow that ended without a purchase.",
+      "file": "src/services/adsService.js",
+      "find": "if (res.success && res.owned) this.setAdsRemoved(true);",
+      "replace": "if (res.success) this.setAdsRemoved(true);",
+      "expectFailure": "confirms BOTH success and ownership"
+    },
+    {
+      "name": "the banner offers the purchase without asking whether it can be bought",
+      "why": "canPurchase is the only thing standing between a build with no billing library and a button that takes the player to a dead screen.",
+      "file": "src/components/AdBanner.jsx",
+      "find": "{adsService.canPurchase && (",
+      "replace": "{true && (",
+      "expectFailure": "AdBanner"
+    },
+    {
+      "name": "the price is assembled in the app instead of taken from the store",
+      "why": "Currency symbol, separator and placement differ by country and the store already knows. Formatting here is how a literal \"({price})\" once reached the screen. The first attempt at this mutation used product?.priceAmount, which contains product?.price as a substring and so slipped past the first assertion — the runner reported WRONG_REASON rather than crediting the wrong check.",
+      "file": "src/components/RemoveAdsScreen.jsx",
+      "find": "<span>{product?.price",
+      "replace": "<span>{'₩' + (product?.amountMicros || 0)",
+      "expectFailure": "store's own localised price string"
+    }
+  ]
+}

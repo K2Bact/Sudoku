@@ -1,0 +1,17 @@
+{
+  "gate": "3-5",
+  "name": "Home Layout Grid & Responsive Layout Audit",
+  "command": "node scripts/tests/ui/test_home_layout.js",
+  "greenMarker": "All screenshots captured successfully",
+  "rebuild": true,
+  "mutations": [
+    {
+      "name": "the home hero card stops rendering",
+      "why": "The gate walks the home screen in several modes and captures each one. If the screen it is looking for is gone it has to say so rather than save an empty picture.",
+      "file": "src/components/home/HomeHeroCard.jsx",
+      "find": "export function HomeHeroCard",
+      "replace": "export function __RenamedHeroCard",
+      "expectFailure": "Error"
+    }
+  ]
+}

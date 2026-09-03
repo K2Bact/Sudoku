@@ -1,0 +1,57 @@
+{
+  "gate": "2-4",
+  "name": "Wallet Balance, Smart Hint & Attendance Streak Engine",
+  "command": "node scripts/tests/unit/test_wallet_and_hint_engine.js",
+  "greenMarker": "Wallet, Hint Engine & Attendance Streak 100% Verified",
+  "note": "This gate was green for the whole life of the desync bug, because it tested wallet.js alone and the wallet was always right. What was wrong was the seam between the wallet and the screen. Cases 6-8 exist for that seam and these mutations are what prove they work.",
+  "mutations": [
+    {
+      "name": "the wallet stops announcing balance changes",
+      "why": "Without the announcement the displayed count goes back to being a copy refreshed by hand at five call sites while seven places write. Two of those seven forgot, and the home screen showed yesterday's number all day.",
+      "file": "src/utils/wallet.js",
+      "find": "  announceBalance(wallet.hints);",
+      "replace": "  // announceBalance(wallet.hints);",
+      "expectFailure": "hand-refreshed copy again"
+    },
+    {
+      "name": "unsubscribe returns a function that does not unsubscribe",
+      "why": "A listener that outlives its component keeps writing into unmounted state. The narrow reproduction above does not test this, so only the broadcast case can catch it.",
+      "file": "src/utils/wallet.js",
+      "find": "  return () => balanceListeners.delete(listener);",
+      "replace": "  return () => {};",
+      "expectFailure": "Unsubscribe did not stop the notifications"
+    },
+    {
+      "name": "the screen stops subscribing",
+      "why": "Deleting this one line puts the drift back with no visible trace in the wallet module. It has to fail here rather than on a phone.",
+      "file": "src/hooks/useSudokuGame.js",
+      "find": "  useEffect(() => subscribeToWallet(setHintsRemaining), []);",
+      "replace": "",
+      "expectFailure": "does not register it in a useEffect"
+    },
+    {
+      "name": "hints can be spent past zero",
+      "why": "consumeHint returning true on an empty wallet gives free hints forever and drives the balance negative.",
+      "file": "src/utils/wallet.js",
+      "find": "  if (wallet.hints <= 0) {",
+      "replace": "  if (wallet.hints <= -999) {",
+      "expectFailure": "consumeHint succeeded even with 0 balance"
+    },
+    {
+      "name": "the daily reward can be claimed twice in one day",
+      "why": "The same-day guard is the only thing between the attendance bonus and an unlimited hint tap. It already broke once when attendance used UTC while the daily challenge used local time, making one day into two.",
+      "file": "src/utils/wallet.js",
+      "find": "  if (wallet.lastDailyClaimDate === today) {",
+      "replace": "  if (false && wallet.lastDailyClaimDate === today) {",
+      "expectFailure": "Duplicate claim allowed on same day"
+    },
+    {
+      "name": "a fresh install starts with a different number of hints",
+      "why": "The welcome balance is quoted in the store listing and in the tutorial. Changing it silently makes both wrong.",
+      "file": "src/utils/wallet.js",
+      "find": "  hints: 3,                 // Initial welcome bonus",
+      "replace": "  hints: 5,                 // Initial welcome bonus",
+      "expectFailure": "Expected initial hints to be 3"
+    }
+  ]
+}

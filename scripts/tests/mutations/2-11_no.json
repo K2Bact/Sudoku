@@ -1,0 +1,17 @@
+{
+  "gate": "2-11",
+  "name": "No Native Dialogs (localised buttons)",
+  "command": "node scripts/tests/unit/test_no_native_dialogs.js",
+  "greenMarker": "Native dialog gate passed",
+  "note": "Capacitor draws window.confirm with hardcoded English OK/Cancel. In a Korean or Arabic build the question is translated and the buttons are not.",
+  "mutations": [
+    {
+      "name": "a screen calls window.confirm directly",
+      "why": "The dialog then asks in the player's language and answers in English. Thirteen locales, one of which is right.",
+      "file": "src/components/settings/AccountSection.jsx",
+      "find": "    if (!(await confirm(t('cloudSync.restoreConfirm')))) return;",
+      "replace": "    if (!window.confirm(t('cloudSync.restoreConfirm'))) return;",
+      "expectFailure": "window.confirm"
+    }
+  ]
+}

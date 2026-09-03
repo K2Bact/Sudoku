@@ -1,0 +1,25 @@
+{
+  "gate": "0-4",
+  "name": "No Committed Secrets or Signing Material",
+  "command": "node scripts/tests/unit/test_no_committed_secrets.js",
+  "greenMarker": "No Committed Secrets",
+  "note": "The strings these mutations write are not secrets; they are the shapes of secrets, and they are assembled by the runner rather than written here. A manifest holding one would itself be a credential-shaped string in a tracked file — the pre-commit hook blocked exactly that on the first attempt, which was the right answer. See SECRET_BAIT in run_mutation_audit.js.",
+  "mutations": [
+    {
+      "name": "a keystore password is written as a literal",
+      "why": "The signing password in plain text is the one leak that cannot be undone by rotating a key — an attacker who has it can publish updates that Play accepts as genuine.",
+      "file": "src/utils/wallet.js",
+      "find": "// Exported so sync/backup code cannot drift onto a different key string.",
+      "replace": "// {{BAIT:storePassword}}\n// Exported so sync/backup code cannot drift onto a different key string.",
+      "expectFailure": "storePassword"
+    },
+    {
+      "name": "a private key block appears in a tracked file",
+      "why": "Once committed it is in the history forever, and the gate has to see it before the push rather than after.",
+      "file": "src/utils/wallet.js",
+      "find": "// Exported so sync/backup code cannot drift onto a different key string.",
+      "replace": "// {{BAIT:privateKey}}\n// Exported so sync/backup code cannot drift onto a different key string.",
+      "expectFailure": "private key"
+    }
+  ]
+}

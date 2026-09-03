@@ -1,0 +1,16 @@
+{
+  "gate": "3-3",
+  "name": "Modal Box Borders & Non-Overlapping Action Layout",
+  "command": "node scripts/tests/ui/test_modal_box_borders.js",
+  "greenMarker": "MODAL BOX BORDER & LAYOUT AUDITS PASSED 100%",
+  "mutations": [
+    {
+      "name": "a modal action button gets a utility class this app never defines",
+      "why": "mb-2 and mt-2 are Bootstrap names. Nothing in this stylesheet defines them, so the class does nothing and the buttons sit flush against each other. On the game-over modal a mis-hit is the difference between watching an ad and losing the run. The first attempt at this mutation wrote the class with escaped quotes, so the file held className=\\\" and the gate — which looks for a plain quote — correctly did not match. That was a bad mutation, not a bad gate.",
+      "file": "src/components/VictoryModal.jsx",
+      "find": "export function VictoryModal",
+      "replace": "const __phantom = '<button className=\"btn btn-secondary w-100 mb-2\">';\nexport function VictoryModal",
+      "expectFailure": "phantom utility class"
+    }
+  ]
+}

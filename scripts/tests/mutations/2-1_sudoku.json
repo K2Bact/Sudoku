@@ -1,0 +1,16 @@
+{
+  "gate": "2-1",
+  "name": "Sudoku Mathematical Integrity & Unique Solver Engine",
+  "command": "node scripts/tests/unit/test_sudoku_math_engine.js",
+  "greenMarker": "Sudoku Mathematical Integrity, Immutability & Solver Engine 100% Verified",
+  "mutations": [
+    {
+      "name": "the generator stops guaranteeing a unique solution",
+      "why": "A puzzle with two solutions marks a correct entry as a mistake. The player is right, the app says they are wrong, and there is nothing they can do about it.",
+      "file": "src/engine/SudokuEngine.js",
+      "find": "export function generatePuzzle(",
+      "replace": "export function __unusedGenerate(",
+      "expectFailure": "generatePuzzle"
+    }
+  ]
+}

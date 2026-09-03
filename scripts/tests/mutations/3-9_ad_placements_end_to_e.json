@@ -1,0 +1,17 @@
+{
+  "gate": "3-9",
+  "name": "Ad Placements End-to-End (banner, purchase)",
+  "command": "node scripts/tests/ui/test_ads_placements_e2e.js",
+  "greenMarker": "Ad placements verified by clicking them",
+  "mutations": [
+    {
+      "name": "the ad slot silently stops rendering",
+      "why": "This gate clicks the placements instead of reading the source, because a placement can be present in the code and unreachable on screen. Renaming the export was too blunt a mutation — it broke the build, so the gate died before it ever looked for the slot.",
+      "file": "src/components/AdBanner.jsx",
+      "find": "  if (adsService.isAdsRemoved()) {",
+      "replace": "  if (true) {",
+      "expectFailure": "no ad slot rendered"
+    }
+  ],
+  "rebuild": true
+}

@@ -1,0 +1,16 @@
+{
+  "gate": "2-5b",
+  "name": "Academy Text Purity & Diagram Structure",
+  "command": "node scripts/tests/unit/test_academy_purity.js",
+  "greenMarker": "Academy purity gate passed",
+  "mutations": [
+    {
+      "name": "markup leaks into a lesson string",
+      "why": "Lesson text is rendered as text, so a tag in it shows up literally on screen — in whichever of the thirteen languages happens to carry it.",
+      "file": "src/data/academy/practice/stage1Practice.js",
+      "find": "export const STAGE1_PRACTICE = {",
+      "replace": "export const STAGE1_PRACTICE = {\n  __leak: { title: { ko: '<b>굵게</b>' } },",
+      "expectFailure": "tag"
+    }
+  ]
+}

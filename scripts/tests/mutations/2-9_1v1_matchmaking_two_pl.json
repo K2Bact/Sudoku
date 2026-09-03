@@ -1,0 +1,16 @@
+{
+  "gate": "2-9",
+  "name": "1v1 Matchmaking — Two Players Actually Meet",
+  "command": "node scripts/tests/unit/test_battle_matchmaking.js",
+  "greenMarker": "Matchmaking gate passed",
+  "mutations": [
+    {
+      "name": "tickets stop carrying the level, so nobody is paired",
+      "why": "The queue then holds two players who can see each other and never match. The radar spins until the player gives up, which reads as \"nobody is online\".",
+      "file": "src/firebase/battleValidation.js",
+      "find": "  if (!t || typeof t.playerId !== 'string' || !t.playerId) return false;",
+      "replace": "  return false;",
+      "expectFailure": "ticket"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "gate": "2-10",
+  "name": "Ad Honesty & Provider Contract",
+  "command": "node scripts/tests/unit/test_ads_honesty.js",
+  "greenMarker": "Ad honesty gate passed",
+  "note": "Four ad placements each ran their own setTimeout pretending to be an ad. The seam replaced all four, and isReal is what every placement asks before it says anything to the player.",
+  "mutations": [
+    {
+      "name": "the placeholder provider claims to be a real ad network",
+      "why": "Every placement branches on isReal to decide whether to say \"watching an ad\" or \"ad placeholder\". A provider that lies here makes all four of them lie at once.",
+      "file": "src/ads/fakeAdProvider.js",
+      "find": "  get isReal() {\n    return false;\n  }",
+      "replace": "  get isReal() {\n    return true;\n  }",
+      "expectFailure": "isReal"
+    }
+  ]
+}

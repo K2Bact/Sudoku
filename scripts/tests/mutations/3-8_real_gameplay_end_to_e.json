@@ -1,0 +1,18 @@
+{
+  "gate": "3-8",
+  "name": "Real Gameplay End-to-End (play, tap, win)",
+  "command": "node scripts/tests/ui/test_gameplay_e2e.js",
+  "greenMarker": "Real Gameplay End-to-End 100% Verified",
+  "note": "One mutation only: every run drives a real browser through a whole puzzle.",
+  "mutations": [
+    {
+      "name": "a correct entry is scored as a mistake",
+      "why": "Three of those and the game is over. The player was right every time and the app said otherwise, which is the worst thing a puzzle game can do. Renaming the hook instead broke the build, so the gate failed for a reason that proved nothing. The expectFailure was then set to a string the gate never prints; it reports failures as \"N gameplay failure(s)\".",
+      "file": "src/hooks/useGameInput.js",
+      "find": "    if (num !== validSolution[r][c] && autoCheckMistakes) {",
+      "replace": "    if (num === validSolution[r][c] && autoCheckMistakes) {",
+      "expectFailure": "gameplay failure(s)"
+    }
+  ],
+  "rebuild": true
+}

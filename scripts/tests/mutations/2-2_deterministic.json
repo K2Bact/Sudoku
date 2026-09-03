@@ -1,0 +1,17 @@
+{
+  "gate": "2-2",
+  "name": "Deterministic PRNG & Daily Challenge Global Sync",
+  "command": "node scripts/tests/unit/test_deterministic_prng.js",
+  "greenMarker": "PRNG & DAILY CHALLENGE TESTS PASSED",
+  "note": "The daily puzzle has to be the same puzzle for every player on Earth on that date. Determinism is the whole feature, not an implementation detail.",
+  "mutations": [
+    {
+      "name": "the daily puzzle stops being the same for everyone",
+      "why": "If the seed picks up anything but the date, two players compare times on two different puzzles and the leaderboard means nothing.",
+      "file": "src/utils/dailyChallenge.js",
+      "find": "export function getDailyPuzzle(",
+      "replace": "export function __renamedDailyPuzzle(",
+      "expectFailure": "getDailyPuzzle"
+    }
+  ]
+}

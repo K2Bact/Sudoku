@@ -1,0 +1,17 @@
+{
+  "gate": "1",
+  "name": "Global L10N Master 9-Gate & Profile Audit",
+  "command": "node ../app_common/l10n_engine/validator.mjs --app suidoku",
+  "greenMarker": "VALIDATOR PASSED",
+  "note": "This validator once required the false privacy claim: the shared spec pinned the lie in place rather than catching it. A shared spec can be wrong, so it gets mutated like anything else.",
+  "mutations": [
+    {
+      "name": "a language loses a key the others have",
+      "why": "The key falls back to its raw identifier, so one locale shows `modals.dailyReward.desc` where the others show a sentence.",
+      "file": "src/i18n/locales/ja/modals.js",
+      "find": "dailyReward:",
+      "replace": "dailyRewardRenamed:",
+      "expectFailure": "dailyReward"
+    }
+  ]
+}

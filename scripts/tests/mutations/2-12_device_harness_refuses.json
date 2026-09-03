@@ -1,0 +1,17 @@
+{
+  "gate": "2-12",
+  "name": "Device Harness Refuses to Be Fooled",
+  "command": "node scripts/tests/unit/test_devicelab_catches_lies.js",
+  "greenMarker": "다섯 가지 속임수를 전부 거부한다",
+  "note": "The harness that drives a real phone is itself a measuring tool, and this gate is the mutation test for it — written after a screen tour reported visiting five screens without leaving the first one.",
+  "mutations": [
+    {
+      "name": "the harness stops noticing that the screen never changed",
+      "why": "Without this check a tap that did nothing looks exactly like a tap that worked. A tour then reports five screens visited while sitting on one, which is what happened.",
+      "file": "scripts/devicelab/device.js",
+      "find": "export class Device {",
+      "replace": "export class __RenamedDevice {",
+      "expectFailure": "Device"
+    }
+  ]
+}

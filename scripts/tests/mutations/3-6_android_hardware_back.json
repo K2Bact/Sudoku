@@ -1,0 +1,18 @@
+{
+  "gate": "3-6",
+  "name": "Android Hardware Back Button & Matchmaking Cancel",
+  "command": "node scripts/tests/ui/test_back_navigation.js",
+  "greenMarker": "Android Back Button and Radar Cancel behavior verified",
+  "note": "Back has to land where the on-screen Cancel button lands. Anything else drops the player out of the app mid-search, which reads as a crash.",
+  "mutations": [
+    {
+      "name": "the back button stops closing the matchmaking radar",
+      "why": "Back then falls through to the system and closes the app while the player is queued. They come back to find the search gone and no explanation.",
+      "file": "src/hooks/useBackStack.js",
+      "find": "      if (isMatchSearching) {",
+      "replace": "      if (false) {",
+      "expectFailure": "radar"
+    }
+  ],
+  "rebuild": true
+}

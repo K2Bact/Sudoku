@@ -1,0 +1,17 @@
+{
+  "gate": "2-6",
+  "name": "AI Battle vs 1v1 PvP Isolation & Popup Audit",
+  "command": "node scripts/tests/unit/test_battle_ai_separation.js",
+  "greenMarker": "AI vs 1v1 isolation guaranteed",
+  "note": "The AI match loop was moved out of battleService so a practice match cannot touch the PvP transport. The isolation is structural and has to stay that way.",
+  "mutations": [
+    {
+      "name": "the AI session reaches back into the PvP service",
+      "why": "A bot match that imports battleService can write to a real matchmaking room. The player practising against a bot then shows up in someone else's live game.",
+      "file": "src/firebase/aiBattleSession.js",
+      "find": "import { aiBotService } from '../engine/aiBotService.js';",
+      "replace": "import { aiBotService } from '../engine/aiBotService.js';\nimport { battleService } from './battleService.js';",
+      "expectFailure": "must not import"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "gate": "2-3",
+  "name": "Ghost PB Replay & Delta Pace Calculation Engine",
+  "command": "node scripts/tests/unit/test_ghost_delta_mode.js",
+  "greenMarker": "ALL GHOST & DELTA PACE CALCULATION TESTS PASSED",
+  "note": "A personal best is only worth racing if it was set without help. hintsUsedCount was once left out of the autosave, so a hinted run that survived an app restart came back looking clean and set a PB.",
+  "mutations": [
+    {
+      "name": "a run that used hints can still set a personal best",
+      "why": "The ghost you race is then a version of yourself that was being told the answers, and every later attempt is measured against a time nobody actually earned.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  if (hintsUsed > 0) {",
+      "replace": "  if (hintsUsed > 999) {",
+      "expectFailure": "PB record when hintsUsed"
+    }
+  ]
+}

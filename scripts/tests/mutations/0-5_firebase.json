@@ -1,0 +1,17 @@
+{
+  "gate": "0-5",
+  "name": "Firebase Config Reaches the Build (1v1 is live)",
+  "command": "node scripts/tests/unit/test_firebase_config_present.js",
+  "greenMarker": "Firebase config gate passed",
+  "note": "Without the config the transport falls back to same-device mode. Every 1v1 gate still passes, because two tabs on one machine really do meet — and no two phones ever would.",
+  "mutations": [
+    {
+      "name": "a config key firebaseApp.js reads is missing from .env.example",
+      "why": "A fresh clone then builds an app whose 1v1 silently never leaves the device, and nothing says so.",
+      "file": "src/firebase/firebaseApp.js",
+      "find": "        databaseURL: env.VITE_FIREBASE_DATABASE_URL,",
+      "replace": "        databaseURL: env.VITE_FIREBASE_DATABASE_URL_RENAMED,",
+      "expectFailure": "VITE_FIREBASE_DATABASE_URL_RENAMED"
+    }
+  ]
+}

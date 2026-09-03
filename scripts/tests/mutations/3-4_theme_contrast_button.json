@@ -1,0 +1,18 @@
+{
+  "gate": "3-4",
+  "name": "Theme Contrast & Button State Visibility Audit",
+  "command": "node scripts/tests/ui/test_theme_and_button_contrast.js",
+  "greenMarker": "GATE 15 PASSED",
+  "note": "The contrast comparison in this gate had never executed. It was guarded by `dist > 30 || backgroundImage.includes(gradient)`, and the button it measures is always a gradient, so white text on a white background passed.",
+  "mutations": [
+    {
+      "name": "the selected language button is given text the same colour as its background",
+      "why": "Text at #4a8bf5 sits 17 units from the gradient stop #3b82f6, under the threshold of 30 — the selected language is then unreadable against its own button. The first attempt used #dbeafe, which is 191 units away and correctly passed: an unfair mutation reported as a gate defect until the numbers were checked.",
+      "file": "src/styles/settings.css",
+      "find": "  color: #ffffff !important;\n  border: 1.5px solid #2563eb !important;",
+      "replace": "  color: #4a8bf5 !important;\n  border: 1.5px solid #2563eb !important;",
+      "expectFailure": "contrast"
+    }
+  ],
+  "rebuild": true
+}

@@ -1,0 +1,65 @@
+{
+  "gate": "2-14",
+  "name": "Privacy Claims Match Actual Behaviour",
+  "command": "node scripts/tests/unit/test_privacy_claims.js",
+  "greenMarker": "Privacy claims gate passed",
+  "note": "Ordering matters here. The cases run 1, 2, 3, 1b, coupling, 4, 5, 6, 7, and runTest-style aborts mean only the first failure is ever reported. Anything editing docs/privacy.html also breaks Case 6 (hosted vs local), so a policy mutation must trip an earlier case or its expectFailure will not match — which is the runner correctly refusing to credit the wrong check.",
+  "mutations": [
+    {
+      "name": "an absolute offline claim comes back into the app",
+      "why": "The settings footer shipped `Pure Offline & Zero-PII Protected.` while 1v1 talked to Firebase and anonymous auth minted a UID. An out-of-date privacy claim contradicts the Data Safety declaration, which is a policy problem rather than a typo.",
+      "file": "src/config/appInfo.js",
+      "find": "  copyright: '© 2026 K2Bact. All rights reserved.',",
+      "replace": "  copyright: '© 2026 K2Bact. Pure Offline.',",
+      "expectFailure": "Absolute privacy/offline claims found"
+    },
+    {
+      "name": "the copyright line carries a behavioural claim again",
+      "why": "The footer is where a claim can live that nobody reviewing the networking code will ever read. A word blocklist was tried here first and let `Your data never leaves your phone` straight through, so the check pins the shape of a copyright notice instead.",
+      "file": "src/config/appInfo.js",
+      "find": "  copyright: '© 2026 K2Bact. All rights reserved.',",
+      "replace": "  copyright: '© 2026 K2Bact. Your data never leaves your phone.',",
+      "expectFailure": "copyright"
+    },
+    {
+      "name": "the policy says the records are kept only on the device",
+      "why": "This is the sentence that shipped. Case 1's phrase list did not contain it, and Android Auto Backup was copying localStorage to Drive the whole time — which is why a player who deleted the app and reinstalled it still had their old hint balance.",
+      "file": "docs/privacy.html",
+      "find": "게임 플레이와 관련된 기록은 기본적으로 사용자의 스마트폰 <strong>로컬 저장소(localStorage)</strong>에 보관됩니다. 다만 이 데이터가 기기 밖으로 복사되는 경로가 두 가지 있습니다.",
+      "replace": "게임 플레이와 관련된 모든 기록은 사용자의 스마트폰 <strong>로컬 저장소(localStorage)</strong>에만 보관됩니다.",
+      "expectFailure": "says the data stays on the device"
+    },
+    {
+      "name": "a wording nobody put on the blocklist",
+      "why": "The point of checking for a contradiction rather than for phrases. This sentence appears in no list anywhere and still has to fail.",
+      "file": "docs/privacy.html",
+      "find": "      <p>두 경우 모두 사본은 이용자 본인의 Google 계정 안에 보관되며 개발자는 열람할 수 없습니다. 안드로이드 자동 백업은 기기 설정에서 끌 수 있습니다.</p>",
+      "replace": "      <p>Your game data never leaves your phone.</p>",
+      "expectFailure": "says the data stays on the device"
+    },
+    {
+      "name": "backup is turned off in the manifest while the policy still describes it",
+      "why": "The policy now asserts something specific about Android Auto Backup, and the only reason that is true is this flag. Turning it off makes the policy wrong in the other direction.",
+      "file": "android/app/src/main/AndroidManifest.xml",
+      "find": "android:allowBackup=\"true\"",
+      "replace": "android:allowBackup=\"false\"",
+      "expectFailure": "longer enables it"
+    },
+    {
+      "name": "the reward text names a fixed amount again",
+      "why": "claimDailyAttendance gives 3 hints on every seventh day. The text said +1 to players who had turned up all week.",
+      "file": "src/i18n/locales/ko/modals.js",
+      "find": "무료 힌트 +{count}개가 충전되었습니다.",
+      "replace": "무료 힌트 +1개가 충전되었습니다.",
+      "expectFailure": "states an amount the code does not always give"
+    },
+    {
+      "name": "the version in settings drifts from the version that ships",
+      "why": "build.gradle said 1.2.1 build 15 while the settings screen said 1.2.0 build 14. A bug report then names a build that was never uploaded.",
+      "file": "android/app/build.gradle",
+      "find": "versionName \"1.2.2\"",
+      "replace": "versionName \"1.2.9\"",
+      "expectFailure": "build.gradle"
+    }
+  ]
+}

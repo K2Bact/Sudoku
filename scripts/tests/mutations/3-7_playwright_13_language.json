@@ -1,0 +1,19 @@
+{
+  "gate": "3-7",
+  "name": "Playwright 13-Language Visual UI Overflow Scan",
+  "command": "node scripts/tests/ui/check_ui_overflow.js",
+  "greenMarker": "No text overflow, orphan lines, or card bloat detected",
+  "rebuild": true,
+  "note": "What this gate does NOT see: any element that clips with text-overflow: ellipsis. The home banner cards all set white-space: nowrap; overflow: hidden; text-overflow: ellipsis, so a long title there is truncated by design and is deliberately not reported. Aim mutations at elements that have no such clipping — .mode-tab-btn, .badge, .nav-item span — or the gate will pass and be right to.",
+  "mutations": [
+    {
+      "name": "a German mode tab grows into an unbreakable compound",
+      "why": "German compounds are how this class of bug arrives. The three mode tabs share one row with 2px of horizontal padding each, so a word wider than a third of the screen pushes the layout past the phone edge.",
+      "file": "src/i18n/locales/de/screens.js",
+      "find": "    modeTabs: { classic: 'Klassik', timeAttack: 'Zeitrennen', timeLimit: 'Überleben' },",
+      "replace": "    modeTabs: { classic: 'Hauptbahnhofsverwaltungsangestelltengehaltsabrechnung', timeAttack: 'Zeitrennen', timeLimit: 'Überleben' },",
+      "expectFailure": "LAYOUT DEFECTS DETECTED",
+      "history": "Three earlier attempts all passed, and all three were right to: a brand-new key that nothing renders, home.modes.academy.title which the home screen does not use, and home.modes.battle.title which sits in an ellipsis-clipped card. A fourth run reached the right element but named the wrong message: the gate reports \"LAYOUT DEFECTS DETECTED\", not the word overflow."
+    }
+  ]
+}

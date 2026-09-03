@@ -1,0 +1,17 @@
+{
+  "gate": "0-3",
+  "name": "Node ESM Import Extension Compliance",
+  "command": "node scripts/tests/unit/test_esm_import_extensions.js",
+  "greenMarker": "Node ESM Import Extension Compliance 100% Verified",
+  "note": "Vite resolves extensionless imports; Node does not. An import that works in the browser build and throws in every gate is the exact failure this catches.",
+  "mutations": [
+    {
+      "name": "an import loses its .js extension",
+      "why": "The bundler forgives it, so it looks fine while running the app, and then every Node-side gate that imports that module dies with ERR_MODULE_NOT_FOUND.",
+      "file": "src/utils/wallet.js",
+      "find": "import { getTodayDateKey, daysBetweenKeys } from './dateKey.js';",
+      "replace": "import { getTodayDateKey, daysBetweenKeys } from './dateKey';",
+      "expectFailure": "dateKey"
+    }
+  ]
+}
