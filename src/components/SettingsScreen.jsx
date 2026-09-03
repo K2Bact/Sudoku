@@ -214,7 +214,11 @@ export function SettingsScreen({
             <Info size={14} />
             <span>{APP_INFO.name} v{APP_INFO.version} (Build {APP_INFO.buildCode})</span>
           </div>
-          <p className="text-muted mt-2" style={{ fontSize: '11px' }}>
+          {/* 아랍어 화면에서 이 줄이 `.K2Bact. All rights reserved 2026 ©` 로
+              나왔다. 양방향 알고리즘이 RTL 문맥 안의 라틴 문자열을 재배열한
+              것으로 데이터는 맞다. 저작권 표기는 언어와 무관하게 항상 좌에서
+              우로 읽혀야 하므로 방향을 고정한다. */}
+          <p className="text-muted mt-2" dir="ltr" style={{ fontSize: '11px' }}>
             {APP_INFO.copyright}
           </p>
         </div>

@@ -135,7 +135,13 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
         {watchingAdForDate && (
           <div className="inline-ad" style={{ flexDirection: 'column', gap: '8px' }}>
             <div className="spinner"></div>
-            <p style={{ fontWeight: '800', color: '#eab308' }}>{t('daily.unlockingAd')}</p>
+            {/* 어느 쪽인지 말한다. 자리표시자 공급자가 도는 동안엔 광고주가 없고,
+                플레이어에게 다르게 말하는 것은 배너가 하던 거짓말과 같다.
+                GameOverModal 과 HintRewardModal 은 이미 이렇게 하고 있었고
+                여기만 빠져 있었다. */}
+            <p style={{ fontWeight: '800', color: '#eab308' }}>
+              {adsService.isReal ? t('daily.unlockingAd') : t('modals.hintReward.adPlaceholder')}
+            </p>
           </div>
         )}
 
