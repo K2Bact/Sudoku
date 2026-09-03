@@ -97,7 +97,12 @@
 
     <div class="card">
       <h2>💾 2. 로컬 데이터 보관 및 사용자 삭제 권리</h2>
-      <p>게임 플레이와 관련된 모든 기록은 사용자의 스마트폰 <strong>로컬 저장소(localStorage)</strong>에만 보관됩니다.</p>
+      <p>게임 플레이와 관련된 기록은 기본적으로 사용자의 스마트폰 <strong>로컬 저장소(localStorage)</strong>에 보관됩니다. 다만 이 데이터가 기기 밖으로 복사되는 경로가 두 가지 있습니다.</p>
+      <ul>
+        <li><strong>앱 내 클라우드 백업</strong>: 이용자가 [설정]에서 직접 사용할 때만 Google Play 게임즈 저장 데이터로 저장됩니다 (3항 참고).</li>
+        <li><strong>안드로이드 자동 백업</strong>: 기기의 [설정] &gt; [Google] &gt; [백업]이 켜져 있으면, 안드로이드 운영체제가 이 앱의 데이터를 이용자 본인의 Google 드라이브에 자동으로 복사합니다. 앱을 삭제한 뒤 다시 설치하면 이 사본이 복원되므로, 재설치 후에도 이전 기록(보유 힌트 수량 등)이 그대로 남아 있을 수 있습니다.</li>
+      </ul>
+      <p>두 경우 모두 사본은 이용자 본인의 Google 계정 안에 보관되며 개발자는 열람할 수 없습니다. 안드로이드 자동 백업은 기기 설정에서 끌 수 있습니다.</p>
       <ul>
         <li><strong>보관 데이터</strong>: 난이도별 클리어 최고 기록, 평균 승률, 두뇌 활성 지수 점수, 보유 힌트 수량, 테마 설정.</li>
         <li><strong>삭제 권리</strong>: 앱 내 [설정] &gt; [데이터 관리] &gt; [모든 로컬 데이터 초기화] 메뉴를 통해 언제든지 보관된 모든 데이터를 영구 삭제할 수 있습니다.</li>
@@ -146,7 +151,12 @@
 
     <div class="card">
       <h2>💾 2. On-Device Storage</h2>
-      <p>Game progress (clear records, win rate, IQ metrics, theme preferences) is stored in the device's local storage (localStorage) and can be reset at any time via in-app Settings. If you use cloud backup, a copy is also written to Google Play Games saved data, held in your own Google account.</p>
+      <p>Game progress (clear records, win rate, IQ metrics, hint balance, theme preferences) is stored in the device's local storage (localStorage) by default and can be reset at any time via in-app Settings. Two things copy it off the device:</p>
+      <ul>
+        <li><strong>In-app cloud backup</strong>: only when you use it from Settings, a copy is written to Google Play Games saved data (see section 3).</li>
+        <li><strong>Android Auto Backup</strong>: if backup is enabled in your device's Settings &gt; Google &gt; Backup, the Android operating system copies this app's data to your own Google Drive and restores it when you reinstall the app. Records from before an uninstall (your hint balance, for example) can therefore still be present after a fresh install.</li>
+      </ul>
+      <p>In both cases the copy lives in your own Google account and the developer cannot read it. Android Auto Backup can be turned off in your device settings.</p>
     </div>
 
     <div class="card">

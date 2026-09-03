@@ -18,6 +18,7 @@
  * in the UI is what contradicts it.
  *
  *   Case 1  no absolute claim survives in shipped text, in-app or hosted
+ *   Case 1b the policy does not claim the data stays on the device
  *   Case 2  the copyright line is a copyright line, carrying no claim at all
  *   Case 3  every language discloses the same four sections — none half-edited
  *   Case 4  the hosted policy names the services the app actually sends to
@@ -28,6 +29,16 @@
  * Case 2 is the structural half. The footer rotted because it was a place a
  * claim could live where nothing would ever check it; forbidding claims there
  * outright is what stops the next one, not banning today's exact wording.
+ *
+ * Case 1b is Case 1 admitting its own weakness. Case 1 is a list of phrases
+ * someone already thought of, and the Korean policy walked past it saying the
+ * records are kept 로컬 저장소에만 — only in local storage. They are not: the
+ * manifest sets android:allowBackup="true" with no extraction rules, so Android
+ * copies the app data directory, WebView localStorage included, to the player's
+ * Drive and restores it on reinstall. A player who deleted the app and
+ * reinstalled it from Play still had the hint balance from before, which is how
+ * this was noticed at all. Case 1b looks for the contradiction rather than the
+ * wording, since the document already names where the data goes.
  *
  * Case 4 is the other direction. `docs/privacy.html` had no 1v1 section at all
  * in its English half — four headings that went from local storage straight to
@@ -217,6 +228,83 @@ assert.deepStrictEqual(incomplete, [],
   'Privacy policy is incomplete in some languages:\n  ' + incomplete.join('\n  ') +
   '\n\nA language left behind keeps making the old promise to the players who read it.');
 console.log(`  ✅ ${locales.length} languages, ${REQUIRED.length} required keys each`);
+
+// ── Case 1b: the policy must not claim the data stays on the device ───────
+//
+// Case 1 holds a list of banned phrases, every one of them a wording someone
+// already thought of. The Korean policy said 로컬 저장소에만 보관됩니다
+// ('stored ONLY in local storage') and sailed through, because that exact
+// string was not on the list — the same way a word blocklist once let
+// "Your data never leaves your phone" past the copyright check.
+//
+// So this does not count phrasings. It looks for a contradiction: Case 4
+// below already requires this document to name the services data is sent to,
+// and the app ships with android:allowBackup="true" and no extraction rules,
+// which means Android copies the whole data directory — localStorage included —
+// to the player's Google Drive and restores it on reinstall. A document that
+// says both things is wrong no matter which words it picks.
+//
+// The patterns require a storage verb nearby on purpose. "두뇌 지수는 기기
+// 안에서만 계산되며" (computed only on the device) is true and must not trip.
+console.log(String.fromCharCode(9654) + " 1b. The policy does not claim storage never leaves the device");
+const policyText = fs.readFileSync(POLICY, 'utf8');
+const EXCLUSIVITY = [
+  [/(저장소|기기|단말|스마트폰).{0,20}에만\s*(보관|저장)/, 'claims storage happens only on the device'],
+  [/(보관|저장).{0,25}기기\s*(밖|외부).{0,15}(나가지|전송되지|벗어나지)\s*않/, 'claims stored data never leaves the device'],
+  [/stored\s+only\s+on\s+(your|the)\s+(device|phone)/i, 'claims storage happens only on the device'],
+  [/never\s+leaves?\s+(your|the)\s+(device|phone)/i, 'claims data never leaves the device'],
+  [/only\s+(stored|kept|saved)\s+(locally|on-device|on your device)/i, 'claims storage is local only']
+];
+const exclusivity = [];
+policyText.split('\n').forEach((rawLine, i) => {
+  // Match the sentence, not the markup. The first version of this check used
+  // [^<] to bound the gap and so never saw the very sentence it was written for:
+  //   로컬 저장소(localStorage)</strong>에만 보관됩니다
+  // has a tag sitting between the noun and 에만. Caught by putting the original
+  // sentence back and watching the gate stay green.
+  const line = rawLine.replace(/<[^>]*>/g, '');
+  for (const [re, why] of EXCLUSIVITY) {
+    if (re.test(line)) exclusivity.push(`docs/privacy.html:${i + 1} ${why} — ${rawLine.trim().slice(0, 110)}`);
+  }
+});
+assert.deepStrictEqual(exclusivity, [],
+  'The privacy policy says the data stays on the device:\n  ' +
+  exclusivity.join('\n  ') +
+  '\n\nIt does not. Two things copy it off:\n' +
+  '  1. in-app cloud backup writes to Google Play Games saved data\n' +
+  '  2. AndroidManifest.xml sets android:allowBackup="true" with no extraction\n' +
+  '     rules, so Android Auto Backup copies the app data directory — WebView\n' +
+  '     localStorage included — to the player\'s Google Drive and restores it on\n' +
+  '     reinstall. This is why a player who deleted the app and installed it\n' +
+  '     again from Play still had their old hint balance.\n\n' +
+  'Either describe both copies or turn the backup off in the manifest, but do\n' +
+  'not promise exclusivity the build does not keep.');
+console.log('  ✅ No device-exclusive storage claim survives');
+
+// The other direction of the same coupling. Case 1b stops the policy claiming
+// the data stays put; this stops the manifest and the policy drifting apart.
+// Section 2 now asserts something specific — that Android copies this app's
+// data to the player's Drive and restores it on reinstall — and the only
+// reason that is true is the manifest flag. Turn the flag off and the policy
+// is wrong the other way round. Neither is pinned in place; they just have to
+// move together.
+const manifestPath = path.join(ROOT, 'android/app/src/main/AndroidManifest.xml');
+const manifest = fs.readFileSync(manifestPath, 'utf8');
+const backupOn = /android:allowBackup\s*=\s*"true"/.test(manifest);
+const policyMentionsBackup =
+  /안드로이드 자동 백업|Android Auto Backup/.test(policyText);
+assert.strictEqual(backupOn, policyMentionsBackup,
+  backupOn
+    ? 'AndroidManifest.xml sets android:allowBackup="true", so Android copies the\n' +
+      'app data directory — WebView localStorage, and with it the hint wallet and\n' +
+      'the stored player id — to the Google Drive of the account on the device,\n' +
+      'and restores it when the app is installed again from Play. A player who\n' +
+      'deletes the app and installs it again keeps their old hint balance, and\n' +
+      'docs/privacy.html says nothing about why, or how to stop it.'
+    : 'docs/privacy.html describes Android Auto Backup, but AndroidManifest.xml no\n' +
+      'longer enables it. The policy now overstates what leaves the device. Remove\n' +
+      'that section, or put the flag back.');
+console.log(`  ${String.fromCharCode(9989)} manifest backup flag and the policy agree (backup ${backupOn ? 'on' : 'off'})`);
 
 // ── Case 4: the hosted policy names where the data actually goes ───────────
 //
