@@ -132,13 +132,13 @@ export const screens = {
     resetSuccess: 'Les données ont été réinitialisées avec succès.',
     privacySection: '🛡️ Confidentialité & sécurité',
     privacyPolicyBtn: 'Politique de confidentialité',
-    privacySubtitle: 'Protection Zero-PII',
+    privacySubtitle: 'Protection de la vie privée',
     privacyModalTitle: 'Politique de confidentialité',
     privacy: {
-      subtitle: 'Sudoku protège votre vie privée et respecte strictement le principe Zero-PII (aucune collecte de données personnelles).',
-      sec1Title: '1. Aucune collecte de données personnelles', sec1Desc: 'Cette application ne nécessite aucune inscription et ne collecte aucune donnée personnelle.',
+      subtitle: 'Sudoku ne nécessite aucun compte et ne collecte ni nom, ni e-mail, ni coordonnées.',
+      sec1Title: '1. Aucune inscription requise', sec1Desc: 'Cette application ne nécessite aucune inscription et ne collecte ni votre nom, ni votre e-mail, ni votre numéro de téléphone, ni vos contacts, ni votre position. Les fonctions en ligne — duels 1c1 et sauvegarde cloud — transmettent uniquement un identifiant généré aléatoirement.',
       sec2Title: '2. Stockage local & droits de suppression', sec2Desc: 'Progression, indices et thèmes sont stockés en sécurité uniquement sur votre appareil.',
-      sec3Title: '3. Duels 1v1 & indice cérébral', sec3Desc: 'Seuls des jetons anonymes temporaires et temps de complétion sont utilisés pour l’appariement des joueurs.',
+      sec3Title: '3. Duels 1v1 & indice cérébral', sec3Desc: 'Les duels 1c1 en temps réel transmettent un identifiant de joueur généré aléatoirement, conservé sur votre appareil et réutilisé, ainsi que votre progression. Il n’est lié ni à votre nom ni à un compte.',
       sec4Title: '4. Publicité (Google AdMob)', sec4Desc: 'Pour garder le jeu gratuit, cette application peut afficher des publicités via le SDK Google AdMob. Lorsque la publicité est active, AdMob peut collecter un identifiant publicitaire. Les versions de test affichent un emplacement signalé, sans publicité réelle.'
     }
   },

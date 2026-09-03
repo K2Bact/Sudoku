@@ -139,13 +139,13 @@ export const screens = {
     resetSuccess: 'Los datos se han restablecido correctamente.',
     privacySection: '🛡️ Privacidad y seguridad',
     privacyPolicyBtn: 'Política de privacidad',
-    privacySubtitle: 'Protección Zero-PII',
+    privacySubtitle: 'Protección de privacidad',
     privacyModalTitle: 'Política de privacidad',
     privacy: {
-      subtitle: 'Sudoku protege tu privacidad y cumple estrictamente con el principio Zero-PII.',
-      sec1Title: '1. Cero recopilación de datos', sec1Desc: 'Esta aplicación no requiere registro ni recopila datos personales.',
+      subtitle: 'Sudoku no necesita cuenta y no recopila nombre, correo electrónico ni datos de contacto.',
+      sec1Title: '1. Sin registro', sec1Desc: 'Esta aplicación no requiere registro y no recopila tu nombre, correo electrónico, teléfono, contactos ni ubicación. Las funciones en línea — duelos 1c1 y copia de seguridad en la nube — solo envían un identificador generado al azar.',
       sec2Title: '2. Almacenamiento local y derecho de supresión', sec2Desc: 'El progreso y las configuraciones se guardan de forma segura exclusivamente en tu dispositivo.',
-      sec3Title: '3. Duelos 1v1 y análisis cerebral', sec3Desc: 'Las partidas multijugador utilizan tokens anónimos temporales y registros de finalización.',
+      sec3Title: '3. Duelos 1v1 y análisis cerebral', sec3Desc: 'Los duelos 1c1 en tiempo real envían un identificador de jugador generado al azar, guardado en tu dispositivo y reutilizado, junto con tu progreso. No está vinculado a tu nombre ni a ninguna cuenta.',
       sec4Title: '4. Publicidad (Google AdMob)', sec4Desc: 'Para mantener el juego gratuito, esta aplicación puede mostrar anuncios mediante el SDK de Google AdMob. Cuando la publicidad está activa, AdMob puede recopilar un identificador publicitario. Las versiones de prueba muestran un marcador señalizado y no publican anuncios reales.'
     }
   },

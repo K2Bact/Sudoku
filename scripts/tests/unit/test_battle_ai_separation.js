@@ -155,6 +155,28 @@ assert(capConfigContent.includes('adjustMarginsForEdgeToEdge'), 'capacitor.confi
 assert(academyCssContent.includes('safe-area-inset-bottom'), 'academy.css enforces bottom safe area padding');
 assert(screensCssContent.includes('safe-area-inset-bottom'), 'screens.css enforces bottom safe area padding');
 
+// ── 코드 수준 격리 ──────────────────────────────────────────────────────
+//
+// 이 게이트의 이름은 "AI Battle vs 1v1 PvP Isolation" 인데, 위 검사는 전부 문구
+// 분리였다 — AI 결과 화면에 1v1 표현이 안 섞이는지, AI 전용 번역 키가 13개
+// 언어에 있는지. 정작 "AI 세션이 실제 1v1 전송 계층을 안 건드리는가" 는 아무도
+// 보고 있지 않았다.
+//
+// 변이 테스트에서 aiBattleSession.js 에 battleService import 를 넣었는데도
+// 게이트가 통과했다. 이름이 약속하는 것을 내용이 지키지 않고 있었다.
+//
+// AI 대전이 실제 전송 계층에 닿으면 봇과의 연습이 매칭 큐에 티켓을 흘리거나
+// 상대의 방 상태를 건드릴 수 있다. 그건 화면 문구로는 절대 안 드러난다.
+const aiSessionSrc = readFileSync('src/firebase/aiBattleSession.js', 'utf8');
+const AI_FORBIDDEN_IMPORTS = [
+  ['battleService', 'AI 세션이 실제 1v1 서비스를 끌어오면 봇 대전이 매칭 큐에 닿는다'],
+  ['transport', 'AI 세션이 멀티플레이 전송 계층을 끌어오면 로컬 연습이 네트워크를 탄다']
+];
+for (const [mod, why] of AI_FORBIDDEN_IMPORTS) {
+  const importsIt = new RegExp('(import|require)[^\\n]*[\'"`][^\'"`]*' + mod).test(aiSessionSrc);
+  assert(!importsIt, `aiBattleSession must not import ${mod} — ${why}`);
+}
+
 console.log('\n======================================================');
 if (failed > 0) {
   console.error(`❌ [AUDIT FAILED] ${failed} check(s) failed.`);

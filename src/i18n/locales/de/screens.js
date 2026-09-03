@@ -132,13 +132,13 @@ export const screens = {
     resetSuccess: 'Daten wurden erfolgreich zurückgesetzt.',
     privacySection: '🛡️ Datenschutz & Sicherheit',
     privacyPolicyBtn: 'Datenschutz',
-    privacySubtitle: 'Zero-PII-Datenschutz',
+    privacySubtitle: 'Datenschutz',
     privacyModalTitle: 'Datenschutzerklärung',
     privacy: {
-      subtitle: 'Sudoku schützt deine Privatsphäre und folgt strikt dem Zero-PII-Prinzip.',
-      sec1Title: '1. Keine Erfassung persönlicher Daten', sec1Desc: 'Diese App erfordert keine Registrierung und erfasst keinerlei persönliche Daten.',
+      subtitle: 'Sudoku benötigt kein Konto und erfasst weder Namen noch E-Mail-Adresse oder Kontaktdaten.',
+      sec1Title: '1. Keine Registrierung erforderlich', sec1Desc: 'Diese App erfordert keine Registrierung und erfasst weder Namen, E-Mail-Adresse, Telefonnummer, Kontakte noch Standort. Bei Online-Funktionen — 1-gegen-1-Duelle und Cloud-Backup — wird ausschließlich eine zufällig erzeugte ID übertragen.',
       sec2Title: '2. Lokale Speicherung & Löschrechte', sec2Desc: 'Spielfortschritt, Tipps und Einstellungen werden sicher nur lokal gespeichert.',
-      sec3Title: '3. 1v1-Duelle & Gehirn-Index', sec3Desc: 'Für Matchmaking werden nur temporäre anonyme Token und Abschluss-Datensätze genutzt.',
+      sec3Title: '3. 1v1-Duelle & Gehirn-Index', sec3Desc: 'Beim Echtzeit-1-gegen-1 werden eine zufällig erzeugte Spieler-ID und Abschluss-Datensätze übertragen. Die ID wird auf dem Gerät gespeichert und wiederverwendet; sie ist weder mit deinem Namen noch mit einem Konto verknüpft.',
       sec4Title: '4. Werbung (Google AdMob)', sec4Desc: 'Damit das Spiel kostenlos bleibt, kann diese App über das Google AdMob SDK Werbung anzeigen. Bei aktiver Werbung kann AdMob eine Werbe-ID erfassen. Testversionen zeigen einen gekennzeichneten Platzhalter und keine echte Werbung.'
     }
   },

@@ -132,13 +132,13 @@ export const screens = {
     resetSuccess: 'Dados redefinidos com sucesso.',
     privacySection: '🛡️ Privacidade & Segurança',
     privacyPolicyBtn: 'Privacidade',
-    privacySubtitle: 'Proteção Zero-PII',
+    privacySubtitle: 'Proteção de privacidade',
     privacyModalTitle: 'Política de Privacidade',
     privacy: {
-      subtitle: 'O Sudoku valoriza sua privacidade e segue estritamente o princípio Zero-PII.',
-      sec1Title: '1. Sem Coleta de Dados Pessoais', sec1Desc: 'Este app não requer cadastro e coleta zero dados pessoais.',
+      subtitle: 'O Sudoku não exige conta e não coleta nome, e-mail nem dados de contato.',
+      sec1Title: '1. Sem cadastro', sec1Desc: 'Este app não requer cadastro e não coleta seu nome, e-mail, telefone, contatos ou localização. Os recursos online — duelos 1v1 e backup na nuvem — enviam apenas um identificador gerado aleatoriamente.',
       sec2Title: '2. Dados locais e exclusão', sec2Desc: 'Progresso, dicas e temas são armazenados em segurança apenas no seu aparelho.',
-      sec3Title: '3. Duelos 1v1 & Índice Cerebral', sec3Desc: 'Apenas tokens anônimos temporários e registros de conclusão são usados no matchmaking.',
+      sec3Title: '3. Duelos 1v1 & Índice Cerebral', sec3Desc: 'Os duelos 1v1 em tempo real enviam um identificador de jogador gerado aleatoriamente e registros de conclusão. O identificador fica salvo no seu aparelho e é reutilizado, e não está vinculado ao seu nome nem a uma conta.',
       sec4Title: '4. Publicidade (Google AdMob)', sec4Desc: 'Para manter o jogo gratuito, esta aplicação pode mostrar anúncios através do SDK Google AdMob. Quando a publicidade está ativa, o AdMob pode recolher um identificador de publicidade. As versões de teste mostram um espaço identificado e não exibem anúncios reais.'
     }
   },

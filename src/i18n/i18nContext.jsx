@@ -40,7 +40,12 @@ export function I18nProvider({ children }) {
     try {
       const current = loadSettings();
       saveSettings({ ...current, language: newLang });
-    } catch (e) {}
+    } catch (e) {
+      // 화면의 언어는 이미 바뀌었으므로 여기서 멈추지 않는다. 다만 저장이
+      // 실패하면 다음 실행 때 언어가 되돌아가고, 조용히 넘어가면 그 이유를
+      // 아무도 알 수 없다.
+      console.warn('[i18n] language preference did not persist; it will revert next launch:', e?.message || e);
+    }
   }, []);
 
   /**

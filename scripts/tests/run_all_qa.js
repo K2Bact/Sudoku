@@ -39,7 +39,7 @@ runStep('2-1. Sudoku Mathematical Integrity & Unique Solver Engine', 'node scrip
 runStep('2-2. Deterministic PRNG & Daily Challenge Global Sync', 'node scripts/tests/unit/test_deterministic_prng.js');
 runStep('2-3. Ghost PB Replay & Delta Pace Calculation Engine', 'node scripts/tests/unit/test_ghost_delta_mode.js');
 runStep('2-4. Wallet Balance, Smart Hint & Attendance Streak Engine', 'node scripts/tests/unit/test_wallet_and_hint_engine.js');
-runStep('2-5. Academy 54 Interactive Missions Math & Logic Truth', 'node scripts/tests/unit/test_practice_missions.js');
+runStep('2-5. Academy 64 Interactive Missions Math & Logic Truth', 'node scripts/tests/unit/test_practice_missions.js');
 runStep('2-5b. Academy Text Purity & Diagram Structure', 'node scripts/tests/unit/test_academy_purity.js');
 runStep('2-6. AI Battle vs 1v1 PvP Isolation & Popup Audit', 'node scripts/tests/unit/test_battle_ai_separation.js');
 runStep('2-7. Global Leaderboards & Cloud Account Save Safety', 'node scripts/tests/unit/test_cloud_leaderboard_safety.js');
@@ -49,6 +49,7 @@ runStep('2-10. Ad Honesty & Provider Contract', 'node scripts/tests/unit/test_ad
 runStep('2-11. No Native Dialogs (localised buttons)', 'node scripts/tests/unit/test_no_native_dialogs.js');
 runStep('2-12. Device Harness Refuses to Be Fooled', 'node scripts/tests/unit/test_devicelab_catches_lies.js');
 runStep('2-13. Billing Honesty (nothing sold that cannot be charged)', 'node scripts/tests/unit/test_billing_honesty.js');
+runStep('2-14. Privacy Claims Match Actual Behaviour', 'node scripts/tests/unit/test_privacy_claims.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests

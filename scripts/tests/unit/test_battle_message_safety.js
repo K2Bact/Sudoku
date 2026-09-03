@@ -78,6 +78,11 @@ assert(!isFromOpponent({}, room), 'An unsigned message must be ignored');
 assert(isValidTicket({ playerId: 'u2', timestamp: Date.now(), level: 3 }, 3), 'A well-formed ticket is usable');
 assert(!isValidTicket({ playerId: 'u2', timestamp: Date.now(), level: 5 }, 3), 'A ticket for another level must not match');
 assert(!isValidTicket({ timestamp: Date.now() }, 3), 'A ticket without a playerId must be rejected');
+// 타임스탬프 규칙은 이 프로젝트에서 실제로 터진 것이다. 방송이 timestamp 를 빼고
+// 나가는 바람에 모든 match_ticket 이 도착 즉시 거부됐고, 1v1 은 조용히 죽어 있었다.
+// 변이 테스트에서 이 검증을 통째로 지웠는데도 게이트가 통과했다 — 네 규칙 중
+// 셋만 보고 정작 버그를 낸 규칙을 안 보고 있었다.
+assert(!isValidTicket({ playerId: 'u2', level: 3 }, 3), 'A ticket without a timestamp must be rejected');
 console.log('  ✅ Only the opponent of this exact room can change its state');
 
 // ── Transport contract ─────────────────────────────────────────────────────

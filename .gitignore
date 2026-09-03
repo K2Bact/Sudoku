@@ -43,3 +43,13 @@ google-services.json
 release_archive/
 *.aab
 *.apk
+
+# 테스트 산출물 — 매 실행마다 다시 만들어진다.
+# 게이트 3-5 의 검증 스크린샷이 저장소 루트에 커밋되어 있어서, QA 를 돌릴 때마다
+# PNG 압축 차이로 작업트리가 더러워졌다. 진짜 변경을 가리는 노이즈였다.
+test_output/
+
+# 게이트 3-5 가 예전에 저장소 루트에 남기던 검증 스크린샷.
+# 이제 test_output/ 으로 나가므로 루트의 사본은 추적하지 않는다.
+home_*_verified.png
+home_timeattack_ghost_selected.png

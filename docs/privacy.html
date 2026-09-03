@@ -79,16 +79,16 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <span class="badge">Zero-PII & Privacy Protection</span>
+      <span class="badge">Privacy Policy</span>
       <h1>Sudoku 개인정보처리방침</h1>
-      <p class="updated-date">시행 일자: 2026년 8월 19일 (Effective Date: August 19, 2026)</p>
+      <p class="updated-date">시행 일자: 2026년 9월 2일 (Effective Date: September 2, 2026)</p>
       <p style="font-size: 13px; color: #94a3b8; margin-top: 6px;">Application: Sudoku (Package: com.powerneja.suidoku)</p>
     </div>
 
     <!-- Korean Section -->
     <div class="card">
-      <h2>🛡️ 1. 개인정보 수집 거부 원칙 (Zero-PII)</h2>
-      <p><strong>Sudoku</strong>(이하 '본 앱')는 이용자의 개인정보를 최우선으로 보호하며 <strong>Zero-PII(Personally Identifiable Information 미수집) 원칙</strong>을 엄격히 준수합니다.</p>
+      <h2>🛡️ 1. 수집하지 않는 정보</h2>
+      <p><strong>Sudoku</strong>(이하 '본 앱')는 이용자를 식별하는 정보를 수집하지 않습니다. 다만 온라인 기능을 이용할 때 아래 3절에 적힌 정보가 전송됩니다.</p>
       <ul>
         <li>본 앱은 별도의 회원가입이나 로그인을 요구하지 않습니다.</li>
         <li>이용자의 이름, 이메일, 전화번호, 연락처 목록, 사진, 파일, 마이크, 카메라, 정밀 GPS 위치 정보 등 <strong>일체의 민감 개인정보를 수집하거나 서버로 전송하지 않습니다.</strong></li>
@@ -106,7 +106,9 @@
 
     <div class="card">
       <h2>🌐 3. 1v1 배틀 및 두뇌 지수 처리</h2>
-      <p>실시간 1v1 대전 및 두뇌 지수 통계 분석 시에는 <strong>무작위 일회성 익명 토큰과 퍼즐 클리어 진행률</strong>만을 임시 통신용으로 사용하며, 개인 식별이나 트래킹은 일체 수행하지 않습니다.</p>
+      <p>실시간 1v1 대전에는 <strong>무작위로 생성된 플레이어 ID</strong>와 퍼즐 진행률이 전송됩니다. 이 ID는 기기에 저장되어 다음 대전에도 재사용되므로 일회용이 아니며, 이름이나 계정과 연결되지 않습니다. 매칭은 Google Firebase Realtime Database 를 통해 이루어집니다.</p>
+      <p>클라우드 백업을 사용하면 진행 기록이 <strong>Google Play 게임즈 저장 데이터</strong>로 저장됩니다. 이는 이용자 본인의 Google 계정에 보관됩니다.</p>
+      <p>두뇌 지수 분석은 기기 안에서만 계산되며 전송되지 않습니다.</p>
     </div>
 
     <div class="card">
@@ -127,15 +129,15 @@
     <div class="card">
       <h2>📬 6. 문의처</h2>
       <p>개인정보 보호 및 앱 이용에 관한 문의 사항은 아래로 연락해 주시기 바랍니다.</p>
-      <p>• 개발자: PowerNeJa Team<br>• 문의: <span class="highlight">powerneja.dev@gmail.com</span></p>
+      <p>• 개발자: K2Bact<br>• 문의: <span class="highlight">k2bact.dev@gmail.com</span></p>
     </div>
 
     <!-- English Section -->
     <div class="lang-divider">🇬🇧 English Version (Global Compliance)</div>
 
     <div class="card">
-      <h2>🛡️ 1. Zero-PII Policy</h2>
-      <p><strong>Sudoku</strong> respects user privacy and strictly adheres to the <strong>Zero-PII (Personally Identifiable Information)</strong> standard.</p>
+      <h2>🛡️ 1. What We Do Not Collect</h2>
+      <p><strong>Sudoku</strong> collects nothing that identifies you. Online features do transmit the data described in section 3 below.</p>
       <ul>
         <li>No user account or login registration is required.</li>
         <li>We do not collect names, emails, phone numbers, contacts, precise location, photos, camera or microphone data.</li>
@@ -143,22 +145,33 @@
     </div>
 
     <div class="card">
-      <h2>💾 2. Local-Only Storage</h2>
-      <p>All game progress (clear records, win rate, IQ metrics, theme preferences) is stored solely in the user device's local storage (localStorage) and can be reset at any time via in-app Settings.</p>
+      <h2>💾 2. On-Device Storage</h2>
+      <p>Game progress (clear records, win rate, IQ metrics, theme preferences) is stored in the device's local storage (localStorage) and can be reset at any time via in-app Settings. If you use cloud backup, a copy is also written to Google Play Games saved data, held in your own Google account.</p>
     </div>
 
     <div class="card">
-      <h2>📺 3. Third-Party Advertising (Google AdMob)</h2>
+      <h2>🌐 3. Online 1v1 Battles</h2>
+      <p>Real-time 1v1 matchmaking transmits a <strong>randomly generated player ID</strong> and your puzzle progress. The ID is stored on your device and reused for later matches, so it is not a one-time token; it is not linked to your name or to any account. Matchmaking runs on Google Firebase Realtime Database. IQ metrics are computed on the device and are not transmitted.</p>
+    </div>
+
+    <div class="card">
+      <h2>📺 4. Third-Party Advertising (Google AdMob)</h2>
       <p>This application integrates the Google AdMob SDK for ad monetization. Google may process anonymized Advertising Identifiers (AD_ID) for personalized ads and fraud prevention. Users can opt out via Android Device Settings (&gt; Google &gt; Ads).</p>
     </div>
 
     <div class="card">
-      <h2>👶 4. Children's Online Privacy (COPPA)</h2>
+      <h2>👶 5. Children's Online Privacy (COPPA)</h2>
       <p>Sudoku is not directed at children under the age of 13 and does not knowingly collect personal information from children.</p>
     </div>
 
+    <div class="card">
+      <h2>📬 6. Contact</h2>
+      <p>For questions about this policy or the app, please get in touch.</p>
+      <p>• Developer: K2Bact<br>• Email: <span class="highlight">k2bact.dev@gmail.com</span></p>
+    </div>
+
     <div class="footer">
-      <p>© 2026 Sudoku. All Rights Reserved. Pure Offline & Zero-PII Protected.</p>
+      <p>© 2026 K2Bact. All rights reserved.</p>
     </div>
   </div>
 </body>

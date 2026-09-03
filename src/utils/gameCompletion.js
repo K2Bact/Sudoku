@@ -88,5 +88,10 @@ export function handleGameWinLogic({
     const currentIQ = iqStatsService.calculateBrainIQ(updatedStats);
     playGamesService.submitBrainIQ(currentIQ);
     playGamesService.submitScore(gameMode, level, timerSeconds);
-  } catch (_) {}
+  } catch (e) {
+    // 리더보드 제출이 실패해도 게임 완료 처리는 계속돼야 한다 — 클라우드가
+    // 안 된다고 플레이어의 승리 기록까지 잃을 수는 없다. 다만 조용히 넘어가면
+    // 제출이 영원히 실패해도 아무도 모른다.
+    console.warn('[GameCompletion] Play Games submission failed:', e?.message || e);
+  }
 }

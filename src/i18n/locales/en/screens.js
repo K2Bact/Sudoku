@@ -132,13 +132,13 @@ export const screens = {
     resetSuccess: 'Data has been successfully reset.',
     privacySection: '🛡️ Privacy & Security',
     privacyPolicyBtn: 'Privacy Policy',
-    privacySubtitle: 'Zero-PII Privacy Protection',
+    privacySubtitle: 'Privacy Protection',
     privacyModalTitle: 'Privacy Policy',
     privacy: {
-      subtitle: 'Sudoku values your privacy and adheres to the Zero-PII principle.',
-      sec1Title: '1. No Personal Data Collection', sec1Desc: 'This app requires no sign-up and collects zero personal data.',
+      subtitle: 'Sudoku requires no account and collects no name, email or contact details.',
+      sec1Title: '1. No Sign-Up Required', sec1Desc: 'This app requires no sign-up and never collects your name, email, phone number, contacts or location. Online features — 1v1 battles and cloud backup — send a randomly generated ID only.',
       sec2Title: '2. Local Storage & Deletion Rights', sec2Desc: 'Game progress, hints, and theme settings are safely stored only in local storage.',
-      sec3Title: '3. 1v1 Battles & Brain Index', sec3Desc: 'Only one-time anonymous tokens and completion records are used for matchmaking.',
+      sec3Title: '3. 1v1 Battles & Brain Index', sec3Desc: 'Real-time 1v1 matchmaking sends a randomly generated player ID that is stored on your device and reused, together with your puzzle progress. It is not linked to your name or to any account.',
       sec4Title: '4. Advertising (Google AdMob)', sec4Desc: 'To keep the game free, this app may show ads through the Google AdMob SDK. When ads are active, AdMob may collect an advertising identifier. Test builds show a labelled placeholder and serve no ads.'
     }
   },

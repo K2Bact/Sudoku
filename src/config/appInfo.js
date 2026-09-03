@@ -7,7 +7,7 @@ export const APP_INFO = {
   version: '1.2.0',
   buildCode: '14',
   buildDate: '2026.08',
-  copyright: '© 2026 K2Bact Studio. Pure Offline & Zero-PII Protected.',
+  copyright: '© 2026 K2Bact. All rights reserved.',
   packageName: 'com.powerneja.suidoku',
   playStoreUrl: 'https://play.google.com/store/apps/details?id=com.powerneja.suidoku',
   marketUri: 'market://details?id=com.powerneja.suidoku'

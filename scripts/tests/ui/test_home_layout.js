@@ -1,4 +1,17 @@
 import { chromium } from 'playwright';
+import path from 'path';
+import fs from 'fs';
+
+/**
+ * 검증 스크린샷을 저장소 루트가 아니라 출력 디렉터리에 쓴다.
+ *
+ * 예전에는 루트에 맨 파일명으로 5개를 덮어썼고, 그 5개가 git 에 추적되고 있어서
+ * QA 를 돌릴 때마다 작업트리에 2바이트짜리 diff 가 생겼다(PNG 압축이 실행마다
+ * 미세하게 다르다). 앱이 깨지지는 않지만 진짜 변경을 가리고, 테스트 산출물을
+ * 실수로 커밋할 통로가 된다.
+ */
+const SHOT_DIR = 'test_output/home_layout';
+fs.mkdirSync(SHOT_DIR, { recursive: true });
 import { spawn, execSync } from 'child_process';
 import http from 'http';
 
@@ -80,31 +93,31 @@ async function run() {
     await page.waitForTimeout(600);
 
     // 1. Classic Mode Screenshot
-    await page.screenshot({ path: 'home_classic_verified.png' });
+    await page.screenshot({ path: path.join(SHOT_DIR, 'home_classic_verified.png') });
     console.log('Saved home_classic_verified.png');
 
     // 2. Click Time Attack Tab
     await page.click('.time-attack-tab');
     await page.waitForTimeout(400);
-    await page.screenshot({ path: 'home_timeattack_pb_verified.png' });
+    await page.screenshot({ path: path.join(SHOT_DIR, 'home_timeattack_pb_verified.png') });
     console.log('Saved home_timeattack_pb_verified.png');
 
     // 3. Click Ghost chip
     await page.click('.ghost-chip');
     await page.waitForTimeout(400);
-    await page.screenshot({ path: 'home_timeattack_ghost_selected.png' });
+    await page.screenshot({ path: path.join(SHOT_DIR, 'home_timeattack_ghost_selected.png') });
     console.log('Saved home_timeattack_ghost_selected.png');
 
     // 4. Click Level 1 (No PB -> should show --:--)
     await page.click('.level-chip-group button:nth-child(1)');
     await page.waitForTimeout(400);
-    await page.screenshot({ path: 'home_timeattack_nopb_verified.png' });
+    await page.screenshot({ path: path.join(SHOT_DIR, 'home_timeattack_nopb_verified.png') });
     console.log('Saved home_timeattack_nopb_verified.png');
 
     // 5. Click Survival (Time Limit) Tab
     await page.click('.time-limit-tab');
     await page.waitForTimeout(400);
-    await page.screenshot({ path: 'home_survival_verified.png' });
+    await page.screenshot({ path: path.join(SHOT_DIR, 'home_survival_verified.png') });
     console.log('Saved home_survival_verified.png');
 
     await browser.close();

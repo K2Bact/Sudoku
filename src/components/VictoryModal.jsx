@@ -65,6 +65,12 @@ export function VictoryModal({
     });
     // Automatic Cloud Sync
     cloudSyncService.saveToCloud();
+    // 의존성 배열은 비어 있어야 한다. 승리는 한 번만 기록돼야 하고, 이 모달은
+    // {isVictory && isGameActive && ...} 로 조건부 렌더되므로 게임마다 언마운트
+    // 되었다가 새 props 로 다시 마운트된다. 린트가 gameMode/level/actualSeconds
+    // 등을 넣으라고 하지만, 넣으면 그 값이 바뀔 때마다 다시 실행돼 같은 승리가
+    // 여러 번 기록된다. 린트 힌트를 따르지 말 것.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const formatTime = (secs) => {

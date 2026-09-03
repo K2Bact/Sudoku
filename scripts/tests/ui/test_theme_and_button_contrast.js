@@ -113,6 +113,33 @@ function parseRgb(colorStr) {
   return [parseInt(match[1], 10), parseInt(match[2], 10), parseInt(match[3], 10)];
 }
 
+/**
+ * 그라디언트 문자열에서 색 정지점을 전부 꺼낸다.
+ *
+ * getComputedStyle 은 그라디언트를 backgroundImage 로 돌려주고, 그 안의 색은
+ * 이미 rgb()/rgba() 로 정규화되어 있다. 정지점이 하나도 안 나오면 빈 배열을
+ * 돌려주고, 호출부는 그것을 "검사 실패" 로 다룬다 — 못 읽은 것을 통과로
+ * 바꾸지 않기 위해서다.
+ */
+function gradientStops(backgroundImage) {
+  if (!backgroundImage || !backgroundImage.includes('gradient')) return [];
+  const matches = backgroundImage.match(/rgba?\([^)]+\)/g) || [];
+  return matches.map(parseRgb);
+}
+
+/**
+ * 배경이 단색이든 그라디언트든 최소 대비를 돌려준다.
+ * 그라디언트면 모든 정지점과의 거리 중 **가장 가까운 것**이 기준이다 —
+ * 한 지점에서만 글씨가 묻혀도 그 버튼은 읽기 어렵다.
+ */
+function minContrast(textRgb, styles) {
+  const stops = gradientStops(styles.backgroundImage);
+  if (stops.length > 0) {
+    return Math.min(...stops.map((stop) => colorDistance(textRgb, stop)));
+  }
+  return colorDistance(textRgb, parseRgb(styles.backgroundColor));
+}
+
 function colorDistance(rgb1, rgb2) {
   return Math.sqrt(
     Math.pow(rgb1[0] - rgb2[0], 2) +
@@ -120,6 +147,19 @@ function colorDistance(rgb1, rgb2) {
     Math.pow(rgb1[2] - rgb2[2], 2)
   );
 }
+
+/**
+ * 실제로 수행된 대비 검사 횟수.
+ *
+ * 이 파일에는 `if (await ...isVisible())` 가드가 여러 겹이라, 버튼이 안 보이면
+ * 검사가 조용히 건너뛰어지고 게이트는 통과한다. 요소가 사라진 것과 대비가
+ * 멀쩡한 것을 구별할 수 없다는 뜻이다.
+ *
+ * 그래서 실제 수행 횟수를 세고 마지막에 단언한다. 테마 4개 × 버튼 2종 = 8회가
+ * 나와야 한다. 화면이 사라지면 이 수가 줄고 게이트가 실패한다.
+ */
+let contrastChecksRun = 0;
+const EXPECTED_CONTRAST_CHECKS = 8;
 
 async function runVisualContrastTest() {
   const preview = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], {
@@ -172,13 +212,17 @@ async function runVisualContrastTest() {
             };
           });
 
+          // 예전에는 `dist > 30 || backgroundImage.includes('gradient')` 였다.
+          // 이 버튼은 항상 그라디언트라 두 번째 항이 늘 참이었고, 대비는 한 번도
+          // 검사되지 않았다. 변이 테스트에서 흰 글씨/흰 배경을 넣어도 통과했다.
           const textRgb = parseRgb(styles.color);
-          const bgRgb = parseRgb(styles.backgroundColor);
-          const dist = colorDistance(textRgb, bgRgb);
+          const dist = minContrast(textRgb, styles);
+          contrastChecksRun++;
 
           assert(
-            dist > 30 || styles.backgroundImage.includes('gradient'),
-            `[${themeId}] Active language button text must have strong contrast with background. (text: ${styles.color}, bg: ${styles.backgroundColor})`
+            dist > 30,
+            `[${themeId}] Active language button text must have strong contrast with every gradient stop. ` +
+            `(text: ${styles.color}, bg: ${styles.backgroundColor}, image: ${styles.backgroundImage}, 최소거리: ${dist.toFixed(1)})`
           );
         }
       }
@@ -213,13 +257,15 @@ async function runVisualContrastTest() {
               };
             });
 
+            // 언어 버튼과 같은 탈출구가 여기에도 있었다. 그라디언트면 통과였다.
             const textRgb = parseRgb(lv3Styles.color);
-            const bgRgb = parseRgb(lv3Styles.backgroundColor);
-            const dist = colorDistance(textRgb, bgRgb);
+            const dist = minContrast(textRgb, lv3Styles);
+            contrastChecksRun++;
 
             assert(
-              dist > 30 || lv3Styles.backgroundImage.includes('gradient'),
-              `[${themeId}] Lv.3 leaderboard button must have strong contrast. (text: ${lv3Styles.color}, bg: ${lv3Styles.backgroundColor})`
+              dist > 30,
+              `[${themeId}] Lv.3 leaderboard button must have strong contrast with every gradient stop. ` +
+              `(text: ${lv3Styles.color}, bg: ${lv3Styles.backgroundColor}, image: ${lv3Styles.backgroundImage}, 최소거리: ${dist.toFixed(1)})`
             );
           }
         }
@@ -249,5 +295,12 @@ async function runVisualContrastTest() {
 await runVisualContrastTest();
 
 console.log('\n======================================================');
+assert(
+  contrastChecksRun === EXPECTED_CONTRAST_CHECKS,
+  `대비 검사가 ${EXPECTED_CONTRAST_CHECKS}회 수행돼야 하는데 ${contrastChecksRun}회만 돌았다 — ` +
+  '버튼을 못 찾아 조용히 건너뛴 것이다. 통과가 아니라 관찰 실패다.'
+);
+console.log(`  ✅ 대비 검사 ${contrastChecksRun}회 실제 수행됨`);
+
 console.log('🎉 [GATE 15 PASSED] Theme Contrast & Button State 100% Verified!');
 console.log('======================================================\n');
