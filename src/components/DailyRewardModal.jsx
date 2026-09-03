@@ -12,7 +12,9 @@ export function DailyRewardModal({ rewardInfo, onConfirm }) {
     if (onConfirm) onConfirm();
   };
 
-  const { streakDays = 1 } = rewardInfo;
+  // hintsAdded 는 claimDailyAttendance() 가 처음부터 돌려주고 있었다. 문구가
+  // "+1" 을 하드코딩하는 바람에, 7일차에 3개를 주면서 1개라고 말하고 있었다.
+  const { streakDays = 1, hintsAdded = 1 } = rewardInfo;
 
   return (
     <div className="modal-overlay">
@@ -38,7 +40,7 @@ export function DailyRewardModal({ rewardInfo, onConfirm }) {
         </div>
 
         <p className="modal-desc mt-1">
-          {t('modals.dailyReward.desc', { days: streakDays })}
+          {t('modals.dailyReward.desc', { days: streakDays, count: hintsAdded })}
         </p>
 
         <div className="modal-actions-vertical w-100 mt-3">

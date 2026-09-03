@@ -42,7 +42,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'Tägliche Belohnung!',
-      desc: '{days} Tage in Folge erreicht!\n+1 Kostenloser Tipp hinzugefügt.',
+      desc: '{days} Tage in Folge erreicht!\n+{count} kostenlose Tipps hinzugefügt.',
       confirm: 'Abholen'
     },
     hintReward: {

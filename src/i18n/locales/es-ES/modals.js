@@ -45,7 +45,7 @@ export const modals = {
     },
     dailyReward: {
       title: '¡Recompensa diaria recibida!',
-      desc: '¡Día {days} consecutivo completado!\nHas recibido +1 pista gratis.',
+      desc: '¡Día {days} consecutivo completado!\nHas recibido +{count} pista(s) gratis.',
       confirm: 'Recoger'
     },
     hintReward: {

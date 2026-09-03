@@ -42,7 +42,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'दैनिक पुरस्कार प्राप्त!',
-      desc: '{days} दिन लगातार खेलने पर!\n+1 मुफ्त संकेत प्राप्त हुआ।',
+      desc: '{days} दिन लगातार खेलने पर!\n+{count} मुफ्त संकेत प्राप्त हुए।',
       confirm: 'पुरस्कार प्राप्त करें'
     },
     hintReward: {

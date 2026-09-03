@@ -42,7 +42,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'Récompense quotidienne !',
-      desc: 'Série de {days} jour(s) atteinte !\n+1 indice gratuit ajouté.',
+      desc: 'Série de {days} jour(s) atteinte !\n+{count} indice(s) gratuit(s) ajouté(s).',
       confirm: 'Récupérer'
     },
     hintReward: {

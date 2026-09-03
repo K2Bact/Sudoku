@@ -42,7 +42,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'Daily Attendance Reward!',
-      desc: 'Day {days} streak achieved!\n+1 Free Hint added.',
+      desc: 'Day {days} streak achieved!\n+{count} Free Hints added.',
       confirm: 'Claim Reward'
     },
     hintReward: {

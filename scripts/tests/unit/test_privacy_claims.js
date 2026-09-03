@@ -21,6 +21,9 @@
  *   Case 2  the copyright line is a copyright line, carrying no claim at all
  *   Case 3  every language discloses the same four sections — none half-edited
  *   Case 4  the hosted policy names the services the app actually sends to
+ *   Case 5  the achievement count on screen equals the count in the code
+ *   Case 6  the hosted policy is byte-equal to the local file it is edited from
+ *   Case 7  the version in settings is the version build.gradle actually ships
  *
  * Case 2 is the structural half. The footer rotted because it was a place a
  * claim could live where nothing would ever check it; forbidding claims there
@@ -278,6 +281,33 @@ assert.deepStrictEqual(wrongCount, [],
   'drifts is a claim the code contradicts, and a stale one makes a deletion look correct.');
 console.log(`  ✅ ${locales.length} languages all say ${actualAchievements}, matching the code`);
 
+// 같은 종류가 하나 더 있었다. 출석 보상 문구가 "+1" 을 하드코딩하고 있었는데
+// claimDailyAttendance() 는 7일차마다 3개를 준다:
+//     const bonus = (wallet.streakDays % 7 === 0) ? 3 : 1;
+// 개근한 플레이어에게 3개를 주면서 1개라고 말하고 있었다. 값은 처음부터
+// hintsAdded 로 돌아오고 있었고, 문구가 그걸 안 쓴 것뿐이다.
+//
+// 숫자를 문구에 직접 적으면 코드가 바뀔 때 같이 안 바뀐다. 보간을 강제한다.
+const hardcodedReward = [];
+for (const loc of locales) {
+  const file = path.join(LOCALES, loc, 'modals.js');
+  if (!fs.existsSync(file)) continue;
+  const text = fs.readFileSync(file, 'utf8');
+  const block = text.match(/dailyReward:\s*\{[\s\S]*?\n\s*\}/);
+  if (!block) { hardcodedReward.push(`${loc}: dailyReward block missing`); continue; }
+  const desc = block[0].match(/desc:\s*'([^']*)'/);
+  if (!desc) { hardcodedReward.push(`${loc}: dailyReward.desc missing`); continue; }
+  if (!desc[1].includes('{count}')) {
+    hardcodedReward.push(`${loc}: names a fixed amount instead of {count} — "${desc[1].replace(/\\n/g, ' ')}"`);
+  }
+}
+assert.deepStrictEqual(hardcodedReward, [],
+  'The daily reward text states an amount the code does not always give:\n  ' +
+  hardcodedReward.join('\n  ') +
+  '\n\nclaimDailyAttendance() returns hintsAdded — interpolate it with {count} ' +
+  'rather than writing the number into the sentence.');
+console.log(`  ✅ ${locales.length} languages interpolate the reward amount`);
+
 // ── Case 6: the hosted policy is the same document as the local one ───────
 //
 // Everything above reads `docs/privacy.html` from disk. The store listing links
@@ -335,6 +365,36 @@ if (fetchError) {
   }
   console.log(`  ✅ 호스팅본과 로컬이 동일 (${hostedText.split('\n').length}줄)`);
 }
+
+// ── Case 7: the version on screen is the version that shipped ─────────────
+//
+// The settings footer read "v1.2.0 (Build 14)" on a device running 1.2.1 (15).
+// appInfo.js is typed by hand and build.gradle is what actually ships, so the
+// two drift apart the moment one is bumped alone.
+//
+// A version that does not exist makes every bug report point at the wrong
+// build. A tester saying "1.2.0 is broken" sends you looking for something
+// nobody installed.
+console.log('▶ 7. The version shown in settings is the version that ships');
+const gradleSrc = fs.readFileSync(path.join(ROOT, 'android/app/build.gradle'), 'utf8');
+const gradleCode = (gradleSrc.match(/versionCode\s+(\d+)/) || [])[1];
+const gradleName = (gradleSrc.match(/versionName\s+"([^"]+)"/) || [])[1];
+assert(gradleCode && gradleName, 'Could not read versionCode/versionName from build.gradle');
+
+const shownName = (appInfo.match(/version:\s*'([^']*)'/) || [])[1];
+const shownCode = (appInfo.match(/buildCode:\s*'([^']*)'/) || [])[1];
+assert(shownName && shownCode, 'Could not read version/buildCode from appInfo.js');
+
+assert.deepStrictEqual(
+  { name: shownName, code: shownCode },
+  { name: gradleName, code: gradleCode },
+  `The settings screen shows a version that is not the one being built:\n` +
+  `  build.gradle : ${gradleName} (${gradleCode})   ← what installs on the device\n` +
+  `  appInfo.js   : ${shownName} (${shownCode})   ← what the player reads\n\n` +
+  'Bump both together. A version nobody can install makes every bug report ' +
+  'point at the wrong build.'
+);
+console.log(`  ✅ settings and build.gradle agree — ${gradleName} (${gradleCode})`);
 
 console.log('\n======================================================');
 console.log('🎉 Privacy claims gate passed — nothing promised that the code breaks.');

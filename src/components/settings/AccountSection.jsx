@@ -3,7 +3,7 @@ import { CloudUpload, CloudDownload, ChevronRight, Gamepad2, Check } from 'lucid
 import { soundHaptic } from '../../utils/soundHaptic';
 import { cloudSyncService } from '../../services/cloudSyncService';
 import { playGamesService } from '../../services/playGamesService';
-import { attemptSilentSignIn } from '../../utils/playGamesBridge';
+import { attemptSilentSignIn, allowAutoSignIn } from '../../utils/playGamesBridge';
 import { getPlayGamesUser } from '../../utils/storage';
 import { useTranslation } from '../../i18n/i18nContext';
 import { useConfirm } from '../common/ConfirmProvider';
@@ -42,6 +42,8 @@ export function AccountSection() {
     // Interactive: shows Google's sign-in UI. Only ever from a real tap.
     const res = await playGamesService.signIn(true);
     if (res.success) {
+      // 직접 켰으니 자동 로그인 차단을 푼다. 다음 실행부터 세션이 조용히 복원된다.
+      allowAutoSignIn();
       await attemptSilentSignIn();       // re-emits the event so the bridge stores the profile
       setPlayer(getPlayGamesUser());
     } else {

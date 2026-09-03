@@ -42,7 +42,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'Ricompensa Giornaliera!',
-      desc: 'Serie di {days} giorni raggiunta!\n+1 Suggerimento gratuito aggiunto.',
+      desc: 'Serie di {days} giorni raggiunta!\n+{count} suggerimento/i gratuito/i aggiunto/i.',
       confirm: 'Riscatta'
     },
     hintReward: {

@@ -42,7 +42,7 @@ export const modals = {
     },
     dailyReward: {
       title: '일일 출석 보상 도착!',
-      desc: '연속 {days}일차 출석 완료!\n무료 힌트 +1개가 충전되었습니다.',
+      desc: '연속 {days}일차 출석 완료!\n무료 힌트 +{count}개가 충전되었습니다.',
       confirm: '보상 받기'
     },
     hintReward: {

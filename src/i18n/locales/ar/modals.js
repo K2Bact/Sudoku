@@ -42,7 +42,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'مكافأة الحضور اليومي!',
-      desc: 'حضور متواصل: {days} يوم!\nتم الحصول على +1 تلميح مجاني.',
+      desc: 'حضور متواصل: {days} يوم!\nتم الحصول على +{count} تلميح مجاني.',
       confirm: 'استلام المكافأة'
     },
     hintReward: {

@@ -42,7 +42,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'Recompensa Diária!',
-      desc: 'Sequência de {days} dias atingida!\n+1 Dica gratuita adicionada.',
+      desc: 'Sequência de {days} dias atingida!\n+{count} dica(s) gratuita(s) adicionada(s).',
       confirm: 'Receber'
     },
     hintReward: {
