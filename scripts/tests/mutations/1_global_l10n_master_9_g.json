@@ -3,7 +3,7 @@
   "name": "Global L10N Master 9-Gate & Profile Audit",
   "command": "node ../app_common/l10n_engine/validator.mjs --app suidoku",
   "greenMarker": "VALIDATOR PASSED",
-  "note": "This validator once required the false privacy claim: the shared spec pinned the lie in place rather than catching it. A shared spec can be wrong, so it gets mutated like anything else.",
+  "note": "This validator once required the false privacy claim: the shared spec pinned the lie in place rather than catching it. It also spent a long time requiring screens.stats.tabs.stats and .achievements — the names the stats screen carried before it was rewritten — which is the only reason those two keys survived in thirteen languages. A profile can be as stale as the code it checks, so it gets mutated like anything else.",
   "mutations": [
     {
       "name": "a language loses a key the others have",
@@ -12,6 +12,30 @@
       "find": "dailyReward:",
       "replace": "dailyRewardRenamed:",
       "expectFailure": "dailyReward"
+    },
+    {
+      "name": "the first stats tab label goes missing",
+      "why": "The profile's required-key check was pointed at a dead key for so long that nothing noticed. Repointing it at achievements.statsTab is worthless unless the check actually fires when the key is gone.",
+      "file": "src/i18n/locales/ko/achievements.js",
+      "find": "statsTab:",
+      "replace": "statsTabRenamed:",
+      "expectFailure": "achievements.statsTab"
+    },
+    {
+      "name": "a stats tab label grows past the segmented button",
+      "why": "The length rule read a key with no fallback, so `typeof statTab === 'string'` was false and fourteen characters had not been enforced in a long time. Three tabs share one row; a long label pushes the other two off it. The first attempt used a 13-character string against a limit of 14, so it passed and was right to.",
+      "file": "src/i18n/locales/ko/achievements.js",
+      "find": "statsTab: '통계'",
+      "replace": "statsTab: '통계및업적기록을전체보기하는화면입니다'",
+      "expectFailure": "tab label too long"
+    },
+    {
+      "name": "the leaderboard tab label grows past the segmented button",
+      "why": "The third tab of a check named \"Stats 3-Tab\" had its value computed into ldrTab and then never used. It had no length limit at all.",
+      "file": "src/i18n/locales/ko/screens.js",
+      "find": "leaderboardTab:",
+      "replace": "leaderboardTab: '전세계순위표전체보기화면입니다', unusedLeaderboardTab:",
+      "expectFailure": "Leaderboard tab label too long"
     }
   ]
 }

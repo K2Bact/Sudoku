@@ -349,25 +349,40 @@ const { ACHIEVEMENTS_LIST } = await import('../../../src/data/achievementsData.j
 const actualAchievements = ACHIEVEMENTS_LIST.length;
 assert(actualAchievements > 0, 'ACHIEVEMENTS_LIST is empty — the data shape changed');
 
+// 원래 이 검사는 stats.achTitle 이 "🏆 30 Global Achievements" 라고 말하는지,
+// 그 30이 코드와 같은지 봤다. 맞는 걱정이었는데 **그 문자열이 어느 화면에도
+// 안 떴다.** 고아 키 감사에서 드러났고, 게이트가 죽은 문자열을 지키고 있었다.
+//
+// 화면이 그리는 건 achievements.unlockedCount 이고 개수를 보간한다. 그래서
+// 오늘의 숫자를 고정하는 대신 종류를 금지한다 — 개수는 문장에 적지 말 것.
+// 아래 보상 문구 검사와 같은 모양이다.
 const wrongCount = [];
 for (const loc of locales) {
-  const file = path.join(LOCALES, loc, 'screens.js');
+  const file = path.join(LOCALES, loc, 'achievements.js');
   if (!fs.existsSync(file)) continue;
   const text = fs.readFileSync(file, 'utf8');
-  const m = text.match(/achTitle:\s*['"`]([^'"`]*)['"`]/);
-  if (!m) { wrongCount.push(`${loc}: achTitle missing`); continue; }
-  const claimed = (m[1].match(/\d+/) || [])[0];
-  if (!claimed) { wrongCount.push(`${loc}: achTitle names no number — "${m[1]}"`); continue; }
-  if (Number(claimed) !== actualAchievements) {
-    wrongCount.push(`${loc}: screen says ${claimed}, code has ${actualAchievements} — "${m[1]}"`);
+  const m = text.match(/unlockedCount:\s*['"`]([^'"`]*)['"`]/);
+  if (!m) { wrongCount.push(`${loc}: unlockedCount missing — the achievements screen has no counter`); continue; }
+  const line = m[1];
+  if (!line.includes('{total}')) {
+    wrongCount.push(`${loc}: names the total instead of interpolating {total} — "${line}"`);
+  }
+  if (!line.includes('{unlocked}')) {
+    wrongCount.push(`${loc}: does not interpolate {unlocked} — "${line}"`);
+  }
+  const literal = line.replace(/\{[a-z]+\}/gi, '').match(/\d+/);
+  if (literal) {
+    wrongCount.push(`${loc}: has a bare number ${literal[0]} in the counter — "${line}"`);
   }
 }
 assert.deepStrictEqual(wrongCount, [],
-  'The achievement count shown to players disagrees with the code:\n  ' +
+  'The achievement counter states a number rather than interpolating it:\n  ' +
   wrongCount.join('\n  ') +
-  '\n\nUpdate every locale together, or stop printing the number. A count that ' +
-  'drifts is a claim the code contradicts, and a stale one makes a deletion look correct.');
-console.log(`  ✅ ${locales.length} languages all say ${actualAchievements}, matching the code`);
+  `\n\nACHIEVEMENTS_LIST holds ${actualAchievements} today. A sentence that spells ` +
+  'that out goes stale the moment one is added, in all thirteen languages at ' +
+  'once, and nothing notices — which is how gate 2-5 came to certify a deleted ' +
+  'stage as correct. Interpolate {unlocked} and {total} instead.');
+console.log(`  ✅ ${locales.length} languages interpolate the achievement count (${actualAchievements} today)`);
 
 // 같은 종류가 하나 더 있었다. 출석 보상 문구가 "+1" 을 하드코딩하고 있었는데
 // claimDailyAttendance() 는 7일차마다 3개를 준다:
