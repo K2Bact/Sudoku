@@ -244,5 +244,5 @@ export const screens = {
       prompt: '👇 Tap the target number (?) on the number keypad below.'
     }
   },
-  adBanner: { placeholderTag: 'TEST', placeholderText: 'Ad space (no ad served)', removeBtn: 'Remove Ads' }
+  adBanner: {removeBtn: 'Remove Ads' }
 };

@@ -244,5 +244,5 @@ export const screens = {
       prompt: '👇 Touchez le chiffre cible (?) sur le pavé numérique ci-dessous.'
     }
   },
-  adBanner: { placeholderTag: 'TEST', placeholderText: 'Emplacement pub (aucune pub)', removeBtn: 'Sans pub' }
+  adBanner: {removeBtn: 'Sans pub' }
 };

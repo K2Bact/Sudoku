@@ -251,5 +251,5 @@ export const screens = {
       prompt: '👇 Pulsa el número correspondiente (?) en el teclado numérico de abajo.'
     }
   },
-  adBanner: { placeholderTag: 'PRUEBA', placeholderText: 'Espacio de anuncio (sin anuncio)', removeBtn: 'Sin anuncios' }
+  adBanner: {removeBtn: 'Sin anuncios' }
 };

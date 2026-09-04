@@ -101,21 +101,28 @@ async function run() {
     await page.waitForSelector('.sudoku-grid', { timeout: 6000 });
     await page.waitForTimeout(400);
 
-    // ── Case 1: the slot is honest about being empty ──────────────────────
+    // ── Case 1: no advertiser, no slot ────────────────────────────────────
+    //
+    // This case used to require the slot to exist and to be labelled without a
+    // vendor name, because the banner drew a placeholder whenever the fake
+    // provider was live. The banner now renders nothing at all in that state,
+    // so the honest condition is the absence of the box, not its wording.
+    //
+    // The vendor-name rule did not go away with it. Gate 2-10 checks the
+    // adBanner block of all thirteen locales for vendor names statically,
+    // which is broader than one rendered language ever was.
     const slot = page.locator('.ad-slot-container');
-    if (!(await slot.count())) {
-      failures.push('Case 1: no ad slot rendered on the game screen');
-    } else {
+    const slotCount = await slot.count();
+    if (slotCount > 0) {
       const text = (await slot.innerText()).replace(/\s+/g, ' ').trim();
-      if (VENDORS.test(text)) {
-        failures.push(`Case 1: the ad slot names an advertiser while none is served — "${text}"`);
-      } else {
-        console.log(`  ✅ Case 1: slot labelled without an advertiser — "${text}"`);
-      }
       const provider = await slot.getAttribute('data-ad-provider');
-      if (provider !== 'fake') {
-        failures.push(`Case 1: expected the placeholder provider in a test build, got "${provider}"`);
-      }
+      failures.push(
+        `Case 1: an ad slot rendered with provider "${provider}" while no advertiser ` +
+        `is being served — "${text}". A build with the placeholder provider must show ` +
+        'no ad area at all.'
+      );
+    } else {
+      console.log('  ✅ Case 1: no ad slot drawn while no advertiser is served');
     }
 
     // ── Case 2: nothing offers a purchase that cannot complete ────────────

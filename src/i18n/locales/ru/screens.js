@@ -244,5 +244,5 @@ export const screens = {
       prompt: '👇 Нажмите нужное число (?) на цифровой клавиатуре внизу.'
     }
   },
-  adBanner: { placeholderTag: 'ТЕСТ', placeholderText: 'Рекламное место (без рекламы)', removeBtn: 'Без рекламы' }
+  adBanner: {removeBtn: 'Без рекламы' }
 };

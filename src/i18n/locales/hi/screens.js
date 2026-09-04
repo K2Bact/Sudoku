@@ -244,5 +244,5 @@ export const screens = {
       prompt: '👇 नीचे दिए गए नंबर कीपैड पर सही संख्या (?) टैप करें।'
     }
   },
-  adBanner: { placeholderTag: 'परीक्षण', placeholderText: 'विज्ञापन स्थान (कोई विज्ञापन नहीं)', removeBtn: 'विज्ञापन हटाएं' }
+  adBanner: {removeBtn: 'विज्ञापन हटाएं' }
 };

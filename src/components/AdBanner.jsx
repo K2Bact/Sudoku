@@ -29,18 +29,23 @@ export function AdBanner({ onOpenRemoveAdsModal, refreshTrigger }) {
     return null;
   }
 
-  const isReal = adsService.isReal;
+  // No advertiser, no slot.
+  //
+  // This used to draw a grey box reading "테스트 | 광고 자리 (실제 광고 없음)"
+  // whenever the placeholder provider was live. That was the right answer when
+  // the fix was stopping the banner from naming an advertiser it never served —
+  // but in a shipped build it reads as an unfinished app rather than an honest
+  // one, to reviewers and players alike.
+  //
+  // The slot comes back on its own the moment a real provider is configured;
+  // nothing here needs touching then.
+  if (!adsService.isReal) {
+    return null;
+  }
 
   return (
     <div className="ad-slot-container" data-ad-provider={adsService.providerId} data-refresh={refreshTrigger}>
-      <div className="banner-content">
-        {!isReal && (
-          <>
-            <span className="ad-tag">{t('adBanner.placeholderTag')}</span>
-            <span className="ad-text">{t('adBanner.placeholderText')}</span>
-          </>
-        )}
-      </div>
+      <div className="banner-content" />
       {/* No entry point unless a purchase can actually be completed. A button
           leading to a store that cannot charge is worse than no button: the
           player comes back believing they bought something. */}

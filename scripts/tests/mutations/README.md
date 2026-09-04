@@ -52,6 +52,11 @@ directory.
 - **`find`** must match **exactly once**. Zero matches or two both fail the
   audit — a rotted anchor is the same silent pass this file exists to prevent,
   so it is never skipped.
+- **Keep `find` to a single line.** Every source file in this repository uses
+  CRLF, and a `\n` written in JSON is LF, so any multi-line anchor matches
+  nothing and reports `ANCHOR_MISSING`. This has been rediscovered three times.
+  If one line is not unique enough, pick a different line — do not reach for a
+  second one.
 - **`expectFailure`** is a substring of the message that must appear. Without it
   the audit would credit whichever check happened to fail first. That is not
   hypothetical: a harness that judged by exit code alone reported that a new

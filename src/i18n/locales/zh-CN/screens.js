@@ -244,5 +244,5 @@ export const screens = {
       prompt: '👇 请在下方数字键盘点击目标空格 (?) 应填入的数字。'
     }
   },
-  adBanner: { placeholderTag: '测试', placeholderText: '广告位（未投放）', removeBtn: '去广告' }
+  adBanner: {removeBtn: '去广告' }
 };

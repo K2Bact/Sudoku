@@ -244,5 +244,5 @@ export const screens = {
       prompt: '👇 Tippe die gesuchte Zahl (?) auf dem Tastenfeld unten ein.'
     }
   },
-  adBanner: { placeholderTag: 'TEST', placeholderText: 'Werbefläche (keine Werbung)', removeBtn: 'Werbung entfernen' }
+  adBanner: {removeBtn: 'Werbung entfernen' }
 };

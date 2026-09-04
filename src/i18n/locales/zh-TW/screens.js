@@ -244,5 +244,5 @@ export const screens = {
       prompt: '👇 請在下方數字鍵盤點擊目標空格 (?) 應填入的數字。'
     }
   },
-  adBanner: { placeholderTag: '測試', placeholderText: '廣告版位（未投放）', removeBtn: '去除廣告' }
+  adBanner: {removeBtn: '去除廣告' }
 };

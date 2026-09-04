@@ -238,5 +238,5 @@ export const screens = {
       prompt: '👇 下の数字キーパッドから目標マス (?) に入る数字をタップしてください。'
     }
   },
-  adBanner: { placeholderTag: 'テスト', placeholderText: '広告スペース（配信なし）', removeBtn: '広告非表示' }
+  adBanner: {removeBtn: '広告非表示' }
 };

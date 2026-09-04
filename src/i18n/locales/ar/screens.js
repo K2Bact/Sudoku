@@ -238,5 +238,5 @@ export const screens = {
       prompt: '👇 انقر على الرقم المطلوب (?) من لوحة الأرقام أدناه.'
     }
   },
-  adBanner: { placeholderTag: 'اختبار', placeholderText: 'مساحة إعلانية (بدون إعلان)', removeBtn: 'إزالة الإعلانات' }
+  adBanner: {removeBtn: 'إزالة الإعلانات' }
 };

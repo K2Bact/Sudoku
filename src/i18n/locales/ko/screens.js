@@ -238,5 +238,5 @@ export const screens = {
       prompt: '👇 아래 숫자 키패드에서 목표 빈칸(?)에 들어갈 숫자를 탭하세요.'
     }
   },
-  adBanner: { placeholderTag: '테스트', placeholderText: '광고 자리 (실제 광고 없음)', removeBtn: '광고 제거' }
+  adBanner: {removeBtn: '광고 제거' }
 };

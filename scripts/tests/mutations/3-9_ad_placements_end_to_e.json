@@ -5,13 +5,14 @@
   "greenMarker": "Ad placements verified by clicking them",
   "mutations": [
     {
-      "name": "the ad slot silently stops rendering",
-      "why": "This gate clicks the placements instead of reading the source, because a placement can be present in the code and unreachable on screen. Renaming the export was too blunt a mutation — it broke the build, so the gate died before it ever looked for the slot.",
+      "name": "an ad area is drawn while no advertiser is being served",
+      "why": "A shipped build with VITE_ADS_PROVIDER=fake would show a grey box reading \"테스트 | 광고 자리 (실제 광고 없음)\" to every player and every reviewer. That reads as an unfinished app, which is a worse risk than any wording inside it.",
       "file": "src/components/AdBanner.jsx",
-      "find": "  if (adsService.isAdsRemoved()) {",
-      "replace": "  if (true) {",
-      "expectFailure": "no ad slot rendered"
+      "find": "  if (!adsService.isReal) {",
+      "replace": "  if (false) {",
+      "expectFailure": "an ad slot rendered with provider"
     }
   ],
-  "rebuild": true
+  "rebuild": true,
+  "note": "The banner renders nothing while the placeholder provider is live, so this gate now checks the absence of an ad area rather than its wording. The mutation is the opposite of what it used to be: bringing the slot back is the defect."
 }

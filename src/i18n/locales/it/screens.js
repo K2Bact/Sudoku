@@ -244,5 +244,5 @@ export const screens = {
       prompt: '👇 Tocca il numero corrispondente (?) sul tastierino qui sotto.'
     }
   },
-  adBanner: { placeholderTag: 'TEST', placeholderText: 'Spazio pubblicitario (nessun annuncio)', removeBtn: 'Senza Pubblicità' }
+  adBanner: {removeBtn: 'Senza Pubblicità' }
 };
