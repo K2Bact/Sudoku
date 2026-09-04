@@ -469,6 +469,51 @@ if (fetchError) {
   console.log(`  ✅ 호스팅본과 로컬이 동일 (${hostedText.split('\n').length}줄)`);
 }
 
+// ── Case 6b: the site is still verified with Google ───────────────────────
+//
+// docs/googleff6e49f8eb36eacb.html is the token Search Console handed out, and
+// it has to sit at the root of the hosted site forever. If it goes, Google
+// un-verifies the domain and Play Console's confirmed developer website goes
+// with it.
+//
+// The app never reads this file, so nothing else would ever notice. A copy in
+// the repository with no check on it is just another file nobody looks at —
+// which is the thing seventy-four translated keys were deleted for.
+console.log('▶ 6b. The Google site verification file is still served');
+const VERIFY_FILE = fs.readdirSync(path.join(ROOT, 'docs')).find((f) => /^google[0-9a-f]+\.html$/.test(f));
+assert(VERIFY_FILE,
+  'docs/ no longer holds a google<hash>.html verification token. If Search ' +
+  'Console was re-verified by another method, delete this case with the file; ' +
+  'do not leave the case pointing at nothing.');
+
+const verifyLocal = fs.readFileSync(path.join(ROOT, 'docs', VERIFY_FILE), 'utf8').trim();
+const VERIFY_URL = `https://k2bact.github.io/${VERIFY_FILE}`;
+
+let verifyHosted = null;
+let verifyError = null;
+try {
+  const res = await fetch(VERIFY_URL, { signal: AbortSignal.timeout(15000) });
+  if (!res.ok) verifyError = `HTTP ${res.status}`;
+  else verifyHosted = (await res.text()).trim();
+} catch (e) {
+  verifyError = e?.message || String(e);
+}
+
+if (verifyError) {
+  console.log(`  ⚠️  검사하지 못함 — ${VERIFY_URL} 를 못 읽었다 (${verifyError})`);
+} else {
+  assert.strictEqual(verifyHosted, verifyLocal,
+    'The Google site verification file is not being served as written:\n' +
+    `  URL   : ${VERIFY_URL}\n` +
+    `  기대  : ${verifyLocal}\n` +
+    `  실제  : ${verifyHosted}\n\n` +
+    'Google checks this file to keep the domain verified. Without it the site ' +
+    'silently loses verification, and the developer website confirmed in Play ' +
+    'Console goes with it. Nothing in the app reads this file, so this check is ' +
+    'the only place it would ever show up.');
+  console.log(`  ✅ ${VERIFY_FILE} 가 그대로 서빙되고 있다`);
+}
+
 // ── Case 7: the version on screen is the version that shipped ─────────────
 //
 // The settings footer read "v1.2.0 (Build 14)" on a device running 1.2.1 (15).

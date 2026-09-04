@@ -60,6 +60,14 @@
       "find": "versionName \"1.2.2\"",
       "replace": "versionName \"1.2.9\"",
       "expectFailure": "build.gradle"
+    },
+    {
+      "name": "the Google site verification token is altered",
+      "why": "Google checks this file to keep the domain verified, and the developer website confirmed in Play Console rides on that verification. The app never reads it, so nothing else would ever notice it going wrong.",
+      "file": "docs/googleff6e49f8eb36eacb.html",
+      "find": "google-site-verification: googleff6e49f8eb36eacb.html",
+      "replace": "google-site-verification: wrong-token.html",
+      "expectFailure": "not being served as written"
     }
   ]
 }
