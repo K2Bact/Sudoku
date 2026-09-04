@@ -75,6 +75,29 @@ export function Header({
         </div>
 
         <div className="header-actions">
+          {/* Theme and sound, the same two controls the home header carries.
+              Header already received onCycleTheme, soundEnabled and
+              onToggleSound and imported all three icons; only the markup was
+              missing, which is what oxlint had been reporting as six unused
+              symbols in this file. */}
+          <button
+            type="button"
+            className="icon-btn"
+            onClick={onCycleTheme}
+            title={t('header.themeTooltip')}
+          >
+            <Palette size={18} />
+          </button>
+
+          <button
+            type="button"
+            className="icon-btn"
+            onClick={onToggleSound}
+            title={soundEnabled ? t('header.soundOn') : t('header.soundOff')}
+          >
+            {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} className="muted" />}
+          </button>
+
           {/* In-Game Settings Button (Contains Sound, Haptics, Theme & Rules) */}
           {onOpenSettings && (
             <button
