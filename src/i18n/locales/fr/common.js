@@ -9,11 +9,8 @@ export const common = {
     restartConfirm: 'Recommencer cette grille ?',
     newGame: 'Nouvelle partie',
     home: 'Accueil',
-    save: 'Enregistrer',
     pause: 'Pause',
     resume: 'Reprendre',
-    loading: 'Chargement...',
-    error: 'Erreur',
     exitAppPrompt: 'Appuyez à nouveau sur Retour pour quitter l’application.',
     confirmLeaveGame: 'Voulez-vous mettre en pause et retourner à l’accueil ?',
     shareUnavailable: "Le partage n'est pas disponible sur cet appareil."
@@ -44,7 +41,6 @@ export const common = {
     combo: '🔥 {count} COMBO !',
     restartShort: 'Recommencer',
     newGameShort: 'Nouvelle partie',
-    pauseTooltip: 'Mettre en pause',
     themeTooltip: 'Changer de thème',
     soundOn: 'Couper le son',
     soundOff: 'Activer le son'
@@ -55,8 +51,7 @@ export const common = {
     notes: 'Notes',
     hint: 'Indice',
     rewardHint: '+1 indice',
-    fastEntry: 'Mode rapide',
-    fastEntryLocked: 'Verrouillé {number}'
+    fastEntry: 'Mode rapide'
   },
   board: {
     pausedTitle: 'Partie en pause',
@@ -64,22 +59,12 @@ export const common = {
     resumeTooltip: 'Touchez pour reprendre'
   },
   themes: {
-    toast: '🎨 Thème {name} activé',
     clay: '🏺 Céramique & Argile',
-    clayDesc: 'Touches céramiques mates avec physique tactile 3D',
     matteDark: '🌌 Résine sombre mate',
-    matteDarkDesc: 'Finition résine mate premium avec doux éclat nocturne',
     pureCeramic: '🧊 Claymorphisme pur',
-    pureCeramicDesc: 'Touches coussinées blanches lisses et arrondies',
-    editorial: '📰 Papier journal classique',
-    editorialDesc: 'Ton papier éditorial suisse, clair et reposant pour les yeux'
+    editorial: '📰 Papier journal classique'
   },
   conflicts: {
-    boxes: [
-      'Haut-Gauche', 'Haut-Centre', 'Haut-Droite',
-      'Milieu-Gauche', 'Centre', 'Milieu-Droite',
-      'Bas-Gauche', 'Bas-Centre', 'Bas-Droite'
-    ],
     boxDuplicate: '⚠️ Le chiffre {num} existe déjà dans le [bloc 3x3 {box}] ! {suffix}',
     rowDuplicate: '⚠️ Le chiffre {num} existe déjà dans la ligne {row} ! {suffix}',
     colDuplicate: '⚠️ Le chiffre {num} existe déjà dans la colonne {col} ! {suffix}',

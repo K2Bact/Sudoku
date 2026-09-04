@@ -37,8 +37,7 @@ export const modals = {
       title: 'Sudokuはお楽しみいただけていますか？',
       desc: '率直な評価とレビューを残していただけると、\n今後の改善とアップデートの大きな励みになります！ 💙',
       submitBtn: 'ストアでレビューを書く',
-      laterBtn: '後で',
-      thankYou: '💙 ご意見ありがとうございます！ ストアへ移動します。'
+      laterBtn: '後で'
     },
     dailyReward: {
       title: 'デイリーログインボーナス！',

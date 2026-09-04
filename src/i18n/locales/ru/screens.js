@@ -3,7 +3,6 @@ export const screens = {
     ghost: {
       ahead: 'на {time} впереди',
       behind: 'на {time} позади',
-      rivalTitle: 'Личный рекорд ({time})',
       ghostHintNotice: '💡 Использование подсказок исключает обновление рекорда PB.'
     }
   },
@@ -12,7 +11,6 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: 'Подсказки',
     brainReportTitle: 'Анализ мозга',
-    brainPercentile: 'Топ {percentile}% · {won} Побед ({tier})',
     brainPercentileShort: 'Топ {percentile}% · {won} Побед',
     startSelectedLevel: 'Начать Ур.{level} {name}',
     modeTabs: { classic: 'Классика', timeAttack: 'Спидран', timeLimit: 'Выживание' },
@@ -32,7 +30,7 @@ export const screens = {
       academy: { title: 'Академия судоку', desc: 'Изучите 32 мастерские техники' },
       practice: { title: 'Свободная практика', desc: 'Без ограничений на ошибки, чистый релакс' }
     },
-    nav: { daily: 'Задания', brain: 'IQ', stats: 'Статистика', academy: 'Академия', settings: 'Опции' }
+    nav: {brain: 'IQ', stats: 'Статистика', academy: 'Академия', settings: 'Опции' }
   },
   daily: {
     header: 'Испытания ({month})',
@@ -47,9 +45,7 @@ export const screens = {
     unlockModalConfirmBtn: '📺 Смотреть и открыть',
     unlockModalCancelBtn: 'Отмена',
     missionCardTitle: '🎯 Специальная миссия дня',
-    missionTier: 'Миссия: {tier}',
     missionCompleted: 'Сегодняшняя миссия выполнена! ✅',
-    missionCompletedDesc: '+1 Подсказка получена и день отмечен в календаре!',
     missionStartBtn: 'Начать миссию 🚀',
     missionReward: '+1 Подсказка и отметка',
     tiers: { beginner: 'Новичок', intermediate: 'Средний', advanced: 'Мастер' },
@@ -76,7 +72,6 @@ export const screens = {
     alreadyPurchased: 'У вас уже активен Premium! 🎉',
     processing: '💳 Обработка платежа...',
     purchaseBtn: 'Убрать рекламу',
-    successToast: '🎉 Реклама успешно отключена!',
     buySuccess: 'Покупка успешно завершена! Спасибо за поддержку.',
     restoreSuccess: 'Покупки успешно восстановлены.',
     restoreFail: 'Предыдущие покупки для восстановления не найдены.'
@@ -98,22 +93,8 @@ export const screens = {
     title: 'Настройки',
     themeSection: '🎨 Визуальная тема',
     languageSection: '🌐 Язык интерфейса',
-    languageDesc: 'Выберите предпочитаемый язык приложения.',
     languages: {
-      auto: 'Системный по умолчанию',
-      ko: '한국어',
-      en: 'English',
-      ja: '日本語',
-      zhTW: '繁體中文',
-      zhCN: '简体中文',
-      esES: 'Español',
-      de: 'Deutsch',
-      fr: 'Français',
-      pt: 'Português',
-      it: 'Italiano',
-      ru: 'Русский',
-      hi: 'हिन्दी',
-      ar: 'العربية'
+      auto: 'Системный по умолчанию'
     },
     gameplaySection: '🎮 Правила игры',
     limitMistakes: 'Лимит 3 ошибок (Сердца)',
@@ -125,7 +106,6 @@ export const screens = {
     soundFxDesc: 'Звуки при нажатии кнопок и вводе чисел',
     hapticFx: 'Тактильный отклик (Вибрация)',
     hapticFxDesc: 'Вибрация при верном и неверном вводе',
-    dataSection: '💾 Управление данными',
     resetData: 'Сбросить все локальные данные',
     resetDataDesc: 'Очистить локальную статистику и историю',
     resetConfirm: '⚠️ Внимание: Вся статистика, подсказки и аналитика мозга будут удалены безвозвратно. Продолжить?',
@@ -143,27 +123,16 @@ export const screens = {
     }
   },
   stats: {
-    rankingHeader: '🏆 Таблица лидеров',
-    leaderboardNotice: 'Смотрите глобальные таблицы лидеров в Google Play Играх.',
-    leaderboardBtn: '🏆 Таблица лидеров',
     classicBest: 'Рекорд в классике',
     speedrunBest: 'Рекорд в спидране',
     survivalTitle: '⏳ Режим выживания',
     survivalTotalWins: 'Побед в выживании',
     survivalWinsUnit: 'Пройдено: {count}',
-    title: 'Статистика и достижения',
     leaderboardTab: 'Лидеры',
-    tabs: { stats: 'Статистика', achievements: 'Достижения' },
     summaryTitle: 'Общие показатели',
     totalPlayed: 'Всего игр',
     totalWon: 'Всего побед',
-    winRate: 'Процент побед',
-    achTitle: '🏆 30 мировых достижений',
-    achSubtitle: 'Открывайте уникальные награды за решение судоку',
-    achProgress: 'Прогресс: {unlocked}/{total} ({percent}%)',
-    emptyTitle: 'Пока нет сохраненных игр',
-    emptyDesc: 'Начните новую игру и одержите первую победу!',
-    startFirstBtn: 'Первое судоку 🚀'
+    winRate: 'Процент побед'
   },
   brainReport: {
     totalPlayed: 'Всего игр',
@@ -180,12 +149,8 @@ export const screens = {
     overallStats: '📊 Накопленная статистика',
     attributesTitle: '🧠 5 столпов интеллекта',
     title: 'Отчет IQ и активности мозга',
-    scoreUnit: 'очк.',
     percentilePrefix: 'Топ ',
-    levelAnalysisTitle: 'Анализ по сложности',
-    emptyNotice: 'Проходите уровни Ур.1~5 для уточнения когнитивного графика.',
     shareTitle: 'Мой отчет Sudoku IQ',
-    shareBtn: 'Поделиться',
     tiers: {
       grandMaster: '👑 Гроссмейстер',
       grandMasterDesc: 'Топ {percentile}% всех игроков! Элитная логика и дедукция на уровне лучших 1%.',
@@ -205,7 +170,6 @@ export const screens = {
     title: 'Дуэль 1v1 в реальном времени',
     cancelBtn: 'Отмена поиска',
     searching: 'Поиск подходящего соперника...',
-    foundOpponent: 'Соперник найден! Игра начнется через секунду...',
     autoMatchTitle: 'Быстрый матч',
     autoMatchDesc: 'Мгновенный подбор соперников со всего мира',
     mmrBadge: 'Подбор по навыку · Винрейт: {rate}%',
@@ -246,13 +210,10 @@ export const screens = {
     declineBtn: 'Отклонить'
   },
   battleHeader: {
-    surrender: 'Сдаться',
     confirmLeave: 'Сдаться и вернуться на главную?',
     emptyCellsLeft: 'осталось'
   },
   aiBattleScreen: {
-    title: 'Дуэль 1:1 против ИИ',
-    desc: 'Соревнуйтесь в скорости решения с ИИ-ботами разного уровня.',
     selectLevelTitle: 'Выберите сложность ИИ',
     selectLevelDesc: 'Подберите бота в соответствии с вашим уровнем.',
     aiSpeed: 'Скорость: {speed}',
@@ -273,13 +234,6 @@ export const screens = {
       stage5: 'Этап 5: Мастерские техники (цепи AIC, ALS и Exocet)'
     },
     title: 'Академия судоку',
-    subtitle: 'Освойте 32 техники решения от новичка до гроссмейстера',
-    progress: 'Прогресс: {completed}/{total} пройдено ({percent}%)',
-    stage1: 'Этап 1: Базовые техники (Одиночки и линии)',
-    stage2: 'Этап 2: Средние техники (Пары и пересечения)',
-    stage3: 'Этап 3: Продвинутые техники (Семейство Wing)',
-    stage4: 'Этап 4: Экспертные техники (Рыбы, раскраска и уникальный прямоугольник)',
-    stage5: 'Этап 5: Мастерские техники (цепи AIC, ALS и Exocet)',
     practiceUi: {
       theory: 'Теория',
       practice1: 'Практика 1',
@@ -288,11 +242,6 @@ export const screens = {
       retry: 'Попробовать снова',
       error: '[{val}] неверно. Внимательно изучите исходные цифры!',
       prompt: '👇 Нажмите нужное число (?) на цифровой клавиатуре внизу.'
-    },
-    guided: {
-      title: '🎯 Интерактивный урок',
-      desc: 'Пошаговая практика ввода чисел и расстановки заметок.',
-      startBtn: 'Начать урок'
     }
   },
   adBanner: { placeholderTag: 'ТЕСТ', placeholderText: 'Рекламное место (без рекламы)', removeBtn: 'Без рекламы' }

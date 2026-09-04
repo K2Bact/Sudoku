@@ -1,6 +1,5 @@
 export const achievements = {
   achievements: {
-    sudoku_achievement_unlocked: 'Достижение разблокировано!',
     categories: {
       all: 'Все',
       progression: 'Прогресс',
@@ -13,11 +12,8 @@ export const achievements = {
     tabTitle: 'Достижения',
     statsTab: 'Статистика',
     unlockedCount: 'Открыто {unlocked} / {total} ({pct}%)',
-    totalTrophies: 'Очки трофеев',
     lockedBadge: 'Закрыто',
     unlockedAt: 'Получено: {date}',
-    syncPlayGames: 'Google Play & Game Center',
-    syncDesc: 'Трофеи и достижения автоматически синхронизируются с вашим глобальным профилем.',
 
     // 1 ~ 7. Прогресс
     first_win: { title: 'Первый шаг', desc: 'Завершите свое первое судоку на любой сложности' },

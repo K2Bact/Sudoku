@@ -9,11 +9,8 @@ export const common = {
     restartConfirm: 'Reiniciar este desafio?',
     newGame: 'Novo Jogo',
     home: 'Início',
-    save: 'Salvar',
     pause: 'Pausar',
     resume: 'Continuar',
-    loading: 'Carregando...',
-    error: 'Erro',
     exitAppPrompt: 'Pressione Voltar novamente para sair do aplicativo.',
     confirmLeaveGame: 'Tem certeza de que deseja pausar e voltar ao início?',
     shareUnavailable: 'Não é possível compartilhar neste dispositivo.'
@@ -44,7 +41,6 @@ export const common = {
     combo: '🔥 {count} COMBO!',
     restartShort: 'Reiniciar',
     newGameShort: 'Novo Jogo',
-    pauseTooltip: 'Pausar cronômetro',
     themeTooltip: 'Mudar tema',
     soundOn: 'Desativar som',
     soundOff: 'Ativar som'
@@ -55,8 +51,7 @@ export const common = {
     notes: 'Anotações',
     hint: 'Dica',
     rewardHint: '+1 dica',
-    fastEntry: 'Modo Rápido',
-    fastEntryLocked: 'Fixado {number}'
+    fastEntry: 'Modo Rápido'
   },
   board: {
     pausedTitle: 'Jogo Pausado',
@@ -64,22 +59,12 @@ export const common = {
     resumeTooltip: 'Toque para continuar'
   },
   themes: {
-    toast: '🎨 Tema {name} aplicado',
     clay: '🏺 Cerâmica & Argila',
-    clayDesc: 'Teclas de cerâmica fosca com física tátil 3D',
     matteDark: '🌌 Resina Escura Fosca',
-    matteDarkDesc: 'Acabamento premium em resina com suave brilho noturno',
     pureCeramic: '🧊 Claymorphism Puro',
-    pureCeramicDesc: 'Teclas arredondadas em cerâmica branca suave',
-    editorial: '📰 Papel Jornal Clássico',
-    editorialDesc: 'Tom de papel editorial suíço, limpo e suave para os olhos'
+    editorial: '📰 Papel Jornal Clássico'
   },
   conflicts: {
-    boxes: [
-      'Superior-Esquerdo', 'Superior-Centro', 'Superior-Direito',
-      'Meio-Esquerdo', 'Centro', 'Meio-Direito',
-      'Inferior-Esquerdo', 'Inferior-Centro', 'Inferior-Direito'
-    ],
     boxDuplicate: '⚠️ O número {num} já existe no [bloco 3x3 {box}]! {suffix}',
     rowDuplicate: '⚠️ O número {num} já existe na linha {row}! {suffix}',
     colDuplicate: '⚠️ O número {num} já existe na coluna {col}! {suffix}',

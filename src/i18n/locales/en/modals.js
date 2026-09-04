@@ -37,8 +37,7 @@ export const modals = {
       title: 'Enjoying Sudoku?',
       desc: 'Your honest rating and feedback mean\nthe world in helping us improve the game! 💙',
       submitBtn: 'Leave a Review',
-      laterBtn: 'Maybe Later',
-      thankYou: '💙 Thank you for your feedback! Opening app store page.'
+      laterBtn: 'Maybe Later'
     },
     dailyReward: {
       title: 'Daily Attendance Reward!',

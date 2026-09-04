@@ -1,6 +1,5 @@
 export const achievements = {
   achievements: {
-    sudoku_achievement_unlocked: "実績達成！",
     categories: {
       all: 'すべて',
       progression: '完走・成長',
@@ -13,11 +12,8 @@ export const achievements = {
     tabTitle: '実績',
     statsTab: '統計',
     unlockedCount: '{unlocked} / {total} 達成 ({pct}%)',
-    totalTrophies: '合計トロフィーポイント',
     lockedBadge: '未達成',
     unlockedAt: '達成日: {date}',
-    syncPlayGames: 'Google Play & Game Center 連携',
-    syncDesc: '全世界のゲーマープロフィールに実績とトロフィーが自動同期されます。',
 
     // 1 ~ 7. 完走 & 進行
     first_win: { title: '第一歩', desc: '難易度を問わず初めてナンプレパズルをクリア' },

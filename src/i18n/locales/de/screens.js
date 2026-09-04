@@ -3,7 +3,6 @@ export const screens = {
     ghost: {
       ahead: '{time} Vorsprung',
       behind: '{time} Rückstand',
-      rivalTitle: 'Persönliche Bestzeit ({time})',
       ghostHintNotice: '💡 Durch die Nutzung eines Tipps wird die Aktualisierung der PB-Bestzeit ausgeschlossen.'
     }
   },
@@ -12,7 +11,6 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: 'Tipps',
     brainReportTitle: 'Gehirn-Analyse',
-    brainPercentile: 'Top {percentile}% · {won} Siege ({tier})',
     brainPercentileShort: 'Top {percentile}% · {won} Siege',
     startSelectedLevel: 'Lv.{level} {name} starten',
     modeTabs: { classic: 'Klassik', timeAttack: 'Zeitrennen', timeLimit: 'Überleben' },
@@ -32,7 +30,7 @@ export const screens = {
       academy: { title: 'Sudoku-Akademie', desc: '32 Meistertechniken Schritt für Schritt lernen' },
       practice: { title: 'Freies Training', desc: 'Unbegrenzte Fehler, entspanntes Spielen' }
     },
-    nav: { daily: 'Täglich', brain: 'Gehirn-IQ', stats: 'Statistik', academy: 'Akademie', settings: 'Einstellungen' }
+    nav: {brain: 'Gehirn-IQ', stats: 'Statistik', academy: 'Akademie', settings: 'Einstellungen' }
   },
   daily: {
     header: 'Tägliche Herausforderungen ({month})',
@@ -47,9 +45,7 @@ export const screens = {
     unlockModalConfirmBtn: '📺 Ansehen & freischalten',
     unlockModalCancelBtn: 'Abbrechen',
     missionCardTitle: '🎯 Heutige individuelle Mission',
-    missionTier: '{tier} Mission',
     missionCompleted: 'Heutige Mission abgeschlossen! ✅',
-    missionCompletedDesc: '+1 Kostenloser Tipp erhalten & im Kalender eingetragen!',
     missionStartBtn: 'Mission starten 🚀',
     missionReward: '+1 Tipp & Eintrag',
     tiers: { beginner: 'Anfänger', intermediate: 'Fortgeschritten', advanced: 'Meister' },
@@ -76,7 +72,6 @@ export const screens = {
     alreadyPurchased: 'Du besitzt den Premium-Zugang bereits! 🎉',
     processing: '💳 Wird verarbeitet...',
     purchaseBtn: 'Werbung entfernen',
-    successToast: '🎉 Werbung dauerhaft entfernt!',
     buySuccess: 'Kauf erfolgreich abgeschlossen! Vielen Dank.',
     restoreSuccess: 'Käufe erfolgreich wiederhergestellt.',
     restoreFail: 'Keine früheren Käufe zur Wiederherstellung gefunden.'
@@ -98,22 +93,8 @@ export const screens = {
     title: 'Einstellungen',
     themeSection: '🎨 Erscheinungsbild',
     languageSection: '🌐 Sprache',
-    languageDesc: 'Wähle deine bevorzugte Sprache.',
     languages: {
-      auto: 'Systemstandard',
-      ko: '한국어',
-      en: 'English',
-      ja: '日本語',
-      zhTW: '繁體中文',
-      zhCN: '简体中文',
-      esES: 'Español',
-      de: 'Deutsch',
-      fr: 'Français',
-      pt: 'Português',
-      it: 'Italiano',
-      ru: 'Русский',
-      hi: 'हिन्दी',
-      ar: 'العربية'
+      auto: 'Systemstandard'
     },
     gameplaySection: '🎮 Spielregeln',
     limitMistakes: 'Fehlerlimit (3 Herzen)',
@@ -125,7 +106,6 @@ export const screens = {
     soundFxDesc: 'Töne bei Zahleneingabe und Schaltflächen',
     hapticFx: 'Haptisches Feedback',
     hapticFxDesc: 'Vibrieren bei richtigen und falschen Eingaben',
-    dataSection: '💾 Datenverwaltung',
     resetData: 'Alle lokalen Daten zurücksetzen',
     resetDataDesc: 'Alle Spielstatistiken und lokalen Verlauf löschen',
     resetConfirm: '⚠️ Warnung: Alle Spielhistorien, Tipps und Gehirnstatistiken werden unwiderruflich gelöscht. Fortfahren?',
@@ -143,27 +123,16 @@ export const screens = {
     }
   },
   stats: {
-    rankingHeader: '🏆 Globale Bestenlisten & Ränge',
-    leaderboardNotice: 'Echtzeit-Weltranglisten mit Google Play Spiele einsehen.',
-    leaderboardBtn: '🏆 Bestenlisten',
     classicBest: 'Klassik-Bestzeit',
     speedrunBest: 'Zeitrennen-Bestzeit',
     survivalTitle: '⏳ Überleben (Zeitlimit)',
     survivalTotalWins: 'Überlebens-Erfolge',
     survivalWinsUnit: '{count} geschafft',
-    title: 'Meine Statistiken & Erfolge',
     leaderboardTab: 'Rangliste',
-    tabs: { stats: 'Statistik', achievements: 'Erfolge' },
     summaryTitle: 'Leistungsübersicht',
     totalPlayed: 'Gespielte Spiele',
     totalWon: 'Gewonnene Spiele',
-    winRate: 'Gewinnrate',
-    achTitle: '🏆 30 globale Erfolge',
-    achSubtitle: 'Schalte Meilensteine beim Lösen von Sudokus frei',
-    achProgress: 'Fortschritt: {unlocked}/{total} ({percent}%)',
-    emptyTitle: 'Noch keine Spielaufzeichnungen',
-    emptyDesc: 'Starte ein neues Spiel und feiere deinen ersten Sieg!',
-    startFirstBtn: 'Erstes Sudoku starten 🚀'
+    winRate: 'Gewinnrate'
   },
   brainReport: {
     totalPlayed: 'Spiele insgesamt',
@@ -180,12 +149,8 @@ export const screens = {
     overallStats: '📊 Gesamte kumulierte Statistiken',
     attributesTitle: '🧠 5 Kognitive Kernfähigkeiten',
     title: 'IQ-Bericht',
-    scoreUnit: 'Pkt',
     percentilePrefix: 'Top ',
-    levelAnalysisTitle: 'Schwierigkeits-Analyse',
-    emptyNotice: 'Löse Rätsel der Stufen 1~5, um dein kognitives Gehirnprofil zu verfeinern.',
     shareTitle: 'Mein Sudoku-IQ-Bericht',
-    shareBtn: 'Bericht teilen',
     tiers: {
       grandMaster: '👑 Großmeister',
       grandMasterDesc: 'Top {percentile}% aller Spieler! Meisterhafte 1% deduktive Denkweise.',
@@ -205,7 +170,6 @@ export const screens = {
     title: '1v1 Echtzeit-Duell',
     cancelBtn: 'Match abbrechen',
     searching: 'Suche nach einem würdigen Gegner...',
-    foundOpponent: 'Gegner gefunden! Match beginnt in Kürze...',
     autoMatchTitle: 'Schnellduell',
     autoMatchDesc: 'Schnelles Matchmaking mit weltweiten Spielern',
     mmrBadge: 'Skill-Matchmaking · Siegquote: {rate}%',
@@ -246,13 +210,10 @@ export const screens = {
     declineBtn: 'Ablehnen'
   },
   battleHeader: {
-    surrender: 'Duell aufgeben',
     confirmLeave: 'Möchtest du aufgeben und zum Hauptmenü zurückkehren?',
     emptyCellsLeft: 'übrig'
   },
   aiBattleScreen: {
-    title: '1:1 KI-Bot-Duell',
-    desc: 'Tritt in Echtzeit gegen KI-Bots verschiedener Spielstärken im Schnelligkeitslösen an.',
     selectLevelTitle: 'KI-Schwierigkeit wählen',
     selectLevelDesc: 'Wähle einen KI-Gegner passend zu deinem Können.',
     aiSpeed: 'Geschwindigkeit: {speed}',
@@ -273,13 +234,6 @@ export const screens = {
       stage5: 'Stufe 5: Meister-Techniken (AIC, ALS & Exocet-Ketten)'
     },
     title: 'Sudoku-Akademie',
-    subtitle: 'Meistere 32 authentische Techniken von der Basis bis zum Großmeister',
-    progress: 'Fortschritt: {completed}/{total} abgeschlossen ({percent}%)',
-    stage1: 'Stufe 1: Singles & Linien',
-    stage2: 'Stufe 2: Block-Paare & Schnittmengen',
-    stage3: 'Stufe 3: Wing-Familie',
-    stage4: 'Stufe 4: Fish, Coloring & Unique Rectangle',
-    stage5: 'Stufe 5: AIC, ALS & Exocet-Ketten',
     practiceUi: {
       theory: 'Theorie',
       practice1: 'Übung 1',
@@ -288,11 +242,6 @@ export const screens = {
       retry: 'Erneut versuchen',
       error: '[{val}] ist nicht korrekt. Überprüfe die vorgegebenen Zahlen!',
       prompt: '👇 Tippe die gesuchte Zahl (?) auf dem Tastenfeld unten ein.'
-    },
-    guided: {
-      title: '🎯 Geführtes Tutorial',
-      desc: 'Lerne Schritt für Schritt, wie man Felder ausfüllt und Notizen setzt.',
-      startBtn: 'Tutorial starten'
     }
   },
   adBanner: { placeholderTag: 'TEST', placeholderText: 'Werbefläche (keine Werbung)', removeBtn: 'Werbung entfernen' }

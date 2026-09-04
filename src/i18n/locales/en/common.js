@@ -9,11 +9,8 @@ export const common = {
     restartConfirm: 'Restart this puzzle?',
     newGame: 'New Game',
     home: 'Home',
-    save: 'Save',
     pause: 'Pause',
     resume: 'Resume',
-    loading: 'Loading...',
-    error: 'Error',
     exitAppPrompt: 'Press back again to exit the app.',
     confirmLeaveGame: 'Are you sure you want to pause and return to Home?',
     shareUnavailable: "Sharing isn't available on this device."
@@ -44,7 +41,6 @@ export const common = {
     combo: '🔥 {count} COMBO!',
     restartShort: 'Restart',
     newGameShort: 'New Game',
-    pauseTooltip: 'Pause Timer',
     themeTooltip: 'Change Theme',
     soundOn: 'Mute Sound',
     soundOff: 'Enable Sound'
@@ -55,8 +51,7 @@ export const common = {
     notes: 'Notes',
     hint: 'Hint',
     rewardHint: '+1 Hint',
-    fastEntry: 'Fast Mode',
-    fastEntryLocked: 'Locked {number}'
+    fastEntry: 'Fast Mode'
   },
   board: {
     pausedTitle: 'Game is Paused',
@@ -64,22 +59,12 @@ export const common = {
     resumeTooltip: 'Tap to Resume'
   },
   themes: {
-    toast: '🎨 Switched to {name}',
     clay: '🏺 Warm Ceramic & Clay',
-    clayDesc: 'Warm ceramic matte keycaps with 3D tactile physics',
     matteDark: '🌌 Soft Matte Resin Dark',
-    matteDarkDesc: 'Premium matte resin finish with soft midnight glow',
     pureCeramic: '🧊 Pure Claymorphism',
-    pureCeramicDesc: 'Smooth rounded white ceramic cushion keycaps',
-    editorial: '📰 Classic Pure Paper',
-    editorialDesc: 'Clean, eye-friendly Swiss editorial paper tone'
+    editorial: '📰 Classic Pure Paper'
   },
   conflicts: {
-    boxes: [
-      'Top-Left', 'Top-Center', 'Top-Right',
-      'Middle-Left', 'Center', 'Middle-Right',
-      'Bottom-Left', 'Bottom-Center', 'Bottom-Right'
-    ],
     boxDuplicate: '⚠️ Number {num} already exists in [{box} 3x3 box]! {suffix}',
     rowDuplicate: '⚠️ Number {num} already exists in row {row}! {suffix}',
     colDuplicate: '⚠️ Number {num} already exists in column {col}! {suffix}',

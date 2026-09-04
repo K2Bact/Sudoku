@@ -9,11 +9,8 @@ export const common = {
     restartConfirm: 'Ricominciare questo schema?',
     newGame: 'Nuova Partita',
     home: 'Home',
-    save: 'Salva',
     pause: 'Pausa',
     resume: 'Riprendi',
-    loading: 'Caricamento...',
-    error: 'Errore',
     exitAppPrompt: 'Premi di nuovo Indietro per uscire dall’applicazione.',
     confirmLeaveGame: 'Vuoi mettere in pausa e tornare alla Home?',
     shareUnavailable: 'La condivisione non è disponibile su questo dispositivo.'
@@ -44,7 +41,6 @@ export const common = {
     combo: '🔥 {count} COMBO!',
     restartShort: 'Riavvia',
     newGameShort: 'Nuova partita',
-    pauseTooltip: 'Pausa timer',
     themeTooltip: 'Cambia tema',
     soundOn: 'Disattiva audio',
     soundOff: 'Attiva audio'
@@ -55,8 +51,7 @@ export const common = {
     notes: 'Note',
     hint: 'Suggerimento',
     rewardHint: '+1 aiuto',
-    fastEntry: 'Modo Rapido',
-    fastEntryLocked: 'Fissato {number}'
+    fastEntry: 'Modo Rapido'
   },
   board: {
     pausedTitle: 'Partita in Pausa',
@@ -64,22 +59,12 @@ export const common = {
     resumeTooltip: 'Tocca per riprendere'
   },
   themes: {
-    toast: '🎨 Passato a {name}',
     clay: '🏺 Ceramica & Argilla',
-    clayDesc: 'Tasti in ceramica opaca con fisica tattile 3D',
     matteDark: '🌌 Resina Scura Opaca',
-    matteDarkDesc: 'Finitura in resina opaca premium con soffusa luce notturna',
     pureCeramic: '🧊 Claymorphism Puro',
-    pureCeramicDesc: 'Tasti arrotondati in morbida ceramica bianca',
-    editorial: '📰 Carta di Giornale Classica',
-    editorialDesc: 'Tono carta editoriale svizzera, nitido e rilassante per gli occhi'
+    editorial: '📰 Carta di Giornale Classica'
   },
   conflicts: {
-    boxes: [
-      'In alto a sinistra', 'In alto al centro', 'In alto a destra',
-      'Al centro a sinistra', 'Centro', 'Al centro a destra',
-      'In basso a sinistra', 'In basso al centro', 'In basso a destra'
-    ],
     boxDuplicate: '⚠️ Il numero {num} esiste già nel [quadrante 3x3 {box}]! {suffix}',
     rowDuplicate: '⚠️ Il numero {num} esiste già nella riga {row}! {suffix}',
     colDuplicate: '⚠️ Il numero {num} esiste già nella colonna {col}! {suffix}',

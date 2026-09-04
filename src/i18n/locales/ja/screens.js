@@ -3,7 +3,6 @@ export const screens = {
     ghost: {
       "ahead": "{time} リード",
       "behind": "{time} 遅れ",
-      "rivalTitle": "自己最高記録 ({time})",
       "ghostHintNotice": "💡 ヒント使用のため、今回のPB記録更新は除外されます。"
     },
   },
@@ -12,7 +11,6 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: '保有ヒント',
     brainReportTitle: '脳活性分析',
-    brainPercentile: '上位 {percentile}% · 完走 {won}局 ({tier})',
     brainPercentileShort: '上位 {percentile}% · 完走 {won}局',
     startSelectedLevel: 'Lv.{level} {name} 開始',
     modeTabs: { classic: 'クラシック', timeAttack: 'タイムアタック', timeLimit: 'サバイバル' },
@@ -32,7 +30,7 @@ export const screens = {
       academy: { title: 'ナンプレアカデミー', desc: '32の実戦解法テクニックを習得' },
       practice: { title: '自由練習モード', desc: 'ミス無制限でリラックスプレイ' }
     },
-    nav: { daily: 'デイリー', brain: '脳指数', stats: '統計', academy: 'アカデミー', settings: '設定' }
+    nav: {brain: '脳指数', stats: '統計', academy: 'アカデミー', settings: '設定' }
   },
   daily: {
     header: 'デイリーチャレンジ ({month}月)',
@@ -47,9 +45,7 @@ export const screens = {
     unlockModalConfirmBtn: '📺 広告を見て解除',
     unlockModalCancelBtn: 'キャンセル',
     missionCardTitle: '🎯 本日のカスタムミッション',
-    missionTier: '{tier} ミッション',
     missionCompleted: '本日のミッション達成！✅',
-    missionCompletedDesc: '無料ヒント +1個 獲得＆365日カレンダー出席完了！',
     missionStartBtn: 'ミッションに挑戦 🚀',
     missionReward: '+1 ヒント＆出席',
     tiers: { beginner: '初級', intermediate: '中級', advanced: 'マスター' },
@@ -76,7 +72,6 @@ export const screens = {
     alreadyPurchased: 'すでにプレミアムメンバーシップをお持ちです！ 🎉',
     processing: '💳 決済処理中...',
     purchaseBtn: '広告を永久削除',
-    successToast: '🎉 広告が正常に永久削除されました！',
     buySuccess: '購入が正常に完了しました！ありがとうございます。',
     restoreSuccess: '購入履歴が正常に復元されました。',
     restoreFail: '復元可能な購入履歴が見つかりません。'
@@ -98,22 +93,8 @@ export const screens = {
     title: '設定',
     themeSection: '🎨 ビジュアルテーマ',
     languageSection: '🌐 言語設定',
-    languageDesc: 'お好みの言語を選択してください。',
     languages: {
-      auto: 'システム標準',
-      ko: '한국어',
-      en: 'English',
-      ja: '日本語',
-      zhTW: '繁體中文',
-      zhCN: '简体中文',
-      esES: 'Español',
-      de: 'Deutsch',
-      fr: 'Français',
-      pt: 'Português',
-      it: 'Italiano',
-      ru: 'Русский',
-      hi: 'हिन्दी',
-      ar: 'العربية'
+      auto: 'システム標準'
     },
     gameplaySection: '🎮 ゲームプレイルール',
     limitMistakes: 'ミス3回制限（ハート）',
@@ -125,7 +106,6 @@ export const screens = {
     soundFxDesc: '数字入力音およびボタンタッチ音',
     hapticFx: '触覚フィードバック（振動）',
     hapticFxDesc: '正解および誤答入力時の振動',
-    dataSection: '💾 データ管理',
     resetData: 'すべてのローカルデータを初期化',
     resetDataDesc: 'すべてのローカルゲーム統計と記録を初期化',
     resetConfirm: '⚠️ 警告: すべてのプレイ記録、保有ヒント、脳指数統計が永久に削除されます。よろしいですか？',
@@ -143,27 +123,16 @@ export const screens = {
     }
   },
   stats: {
-    rankingHeader: "🏆 グローバルランキング",
-    leaderboardNotice: "Google Play ゲームと連携して世界ランキングを確認できます。",
-    leaderboardBtn: '🏆 ランキング',
     classicBest: "クラシック最高記録",
     speedrunBest: "タイムアタック最高記録",
     survivalTitle: "⏳ タイムリミット (サバイバル)",
     survivalTotalWins: "サバイバル生還成功",
     survivalWinsUnit: "{count}回 成功",
-    title: '統計＆実績',
     leaderboardTab: 'ランキング',
-    tabs: { stats: '統計', achievements: '実績' },
     summaryTitle: '総合成績サマリー',
     totalPlayed: '総プレイ数',
     totalWon: '総完走数',
-    winRate: '勝率',
-    achTitle: '🏆 30個のグローバル実績',
-    achSubtitle: 'ナンプレを解きながら特別な挑戦課題をアンロックしましょう',
-    achProgress: '達成率: {unlocked}/{total} ({percent}%)',
-    emptyTitle: 'まだプレイ記録がありません',
-    emptyDesc: '新しいゲームを始めて初勝利を記録しましょう！',
-    startFirstBtn: '初ナンプレ 🚀'
+    winRate: '勝率'
   },
   brainReport: {
     totalPlayed: "プレイ総数",
@@ -180,12 +149,8 @@ export const screens = {
     overallStats: "📊 総合累積データ",
     attributesTitle: "🧠 5大認知能力",
     title: '脳活性レポート',
-    scoreUnit: '点',
     percentilePrefix: '上位 ',
-    levelAnalysisTitle: '難易度別知能分析',
-    emptyNotice: 'Lv.1~Lv.5のパズルをクリアするたびに脳分析グラフが更新されます。',
     shareTitle: '私のナンプレ脳指数レポート',
-    shareBtn: '脳指数レポートを共有',
     tiers: {
       grandMaster: '👑 グランドマスター',
       grandMasterDesc: '全プレイヤーの上位{percentile}%！ ごく少数だけが到達する1%マスター級の論理力です。',
@@ -205,7 +170,6 @@ export const screens = {
     title: '1v1 リアルタイムバトル',
     cancelBtn: 'マッチング取消',
     searching: '実力の近い対戦相手を検索中...',
-    foundOpponent: '対戦相手が見つかりました！ まもなく対戦が始まります...',
     autoMatchTitle: 'リアルタイム高速マッチ',
     autoMatchDesc: '世界中のプレイヤーと1:1スピード対戦',
     mmrBadge: '実力マッチング · 勝率 {rate}%',
@@ -246,13 +210,10 @@ export const screens = {
     declineBtn: '辞退'
   },
   battleHeader: {
-    surrender: '対戦を棄権する',
     confirmLeave: '対戦を諦めてホームに戻りますか？',
     emptyCellsLeft: '残り'
   },
   aiBattleScreen: {
-    title: 'AI ボット 1:1 対戦',
-    desc: '様々な難易度のAIボットとリアルタイムで完成速度を競いましょう。',
     selectLevelTitle: 'AI 難易度選択',
     selectLevelDesc: '自分の実力に合わせたAIボットを選択してください。',
     aiSpeed: '解答速度: {speed}',
@@ -267,13 +228,6 @@ export const screens = {
     tabs: { stage1: '第1段階', stage2: '第2段階', stage3: '第3段階', stage4: '第4段階', stage5: '第5段階' },
     stageTitles: {"stage1":"第1段階: 基本テクニック (シングル＆ライン)","stage2":"第2段階: 中級テクニック (ペア＆交差排除)","stage3":"第3段階: 上級テクニック (ウィング＆フィッシュ)","stage4":"第4段階: 専門テクニック (カラーリング＆3Dメデューサ)","stage5":"第5段階: マスターテクニック (UR、AIC＆ALS連鎖)"},
     title: 'ナンプレアカデミー',
-    subtitle: '基礎から奥義まで32の実戦テクニックをマスター',
-    progress: '進捗度: {completed}/{total} 完了 ({percent}%)',
-    stage1: '第1段階: 基本テクニック (基礎シングル＆ライン)',
-    stage2: '第2段階: 中級テクニック (ブロックペア＆交差)',
-    stage3: '第3段階: 上級テクニック (Wingシリーズ)',
-    stage4: '第4段階: 専門テクニック (Fish・カラーリング＆UR)',
-    stage5: '第5段階: マスターテクニック (AIC・ALS＆Exocet連鎖)',
     practiceUi: {
       theory: '理論解説',
       practice1: '実戦練習 1',
@@ -282,11 +236,6 @@ export const screens = {
       retry: 'もう一度挑戦',
       error: '[{val}] は正解ではありません。ヒント数字を再確認してください！',
       prompt: '👇 下の数字キーパッドから目標マス (?) に入る数字をタップしてください。'
-    },
-    guided: {
-      title: '🎯 実戦チュートリアル',
-      desc: '盤面で直接数字を入力し、候補数字をメモする方法を学びます。',
-      startBtn: 'チュートリアル開始'
     }
   },
   adBanner: { placeholderTag: 'テスト', placeholderText: '広告スペース（配信なし）', removeBtn: '広告非表示' }

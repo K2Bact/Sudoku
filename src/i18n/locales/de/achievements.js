@@ -1,6 +1,5 @@
 export const achievements = {
   achievements: {
-    sudoku_achievement_unlocked: 'Erfolg freigeschaltet!',
     categories: {
       all: 'Alle',
       progression: 'Fortschritt',
@@ -13,11 +12,8 @@ export const achievements = {
     tabTitle: 'Erfolge',
     statsTab: 'Statistik',
     unlockedCount: '{unlocked} / {total} Freigeschaltet ({pct}%)',
-    totalTrophies: 'Gesamte Trophäenpunkte',
     lockedBadge: 'Gesperrt',
     unlockedAt: 'Freigeschaltet: {date}',
-    syncPlayGames: 'Google Play & Game Center',
-    syncDesc: 'Trophäen und Erfolge werden automatisch mit deinem globalen Profil synchronisiert.',
 
     // 1 ~ 7. Progression & Wins
     first_win: { title: 'Erster Schritt', desc: 'Löse dein allererstes Sudoku-Rätsel auf beliebiger Stufe' },

@@ -1,0 +1,25 @@
+{
+  "gate": "2-15",
+  "name": "Every Translated Key Is Reachable",
+  "command": "node scripts/tests/unit/test_locale_keys_reachable.js",
+  "greenMarker": "Locale key gate passed",
+  "note": "Seventy-two keys had accumulated with no caller — 852 translated strings kept in sync across thirteen languages for nothing. The scan had been reporting them at NOTE severity, a tier nothing acts on. This gate is that finding promoted to something that fails.",
+  "mutations": [
+    {
+      "name": "the last caller of a key is deleted, leaving the translations behind",
+      "why": "This is exactly how the seventy-two accumulated. A screen gets rewritten, the new key is added, the old one is never removed, and gate 1 then keeps all thirteen languages in sync on the dead half forever.",
+      "file": "src/components/StatsScreen.jsx",
+      "find": "t('stats.summaryTitle')",
+      "replace": "'Summary'",
+      "expectFailure": "stats.summaryTitle"
+    },
+    {
+      "name": "a translation is added that nothing will ever render",
+      "why": "A key introduced ahead of the screen that was going to use it, and then the screen never arrived. Thirteen translators are billed for it anyway.",
+      "file": "src/i18n/locales/en/common.js",
+      "find": "export const common = {",
+      "replace": "export const common = {\n  neverRenderedProbe: 'nothing shows this',",
+      "expectFailure": "neverRenderedProbe"
+    }
+  ]
+}

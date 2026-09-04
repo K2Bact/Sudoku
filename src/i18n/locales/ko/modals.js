@@ -37,8 +37,7 @@ export const modals = {
       title: 'Sudoku 플레이는 즐거우신가요?',
       desc: '소중한 평점과 솔직한 리뷰를 남겨주시면\n더 재미있고 완성도 높은 게임을 만드는 데 큰 힘이 됩니다! 💙',
       submitBtn: '스토어에 리뷰 남기기',
-      laterBtn: '다음에 하기',
-      thankYou: '💙 소중한 의견 감사합니다! 스토어 페이지로 이동합니다.'
+      laterBtn: '다음에 하기'
     },
     dailyReward: {
       title: '일일 출석 보상 도착!',

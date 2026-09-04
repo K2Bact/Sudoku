@@ -3,7 +3,6 @@ export const screens = {
     ghost: {
       ahead: '{time} आगे',
       behind: '{time} पीछे',
-      rivalTitle: 'सर्वश्रेष्ठ रिकॉर्ड ({time})',
       ghostHintNotice: '💡 संकेत का उपयोग करने पर व्यक्तिगत सर्वश्रेष्ठ रिकॉर्ड में नहीं गिना जाएगा।'
     }
   },
@@ -12,7 +11,6 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: 'संकेत',
     brainReportTitle: 'मस्तिष्क विश्लेषण',
-    brainPercentile: 'शीर्ष {percentile}% · {won} जीतें ({tier})',
     brainPercentileShort: 'शीर्ष {percentile}% · {won} जीतें',
     startSelectedLevel: 'स्तर {level} {name} शुरू करें',
     modeTabs: { classic: 'क्लासिक', timeAttack: 'स्पीडरन', timeLimit: 'सर्वाइवल' },
@@ -32,7 +30,7 @@ export const screens = {
       academy: { title: 'सुडोकू अकादमी', desc: 'मास्टर्स की 32 रणनीतियां सीखें' },
       practice: { title: 'मुक्त अभ्यास मोड', desc: 'बिना गलती सीमा के आरामदायक खेल' }
     },
-    nav: { daily: 'दैनिक', brain: 'IQ रिपोर्ट', stats: 'आंकड़े', academy: 'अकादमी', settings: 'सेटिंग्स' }
+    nav: {brain: 'IQ रिपोर्ट', stats: 'आंकड़े', academy: 'अकादमी', settings: 'सेटिंग्स' }
   },
   daily: {
     header: 'दैनिक चुनौतियां ({month})',
@@ -47,9 +45,7 @@ export const screens = {
     unlockModalConfirmBtn: '📺 देखें और अनलॉक करें',
     unlockModalCancelBtn: 'रद्द करें',
     missionCardTitle: '🎯 आज का विशेष मिशन',
-    missionTier: '{tier} मिशन',
     missionCompleted: 'आज का मिशन पूरा हुआ! ✅',
-    missionCompletedDesc: '+1 मुफ्त संकेत मिला और कैलेंडर में उपस्थिति दर्ज हुई!',
     missionStartBtn: 'मिशन शुरू करें 🚀',
     missionReward: '+1 संकेत और उपस्थिति',
     tiers: { beginner: 'शुरुआती', intermediate: 'मध्यम', advanced: 'मास्टर' },
@@ -76,7 +72,6 @@ export const screens = {
     alreadyPurchased: 'आपके पास पहले से प्रीमियम लाभ हैं! 🎉',
     processing: '💳 प्रक्रिया जारी है...',
     purchaseBtn: 'विज्ञापन हमेशा के लिए हटाएं',
-    successToast: '🎉 विज्ञापन सफलतापूर्वक हटा दिए गए!',
     buySuccess: 'खरीदारी सफल! आपके समर्थन के लिए धन्यवाद।',
     restoreSuccess: 'खरीदारी सफलतापूर्वक पुनर्स्थापित हो गई।',
     restoreFail: 'पुनर्स्थापित करने के लिए कोई पिछली खरीदारी नहीं मिली।'
@@ -98,22 +93,8 @@ export const screens = {
     title: 'सेटिंग्स',
     themeSection: '🎨 विजुअल थीम',
     languageSection: '🌐 भाषा',
-    languageDesc: 'इंटरफ़ेस के लिए अपनी पसंदीदा भाषा चुनें।',
     languages: {
-      auto: 'सिस्टम डिफ़ॉल्ट',
-      ko: '한국어',
-      en: 'English',
-      ja: '日本語',
-      zhTW: '繁體中文',
-      zhCN: '简体中文',
-      esES: 'Español',
-      de: 'Deutsch',
-      fr: 'Français',
-      pt: 'Português',
-      it: 'Italiano',
-      ru: 'Русский',
-      hi: 'हिन्दी',
-      ar: 'العربية'
+      auto: 'सिस्टम डिफ़ॉल्ट'
     },
     gameplaySection: '🎮 खेल के नियम',
     limitMistakes: '3 गलतियों की सीमा (❤️)',
@@ -125,7 +106,6 @@ export const screens = {
     soundFxDesc: 'नंबर और बटन टैप करने की आवाज',
     hapticFx: 'कंपन प्रतिक्रिया',
     hapticFxDesc: 'सही या गलत नंबर डालने पर कंपन',
-    dataSection: '💾 डेटा प्रबंधन',
     resetData: 'सभी स्थानीय डेटा रीसेट करें',
     resetDataDesc: 'स्थानीय आंकड़े और खेल इतिहास हटाएं',
     resetConfirm: '⚠️ चेतावनी: सभी आंकड़े, संकेत और मस्तिष्क स्कोर हमेशा के लिए हटा दिए जाएंगे। जारी रखें?',
@@ -143,27 +123,16 @@ export const screens = {
     }
   },
   stats: {
-    rankingHeader: '🏆 वैश्विक लीडरबोर्ड',
-    leaderboardNotice: 'Google Play गेम्स के साथ रीयल-टाइम वैश्विक रैंकिंग देखें।',
-    leaderboardBtn: '🏆 लीडरबोर्ड देखें',
     classicBest: 'क्लासिक सर्वश्रेष्ठ',
     speedrunBest: 'स्पीडरन सर्वश्रेष्ठ',
     survivalTitle: '⏳ सर्वाइवल मोड',
     survivalTotalWins: 'सर्वाइवल में जीत',
     survivalWinsUnit: '{count} जीतें',
-    title: 'आंकड़े और उपलब्धियां',
     leaderboardTab: 'रैंकिंग',
-    tabs: { stats: 'आंकड़े', achievements: 'उपलब्धियां' },
     summaryTitle: 'प्रदर्शन सारांश',
     totalPlayed: 'कुल खेल',
     totalWon: 'कुल जीत',
-    winRate: 'जीत प्रतिशत',
-    achTitle: '🏆 30 वैश्विक उपलब्धियां',
-    achSubtitle: 'सुडोकू हल करते हुए विशेष उपलब्धियां अनलॉक करें',
-    achProgress: 'प्रगति: {unlocked}/{total} ({percent}%)',
-    emptyTitle: 'कोई सहेजा गया खेल नहीं',
-    emptyDesc: 'नया खेल शुरू करें और अपनी पहली जीत दर्ज करें!',
-    startFirstBtn: 'पहला सुडोकू शुरू करें 🚀'
+    winRate: 'जीत प्रतिशत'
   },
   brainReport: {
     totalPlayed: 'कुल खेल',
@@ -180,12 +149,8 @@ export const screens = {
     overallStats: '📊 संचयी कुल आंकड़े',
     attributesTitle: '🧠 5 संज्ञानात्मक स्तंभ',
     title: 'मस्तिष्क IQ रिपोर्ट',
-    scoreUnit: 'अंक',
     percentilePrefix: 'शीर्ष ',
-    levelAnalysisTitle: 'कठिनाई अनुसार विश्लेषण',
-    emptyNotice: 'संज्ञानात्मक चार्ट को बेहतर बनाने के लिए स्तर 1~5 खेलें।',
     shareTitle: 'मेरी सुडोकू IQ रिपोर्ट',
-    shareBtn: 'रिपोर्ट साझा करें',
     tiers: {
       grandMaster: '👑 ग्रैंडमास्टर',
       grandMasterDesc: 'सभी खिलाड़ियों में शीर्ष {percentile}%! शीर्ष 1% की अद्वितीय तार्किक क्षमता।',
@@ -205,7 +170,6 @@ export const screens = {
     title: '1v1 रीयल-टाइम मुकाबला',
     cancelBtn: 'खोज रद्द करें',
     searching: 'योग्य प्रतिद्वंद्वी की खोज जारी है...',
-    foundOpponent: 'प्रतिद्वंद्वी मिल गया! मुकाबला शुरू हो रहा है...',
     autoMatchTitle: 'त्वरित मैच',
     autoMatchDesc: 'दुनिया भर के खिलाड़ियों के साथ 1:1 त्वरित मुकाबला',
     mmrBadge: 'कौशल आधारित मैच · जीत दर: {rate}%',
@@ -246,13 +210,10 @@ export const screens = {
     declineBtn: 'अस्वीकार'
   },
   battleHeader: {
-    surrender: 'हार मानें',
     confirmLeave: 'क्या आप हार मानकर होम स्क्रीन पर जाना चाहते हैं?',
     emptyCellsLeft: 'शेष'
   },
   aiBattleScreen: {
-    title: '1:1 एआई मुकाबला',
-    desc: 'विभिन्न कठिनाई स्तरों के एआई बॉट्स के साथ गति मुकाबला करें।',
     selectLevelTitle: 'एआई कठिनाई चुनें',
     selectLevelDesc: 'अपने कौशल स्तर के अनुसार एआई प्रतिद्वंद्वी चुनें।',
     aiSpeed: 'गति: {speed}',
@@ -273,13 +234,6 @@ export const screens = {
       stage5: 'चरण 5: मास्टर तकनीकें (AIC, ALS और Exocet चेन्स)'
     },
     title: 'सुडोकू अकादमी',
-    subtitle: 'शुरुआती से ग्रैंडमास्टर तक 32 वास्तविक तकनीकों में महारत हासिल करें',
-    progress: 'प्रगति: {completed}/{total} पूर्ण ({percent}%)',
-    stage1: 'चरण 1: बुनियादी सिंगल्स और पंक्तियां',
-    stage2: 'चरण 2: ब्लॉक पेयर्स और इंटरसेक्शन',
-    stage3: 'चरण 3: विंग सीरीज',
-    stage4: 'चरण 4: फिश, कलरिंग और यूनीक रेक्टेंगल',
-    stage5: 'चरण 5: AIC, ALS और Exocet चेन्स',
     practiceUi: {
       theory: 'सिद्धांत',
       practice1: 'अभ्यास 1',
@@ -288,11 +242,6 @@ export const screens = {
       retry: 'पुनः प्रयास',
       error: '[{val}] गलत है। दिए गए अंकों को पुनः देखें!',
       prompt: '👇 नीचे दिए गए नंबर कीपैड पर सही संख्या (?) टैप करें।'
-    },
-    guided: {
-      title: '🎯 निर्देशित ट्यूटोरियल',
-      desc: 'चरण-दर-चरण संख्या भरने और नोट्स लेने का अभ्यास करें।',
-      startBtn: 'ट्यूटोरियल शुरू करें'
     }
   },
   adBanner: { placeholderTag: 'परीक्षण', placeholderText: 'विज्ञापन स्थान (कोई विज्ञापन नहीं)', removeBtn: 'विज्ञापन हटाएं' }

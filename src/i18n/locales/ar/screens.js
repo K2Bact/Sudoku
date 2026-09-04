@@ -3,7 +3,6 @@ export const screens = {
     ghost: {
       ahead: 'متقدم بـ {time}',
       behind: 'متأخر بـ {time}',
-      rivalTitle: 'أفضل رقم شخصي ({time})',
       ghostHintNotice: '💡 تم استبعاد تحديث الرقم القياسي الشخصي بسبب استخدام التلميح.'
     }
   },
@@ -12,7 +11,6 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: 'تلميحات',
     brainReportTitle: 'تحليل الذكاء الذهني',
-    brainPercentile: 'ضمن أفضل {percentile}% · الانتصارات: {won} ({tier})',
     brainPercentileShort: 'ضمن أفضل {percentile}% · الانتصارات: {won}',
     startSelectedLevel: 'بدء مستوى {level} — {name}',
     modeTabs: { classic: 'كلاسيكي', timeAttack: 'سباق الزمن', timeLimit: 'النجاة' },
@@ -32,7 +30,7 @@ export const screens = {
       academy: { title: 'أكاديمية السودوكو', desc: 'تعلّم 32 تقنية احترافية' },
       practice: { title: 'تدريب حر', desc: 'أخطاء غير محدودة ولعب مريح للاسترخاء' }
     },
-    nav: { daily: 'اليومي', brain: 'الذكاء', stats: 'الإحصائيات', academy: 'الأكاديمية', settings: 'الإعدادات' }
+    nav: {brain: 'الذكاء', stats: 'الإحصائيات', academy: 'الأكاديمية', settings: 'الإعدادات' }
   },
   daily: {
     header: 'التحديات اليومية — شهر {month}',
@@ -47,9 +45,7 @@ export const screens = {
     unlockModalConfirmBtn: '📺 مشاهدة الإعلان والفتح',
     unlockModalCancelBtn: 'إلغاء',
     missionCardTitle: '🎯 مهمة اليوم المخصصة',
-    missionTier: 'مهمة {tier}',
     missionCompleted: 'تم إكمال مهمة اليوم بنجاح! ✅',
-    missionCompletedDesc: 'تم منحك +1 تلميح مجاني وتم تسجيل الحضور في تقويم 365!',
     missionStartBtn: 'بدء المهمة 🚀',
     missionReward: '+1 تلميح وتسجيل حضور',
     tiers: { beginner: 'مبتدئ', intermediate: 'متوسط', advanced: 'أستاذ' },
@@ -76,7 +72,6 @@ export const screens = {
     alreadyPurchased: 'أنت تمتلك العضوية المميزة بالفعل! 🎉',
     processing: '💳 جارٍ المعالجة...',
     purchaseBtn: 'إزالة الإعلانات نهائياً',
-    successToast: '🎉 تمت إزالة الإعلانات نهائياً!',
     buySuccess: 'اكتملت عملية الشراء بنجاح! شكراً جزيلاً لدعمك.',
     restoreSuccess: 'تمت استعادة المشتريات السابقة بنجاح.',
     restoreFail: 'لم يتم العثور على أي مشتريات سابقة لاستعادتها.'
@@ -98,22 +93,8 @@ export const screens = {
     title: 'الإعدادات',
     themeSection: '🎨 مظهر اللعبة',
     languageSection: '🌐 اللغة',
-    languageDesc: 'اختر لغة واجهة اللعبة المفضلة لديك.',
     languages: {
-      auto: 'حسب النظام',
-      ko: '한국어',
-      en: 'English',
-      ja: '日本語',
-      zhTW: '繁體中文',
-      zhCN: '简体中文',
-      esES: 'Español',
-      de: 'Deutsch',
-      fr: 'Français',
-      pt: 'Português',
-      it: 'Italiano',
-      ru: 'Русский',
-      hi: 'हिन्दी',
-      ar: 'العربية'
+      auto: 'حسب النظام'
     },
     gameplaySection: '🎮 قواعد اللعب',
     limitMistakes: 'حد الأخطاء: 3 (قلوب)',
@@ -125,7 +106,6 @@ export const screens = {
     soundFxDesc: 'أصوات إدخال الأرقام والنقر على الأزرار',
     hapticFx: 'الاستجابة اللمسية (الاهتزاز)',
     hapticFxDesc: 'اهتزاز عند الإدخال الصحيح والخاطئ',
-    dataSection: '💾 إدارة البيانات',
     resetData: 'إعادة ضبط جميع البيانات المحلية',
     resetDataDesc: 'مسح جميع الإحصائيات وسجلات اللعب المحلية',
     resetConfirm: '⚠️ تحذير: سيتم حذف جميع سجلات اللعب والتلميحات وإحصائيات الذكاء نهائياً. هل تود المتابعة؟',
@@ -143,27 +123,16 @@ export const screens = {
     }
   },
   stats: {
-    rankingHeader: '🏆 قوائم المتصدرين والتصنيفات العالمية',
-    leaderboardNotice: 'تحقق من التصنيفات العالمية المباشرة عبر ألعاب Google Play.',
-    leaderboardBtn: '🌐 🏆 عرض قوائم المتصدرين العالمية',
     classicBest: 'أفضل وقت كلاسيكي',
     speedrunBest: 'أفضل وقت سرعة',
     survivalTitle: '⏳ الوقت المحدود (وضع النجاة)',
     survivalTotalWins: 'انتصارات النجاة',
     survivalWinsUnit: '{count} فوز',
-    title: 'إحصائياتي وإنجازاتي',
     leaderboardTab: 'المتصدرون',
-    tabs: { stats: 'الإحصائيات', achievements: 'الإنجازات' },
     summaryTitle: 'ملخص الأداء',
     totalPlayed: 'إجمالي الألغاز',
     totalWon: 'مرات الفوز',
-    winRate: 'نسبة الفوز',
-    achTitle: '🏆 30 إنجازاً عالمياً',
-    achSubtitle: 'افتح أوسمة ومحطات مميزة أثناء حل ألغاز السودوكو',
-    achProgress: 'التقدم: {unlocked}/{total} ({percent}%)',
-    emptyTitle: 'لا توجد سجلات لعب حتى الآن',
-    emptyDesc: 'ابدأ لعبة جديدة وسجل أول انتصار لك!',
-    startFirstBtn: 'ابدأ أول لغز سودوكو 🚀'
+    winRate: 'نسبة الفوز'
   },
   brainReport: {
     totalPlayed: 'إجمالي الألغاز',
@@ -180,12 +149,8 @@ export const screens = {
     overallStats: '📊 الإحصائيات التراكمية الإجمالية',
     attributesTitle: '🧠 المهارات المعرفية الـ 5 الأساسية',
     title: 'تقرير معدل الذكاء الذهني',
-    scoreUnit: 'نقطة',
     percentilePrefix: 'ضمن أفضل ',
-    levelAnalysisTitle: 'تحليل مستويات الصعوبة',
-    emptyNotice: 'أكمل ألغاز المستويات 1~5 لتحديث وتدقيق مخطط التحليل المعرفي لعقلك.',
     shareTitle: 'تقرير معدل ذكاء سودوكو الخاص بي',
-    shareBtn: 'مشاركة تقرير الذكاء',
     tiers: {
       grandMaster: '👑 أستاذ كبير',
       grandMasterDesc: 'أفضل {percentile}% من جميع اللاعبين! استنتاج ذهني نخبوي لأعلى 1% من العباقرة.',
@@ -205,7 +170,6 @@ export const screens = {
     title: 'مبارزة مباشرة 1 ضد 1',
     cancelBtn: 'إلغاء البحث',
     searching: 'جارٍ البحث عن منافس مناسب...',
-    foundOpponent: 'تم العثور على منافس! ستبدأ المباراة خلال لحظات...',
     autoMatchTitle: 'مباراة سريعة',
     autoMatchDesc: 'مطابقة سريعة مع لاعبين من مختلف أنحاء العالم',
     mmrBadge: 'مطابقة حسب المهارة · نسبة الفوز: {rate}%',
@@ -246,13 +210,10 @@ export const screens = {
     declineBtn: 'رفض'
   },
   battleHeader: {
-    surrender: 'الاستسلام في المبارزة',
     confirmLeave: 'هل ترغب في الانسحاب والعودة إلى الرئيسية؟',
     emptyCellsLeft: 'متبقية'
   },
   aiBattleScreen: {
-    title: 'مبارزة 1:1 ضد الذكاء الاصطناعي',
-    desc: 'تنافس ضد روبوتات الذكاء الاصطناعي بمستويات مهارة مختلفة في حل سريع مباشر.',
     selectLevelTitle: 'اختر مستوى صعوبة الذكاء الاصطناعي',
     selectLevelDesc: 'اختر خصماً اصطناعياً يناسب مهاراتك وخبرتك.',
     aiSpeed: 'السرعة: {speed}',
@@ -267,13 +228,6 @@ export const screens = {
     tabs: { stage1: 'المرحلة 1', stage2: 'المرحلة 2', stage3: 'المرحلة 3', stage4: 'المرحلة 4', stage5: 'المرحلة 5' },
     stageTitles: { stage1: 'المرحلة 1: التقنيات الأساسية (الخلايا والخطوط الفردية)', stage2: 'المرحلة 2: التقنيات المتوسطة (أزواج المربعات والتقاطعات)', stage3: 'المرحلة 3: التقنيات المتقدمة (سلاسل الأجنحة والأسماك)', stage4: 'المرحلة 4: تقنيات الخبراء (التلوين وميدوسا ثلاثية الأبعاد)', stage5: 'المرحلة 5: تقنيات الأساتذة (المستطيل الفريد، سلاسل AIC و ALS)' },
     title: 'أكاديمية السودوكو',
-    subtitle: 'أتقن 32 تقنية سودوكو أصيلة من الأساس إلى رتبة الأستاذ الكبير',
-    progress: 'التقدم: تم إكمال {completed}/{total} ({percent}%)',
-    stage1: 'المرحلة 1: الخلايا الفردية والخطوط الأساسية',
-    stage2: 'المرحلة 2: أزواج المربعات والتقاطعات',
-    stage3: 'المرحلة 3: سلاسل الأجنحة واستراتيجيات الأسماك',
-    stage4: 'المرحلة 4: التلوين وميدوسا ثلاثية الأبعاد',
-    stage5: 'المرحلة 5: إتقان المستطيل الفريد وسلاسل AIC و ALS',
     practiceUi: {
       theory: 'النظرية',
       practice1: 'تدريب عملي 1',
@@ -282,11 +236,6 @@ export const screens = {
       retry: 'المحاولة مرة أخرى',
       error: '[{val}] ليست الإجابة الصحيحة. أعد فحص الأرقام المساعدة المحددة!',
       prompt: '👇 انقر على الرقم المطلوب (?) من لوحة الأرقام أدناه.'
-    },
-    guided: {
-      title: '🎯 تدريب إرشادي',
-      desc: 'تعلّم خطوة بخطوة كيفية ملء الخلايا وتدوين الملاحظات.',
-      startBtn: 'بدء التدريب'
     }
   },
   adBanner: { placeholderTag: 'اختبار', placeholderText: 'مساحة إعلانية (بدون إعلان)', removeBtn: 'إزالة الإعلانات' }

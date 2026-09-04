@@ -9,11 +9,8 @@ export const common = {
     restartConfirm: 'Начать эту головоломку заново?',
     newGame: 'Новая игра',
     home: 'Главная',
-    save: 'Сохранить',
     pause: 'Пауза',
     resume: 'Продолжить',
-    loading: 'Загрузка...',
-    error: 'Ошибка',
     exitAppPrompt: 'Нажмите «Назад» еще раз для выхода из игры.',
     confirmLeaveGame: 'Приостановить игру и вернуться на главную?',
     shareUnavailable: 'Поделиться с этого устройства нельзя.'
@@ -44,7 +41,6 @@ export const common = {
     combo: '🔥 {count} КОМБО!',
     restartShort: 'Заново',
     newGameShort: 'Новая игра',
-    pauseTooltip: 'Пауза таймера',
     themeTooltip: 'Сменить тему',
     soundOn: 'Выкл. звук',
     soundOff: 'Вкл. звук'
@@ -55,8 +51,7 @@ export const common = {
     notes: 'Заметки',
     hint: 'Подсказка',
     rewardHint: '+1 подсказка',
-    fastEntry: 'Быстрый ввод',
-    fastEntryLocked: 'Фикс {number}'
+    fastEntry: 'Быстрый ввод'
   },
   board: {
     pausedTitle: 'Игра на паузе',
@@ -64,22 +59,12 @@ export const common = {
     resumeTooltip: 'Нажмите для продолжения'
   },
   themes: {
-    toast: '🎨 Тема: {name}',
     clay: '🏺 Керамика и глина',
-    clayDesc: 'Матовые клавиши из глины с тактильным 3D-эффектом',
     matteDark: '🌌 Матовая ночь',
-    matteDarkDesc: 'Глубокий темный оттенок с мягким ночным свечением',
     pureCeramic: '🧊 Чистый клейморфизм',
-    pureCeramicDesc: 'Скругленные гладкие клавиши из белой керамики',
-    editorial: '📰 Газетная бумага',
-    editorialDesc: 'Швейцарская типографика и комфортный для глаз бумажный тон'
+    editorial: '📰 Газетная бумага'
   },
   conflicts: {
-    boxes: [
-      'Верхний левый', 'Верхний центр', 'Верхний правый',
-      'Средний левый', 'Центр', 'Средний правый',
-      'Нижний левый', 'Нижний центр', 'Нижний правый'
-    ],
     boxDuplicate: '⚠️ Число {num} уже есть в [блоке 3x3 {box}]! {suffix}',
     rowDuplicate: '⚠️ Число {num} уже есть в строке {row}! {suffix}',
     colDuplicate: '⚠️ Число {num} уже есть в столбце {col}! {suffix}',

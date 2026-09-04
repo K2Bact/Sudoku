@@ -3,7 +3,6 @@
  */
 export const achievements = {
   achievements: {
-    sudoku_achievement_unlocked: "¡Logro desbloqueado!",
     categories: {
       all: 'Todos',
       progression: 'Progreso',
@@ -16,11 +15,8 @@ export const achievements = {
     tabTitle: 'Logros',
     statsTab: 'Datos',
     unlockedCount: '{unlocked} / {total} desbloqueados ({pct}%)',
-    totalTrophies: 'Puntos de trofeo',
     lockedBadge: 'Bloqueado',
     unlockedAt: 'Conseguido: {date}',
-    syncPlayGames: 'Sincronizar Google Play y Game Center',
-    syncDesc: 'Tus trofeos y logros se sincronizan automáticamente con tu perfil global.',
 
     // 1 ~ 7. Partidas y progreso
     first_win: { title: 'Primeros pasos', desc: 'Completa tu primer puzle de Sudoku' },

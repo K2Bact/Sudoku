@@ -9,11 +9,8 @@ export const common = {
     restartConfirm: 'Dieses Rätsel neu starten?',
     newGame: 'Neues Spiel',
     home: 'Startseite',
-    save: 'Speichern',
     pause: 'Pause',
     resume: 'Fortsetzen',
-    loading: 'Wird geladen...',
-    error: 'Fehler',
     exitAppPrompt: 'Drücke erneut Zurück, um die App zu beenden.',
     confirmLeaveGame: 'Möchtest du das Spiel pausieren und zur Startseite zurückkehren?',
     shareUnavailable: 'Teilen ist auf diesem Gerät nicht verfügbar.'
@@ -44,7 +41,6 @@ export const common = {
     combo: '🔥 {count} KOMBO!',
     restartShort: 'Neustart',
     newGameShort: 'Neues Spiel',
-    pauseTooltip: 'Timer pausieren',
     themeTooltip: 'Design ändern',
     soundOn: 'Ton stummschalten',
     soundOff: 'Ton aktivieren'
@@ -55,8 +51,7 @@ export const common = {
     notes: 'Notizen',
     hint: 'Tipp',
     rewardHint: '+1 Tipp',
-    fastEntry: 'Schnellmodus',
-    fastEntryLocked: 'Fixiert {number}'
+    fastEntry: 'Schnellmodus'
   },
   board: {
     pausedTitle: 'Spiel pausiert',
@@ -64,22 +59,12 @@ export const common = {
     resumeTooltip: 'Tippen zum Fortsetzen'
   },
   themes: {
-    toast: '🎨 Zu {name} gewechselt',
     clay: '🏺 Warme Keramik & Ton',
-    clayDesc: 'Warme Keramiktasten mit fühlbarer 3D-Physik',
     matteDark: '🌌 Mattes Dunkelharz',
-    matteDarkDesc: 'Premium-Mattharz mit sanftem Mitternachtsleuchten',
     pureCeramic: '🧊 Reines Claymorphism',
-    pureCeramicDesc: 'Glatte, abgerundete weiße Keramiktasten',
-    editorial: '📰 Klassisches Zeitungspapier',
-    editorialDesc: 'Klares, augenfreundliches Schweizer Zeitungspapier'
+    editorial: '📰 Klassisches Zeitungspapier'
   },
   conflicts: {
-    boxes: [
-      'Oben-Links', 'Oben-Mitte', 'Oben-Rechts',
-      'Mitte-Links', 'Zentrum', 'Mitte-Rechts',
-      'Unten-Links', 'Unten-Mitte', 'Unten-Rechts'
-    ],
     boxDuplicate: '⚠️ Zahl {num} existiert bereits im [3x3-Block {box}]! {suffix}',
     rowDuplicate: '⚠️ Zahl {num} existiert bereits in Zeile {row}! {suffix}',
     colDuplicate: '⚠️ Zahl {num} existiert bereits in Spalte {col}! {suffix}',

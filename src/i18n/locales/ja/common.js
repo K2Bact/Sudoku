@@ -9,11 +9,8 @@ export const common = {
     restartConfirm: 'このパズルを最初からやり直しますか？',
     newGame: '新しいゲーム',
     home: 'メインホーム',
-    save: '保存',
     pause: '一時停止',
     resume: '再開する',
-    loading: '読み込み中...',
-    error: 'エラー',
     exitAppPrompt: '戻るボタンをもう一度押すとアプリを終了します。',
     confirmLeaveGame: 'ゲームを中断してホームに戻りますか？',
     shareUnavailable: 'この端末では共有できません。'
@@ -44,7 +41,6 @@ export const common = {
     combo: '🔥 {count} 連続!',
     restartShort: 'やり直し',
     newGameShort: '新規対局',
-    pauseTooltip: 'タイマー一時停止',
     themeTooltip: 'テーマ変更',
     soundOn: '効果音OFF',
     soundOff: '効果音ON'
@@ -55,8 +51,7 @@ export const common = {
     notes: 'メモ',
     hint: 'ヒント',
     rewardHint: '+1 ヒント',
-    fastEntry: '連続入力',
-    fastEntryLocked: '{number}番固定'
+    fastEntry: '連続入力'
   },
   board: {
     pausedTitle: 'ゲームが一時停止されました',
@@ -64,33 +59,12 @@ export const common = {
     resumeTooltip: 'タッチして再開'
   },
   themes: {
-    toast: '🎨 {name}に変更しました',
     clay: '🏺 ウォームセラミック＆クレイ',
-    clayDesc: '温かみのあるマットな陶器キーキャップ＆3D立体感',
     matteDark: '🌌 ソフトマットレジンダーク',
-    matteDarkDesc: '目に優しいミッドナイトトーン＆高級マットレジン質感',
     pureCeramic: '🧊 ピュアクレイモフィズム',
-    pureCeramicDesc: '透明感のある滑らかな3Dホワイト陶器キーキャップ',
-    editorial: '📰 クラシックピュアペーパー',
-    editorialDesc: '端正で目に優しいスイス・エディトリアル感性のペーパートーン'
-  },
-  numbers: {
-    timeSeconds: '{seconds}秒',
-    timeMinutes: '{minutes}分',
-    timeHours: '{hours}時間',
-    percent: '{value}%'
-  },
-  share: {
-    title: 'Sudoku Master',
-    text: '🧩 Sudoku {mode} Lv.{level} {name}を[{time}]でクリア！ ランク: {rank} (ミス: {mistakes}回)。あなたの脳力に挑戦してみよう！',
-    copied: '結果がクリップボードにコピーされました！'
+    editorial: '📰 クラシックピュアペーパー'
   },
   conflicts: {
-    boxes: [
-      '左上', '中央上', '右上',
-      '左中', '中央', '右中',
-      '左下', '中央下', '右下'
-    ],
     boxDuplicate: '⚠️ [{box} 3x3ブロック]にすでに{num}があります！ {suffix}',
     rowDuplicate: '⚠️ {row}行目にすでに{num}があります！ {suffix}',
     colDuplicate: '⚠️ {col}列目にすでに{num}があります！ {suffix}',

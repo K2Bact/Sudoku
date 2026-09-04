@@ -12,11 +12,8 @@ export const common = {
     restartConfirm: '¿Reiniciar este puzle?',
     newGame: 'Nueva partida',
     home: 'Inicio',
-    save: 'Guardar',
     pause: 'Pausa',
     resume: 'Continuar',
-    loading: 'Cargando...',
-    error: 'Error',
     exitAppPrompt: 'Pulsa Atrás otra vez para salir de la aplicación.',
     confirmLeaveGame: '¿Deseas abandonar la partida y volver al inicio?',
     shareUnavailable: 'No se puede compartir en este dispositivo.'
@@ -47,7 +44,6 @@ export const common = {
     combo: '🔥 ¡{count} COMBO!',
     restartShort: 'Reiniciar',
     newGameShort: 'Nueva partida',
-    pauseTooltip: 'Pausar cronómetro',
     themeTooltip: 'Cambiar tema',
     soundOn: 'Silenciar',
     soundOff: 'Activar sonido'
@@ -58,8 +54,7 @@ export const common = {
     notes: 'Notas',
     hint: 'Pista',
     rewardHint: '+1 pista',
-    fastEntry: 'Entrada rápida',
-    fastEntryLocked: 'Fijar {number}'
+    fastEntry: 'Entrada rápida'
   },
   board: {
     pausedTitle: 'Juego pausado',
@@ -67,22 +62,12 @@ export const common = {
     resumeTooltip: 'Toca para continuar'
   },
   themes: {
-    toast: '🎨 Tema cambiado a {name}',
     clay: '🏺 Cerámica y Arcilla',
-    clayDesc: 'Teclas mates de arcilla cálida con textura 3D',
     matteDark: '🌌 Resina Oscura Mate',
-    matteDarkDesc: 'Tono medianoche relajante para la vista',
     pureCeramic: '🧊 Cerámica Pura 3D',
-    pureCeramicDesc: 'Elegantes teclas de porcelana blanca acolchada',
-    editorial: '📰 Papel Clásico Suizo',
-    editorialDesc: 'Diseño editorial sobrio con textura de papel'
+    editorial: '📰 Papel Clásico Suizo'
   },
   conflicts: {
-    boxes: [
-      'Superior izquierda', 'Superior centro', 'Superior derecha',
-      'Media izquierda', 'Centro', 'Media derecha',
-      'Inferior izquierda', 'Inferior centro', 'Inferior derecha'
-    ],
     boxDuplicate: '⚠️ ¡El número {num} ya está en el cuadrante [{box}]! {suffix}',
     rowDuplicate: '⚠️ ¡El número {num} ya existe en la fila {row}! {suffix}',
     colDuplicate: '⚠️ ¡El número {num} ya existe en la columna {col}! {suffix}',

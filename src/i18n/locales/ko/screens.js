@@ -3,7 +3,6 @@ export const screens = {
     ghost: {
       "ahead": "{time} 앞섬",
       "behind": "{time} 뒤처짐",
-      "rivalTitle": "내 최고기록 ({time})",
       "ghostHintNotice": "💡 힌트 사용으로 이번 판의 PB 신기록 갱신이 제외됩니다."
     },
   },
@@ -12,7 +11,6 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: '보유 힌트',
     brainReportTitle: '두뇌 활성 분석',
-    brainPercentile: '상위 {percentile}% · 완주 {won}판 ({tier})',
     brainPercentileShort: '상위 {percentile}% · 완주 {won}판',
     startSelectedLevel: 'Lv.{level} {name} 시작',
     modeTabs: { classic: '클래식', timeAttack: '타임어택', timeLimit: '타임리밋' },
@@ -32,7 +30,7 @@ export const screens = {
       academy: { title: '스도쿠 아카데미', desc: '공식 기술 배우기 (Naked Single 등)' },
       practice: { title: '자유 연습 모드', desc: '실수 무제한으로 편안하게 즐기기' }
     },
-    nav: { daily: '일일 도전', brain: '두뇌 지수', stats: '나의 통계', academy: '아카데미', settings: '설정' }
+    nav: {brain: '두뇌 지수', stats: '나의 통계', academy: '아카데미', settings: '설정' }
   },
   daily: {
     header: '일일 도전 과제 ({month}월)',
@@ -47,9 +45,7 @@ export const screens = {
     unlockModalConfirmBtn: '📺 광고 보고 해금하기',
     unlockModalCancelBtn: '취소',
     missionCardTitle: '🎯 오늘의 맞춤 일일 미션',
-    missionTier: '{tier} 맞춤 미션',
     missionCompleted: '오늘의 미션 완주 완료! ✅',
-    missionCompletedDesc: '무료 힌트 +1개 지급 & 365 캘린더 출석 완료!',
     missionStartBtn: '미션 도전하기 🚀',
     missionReward: '+1 무료 힌트 & 출석',
     tiers: { beginner: '초급·신규', intermediate: '중급', advanced: '마스터' },
@@ -76,7 +72,6 @@ export const screens = {
     alreadyPurchased: '이미 프리미엄 멤버십을 보유하고 있습니다! 🎉',
     processing: '💳 결제 처리 중...',
     purchaseBtn: '영구 제거하기',
-    successToast: '🎉 광고가 영구적으로 제거되었습니다!',
     buySuccess: '구매가 성공적으로 완료되었습니다! 감사합니다.',
     restoreSuccess: '구매 내역이 성공적으로 복원되었습니다.',
     restoreFail: '복원할 수 있는 이전 구매 내역이 없습니다.'
@@ -98,22 +93,8 @@ export const screens = {
     title: '설정',
     themeSection: '🎨 비주얼 테마',
     languageSection: '🌐 언어 설정',
-    languageDesc: '원하시는 인터페이스 언어를 선택하세요.',
     languages: {
-      auto: '시스템 기본값',
-      ko: '한국어',
-      en: 'English',
-      ja: '日本語',
-      zhTW: '繁體中文',
-      zhCN: '简体中文',
-      esES: 'Español',
-      de: 'Deutsch',
-      fr: 'Français',
-      pt: 'Português',
-      it: 'Italiano',
-      ru: 'Русский',
-      hi: 'हिन्दी',
-      ar: 'العربية'
+      auto: '시스템 기본값'
     },
     gameplaySection: '🎮 게임플레이 규칙',
     limitMistakes: '오답 3회 제한',
@@ -125,7 +106,6 @@ export const screens = {
     soundFxDesc: '터치 및 정답 효과음 재생',
     hapticFx: '진동 피드백',
     hapticFxDesc: '오답 및 퍼즐 완료 시 미세 진동',
-    dataSection: '💾 데이터 관리',
     resetData: '모든 로컬 데이터 초기화',
     resetDataDesc: '모든 로컬 게임 통계 및 기록 초기화',
     resetConfirm: '⚠️ 경고: 모든 플레이 기록, 보유 힌트, 두뇌 지수 통계가 영구 삭제됩니다. 진행하시겠습니까?',
@@ -143,27 +123,16 @@ export const screens = {
     }
   },
   stats: {
-    rankingHeader: "🏆 전체 랭킹 및 순위표",
-    leaderboardNotice: "Google Play 게임 서비스 연동으로 글로벌 랭킹을 실시간으로 확인하세요.",
-    leaderboardBtn: "🌐 🏆 전체 랭킹 보기",
     classicBest: "클래식 최고 기록",
     speedrunBest: "스피드런 최고 기록",
     survivalTitle: "⏳ 타임리밋 (서바이벌)",
     survivalTotalWins: "서바이벌 생존 성공",
     survivalWinsUnit: "{count}회 성공",
-    title: '나의 통계 & 업적',
     leaderboardTab: '랭킹',
-    tabs: { stats: '통계', achievements: '업적' },
     summaryTitle: '종합 성적 요약',
     totalPlayed: '총 플레이',
     totalWon: '총 완주',
-    winRate: '승률',
-    achTitle: '🏆 30개 글로벌 업적',
-    achSubtitle: '스도쿠를 플레이하며 특별한 도전과제를 달성하세요',
-    achProgress: '달성률 {unlocked}/{total} ({percent}%)',
-    emptyTitle: '아직 플레이 기록이 없습니다',
-    emptyDesc: '새 게임을 시작하고 첫 승리를 기록해 보세요!',
-    startFirstBtn: '첫 스도쿠 시작하기 🚀'
+    winRate: '승률'
   },
   brainReport: {
     totalPlayed: "총 플레이 수",
@@ -180,12 +149,8 @@ export const screens = {
     overallStats: "📊 종합 누적 데이터",
     attributesTitle: "🧠 5대 핵심 인지 능력",
     title: '두뇌 활성 리포트',
-    scoreUnit: '점',
     percentilePrefix: '상위 ',
-    levelAnalysisTitle: '난이도별 지능 분석',
-    emptyNotice: 'Lv.1~Lv.5 퍼즐을 클리어할 때마다 두뇌 분석 그래프가 정밀하게 업데이트됩니다.',
     shareTitle: '나의 스도쿠 두뇌 지수 리포트',
-    shareBtn: '두뇌 지수 리포트 공유',
     tiers: {
       grandMaster: '👑 그랜드 마스터',
       grandMasterDesc: '전체 스도쿠 플레이어 중 상위 {percentile}%! 극소수만 도달하는 1% 마스터급 추론력입니다.',
@@ -205,7 +170,6 @@ export const screens = {
     title: '1v1 실시간 배틀',
     cancelBtn: '매칭 취소',
     searching: '비슷한 실력의 상대를 탐색하고 있습니다...',
-    foundOpponent: '상대를 찾았습니다! 곧 경기가 시작됩니다...',
     autoMatchTitle: '실시간 빠른 대전',
     autoMatchDesc: '전 세계 플레이어와 1:1 스피드 매칭',
     mmrBadge: '실력 기반 매칭 · 내 승률 {rate}%',
@@ -246,13 +210,10 @@ export const screens = {
     declineBtn: '거절'
   },
   battleHeader: {
-    surrender: '배틀 기권하기',
     confirmLeave: '배틀을 포기하고 홈으로 나가시겠습니까?',
     emptyCellsLeft: '남음'
   },
   aiBattleScreen: {
-    title: 'AI 봇 1:1 대전',
-    desc: '다양한 난이도의 AI 봇과 실시간으로 퍼즐 완성 속도를 겨루세요.',
     selectLevelTitle: 'AI 대전 난이도 선택',
     selectLevelDesc: '자신의 실력에 맞는 AI 봇을 선택해 연습하세요.',
     aiSpeed: '풀이 속도: {speed}',
@@ -267,13 +228,6 @@ export const screens = {
     tabs: { stage1: '1단계', stage2: '2단계', stage3: '3단계', stage4: '4단계', stage5: '5단계' },
     stageTitles: {"stage1":"1단계: 기본 테크닉 (기초 싱글 & 라인)","stage2":"2단계: 중급 테크닉 (블록 페어 & 인터섹션)","stage3":"3단계: 고급 테크닉 (윙 시리즈 & 피쉬 기법)","stage4":"4단계: 전문가 테크닉 (컬러링 & 3D 메두사)","stage5":"5단계: 마스터 테크닉 (UR, AIC & ALS 체인)"},
     title: '스도쿠 아카데미',
-    subtitle: '기초부터 고급까지 32가지 정통 테크닉 마스터',
-    progress: '진행도: {completed}/{total} 완료 ({percent}%)',
-    stage1: '1단계: 기본 테크닉 (기초 싱글 & 라인)',
-    stage2: '2단계: 중급 테크닉 (블록 페어 & 인터섹션)',
-    stage3: '3단계: 고급 테크닉 (윙 시리즈)',
-    stage4: '4단계: 전문가 테크닉 (대형 피쉬, 컬러링 & UR)',
-    stage5: '5단계: 마스터 테크닉 (AIC, ALS & 엑소셋 체인)',
     practiceUi: {
       theory: '이론 설명',
       practice1: '실전 연습 1',
@@ -282,11 +236,6 @@ export const screens = {
       retry: '다시 도전',
       error: '[{val}]은(는) 정답이 아닙니다. 힌트 숫자를 다시 확인해보세요!',
       prompt: '👇 아래 숫자 키패드에서 목표 빈칸(?)에 들어갈 숫자를 탭하세요.'
-    },
-    guided: {
-      title: '🎯 실전 튜토리얼',
-      desc: '보드에서 직접 숫자를 입력하고 후보 숫자를 메모하는 방법을 배웁니다.',
-      startBtn: '튜토리얼 시작'
     }
   },
   adBanner: { placeholderTag: '테스트', placeholderText: '광고 자리 (실제 광고 없음)', removeBtn: '광고 제거' }

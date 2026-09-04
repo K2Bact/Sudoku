@@ -1,6 +1,5 @@
 export const achievements = {
   achievements: {
-    sudoku_achievement_unlocked: 'उपलब्धि अनलॉक!',
     categories: {
       all: 'सभी',
       progression: 'प्रगति',
@@ -13,11 +12,8 @@ export const achievements = {
     tabTitle: 'उपलब्धियां',
     statsTab: 'आंकड़े',
     unlockedCount: '{unlocked} / {total} अनलॉक ({pct}%)',
-    totalTrophies: 'कुल ट्रॉफी अंक',
     lockedBadge: 'लॉक',
     unlockedAt: 'अनलॉक तिथि: {date}',
-    syncPlayGames: 'Google Play और गेम सेंटर',
-    syncDesc: 'ट्रॉफियां और उपलब्धियां आपकी वैश्विक प्रोफ़ाइल के साथ सिंक होती हैं।',
 
     // 1 ~ 7. प्रगति
     first_win: { title: 'पहला कदम', desc: 'किसी भी कठिनाई में अपना पहला सुडोकू पूरा करें' },

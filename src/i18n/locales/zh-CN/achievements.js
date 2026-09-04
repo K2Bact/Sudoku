@@ -3,7 +3,6 @@
  */
 export const achievements = {
   achievements: {
-    sudoku_achievement_unlocked: '成就达成！',
     categories: {
       all: '全部',
       progression: '通关・成长',
@@ -16,11 +15,8 @@ export const achievements = {
     tabTitle: '成就',
     statsTab: '统计',
     unlockedCount: '已达成 {unlocked} / {total} ({pct}%)',
-    totalTrophies: '总成就点数',
     lockedBadge: '未解锁',
     unlockedAt: '达成日：{date}',
-    syncPlayGames: 'Google/Apple 游戏中心连接',
-    syncDesc: '成就与奖杯将自动同步至全球玩家个人档案。',
 
     // 1 ~ 7. 通关与进度
     first_win: { title: '初试身手', desc: '不限难度完成生涯第一局数独' },

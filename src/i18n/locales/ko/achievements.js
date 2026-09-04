@@ -1,6 +1,5 @@
 export const achievements = {
   achievements: {
-    sudoku_achievement_unlocked: "업적 달성!",
     categories: {
       all: '전체',
       progression: '완주·성장',
@@ -13,11 +12,8 @@ export const achievements = {
     tabTitle: '업적',
     statsTab: '통계',
     unlockedCount: '{unlocked} / {total} 달성 ({pct}%)',
-    totalTrophies: '총 트로피 포인트',
     lockedBadge: '미달성',
     unlockedAt: '달성일: {date}',
-    syncPlayGames: '구글/애플 게임센터 연동',
-    syncDesc: '전 세계 게이머 프로필에 업적 및 트로피 XP가 자동 반영됩니다.',
 
     // 1 ~ 7. 완주 & 진행
     first_win: { title: '첫 발자국', desc: '난이도 상관없이 생애 첫 스도쿠 퍼즐 완주' },

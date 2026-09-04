@@ -3,7 +3,6 @@ export const screens = {
     ghost: {
       ahead: '領先 {time}',
       behind: '落後 {time}',
-      rivalTitle: '個人最佳記錄 ({time})',
       ghostHintNotice: '💡 由于使用了提示，本局將不計入個人最佳記錄（PB）。'
     }
   },
@@ -12,7 +11,6 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: '剩餘提示',
     brainReportTitle: '大腦活性分析',
-    brainPercentile: '超越前 {percentile}% · 通關 {won} 局 ({tier})',
     brainPercentileShort: '超越前 {percentile}% · 通關 {won} 局',
     startSelectedLevel: '開始 Lv.{level} {name}',
     modeTabs: { classic: '經典', timeAttack: '計時競速', timeLimit: '極限生存' },
@@ -32,7 +30,7 @@ export const screens = {
       academy: { title: '數獨學院', desc: '學習 32 種實戰解題策略' },
       practice: { title: '自由練習模式', desc: '無失誤限制，轻松畅玩' }
     },
-    nav: { daily: '每日挑戰', brain: '大腦指數', stats: '個人統計', academy: '數獨學院', settings: '設定' }
+    nav: {brain: '大腦指數', stats: '個人統計', academy: '數獨學院', settings: '設定' }
   },
   daily: {
     header: '每日挑戰目標 ({month}月)',
@@ -47,9 +45,7 @@ export const screens = {
     unlockModalConfirmBtn: '📺 觀看廣告解鎖',
     unlockModalCancelBtn: '取消',
     missionCardTitle: '🎯 今日專属任務',
-    missionTier: '{tier} 專属任務',
     missionCompleted: '今日任務已完成！✅',
-    missionCompletedDesc: '獲得免费提示 +1 並完成日曆簽到！',
     missionStartBtn: '開始任務 🚀',
     missionReward: '+1 免费提示與簽到',
     tiers: { beginner: '初學·新秀', intermediate: '中級', advanced: '大師' },
@@ -76,7 +72,6 @@ export const screens = {
     alreadyPurchased: '您已拥有頂級會員特权！ 🎉',
     processing: '💳 处理中...',
     purchaseBtn: '永久去除廣告',
-    successToast: '🎉 已成功永久去除廣告！',
     buySuccess: '购買成功！感谢您的支持。',
     restoreSuccess: '购買記錄已成功恢復。',
     restoreFail: '未找到可恢復的购買記錄。'
@@ -98,22 +93,8 @@ export const screens = {
     title: '設定',
     themeSection: '🎨 视覺主題',
     languageSection: '🌐 語言設定',
-    languageDesc: '選擇您偏好的界面語言。',
     languages: {
-      auto: '系統預設',
-      ko: '한국어',
-      en: 'English',
-      ja: '日本語',
-      zhTW: '繁體中文',
-      zhCN: '簡體中文',
-      esES: 'Español',
-      de: 'Deutsch',
-      fr: 'Français',
-      pt: 'Português',
-      it: 'Italiano',
-      ru: 'Русский',
-      hi: 'हिन्दी',
-      ar: 'العربية'
+      auto: '系統預設'
     },
     gameplaySection: '🎮 遊戲规則',
     limitMistakes: '失誤 3 次限制 (❤️)',
@@ -125,7 +106,6 @@ export const screens = {
     soundFxDesc: '數字輸入與按钮點擊音效',
     hapticFx: '触覺震動反馈',
     hapticFxDesc: '填入正確或錯誤時的手指震動',
-    dataSection: '💾 數據管理',
     resetData: '重置所有本地數據',
     resetDataDesc: '重置所有本地遊戲統計與記錄',
     resetConfirm: '⚠️ 警告：所有遊玩記錄、持有提示、大腦指數統計將被永久刪除。是否確定重置？',
@@ -143,27 +123,16 @@ export const screens = {
     }
   },
   stats: {
-    rankingHeader: '🏆 全球排行榜與荣誉',
-    leaderboardNotice: '連接 Google Play 遊戲服務即可即時查看全球排名。',
-    leaderboardBtn: '🌐 🏆 查看全球排行榜',
     classicBest: '經典最高紀錄',
     speedrunBest: '競速最高紀錄',
     survivalTitle: '⏳ 極限生存模式',
     survivalTotalWins: '生存挑戰成功',
     survivalWinsUnit: '{count}次 成功',
-    title: '個人統計與成就',
     leaderboardTab: '排行',
-    tabs: { stats: '統計', achievements: '成就' },
     summaryTitle: '總體戰绩摘要',
     totalPlayed: '總遊玩局數',
     totalWon: '總通關局數',
-    winRate: '勝率',
-    achTitle: '🏆 30 项全球成就',
-    achSubtitle: '在數獨挑戰中解鎖各项荣誉成就',
-    achProgress: '達成進度：{unlocked}/{total} ({percent}%)',
-    emptyTitle: '尚無遊玩記錄',
-    emptyDesc: '開始新遊戲並创下你的第一次勝利吧！',
-    startFirstBtn: '開始首局數獨 🚀'
+    winRate: '勝率'
   },
   brainReport: {
     totalPlayed: '總局數',
@@ -180,12 +149,8 @@ export const screens = {
     overallStats: '📊 綜合累計數據',
     attributesTitle: '🧠 五大核心認知能力',
     title: '大腦活性分析報告',
-    scoreUnit: '分',
     percentilePrefix: '前 ',
-    levelAnalysisTitle: '各難度認知能力分析',
-    emptyNotice: '每當通關 Lv.1~Lv.5 謎題時，大腦分析圖表將進行精准更新。',
     shareTitle: '我的數獨大腦指數報告',
-    shareBtn: '分享大腦分析報告',
     tiers: {
       grandMaster: '👑 宗師級大腦',
       grandMasterDesc: '超越全體玩家前 {percentile}%！極少數玩家能達到的頂級大師推理力。',
@@ -205,7 +170,6 @@ export const screens = {
     title: '1v1 即時對決',
     cancelBtn: '取消匹配',
     searching: '正在寻找實力相當的對手...',
-    foundOpponent: '已找到對手！即將開始對決...',
     autoMatchTitle: '快速匹配',
     autoMatchDesc: '與全球玩家進行 1:1 極速對決',
     mmrBadge: '實力匹配 · 當前勝率 {rate}%',
@@ -246,13 +210,10 @@ export const screens = {
     declineBtn: '婉拒'
   },
   battleHeader: {
-    surrender: '放弃對決',
     confirmLeave: '確定要認輸並返回主頁嗎？',
     emptyCellsLeft: '剩餘'
   },
   aiBattleScreen: {
-    title: 'AI 機器人 1:1 對決',
-    desc: '與不同難度的 AI 機器人即時競賽拼圖速度。',
     selectLevelTitle: '選擇 AI 對決難度',
     selectLevelDesc: '挑選符合自己實力的 AI 對手進行練習。',
     aiSpeed: '解題速度：{speed}',
@@ -273,13 +234,6 @@ export const screens = {
       stage5: '第5階段: 大師技巧 (UR、AIC 與 ALS 連鎖)'
     },
     title: '數獨學院',
-    subtitle: '從基礎到進階掌握 32 種正統數獨技巧',
-    progress: '進度：已完成 {completed}/{total} ({percent}%)',
-    stage1: '第 1 階段：基礎技巧（唯餘與排除法）',
-    stage2: '第 2 階段：進階技巧（區塊對與交集排除）',
-    stage3: '第 3 階段：高級技巧（翼系列與魚類法則）',
-    stage4: '第 4 階段：專家技巧（著色法與 3D 梅杜莎）',
-    stage5: '第 5 階段：大師技巧（唯一矩形、AIC 與 ALS 鏈）',
     practiceUi: {
       theory: '技巧详解',
       practice1: '實戰練習 1',
@@ -288,11 +242,6 @@ export const screens = {
       retry: '重新作答',
       error: '[{val}] 不是正確答案，請再次觀察高亮提示！',
       prompt: '👇 請在下方數字鍵盤點擊目標空格 (?) 應填入的數字。'
-    },
-    guided: {
-      title: '🎯 實戰教學',
-      desc: '在棋盤上親自操作填數與標記候選數。',
-      startBtn: '開始教學'
     }
   },
   adBanner: { placeholderTag: '測試', placeholderText: '廣告版位（未投放）', removeBtn: '去除廣告' }

@@ -9,11 +9,8 @@ export const common = {
     restartConfirm: '이 퍼즐을 다시 시작할까요?',
     newGame: '새 게임',
     home: '메인 홈',
-    save: '저장',
     pause: '일시정지',
     resume: '이어하기',
-    loading: '로딩 중...',
-    error: '오류',
     exitAppPrompt: '뒤로가기 버튼을 한 번 더 누르면 앱이 종료됩니다.',
     confirmLeaveGame: '게임을 중단하고 홈으로 이동하시겠습니까?',
     shareUnavailable: '공유할 수 없습니다. 이 기기에서는 지원되지 않습니다.'
@@ -44,7 +41,6 @@ export const common = {
     combo: '🔥 {count} COMBO!',
     restartShort: '다시시작',
     newGameShort: '새 게임',
-    pauseTooltip: '타이머 일시정지',
     themeTooltip: '디자인 테마 변경',
     soundOn: '사운드 끄기',
     soundOff: '사운드 켜기'
@@ -55,8 +51,7 @@ export const common = {
     notes: '메모',
     hint: '힌트',
     rewardHint: '+1 힌트',
-    fastEntry: '빠른입력',
-    fastEntryLocked: '{number}번 고정'
+    fastEntry: '빠른입력'
   },
   board: {
     pausedTitle: '게임이 일시정지 되었습니다',
@@ -64,22 +59,12 @@ export const common = {
     resumeTooltip: '터치하여 계속하기'
   },
   themes: {
-    toast: '🎨 {name}로 변경되었습니다',
     clay: '🏺 웜 세라믹 & 클레이',
-    clayDesc: '따뜻한 점토 도자기 무광 키캡 & 3D 물리 손맛',
     matteDark: '🌌 소프트 매트 레진 다크',
-    matteDarkDesc: '눈이 편안한 미드나잇 톤 & 고급 무광 레진 질감',
     pureCeramic: '🧊 퓨어 클레이모피즘',
-    pureCeramicDesc: '투명하고 매끄러운 3D 화이트 도자기 쿠션 키캡',
-    editorial: '📰 클래식 퓨어 페이퍼',
-    editorialDesc: '정갈하고 눈이 편안한 스위스 에디토리얼 감성 종이 톤'
+    editorial: '📰 클래식 퓨어 페이퍼'
   },
   conflicts: {
-    boxes: [
-      '좌측 상단', '중앙 상단', '우측 상단',
-      '좌측 중앙', '정중앙', '우측 중앙',
-      '좌측 하단', '중앙 하단', '우측 하단'
-    ],
     boxDuplicate: '⚠️ [{box} 3x3 박스]에 이미 숫자 {num}이(가) 있습니다! {suffix}',
     rowDuplicate: '⚠️ {row}번째 가로줄에 이미 숫자 {num}이(가) 있습니다! {suffix}',
     colDuplicate: '⚠️ {col}번째 세로줄에 이미 숫자 {num}이(가) 있습니다! {suffix}',

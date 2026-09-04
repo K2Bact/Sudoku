@@ -12,11 +12,8 @@ export const common = {
     restartConfirm: '要重新開始這個謎題嗎？',
     newGame: '新遊戲',
     home: '主畫面',
-    save: '儲存',
     pause: '暫停',
     resume: '繼續',
-    loading: '載入中...',
-    error: '錯誤',
     exitAppPrompt: '再次點擊返回鍵即可退出應用程式。',
     confirmLeaveGame: '確定要中斷遊戲並返回主畫面嗎？',
     shareUnavailable: '此裝置無法使用分享功能。'
@@ -47,7 +44,6 @@ export const common = {
     combo: '🔥 {count} 連擊!',
     restartShort: '重開本局',
     newGameShort: '開新對局',
-    pauseTooltip: '暫停計時',
     themeTooltip: '更換主題',
     soundOn: '靜音',
     soundOff: '開啟音效'
@@ -58,8 +54,7 @@ export const common = {
     notes: '筆記',
     hint: '提示',
     rewardHint: '+1 提示',
-    fastEntry: '快速輸入',
-    fastEntryLocked: '固定 {number}'
+    fastEntry: '快速輸入'
   },
   board: {
     pausedTitle: '遊戲已暫停',
@@ -67,22 +62,12 @@ export const common = {
     resumeTooltip: '點擊繼續'
   },
   themes: {
-    toast: '🎨 已切換為 {name}',
     clay: '🏺 溫潤陶瓷與黏土',
-    clayDesc: '溫潤陶土消光鍵帽與 3D 觸覺質感',
     matteDark: '🌌 沉穩暗夜消光',
-    matteDarkDesc: '舒適護眼的深邃夜色與高級消光質感',
     pureCeramic: '🧊 純白立體陶瓷',
-    pureCeramicDesc: '透明流暢的 3D 白瓷氣墊鍵帽',
-    editorial: '📰 經典報刊紙韻',
-    editorialDesc: '典雅舒適的瑞士排版與自然紙質色調'
+    editorial: '📰 經典報刊紙韻'
   },
   conflicts: {
-    boxes: [
-      '左上', '中上', '右上',
-      '左中', '正中', '右中',
-      '左下', '中下', '右下'
-    ],
     boxDuplicate: '⚠️ [{box} 3x3 九宮格] 內已存在數字 {num}！{suffix}',
     rowDuplicate: '⚠️ 第 {row} 橫行已存在數字 {num}！{suffix}',
     colDuplicate: '⚠️ 第 {col} 直列已存在數字 {num}！{suffix}',

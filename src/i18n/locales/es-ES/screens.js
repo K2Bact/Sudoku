@@ -3,7 +3,6 @@ export const screens = {
     ghost: {
       ahead: "{time} de ventaja",
       behind: "{time} de retraso",
-      rivalTitle: "Récord personal ({time})",
       ghostHintNotice: "💡 La pista invalida la actualización de tu récord."
     }
   },
@@ -12,7 +11,6 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: 'Pistas',
     brainReportTitle: 'Análisis cerebral',
-    brainPercentile: 'Top {percentile}% · {won} victorias ({tier})',
     brainPercentileShort: 'Top {percentile}% · {won} victorias',
     startSelectedLevel: 'Comenzar Lv.{level} {name}',
     modeTabs: { classic: 'Clásico', timeAttack: 'Contrarreloj', timeLimit: 'Supervivencia' },
@@ -32,7 +30,7 @@ export const screens = {
       academy: { title: 'Academia Sudoku', desc: 'Aprende 32 técnicas maestras' },
       practice: { title: 'Práctica libre', desc: 'Fallos ilimitados, juego relajante' }
     },
-    nav: { daily: 'Diario', brain: 'IQ', stats: 'Estadísticas', academy: 'Academia', settings: 'Ajustes' }
+    nav: {brain: 'IQ', stats: 'Estadísticas', academy: 'Academia', settings: 'Ajustes' }
   },
   daily: {
     header: 'Desafíos diarios ({month})',
@@ -47,9 +45,7 @@ export const screens = {
     unlockModalConfirmBtn: '📺 Ver y desbloquear',
     unlockModalCancelBtn: 'Cancelar',
     missionCardTitle: '🎯 Misión personalizada de hoy',
-    missionTier: 'Misión {tier}',
     missionCompleted: '¡Misión de hoy completada! ✅',
-    missionCompletedDesc: '+1 pista gratis concedida y 365 días registrados.',
     missionStartBtn: 'Comenzar misión 🚀',
     missionReward: '+1 Pista y registro',
     tiers: { beginner: 'Principiante', intermediate: 'Intermedio', advanced: 'Maestro' },
@@ -83,7 +79,6 @@ export const screens = {
     alreadyPurchased: '¡Ya tienes el acceso Premium! 🎉',
     processing: '💳 Procesando...',
     purchaseBtn: 'Eliminar anuncios',
-    successToast: '🎉 ¡Anuncios eliminados para siempre!',
     buySuccess: '¡Compra completada con éxito! Gracias por tu apoyo.',
     restoreSuccess: 'Compras restauradas con éxito.',
     restoreFail: 'No se encontraron compras anteriores para restaurar.'
@@ -105,22 +100,8 @@ export const screens = {
     title: 'Ajustes',
     themeSection: '🎨 Temas visuales',
     languageSection: '🌐 Idioma',
-    languageDesc: 'Selecciona tu idioma preferido para la interfaz.',
     languages: {
-      auto: 'Por defecto del sistema',
-      ko: '한국어',
-      en: 'English',
-      ja: '日本語',
-      zhTW: '繁體中文',
-      zhCN: '简体中文',
-      esES: 'Español',
-      de: 'Deutsch',
-      fr: 'Français',
-      pt: 'Português',
-      it: 'Italiano',
-      ru: 'Русский',
-      hi: 'हिन्दी',
-      ar: 'العربية'
+      auto: 'Por defecto del sistema'
     },
     gameplaySection: '🎮 Reglas de juego',
     limitMistakes: 'Límite de 3 fallos (Corazones)',
@@ -132,7 +113,6 @@ export const screens = {
     soundFxDesc: 'Sonido al pulsar botones y colocar números',
     hapticFx: 'Vibración háptica',
     hapticFxDesc: 'Vibración táctil al introducir aciertos y fallos',
-    dataSection: '💾 Gestión de datos',
     resetData: 'Restablecer todos los datos locales',
     resetDataDesc: 'Restablecer todas las estadísticas y registros locales',
     resetConfirm: '⚠️ Advertencia: Todos los registros, pistas y estadísticas se borrarán de forma permanente. ¿Deseas continuar?',
@@ -150,27 +130,16 @@ export const screens = {
     }
   },
   stats: {
-    rankingHeader: '🏆 Clasificaciones mundiales',
-    leaderboardNotice: 'Consulta los récords mundiales en vivo con Google Play Games.',
-    leaderboardBtn: '🏆 Clasificación global',
     classicBest: 'Mejor clásico',
     speedrunBest: 'Mejor contrarreloj',
     survivalTitle: '⏳ Límite de tiempo (Supervivencia)',
     survivalTotalWins: 'Supervivencias exitosas',
     survivalWinsUnit: '{count} logrados',
-    title: 'Mis estadísticas y logros',
     leaderboardTab: 'Clasificación',
-    tabs: { stats: 'Datos', achievements: 'Logros' },
     summaryTitle: 'Resumen de rendimiento',
     totalPlayed: 'Partidas jugadas',
     totalWon: 'Partidas ganadas',
-    winRate: 'Tasa de victoria',
-    achTitle: '🏆 30 logros mundiales',
-    achSubtitle: 'Desbloquea hitos especiales mientras resuelves puzles',
-    achProgress: 'Progreso: {unlocked}/{total} ({percent}%)',
-    emptyTitle: 'Aún no hay registros de juego',
-    emptyDesc: '¡Comienza una nueva partida y registra tu primera victoria!',
-    startFirstBtn: 'Primer sudoku 🚀'
+    winRate: 'Tasa de victoria'
   },
   brainReport: {
     totalPlayed: 'Partidas jugadas',
@@ -187,12 +156,8 @@ export const screens = {
     overallStats: '📊 Estadísticas acumuladas',
     attributesTitle: '🧠 5 habilidades cognitivas clave',
     title: 'Informe de Sudoku IQ',
-    scoreUnit: 'pts',
     percentilePrefix: 'Top ',
-    levelAnalysisTitle: 'Desglose por nivel de dificultad',
-    emptyNotice: 'Completa puzles de Lv.1 a Lv.5 para actualizar tu gráfico de análisis cognitivo.',
     shareTitle: 'Mi informe de Sudoku IQ',
-    shareBtn: 'Compartir informe cerebral',
     tiers: {
       grandMaster: '👑 Gran Maestro',
       grandMasterDesc: '¡Top {percentile}% de todos los jugadores! Capacidad deductiva de nivel élite.',
@@ -212,7 +177,6 @@ export const screens = {
     title: 'Duelo 1v1 en tiempo real',
     cancelBtn: 'Cancelar',
     searching: 'Buscando a un oponente digno...',
-    foundOpponent: '¡Oponente encontrado! La partida comenzará en breve...',
     autoMatchTitle: 'Partida rápida',
     autoMatchDesc: 'Emparejamiento veloz 1:1 con jugadores de todo el mundo',
     mmrBadge: 'Emparejamiento por nivel · Victorias: {rate}%',
@@ -253,13 +217,10 @@ export const screens = {
     declineBtn: 'Rechazar'
   },
   battleHeader: {
-    surrender: 'Rendirse',
     confirmLeave: '¿Deseas abandonar el duelo y volver al inicio?',
     emptyCellsLeft: 'restantes'
   },
   aiBattleScreen: {
-    title: 'Duelo 1:1 contra bot de IA',
-    desc: 'Compite contra bots de IA en tiempo real para ver quién resuelve antes.',
     selectLevelTitle: 'Seleccionar dificultad de la IA',
     selectLevelDesc: 'Elige un rival de IA adaptado a tu nivel.',
     aiSpeed: 'Velocidad: {speed}',
@@ -280,13 +241,6 @@ export const screens = {
       stage5: 'Etapa 5: Técnicas maestras (Cadenas AIC, ALS y Exocet)'
     },
     title: 'Academia Sudoku',
-    subtitle: 'Domina 32 técnicas auténticas desde principiante hasta gran maestro',
-    progress: 'Progreso: {completed}/{total} completados ({percent}%)',
-    stage1: 'Etapa 1: Singles y líneas',
-    stage2: 'Etapa 2: Pares de bloques e intersecciones',
-    stage3: 'Etapa 3: Familia Wing',
-    stage4: 'Etapa 4: Peces, coloreado y rectángulo único',
-    stage5: 'Etapa 5: Cadenas AIC, ALS y Exocet',
     practiceUi: {
       theory: 'Teoría',
       practice1: 'Práctica 1',
@@ -295,11 +249,6 @@ export const screens = {
       retry: 'Intentar de nuevo',
       error: '[{val}] es incorrecto. ¡Revisa las cifras iniciales!',
       prompt: '👇 Pulsa el número correspondiente (?) en el teclado numérico de abajo.'
-    },
-    guided: {
-      title: '🎯 Tutorial guiado',
-      desc: 'Aprende paso a paso cómo rellenar celdas y hacer notas de candidatos.',
-      startBtn: 'Iniciar tutorial'
     }
   },
   adBanner: { placeholderTag: 'PRUEBA', placeholderText: 'Espacio de anuncio (sin anuncio)', removeBtn: 'Sin anuncios' }

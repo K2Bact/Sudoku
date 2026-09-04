@@ -37,8 +37,7 @@ export const modals = {
       title: 'Gefällt dir Sudoku?',
       desc: 'Ihre ehrliche Bewertung hilft uns sehr,\ndas Spiel kontinuierlich zu verbessern! 💙',
       submitBtn: 'Bewerten',
-      laterBtn: 'Später',
-      thankYou: '💙 Vielen Dank für dein Feedback! Öffne Store-Seite.'
+      laterBtn: 'Später'
     },
     dailyReward: {
       title: 'Tägliche Belohnung!',

@@ -9,11 +9,8 @@ export const common = {
     restartConfirm: 'इस पहेली को फिर से शुरू करें?',
     newGame: 'नया खेल',
     home: 'होम',
-    save: 'सहेजें',
     pause: 'रोकें',
     resume: 'जारी रखें',
-    loading: 'लोड हो रहा है...',
-    error: 'त्रुटि',
     exitAppPrompt: 'ऐप से बाहर निकलने के लिए बैक बटन दोबारा दबाएं।',
     confirmLeaveGame: 'क्या आप खेल रोककर होम स्क्रीन पर जाना चाहते हैं?',
     shareUnavailable: 'इस डिवाइस पर साझा करना उपलब्ध नहीं है।'
@@ -44,7 +41,6 @@ export const common = {
     combo: '🔥 {count} कॉम्बो!',
     restartShort: 'पुनः आरंभ',
     newGameShort: 'नया खेल',
-    pauseTooltip: 'टाइमर रोकें',
     themeTooltip: 'थीम बदलें',
     soundOn: 'ध्वनि म्यूट',
     soundOff: 'ध्वनि चालू'
@@ -55,8 +51,7 @@ export const common = {
     notes: 'नोट्स',
     hint: 'संकेत',
     rewardHint: '+1 संकेत',
-    fastEntry: 'फास्ट एंट्री',
-    fastEntryLocked: 'लॉक {number}'
+    fastEntry: 'फास्ट एंट्री'
   },
   board: {
     pausedTitle: 'खेल रुका हुआ है',
@@ -64,22 +59,12 @@ export const common = {
     resumeTooltip: 'जारी रखें'
   },
   themes: {
-    toast: '🎨 {name} थीम लागू',
     clay: '🏺 सिरेमिक और मिट्टी',
-    clayDesc: 'मैट सिरेमिक कीज़ और स्पर्श 3D अहसास',
     matteDark: '🌌 मैट नाइट डार्क',
-    matteDarkDesc: 'आंखों के लिए आरामदायक प्रीमियम डार्क लुक',
     pureCeramic: '🧊 प्योर क्लेमॉर्फिज्म',
-    pureCeramicDesc: 'सफेद सिरेमिक कीज के साथ 3D स्पर्श',
-    editorial: '📰 क्लासिक समाचार पत्र',
-    editorialDesc: 'स्विस टाइपोग्राफी और आरामदायक पेपर टोन'
+    editorial: '📰 क्लासिक समाचार पत्र'
   },
   conflicts: {
-    boxes: [
-      'ऊपरी बायां', 'ऊपरी केंद्र', 'ऊपरी दायां',
-      'मध्य बायां', 'केंद्र', 'मध्य दायां',
-      'निचला बायां', 'निचला केंद्र', 'निचला दायां'
-    ],
     boxDuplicate: '⚠️ [{box} 3x3 ब्लॉक] में संख्या {num} पहले से मौजूद है! {suffix}',
     rowDuplicate: '⚠️ पंक्ति {row} में संख्या {num} पहले से मौजूद है! {suffix}',
     colDuplicate: '⚠️ स्तंभ {col} में संख्या {num} पहले से मौजूद है! {suffix}',

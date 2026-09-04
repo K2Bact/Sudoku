@@ -40,8 +40,7 @@ export const modals = {
       title: '喜欢 Sudoku 吗？',
       desc: '留下宝贵的评价与真心评语，\n是支持我们持续优化游戏的最大动力！💙',
       submitBtn: '前往商店评价',
-      laterBtn: '稍后再说',
-      thankYou: '💙 感谢您的宝贵反馈！即将开启商店页面。'
+      laterBtn: '稍后再说'
     },
     dailyReward: {
       title: '每日签到奖励已送达！',

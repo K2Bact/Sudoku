@@ -1,6 +1,5 @@
 export const achievements = {
   achievements: {
-    sudoku_achievement_unlocked: 'تم فتح إنجاز جديد!',
     categories: {
       all: 'الكل',
       progression: 'التقدم',
@@ -13,11 +12,8 @@ export const achievements = {
     tabTitle: 'الإنجازات',
     statsTab: 'الإحصائيات',
     unlockedCount: 'تم فتح {unlocked} / {total} ({pct}%)',
-    totalTrophies: 'مجموع نقاط الكؤوس',
     lockedBadge: 'مغلق',
     unlockedAt: 'تاريخ الفتح: {date}',
-    syncPlayGames: 'ألعاب Google Play و Game Center',
-    syncDesc: 'تتم مزامنة الكؤوس والإنجازات تلقائياً مع ملفك الشخصي العالمي.',
 
     // 1 ~ 7. Progression & Wins
     first_win: { title: 'الخطوة الأولى', desc: 'حل أول لغز سودوكو لك بأي مستوى صعوبة' },

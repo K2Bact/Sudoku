@@ -3,7 +3,6 @@ export const screens = {
     ghost: {
       ahead: '领先 {time}',
       behind: '落后 {time}',
-      rivalTitle: '个人最佳记录 ({time})',
       ghostHintNotice: '💡 由于使用了提示，本局将不计入个人最佳记录（PB）。'
     }
   },
@@ -12,7 +11,6 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: '剩余提示',
     brainReportTitle: '大脑活性分析',
-    brainPercentile: '超越前 {percentile}% · 通关 {won} 局 ({tier})',
     brainPercentileShort: '超越前 {percentile}% · 通关 {won} 局',
     startSelectedLevel: '开始 Lv.{level} {name}',
     modeTabs: { classic: '经典', timeAttack: '计时竞速', timeLimit: '极限生存' },
@@ -32,7 +30,7 @@ export const screens = {
       academy: { title: '数独学院', desc: '学习 32 种实战解题策略' },
       practice: { title: '自由练习模式', desc: '无失误限制，轻松畅玩' }
     },
-    nav: { daily: '每日挑战', brain: '大脑指数', stats: '个人统计', academy: '数独学院', settings: '设置' }
+    nav: {brain: '大脑指数', stats: '个人统计', academy: '数独学院', settings: '设置' }
   },
   daily: {
     header: '每日挑战目标 ({month}月)',
@@ -47,9 +45,7 @@ export const screens = {
     unlockModalConfirmBtn: '📺 观看广告解锁',
     unlockModalCancelBtn: '取消',
     missionCardTitle: '🎯 今日专属任务',
-    missionTier: '{tier} 专属任务',
     missionCompleted: '今日任务已完成！✅',
-    missionCompletedDesc: '获得免费提示 +1 并完成日历签到！',
     missionStartBtn: '开始任务 🚀',
     missionReward: '+1 免费提示与签到',
     tiers: { beginner: '初学·新秀', intermediate: '中级', advanced: '大师' },
@@ -76,7 +72,6 @@ export const screens = {
     alreadyPurchased: '您已拥有高级版！ 🎉',
     processing: '💳 处理中...',
     purchaseBtn: '永久去除广告',
-    successToast: '🎉 已成功永久去除广告！',
     buySuccess: '购买成功！感谢您的支持。',
     restoreSuccess: '购买记录已成功恢复。',
     restoreFail: '未找到可恢复的购买记录。'
@@ -98,22 +93,8 @@ export const screens = {
     title: '设置',
     themeSection: '🎨 视觉主题',
     languageSection: '🌐 语言设置',
-    languageDesc: '选择您偏好的界面语言。',
     languages: {
-      auto: '系统默认',
-      ko: '한국어',
-      en: 'English',
-      ja: '日本语',
-      zhTW: '繁体中文',
-      zhCN: '简体中文',
-      esES: 'Español',
-      de: 'Deutsch',
-      fr: 'Français',
-      pt: 'Português',
-      it: 'Italiano',
-      ru: 'Русский',
-      hi: 'हिन्दी',
-      ar: 'العربية'
+      auto: '系统默认'
     },
     gameplaySection: '🎮 游戏规则',
     limitMistakes: '失误 3 次限制 (❤️)',
@@ -125,7 +106,6 @@ export const screens = {
     soundFxDesc: '数字输入与按钮点击音效',
     hapticFx: '触觉震动反馈',
     hapticFxDesc: '填入正确或错误时的手指震动',
-    dataSection: '💾 数据管理',
     resetData: '重置所有本地数据',
     resetDataDesc: '重置所有本地游戏统计与记录',
     resetConfirm: '⚠️ 警告：所有游玩记录、持有提示、大脑指数统计将被永久删除。是否确定重置？',
@@ -143,27 +123,16 @@ export const screens = {
     }
   },
   stats: {
-    rankingHeader: '🏆 全球排名',
-    leaderboardNotice: '连接 Google Play 游戏服务即可即时查看全球排名。',
-    leaderboardBtn: '🌐 🏆 查看全球排行榜',
     classicBest: '经典最高纪录',
     speedrunBest: '竞速最高纪录',
     survivalTitle: '⏳ 极限生存模式',
     survivalTotalWins: '极限生存成功',
     survivalWinsUnit: '{count}次 成功',
-    title: '个人统计与成就',
     leaderboardTab: '排行',
-    tabs: { stats: '统计', achievements: '成就' },
     summaryTitle: '总体战绩摘要',
     totalPlayed: '总游玩局数',
     totalWon: '总通关局数',
-    winRate: '胜率',
-    achTitle: '🏆 30 项全球成就',
-    achSubtitle: '在数独挑战中解锁各项荣誉成就',
-    achProgress: '达成进度：{unlocked}/{total} ({percent}%)',
-    emptyTitle: '尚无游玩记录',
-    emptyDesc: '开始新游戏并创下你的第一次胜利吧！',
-    startFirstBtn: '开始首局数独 🚀'
+    winRate: '胜率'
   },
   brainReport: {
     totalPlayed: '总局数',
@@ -180,12 +149,8 @@ export const screens = {
     overallStats: '📊 综合累计数据',
     attributesTitle: '🧠 五大核心认知能力',
     title: '大脑活性分析报告',
-    scoreUnit: '分',
     percentilePrefix: '超越前 ',
-    levelAnalysisTitle: '各难度认知能力分析',
-    emptyNotice: '每当通关 Lv.1~Lv.5 谜题时，大脑分析图表将进行精准更新。',
     shareTitle: '我的数独大脑指数报告',
-    shareBtn: '分享大脑分析报告',
     tiers: {
       grandMaster: '👑 宗师级大脑',
       grandMasterDesc: '超越全体玩家前 {percentile}%！极少数玩家能达到的顶级大师推理力。',
@@ -205,7 +170,6 @@ export const screens = {
     title: '1v1 即时对决',
     cancelBtn: '取消匹配',
     searching: '正在寻找实力相当的对手...',
-    foundOpponent: '已找到对手！即将开始对决...',
     autoMatchTitle: '快速匹配',
     autoMatchDesc: '与全球玩家进行 1:1 极速对决',
     mmrBadge: '实力匹配 · 当前胜率 {rate}%',
@@ -246,13 +210,10 @@ export const screens = {
     declineBtn: '婉拒'
   },
   battleHeader: {
-    surrender: '放弃对决',
     confirmLeave: '确定要认输并返回主页吗？',
     emptyCellsLeft: '剩余'
   },
   aiBattleScreen: {
-    title: 'AI 机器人 1:1 对决',
-    desc: '与不同难度的 AI 机器人即时竞赛解题速度。',
     selectLevelTitle: '选择 AI 对决难度',
     selectLevelDesc: '挑选符合自己实力的 AI 对手进行练习。',
     aiSpeed: '解题速度：{speed}',
@@ -273,13 +234,6 @@ export const screens = {
       stage5: '第5阶段: 大师技巧 (AIC、ALS 与 Exocet 链)'
     },
     title: '数独学院',
-    subtitle: '从基础到宗师掌握 32 种正统数独技巧',
-    progress: '进度：已完成 {completed}/{total} ({percent}%)',
-    stage1: '第1阶段: 基础技巧 (基本单数与行列)',
-    stage2: '第2阶段: 中级技巧 (区块数对与交集排除)',
-    stage3: '第3阶段: 高级技巧 (翼系列)',
-    stage4: '第4阶段: 专家技巧 (鱼类、着色法与唯一矩形)',
-    stage5: '第5阶段: 大师技巧 (AIC、ALS 与 Exocet 链)',
     practiceUi: {
       theory: '理论讲解',
       practice1: '实战练习 1',
@@ -288,11 +242,6 @@ export const screens = {
       retry: '重新作答',
       error: '[{val}] 不是正确答案，请再次观察已给出的数字！',
       prompt: '👇 请在下方数字键盘点击目标空格 (?) 应填入的数字。'
-    },
-    guided: {
-      title: '🎯 实战教学',
-      desc: '在棋盘上亲自操作填数与标记候选数。',
-      startBtn: '开始教学'
     }
   },
   adBanner: { placeholderTag: '测试', placeholderText: '广告位（未投放）', removeBtn: '去广告' }

@@ -9,11 +9,8 @@ export const common = {
     restartConfirm: 'إعادة تشغيل هذه الأحجية؟',
     newGame: 'لعبة جديدة',
     home: 'الرئيسية',
-    save: 'حفظ',
     pause: 'إيقاف مؤقت',
     resume: 'استئناف',
-    loading: 'جارٍ التحميل...',
-    error: 'خطأ',
     exitAppPrompt: 'اضغط رجوع مرة أخرى للخروج من التطبيق.',
     confirmLeaveGame: 'هل أنت متأكد من رغبتك في إيقاف اللعبة مؤقتاً والعودة إلى الرئيسية؟',
     shareUnavailable: 'المشاركة غير متاحة على هذا الجهاز.'
@@ -44,7 +41,6 @@ export const common = {
     combo: '🔥 {count} متتالي!',
     restartShort: 'إعادة',
     newGameShort: 'لعبة جديدة',
-    pauseTooltip: 'إيقاف المؤقت مؤقتاً',
     themeTooltip: 'تغيير المظهر',
     soundOn: 'كتم الصوت',
     soundOff: 'تشغيل الصوت'
@@ -55,8 +51,7 @@ export const common = {
     notes: 'ملاحظات',
     hint: 'تلميح',
     rewardHint: '+1 تلميح',
-    fastEntry: 'الوضع السريع',
-    fastEntryLocked: 'مغلق {number}'
+    fastEntry: 'الوضع السريع'
   },
   board: {
     pausedTitle: 'اللعبة متوقفة مؤقتاً',
@@ -64,22 +59,12 @@ export const common = {
     resumeTooltip: 'انقر للاستئناف'
   },
   themes: {
-    toast: '🎨 تم التبديل إلى {name}',
     clay: '🏺 سيراميك وطين دافئ',
-    clayDesc: 'أزرار سيراميكية غير لامعة مع تأثير ثلاثي الأبعاد ملموس',
     matteDark: '🌌 راتنج غير لامع داكن',
-    matteDarkDesc: 'تصميم فاخر من الراتنج غير اللامع مع إضاءة ليلية هادئة',
     pureCeramic: '🧊 كلايمورفيزم نقي',
-    pureCeramicDesc: 'أزرار وسائدية ناعمة ودائرية من السيراميك الأبيض',
-    editorial: '📰 ورق كلاسيكي نقي',
-    editorialDesc: 'مظهر ورقي أنيق ومريح للعين بنمط تحريري سويسري'
+    editorial: '📰 ورق كلاسيكي نقي'
   },
   conflicts: {
-    boxes: [
-      'أعلى اليمين', 'أعلى الوسط', 'أعلى اليسار',
-      'وسط اليمين', 'المركز', 'وسط اليسار',
-      'أسفل اليمين', 'أسفل الوسط', 'أسفل اليسار'
-    ],
     boxDuplicate: '⚠️ الرقم {num} موجود بالفعل في [مربع 3×3 {box}]! {suffix}',
     rowDuplicate: '⚠️ الرقم {num} موجود بالفعل في الصف {row}! {suffix}',
     colDuplicate: '⚠️ الرقم {num} موجود بالفعل في العمود {col}! {suffix}',

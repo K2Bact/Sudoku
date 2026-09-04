@@ -3,7 +3,6 @@ export const screens = {
     ghost: {
       "ahead": "{time} ahead",
       "behind": "{time} behind",
-      "rivalTitle": "Personal Best ({time})",
       "ghostHintNotice": "💡 PB record update is excluded due to hint usage."
     },
   },
@@ -12,7 +11,6 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: 'Hints',
     brainReportTitle: 'Brain Analysis',
-    brainPercentile: 'Top {percentile}% · {won} Wins ({tier})',
     brainPercentileShort: 'Top {percentile}% · {won} Wins',
     startSelectedLevel: 'Start Lv.{level} {name}',
     modeTabs: { classic: 'Classic', timeAttack: 'Speedrun', timeLimit: 'Survival' },
@@ -32,7 +30,7 @@ export const screens = {
       academy: { title: 'Sudoku Academy', desc: 'Learn 32 master techniques' },
       practice: { title: 'Free Practice', desc: 'Unlimited mistakes, relaxing play' }
     },
-    nav: { daily: 'Daily', brain: 'Brain IQ', stats: 'Stats', academy: 'Academy', settings: 'Settings' }
+    nav: {brain: 'Brain IQ', stats: 'Stats', academy: 'Academy', settings: 'Settings' }
   },
   daily: {
     header: 'Daily Challenges ({month})',
@@ -47,9 +45,7 @@ export const screens = {
     unlockModalConfirmBtn: '📺 Watch & Unlock',
     unlockModalCancelBtn: 'Cancel',
     missionCardTitle: "🎯 Today's Custom Mission",
-    missionTier: '{tier} Mission',
     missionCompleted: "Today's Mission Completed! ✅",
-    missionCompletedDesc: '+1 Free hint granted & 365 calendar checked in!',
     missionStartBtn: 'Start Mission 🚀',
     missionReward: '+1 Hint & Check-in',
     tiers: { beginner: 'Novice', intermediate: 'Intermediate', advanced: 'Master' },
@@ -76,7 +72,6 @@ export const screens = {
     alreadyPurchased: 'You already have Premium Access! 🎉',
     processing: '💳 Processing...',
     purchaseBtn: 'Remove Ads',
-    successToast: '🎉 Ads permanently removed!',
     buySuccess: 'Purchase completed successfully! Thank you.',
     restoreSuccess: 'Purchases restored successfully.',
     restoreFail: 'No past purchases found to restore.'
@@ -98,22 +93,8 @@ export const screens = {
     title: 'Settings',
     themeSection: '🎨 Appearance Theme',
     languageSection: '🌐 Language',
-    languageDesc: 'Choose your preferred interface language.',
     languages: {
-      auto: 'System Default',
-      ko: '한국어',
-      en: 'English',
-      ja: '日本語',
-      zhTW: '繁體中文',
-      zhCN: '简体中文',
-      esES: 'Español',
-      de: 'Deutsch',
-      fr: 'Français',
-      pt: 'Português',
-      it: 'Italiano',
-      ru: 'Русский',
-      hi: 'हिन्दी',
-      ar: 'العربية'
+      auto: 'System Default'
     },
     gameplaySection: '🎮 Gameplay Rules',
     limitMistakes: 'Limit 3 Mistakes (Hearts)',
@@ -125,7 +106,6 @@ export const screens = {
     soundFxDesc: 'Number entry and button tap sounds',
     hapticFx: 'Haptic Feedback (Vibration)',
     hapticFxDesc: 'Vibrate on correct and incorrect inputs',
-    dataSection: '💾 Data Management',
     resetData: 'Reset All Local Data',
     resetDataDesc: 'Clear all game stats and local history',
     resetConfirm: '⚠️ Warning: All game history, hints, and brain statistics will be permanently deleted. Proceed?',
@@ -143,27 +123,16 @@ export const screens = {
     }
   },
   stats: {
-    rankingHeader: '🏆 Global Rankings',
-    leaderboardNotice: "Check real-time global rankings with Google Play Games.",
-    leaderboardBtn: '🏆 Leaderboards',
     classicBest: "Classic Best",
     speedrunBest: "Speedrun Best",
     survivalTitle: '⏳ Survival Mode',
     survivalTotalWins: "Survival Clears",
     survivalWinsUnit: "{count} Clears",
-    title: 'My Stats & Achievements',
     leaderboardTab: 'Leaderboard',
-    tabs: { stats: 'Stats', achievements: 'Achievements' },
     summaryTitle: 'Performance Summary',
     totalPlayed: 'Total Played',
     totalWon: 'Total Won',
-    winRate: 'Win Rate',
-    achTitle: '🏆 30 Global Achievements',
-    achSubtitle: 'Unlock special milestones as you solve sudoku puzzles',
-    achProgress: 'Progress: {unlocked}/{total} ({percent}%)',
-    emptyTitle: 'No game records yet',
-    emptyDesc: 'Start a new game and record your first victory!',
-    startFirstBtn: 'First Sudoku 🚀'
+    winRate: 'Win Rate'
   },
   brainReport: {
     totalPlayed: "Total Games",
@@ -180,12 +149,8 @@ export const screens = {
     overallStats: "📊 Overall Cumulative Stats",
     attributesTitle: "🧠 5 Core Cognitive Skills",
     title: 'Brain IQ Report',
-    scoreUnit: 'pts',
     percentilePrefix: 'Top ',
-    levelAnalysisTitle: 'Difficulty Breakdown',
-    emptyNotice: 'Clear Lv.1~Lv.5 puzzles to update and refine your cognitive brain analysis graph.',
     shareTitle: 'My Sudoku Brain IQ Report',
-    shareBtn: 'Share Report',
     tiers: {
       grandMaster: '👑 Grand Master',
       grandMasterDesc: 'Top {percentile}% of all players! Mastermind-tier 1% deductive reasoning.',
@@ -205,7 +170,6 @@ export const screens = {
     title: '1v1 Real-Time Battle',
     cancelBtn: 'Cancel Match',
     searching: 'Searching for an opponent of similar skill...',
-    foundOpponent: 'Opponent found! Match starting shortly...',
     autoMatchTitle: 'Quick Match',
     autoMatchDesc: 'Speed matching with players worldwide',
     mmrBadge: 'Skill-Based Match · Win Rate {rate}%',
@@ -246,13 +210,10 @@ export const screens = {
     declineBtn: 'Decline'
   },
   battleHeader: {
-    surrender: 'Surrender Battle',
     confirmLeave: 'Do you want to forfeit and return home?',
     emptyCellsLeft: 'left'
   },
   aiBattleScreen: {
-    title: '1:1 AI Bot Duel',
-    desc: 'Compete against AI bots of various skill levels in real-time speed solving.',
     selectLevelTitle: 'Select AI Difficulty',
     selectLevelDesc: 'Choose an AI opponent suited to your skill level.',
     aiSpeed: 'Speed: {speed}',
@@ -273,13 +234,6 @@ export const screens = {
       stage5: 'Stage 5: Master Techniques (AIC, ALS & Exocet Chains)'
     },
     title: 'Sudoku Academy',
-    subtitle: 'Master 32 authentic techniques from beginner to grandmaster',
-    progress: 'Progress: {completed}/{total} completed ({percent}%)',
-    stage1: 'Stage 1: Basic Techniques (Singles & Lines)',
-    stage2: 'Stage 2: Intermediate Techniques (Pairs & Intersections)',
-    stage3: 'Stage 3: Advanced Techniques (Wing Family)',
-    stage4: 'Stage 4: Expert Techniques (Fish, Coloring & Unique Rectangle)',
-    stage5: 'Stage 5: Master Techniques (AIC, ALS & Exocet Chains)',
     practiceUi: {
       theory: 'Theory',
       practice1: 'Practice 1',
@@ -288,11 +242,6 @@ export const screens = {
       retry: 'Try Again',
       error: '[{val}] is incorrect. Re-examine the given digits!',
       prompt: '👇 Tap the target number (?) on the number keypad below.'
-    },
-    guided: {
-      title: '🎯 Guided Tutorial',
-      desc: 'Learn step-by-step how to fill cells and take notes.',
-      startBtn: 'Start Tutorial'
     }
   },
   adBanner: { placeholderTag: 'TEST', placeholderText: 'Ad space (no ad served)', removeBtn: 'Remove Ads' }
