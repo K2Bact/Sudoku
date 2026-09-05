@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Settings,
   Volume2,
@@ -21,6 +21,7 @@ import { AccountSection } from './settings/AccountSection';
 import { useTranslation } from '../i18n/i18nContext';
 import { useConfirm, useNotify } from './common/ConfirmProvider';
 import { APP_INFO } from '../config/appInfo';
+import { adsService } from '../services/adsService';
 
 export function SettingsScreen({
   onBack,
@@ -37,6 +38,23 @@ export function SettingsScreen({
   const [limitMistakes, setLimitMistakes] = useState(currentSettings.limitMistakes ?? true);
   const [autoCheckMistakes, setAutoCheckMistakes] = useState(currentSettings.autoCheckMistakes ?? true);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+
+  // Google requires a way back into the consent choice for anyone who was shown
+  // the form — and only for them. Whether such a path exists is the SDK's
+  // answer, not something to infer from the device locale.
+  const [showAdPrivacy, setShowAdPrivacy] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    adsService.hasPrivacyOptions()
+      .then((yes) => { if (alive) setShowAdPrivacy(yes); })
+      .catch(() => { /* no path back; the row stays hidden */ });
+    return () => { alive = false; };
+  }, []);
+
+  const handleAdPrivacy = async () => {
+    soundHaptic.playSelectSound();
+    await adsService.showPrivacyOptions();
+  };
 
   const handleToggleHaptic = () => {
     soundHaptic.playSelectSound();
@@ -192,6 +210,24 @@ export function SettingsScreen({
               </div>
               <ChevronRight size={18} className="text-muted" />
             </div>
+
+            {/* Only where a way back into the consent choice actually exists.
+                Google requires it for anyone who was shown the form; showing it
+                to a player who never saw one would be a menu that does nothing. */}
+            {showAdPrivacy && (
+              <div className="settings-row clickable" onClick={handleAdPrivacy}>
+                <div className="settings-row-left">
+                  <div className="settings-icon-badge blue">
+                    <Shield size={18} />
+                  </div>
+                  <div className="settings-text-col">
+                    <span className="settings-title">{t('settings.adPrivacyBtn')}</span>
+                    <p className="settings-subtitle">{t('settings.adPrivacyDesc')}</p>
+                  </div>
+                </div>
+                <ChevronRight size={18} className="text-muted" />
+              </div>
+            )}
 
             <div className="settings-row clickable" onClick={handleResetData}>
               <div className="settings-row-left">

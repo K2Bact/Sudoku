@@ -3,7 +3,7 @@
   "name": "Ad Honesty & Provider Contract",
   "command": "node scripts/tests/unit/test_ads_honesty.js",
   "greenMarker": "Ad honesty gate passed",
-  "note": "Four ad placements each ran their own setTimeout pretending to be an ad. The seam replaced all four, and isReal is what every placement asks before it says anything to the player.",
+  "note": "The build now carries the AdMob SDK. Consent is not optional for the five EEA languages this app ships, so the mutations below break each half of that flow separately: the request for consent, each of the three gated ad paths, and the way back into the choice.",
   "mutations": [
     {
       "name": "the placeholder provider claims to be a real ad network",
@@ -12,6 +12,30 @@
       "find": "  get isReal() {\n    return false;\n  }",
       "replace": "  get isReal() {\n    return true;\n  }",
       "expectFailure": "isReal"
+    },
+    {
+      "name": "the rewarded ad is requested without checking consent",
+      "why": "One deleted guard serves a personalised ad to a player who was never asked. Every other test keeps passing, which is exactly why this is checked in the source rather than left to a device run that happened once.",
+      "file": "src/ads/adMobProvider.js",
+      "find": "    if (!this.canRequestAds) return { rewarded: false };",
+      "replace": "",
+      "expectFailure": "showRewarded requests an ad without checking canRequestAds"
+    },
+    {
+      "name": "consent is never requested at all",
+      "why": "Without requestConsentInfo the first ad goes out before anyone has been asked. In the EEA that is an advertising policy violation, not a bug.",
+      "file": "src/ads/adMobProvider.js",
+      "find": "        let info = await admob.requestConsentInfo();",
+      "replace": "        let info = { canRequestAds: true };",
+      "expectFailure": "init() does not ask the consent SDK"
+    },
+    {
+      "name": "the way back into the consent choice is removed",
+      "why": "Google requires a path back for anyone shown the form. Without it the choice is permanent from the player's side.",
+      "file": "src/components/SettingsScreen.jsx",
+      "find": "    adsService.hasPrivacyOptions()",
+      "replace": "    Promise.resolve(false)",
+      "expectFailure": "never asks whether a privacy options form exists"
     }
   ]
 }

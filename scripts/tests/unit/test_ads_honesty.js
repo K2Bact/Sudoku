@@ -114,6 +114,66 @@ assert(!VENDORS.test(bannerCode),
   'advertiser only when adsService.isReal says one is actually being served.');
 console.log('  ✅ The banner labels itself according to what is really served');
 
+// ── 6b. Consent gates every ad request ────────────────────────────────────
+//
+// The app ships to thirteen languages including five spoken across the EEA, so
+// Google's consent flow is not optional: requesting a personalised ad from
+// someone who has not been asked is an advertising policy violation.
+//
+// Deleting one `await this.init()` would leave every other test passing and ads
+// going out unasked, which is why this is checked structurally rather than left
+// to a device run that happened once.
+console.log('▶ 6b. Consent gates every ad request');
+const admobSrc = read('src/ads/adMobProvider.js');
+
+// Scoped to init(), not the whole file. Asking whether the string appears
+// anywhere passed while init() had been gutted, because hasPrivacyOptions()
+// calls the same method for its own reasons. Third time today that a regex over
+// a whole file let another part of that file provide the alibi.
+const initAt = admobSrc.indexOf('  init() {');
+assert(initAt > -1, 'AdMobProvider has no init()');
+const initEnd = admobSrc.indexOf('\n  }', initAt);
+const initBody = admobSrc.slice(initAt, initEnd > -1 ? initEnd : undefined);
+assert(/requestConsentInfo\(/.test(initBody),
+  'init() does not ask the consent SDK. Without it the first ad request goes out ' +
+  'before anyone has been asked, which in the EEA is a policy violation rather ' +
+  'than a bug.');
+
+// Each of the three request paths has to be gated, not just one. Counting the
+// guard was the first attempt and it counted four: init() checks the same flag
+// for itself, which is correct and has nothing to do with the request paths. A
+// count also cannot say WHICH path is open, so each method is read on its own.
+for (const method of ['showBanner', 'showRewarded', 'showInterstitial']) {
+  const at = admobSrc.indexOf(`async ${method}(`);
+  assert(at > -1, `AdMobProvider has no ${method} — the seam is missing a placement`);
+  const close = admobSrc.indexOf(`\n  }`, at);
+  const body = admobSrc.slice(at, close > -1 ? close : undefined);
+  assert(/canRequestAds/.test(body),
+    `${method} requests an ad without checking canRequestAds. That serves an ad to ` +
+    'a player who has not been asked, which is the whole reason this flow exists.');
+}
+// The SDK already decides whether a request is allowed. Re-deriving it from the
+// status string loses the case proven on a device: a player who DECLINES
+// personalised ads ends up OBTAINED with canRequestAds still true, because
+// non-personalised ads may still be served. Reading the status instead would
+// silently drop the revenue of every EEA player who declines.
+assert(!/status\s*===\s*'(OBTAINED|REQUIRED|NOT_REQUIRED)'/.test(admobSrc)
+  || /privacyOptionsRequirementStatus\s*===\s*'REQUIRED'/.test(admobSrc),
+  'AdMobProvider decides whether ads may be requested by comparing the consent ' +
+  'status itself. Use canRequestAds, which is the SDK\'s own answer: declining ' +
+  'personalised ads still permits non-personalised ones, and a hand-rolled ' +
+  'reading of the status turns that into no ads at all.');
+
+// Google requires a way back into the choice for anyone shown the form.
+assert(/showPrivacyOptionsForm\(/.test(admobSrc),
+  'No way back into the consent choice. Google requires one for any user who ' +
+  'was shown the form.');
+const settingsSrc = read('src/components/SettingsScreen.jsx');
+assert(/hasPrivacyOptions\(\)/.test(settingsSrc),
+  'SettingsScreen never asks whether a privacy options form exists, so the row ' +
+  'either never appears or appears where it does nothing.');
+console.log('  ✅ consent is requested, gates all three ad types, and can be revisited');
+
 // ── 7. The old lying service is gone ──────────────────────────────────────
 console.log('▶ 7. admobService is gone, not just bypassed');
 assert(!fs.existsSync(path.join(ROOT, 'src/services/admobService.js')),

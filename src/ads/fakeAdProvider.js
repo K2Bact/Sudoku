@@ -51,4 +51,26 @@ export class FakeAdProvider {
   showInterstitial() {
     return Promise.resolve();
   }
+
+  /**
+   * No advertiser, no banner. The seam has to answer the same calls on both
+   * sides or the caller ends up asking which provider it has, which is the
+   * branching this seam exists to remove.
+   */
+  showBanner() {
+    return Promise.resolve(false);
+  }
+
+  hideBanner() {
+    return Promise.resolve();
+  }
+
+  /** No SDK, so there is no consent to revisit and no form to open. */
+  hasPrivacyOptions() {
+    return Promise.resolve(false);
+  }
+
+  showPrivacyOptions() {
+    return Promise.resolve(false);
+  }
 }

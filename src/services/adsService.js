@@ -120,6 +120,27 @@ class AdsService {
    * nothing, and treating every return as a completed view is how reward
    * economies get drained.
    */
+  /**
+   * The banner is a native overlay on Android, so this is not "render an ad
+   * into a div" — it is "put an ad in the space the screen has reserved".
+   * Returns whether one was actually placed, so a caller never has to guess.
+   */
+  async hasPrivacyOptions() {
+    return getAdProvider().hasPrivacyOptions();
+  }
+
+  async showPrivacyOptions() {
+    return getAdProvider().showPrivacyOptions();
+  }
+
+  async showBanner() {
+    return getAdProvider().showBanner();
+  }
+
+  async hideBanner() {
+    return getAdProvider().hideBanner();
+  }
+
   async showRewarded() {
     if (this.isAdsRemoved()) return { rewarded: true };
     return getAdProvider().showRewarded();

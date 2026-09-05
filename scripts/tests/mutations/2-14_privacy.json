@@ -3,7 +3,7 @@
   "name": "Privacy Claims Match Actual Behaviour",
   "command": "node scripts/tests/unit/test_privacy_claims.js",
   "greenMarker": "Privacy claims gate passed",
-  "note": "Ordering matters here. The cases run 1, 2, 3, 1b, coupling, 4, 5, 6, 7, and runTest-style aborts mean only the first failure is ever reported. Anything editing docs/privacy.html also breaks Case 6 (hosted vs local), so a policy mutation must trip an earlier case or its expectFailure will not match — which is the runner correctly refusing to credit the wrong check.",
+  "note": "The build now carries the AdMob SDK with Google's sample unit ids. Three mutations exercise the coupling in both directions: dependency gone, policy sentence wrong, permission missing. Case 4b checks the policy sentence before the permission on purpose — a mutation can only touch one file, and with the permission first the sentence rule could never be proven.",
   "mutations": [
     {
       "name": "an absolute offline claim comes back into the app",
@@ -70,28 +70,28 @@
       "expectFailure": "not being served as written"
     },
     {
-      "name": "an ad SDK enters the build while the policy still says no ads are served",
-      "why": "This is the direction Play actually enforces. Serving ads while the policy tells players none are served is under-disclosure, and the sentence would otherwise sit there until somebody remembered it.",
-      "file": "android/app/build.gradle",
-      "find": "    implementation project(':capacitor-android')",
-      "replace": "    implementation project(':capacitor-android')\n    implementation 'com.google.android.gms:play-services-ads:23.0.0'",
-      "expectFailure": "still tells players no ads are served"
-    },
-    {
-      "name": "one language half loses the sentence saying ads are not served",
-      "why": "Naming AdMob without saying it is not yet active reads as a claim the app already serves ads and collects an advertising identifier. Half-editing a bilingual document is how the English side once went a whole release without a 1v1 section.",
-      "file": "docs/privacy.html",
-      "find": "<strong>현재 버전에는 광고 SDK 가 포함되어 있지 않으며, 광고가 게재되지 않습니다.</strong>",
-      "replace": "",
+      "name": "the advertising SDK leaves the build while the policy still describes ads",
+      "why": "The reverse of the coupling. A dependency dropped in a merge would leave the policy telling players about advertising the app no longer carries, and the permission requesting an ID nothing reads.",
+      "file": "package.json",
+      "find": "\"@capacitor-community/admob\": \"^8.1.0\",",
+      "replace": "\"@capacitor-community/renamed\": \"^8.1.0\",",
       "expectFailure": "must say so in both"
     },
     {
-      "name": "the advertising ID permission comes back with no SDK to use it",
-      "why": "A policy sentence is read by a person; this permission is read by a machine and drives the advertising-ID question on the Data Safety form. It sat in the manifest with nothing able to use it, which is the one combination that gives two answers to one question.",
+      "name": "the policy claims no ads are served while the SDK ships",
+      "why": "Serving ads while telling players none are served is under-disclosure, which is the direction Play enforces. This is the sentence that was correct an hour ago and is a violation now.",
+      "file": "docs/privacy.html",
+      "find": "This application delivers advertising through the <strong>Google AdMob SDK</strong> in order to stay free.",
+      "replace": "This application delivers advertising through the <strong>Google AdMob SDK</strong> in order to stay free. The current version serves no ads.",
+      "expectFailure": "still tells players no ads are served"
+    },
+    {
+      "name": "the advertising ID permission is dropped while the SDK ships",
+      "why": "Apps targeting Android 13 or later need this permission to read the advertising ID. Without it AdMob falls back and the Data Safety declaration stops matching what the SDK does.",
       "file": "android/app/src/main/AndroidManifest.xml",
-      "find": "    <uses-permission android:name=\"com.google.android.gms.permission.AD_ID\" /> -->",
-      "replace": "    -->\n    <uses-permission android:name=\"com.google.android.gms.permission.AD_ID\" />",
-      "expectFailure": "advertising SDK is in the build for it to use"
+      "find": "    <uses-permission android:name=\"com.google.android.gms.permission.AD_ID\" />",
+      "replace": "",
+      "expectFailure": "does not declare"
     }
   ]
 }

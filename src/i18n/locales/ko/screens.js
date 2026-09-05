@@ -106,6 +106,8 @@ export const screens = {
     soundFxDesc: '터치 및 정답 효과음 재생',
     hapticFx: '진동 피드백',
     hapticFxDesc: '오답 및 퍼즐 완료 시 미세 진동',
+    adPrivacyBtn: '광고 개인정보 설정',
+    adPrivacyDesc: '맞춤 광고 동의를 다시 선택합니다',
     resetData: '모든 로컬 데이터 초기화',
     resetDataDesc: '모든 로컬 게임 통계 및 기록 초기화',
     resetConfirm: '⚠️ 경고: 모든 플레이 기록, 보유 힌트, 두뇌 지수 통계가 영구 삭제됩니다. 진행하시겠습니까?',
@@ -119,7 +121,7 @@ export const screens = {
       sec1Title: '1. 회원가입 없음', sec1Desc: '본 앱은 회원가입 절차가 없으며 이름·이메일·전화번호·연락처·위치를 수집하지 않습니다. 온라인 기능(1v1 대전, 클라우드 백업) 이용 시에는 무작위로 생성된 ID만 전송됩니다.',
       sec2Title: '2. 로컬 데이터 보관 및 삭제 권리', sec2Desc: '게임 진행 상황, 힌트 수량, 테마 설정은 사용자의 스마트폰 로컬 저장소(localStorage)에만 안전하게 보관됩니다.',
       sec3Title: '3. 1v1 배틀 및 두뇌 지수 처리', sec3Desc: '실시간 1v1 대전에는 기기에 저장되어 재사용되는 무작위 생성 ID와 퍼즐 진행률이 전송됩니다. 이 ID는 이름이나 계정과 연결되지 않습니다.',
-      sec4Title: '4. 광고 (Google AdMob)', sec4Desc: '무료 제공을 위해 이 앱은 Google AdMob SDK 를 통해 광고를 표시할 수 있습니다. 광고가 활성화되면 AdMob 이 광고 식별자를 수집할 수 있습니다. 현재 버전에서는 광고가 게재되지 않습니다.'
+      sec4Title: '4. 광고 (Google AdMob)', sec4Desc: '무료 제공을 위해 이 앱은 Google AdMob SDK 를 통해 광고를 표시할 수 있습니다. 광고가 활성화되면 AdMob 이 광고 식별자를 수집할 수 있습니다. 광고는 게임 화면 하단과 보상형 영상으로만 표시됩니다.'
     }
   },
   stats: {

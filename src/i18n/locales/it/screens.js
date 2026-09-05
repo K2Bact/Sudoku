@@ -106,6 +106,8 @@ export const screens = {
     soundFxDesc: 'Suoni alla digitazione dei numeri e dei tasti',
     hapticFx: 'Risposta Tattile',
     hapticFxDesc: 'Vibra quando inserisci numeri corretti o errati',
+    adPrivacyBtn: 'Privacy degli annunci',
+    adPrivacyDesc: 'Modifica la scelta sugli annunci personalizzati',
     resetData: 'Ripristina Tutti i Dati Locali',
     resetDataDesc: 'Cancella tutte le statistiche e la cronologia locale',
     resetConfirm: '⚠️ Attenzione: Tutta la cronologia, i suggerimenti e le statistiche cerebrali verranno cancellati per sempre. Continuare?',
@@ -119,7 +121,7 @@ export const screens = {
       sec1Title: '1. Nessuna registrazione', sec1Desc: 'Questa app non richiede registrazione e non raccoglie nome, email, numero di telefono, contatti o posizione. Le funzioni online — sfide 1v1 e backup cloud — inviano soltanto un identificatore generato casualmente.',
       sec2Title: '2. Dati locali & cancellazione', sec2Desc: 'I progressi, i suggerimenti e i temi sono salvati in sicurezza solo sul tuo dispositivo.',
       sec3Title: '3. Duelli 1v1 & Indice Mentale', sec3Desc: 'Le sfide 1v1 in tempo reale inviano un identificatore giocatore generato casualmente e registri di completamento. L’identificatore è salvato sul dispositivo e riutilizzato, e non è collegato al tuo nome né a un account.',
-      sec4Title: '4. Pubblicità (Google AdMob)', sec4Desc: 'Per mantenere il gioco gratuito, questa app può mostrare annunci tramite lo SDK Google AdMob. Quando la pubblicità è attiva, AdMob può raccogliere un identificatore pubblicitario. La versione attuale non mostra annunci.'
+      sec4Title: '4. Pubblicità (Google AdMob)', sec4Desc: 'Per mantenere il gioco gratuito, questa app può mostrare annunci tramite lo SDK Google AdMob. Quando la pubblicità è attiva, AdMob può raccogliere un identificatore pubblicitario. Gli annunci compaiono solo come banner in basso e video con premio.'
     }
   },
   stats: {

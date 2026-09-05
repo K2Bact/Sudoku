@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { adsService } from '../services/adsService';
 import { useTranslation } from '../i18n/i18nContext';
@@ -25,7 +25,23 @@ import { useTranslation } from '../i18n/i18nContext';
 export function AdBanner({ onOpenRemoveAdsModal, refreshTrigger }) {
   const { t } = useTranslation();
 
-  if (adsService.isAdsRemoved()) {
+  const removed = adsService.isAdsRemoved();
+  const shouldShow = !removed && adsService.isReal;
+
+  // The banner is a native overlay, not part of this subtree, so it does not
+  // disappear when this component unmounts. Leaving the game screen would
+  // otherwise leave an ad pinned over the home screen.
+  useEffect(() => {
+    if (!shouldShow) return undefined;
+    adsService.showBanner().catch((e) => {
+      console.warn('[ads] could not place the banner:', e?.message || e);
+    });
+    return () => {
+      adsService.hideBanner().catch(() => { /* nothing left to hide */ });
+    };
+  }, [shouldShow, refreshTrigger]);
+
+  if (removed) {
     return null;
   }
 
@@ -42,6 +58,9 @@ export function AdBanner({ onOpenRemoveAdsModal, refreshTrigger }) {
   if (!adsService.isReal) {
     return null;
   }
+
+  // Reserved height, nothing drawn. The native overlay sits here; without the
+  // space it would cover the keypad.
 
   return (
     <div className="ad-slot-container" data-ad-provider={adsService.providerId} data-refresh={refreshTrigger}>

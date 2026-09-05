@@ -113,6 +113,8 @@ export const screens = {
     soundFxDesc: 'Sonido al pulsar botones y colocar números',
     hapticFx: 'Vibración háptica',
     hapticFxDesc: 'Vibración táctil al introducir aciertos y fallos',
+    adPrivacyBtn: 'Privacidad de anuncios',
+    adPrivacyDesc: 'Cambia tu elección sobre anuncios personalizados',
     resetData: 'Restablecer todos los datos locales',
     resetDataDesc: 'Restablecer todas las estadísticas y registros locales',
     resetConfirm: '⚠️ Advertencia: Todos los registros, pistas y estadísticas se borrarán de forma permanente. ¿Deseas continuar?',
@@ -126,7 +128,7 @@ export const screens = {
       sec1Title: '1. Sin registro', sec1Desc: 'Esta aplicación no requiere registro y no recopila tu nombre, correo electrónico, teléfono, contactos ni ubicación. Las funciones en línea — duelos 1c1 y copia de seguridad en la nube — solo envían un identificador generado al azar.',
       sec2Title: '2. Almacenamiento local y derecho de supresión', sec2Desc: 'El progreso y las configuraciones se guardan de forma segura exclusivamente en tu dispositivo.',
       sec3Title: '3. Duelos 1v1 y análisis cerebral', sec3Desc: 'Los duelos 1c1 en tiempo real envían un identificador de jugador generado al azar, guardado en tu dispositivo y reutilizado, junto con tu progreso. No está vinculado a tu nombre ni a ninguna cuenta.',
-      sec4Title: '4. Publicidad (Google AdMob)', sec4Desc: 'Para mantener el juego gratuito, esta aplicación puede mostrar anuncios mediante el SDK de Google AdMob. Cuando la publicidad está activa, AdMob puede recopilar un identificador publicitario. La versión actual no muestra anuncios.'
+      sec4Title: '4. Publicidad (Google AdMob)', sec4Desc: 'Para mantener el juego gratuito, esta aplicación puede mostrar anuncios mediante el SDK de Google AdMob. Cuando la publicidad está activa, AdMob puede recopilar un identificador publicitario. Los anuncios solo aparecen como banner inferior y vídeos recompensados.'
     }
   },
   stats: {

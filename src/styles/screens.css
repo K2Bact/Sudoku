@@ -143,19 +143,25 @@
   color: var(--text-muted);
 }
 
-/* The bottom ad slot. Styled as a reserved, obviously-empty space rather than
-   as content: while no real ad is served the player should be able to see that
-   nothing was sold here. See src/ads/index.js. */
+/* The bottom ad slot is a spacer, not a surface.
+
+   On Android the AdMob banner is a native overlay pinned to the bottom of the
+   screen — it is not drawn inside this element, or inside the WebView at all.
+   What this reserves is the room underneath the keypad so the overlay does not
+   land on top of it.
+
+   It used to carry a dashed border and a surface colour, from when it drew a
+   labelled "no ad here" placeholder. With a real ad running that left an empty
+   dashed rectangle above the actual banner. Nothing visible belongs here: the
+   element exists to occupy height and nothing else. */
 .ad-slot-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   min-height: 52px;
-  padding: 8px 12px;
-  border: 1px dashed var(--board-grid-line);
-  border-radius: var(--border-radius-md);
-  background: var(--bg-surface);
+  background: transparent;
+  border: 0;
 }
 
 .ad-slot-container .banner-content {

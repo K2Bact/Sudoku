@@ -106,6 +106,8 @@ export const screens = {
     soundFxDesc: '數字輸入與按钮點擊音效',
     hapticFx: '触覺震動反馈',
     hapticFxDesc: '填入正確或錯誤時的手指震動',
+    adPrivacyBtn: '廣告隱私設定',
+    adPrivacyDesc: '重新選擇個人化廣告同意',
     resetData: '重置所有本地數據',
     resetDataDesc: '重置所有本地遊戲統計與記錄',
     resetConfirm: '⚠️ 警告：所有遊玩記錄、持有提示、大腦指數統計將被永久刪除。是否確定重置？',
@@ -119,7 +121,7 @@ export const screens = {
       sec1Title: '1. 無需註冊', sec1Desc: '本應用無需註冊，不會收集您的姓名、電子郵件、電話號碼、通訊錄或位置資訊。使用連線功能（1v1 對戰、雲端備份）時，僅會傳送一組隨機產生的 ID。',
       sec2Title: '2. 本地存储與刪除权利', sec2Desc: '遊戲進度、提示數量、主題設定仅安全保存在您的設備本地。',
       sec3Title: '3. 1v1 對決與大腦指數', sec3Desc: '即時 1v1 對戰會傳送隨機產生的玩家 ID 與解題記錄。該 ID 儲存於本機並重複使用，不與您的姓名或帳號連結。',
-      sec4Title: '4. 廣告 (Google AdMob)', sec4Desc: '為維持遊戲免費，本應用程式可能透過 Google AdMob SDK 顯示廣告。廣告啟用時，AdMob 可能收集廣告識別碼。目前版本不投放廣告。'
+      sec4Title: '4. 廣告 (Google AdMob)', sec4Desc: '為維持遊戲免費，本應用程式可能透過 Google AdMob SDK 顯示廣告。廣告啟用時，AdMob 可能收集廣告識別碼。廣告僅出現在遊戲畫面底部橫幅與獎勵影片中。'
     }
   },
   stats: {
