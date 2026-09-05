@@ -57,7 +57,7 @@
       "name": "the version in settings drifts from the version that ships",
       "why": "build.gradle said 1.2.1 build 15 while the settings screen said 1.2.0 build 14. A bug report then names a build that was never uploaded.",
       "file": "android/app/build.gradle",
-      "find": "versionName \"1.2.2\"",
+      "find": "versionName \"1.2.3\"",
       "replace": "versionName \"1.2.9\"",
       "expectFailure": "build.gradle"
     },
@@ -68,6 +68,30 @@
       "find": "google-site-verification: googleff6e49f8eb36eacb.html",
       "replace": "google-site-verification: wrong-token.html",
       "expectFailure": "not being served as written"
+    },
+    {
+      "name": "an ad SDK enters the build while the policy still says no ads are served",
+      "why": "This is the direction Play actually enforces. Serving ads while the policy tells players none are served is under-disclosure, and the sentence would otherwise sit there until somebody remembered it.",
+      "file": "android/app/build.gradle",
+      "find": "    implementation project(':capacitor-android')",
+      "replace": "    implementation project(':capacitor-android')\n    implementation 'com.google.android.gms:play-services-ads:23.0.0'",
+      "expectFailure": "still tells players no ads are served"
+    },
+    {
+      "name": "one language half loses the sentence saying ads are not served",
+      "why": "Naming AdMob without saying it is not yet active reads as a claim the app already serves ads and collects an advertising identifier. Half-editing a bilingual document is how the English side once went a whole release without a 1v1 section.",
+      "file": "docs/privacy.html",
+      "find": "<strong>현재 버전에는 광고 SDK 가 포함되어 있지 않으며, 광고가 게재되지 않습니다.</strong>",
+      "replace": "",
+      "expectFailure": "must say so in both"
+    },
+    {
+      "name": "the advertising ID permission comes back with no SDK to use it",
+      "why": "A policy sentence is read by a person; this permission is read by a machine and drives the advertising-ID question on the Data Safety form. It sat in the manifest with nothing able to use it, which is the one combination that gives two answers to one question.",
+      "file": "android/app/src/main/AndroidManifest.xml",
+      "find": "    <uses-permission android:name=\"com.google.android.gms.permission.AD_ID\" /> -->",
+      "replace": "    -->\n    <uses-permission android:name=\"com.google.android.gms.permission.AD_ID\" />",
+      "expectFailure": "advertising SDK is in the build for it to use"
     }
   ]
 }

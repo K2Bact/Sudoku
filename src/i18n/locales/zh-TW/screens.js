@@ -119,7 +119,7 @@ export const screens = {
       sec1Title: '1. 無需註冊', sec1Desc: '本應用無需註冊，不會收集您的姓名、電子郵件、電話號碼、通訊錄或位置資訊。使用連線功能（1v1 對戰、雲端備份）時，僅會傳送一組隨機產生的 ID。',
       sec2Title: '2. 本地存储與刪除权利', sec2Desc: '遊戲進度、提示數量、主題設定仅安全保存在您的設備本地。',
       sec3Title: '3. 1v1 對決與大腦指數', sec3Desc: '即時 1v1 對戰會傳送隨機產生的玩家 ID 與解題記錄。該 ID 儲存於本機並重複使用，不與您的姓名或帳號連結。',
-      sec4Title: '4. 廣告 (Google AdMob)', sec4Desc: '為維持遊戲免費，本應用程式可能透過 Google AdMob SDK 顯示廣告。廣告啟用時，AdMob 可能收集廣告識別碼。測試版本僅顯示標註的佔位內容，不投放實際廣告。'
+      sec4Title: '4. 廣告 (Google AdMob)', sec4Desc: '為維持遊戲免費，本應用程式可能透過 Google AdMob SDK 顯示廣告。廣告啟用時，AdMob 可能收集廣告識別碼。目前版本不投放廣告。'
     }
   },
   stats: {

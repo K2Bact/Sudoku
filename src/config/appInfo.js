@@ -4,8 +4,8 @@
  */
 export const APP_INFO = {
   name: 'Suidoku',
-  version: '1.2.2',
-  buildCode: '16',
+  version: '1.2.3',
+  buildCode: '17',
   buildDate: '2026.09',
   copyright: '© 2026 K2Bact. All rights reserved.',
   packageName: 'com.powerneja.suidoku',

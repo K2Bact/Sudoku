@@ -332,6 +332,78 @@ assert.deepStrictEqual(undisclosed, [],
   'sending to it.');
 console.log(`  ✅ ${MUST_DISCLOSE.length} destinations named in docs/privacy.html`);
 
+// ── Case 4b: what the policy says about ads matches what ships ────────────
+//
+// The policy names AdMob because that is where ad data will go, and the case
+// above requires the destination to be named. But the release build carries no
+// advertising SDK today: no play-services-ads in the gradle file, no App ID in
+// the manifest, no plugin — which is why AdMobProvider.isReal returns false.
+// The document used to state flatly that the app "integrates the Google AdMob
+// SDK", which was simply untrue.
+//
+// So both halves now say so, and this ties the sentence to the build. Getting
+// this wrong later is the dangerous direction: serving ads while the policy
+// says none are served is under-disclosure, and under-disclosure is what Play
+// actually enforces.
+console.log('▶ 4b. The policy\'s claim about ads matches the build');
+
+const gradle = fs.readFileSync(path.join(ROOT, 'android/app/build.gradle'), 'utf8');
+const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
+const shipsAdSdk = /play-services-ads|admob/i.test(gradle) || /admob/i.test(pkg);
+
+// The policy sentence is checked before the permission, deliberately. Both are
+// tied to the same fact, and a mutation can only touch one file — so with the
+// permission first, adding an ad dependency to gradle tripped the permission
+// check and the sentence rule could never be proven by anything.
+// One marker per language half of the hosted document.
+const NO_ADS_MARKERS = [
+  ['광고가 게재되지 않습니다', 'Korean'],
+  ['serves no ads', 'English']
+];
+const declaredAdFree = NO_ADS_MARKERS.filter(([m]) => policy.includes(m));
+
+if (shipsAdSdk) {
+  assert.strictEqual(declaredAdFree.length, 0,
+    'The build now carries an advertising SDK, but docs/privacy.html still tells ' +
+    'players no ads are served (' + declaredAdFree.map(([, l]) => l).join(', ') + ').\n\n' +
+    'This is the direction that gets enforced: serving ads while the policy says ' +
+    'otherwise is under-disclosure. Remove the sentence from both language halves ' +
+    'and check the Data Safety form declares the advertising ID.');
+  console.log('  ✅ an ad SDK ships and the policy no longer claims otherwise');
+} else {
+  assert.strictEqual(declaredAdFree.length, NO_ADS_MARKERS.length,
+    'No advertising SDK is in the build, so the policy must say so in both ' +
+    'language halves. Missing from: ' +
+    NO_ADS_MARKERS.filter(([m]) => !policy.includes(m)).map(([, l]) => l).join(', ') +
+    '.\n\nNaming AdMob without saying it is not yet active reads as a claim that ' +
+    'the app is already serving ads and collecting an advertising identifier. That ' +
+    'is over-disclosure rather than a violation, but it is still the document ' +
+    'describing an app that does not exist yet.');
+  console.log(`  ✅ no ad SDK ships, and both language halves say so`);
+}
+
+// The advertising-ID permission belongs to the same decision. It is the one of
+// the three that Google reads mechanically, and it is what the Data Safety form
+// asks about, so it must not be declared while nothing can use it. Comments do
+// not count — the permission has to be commented out or gone, not merely
+// mentioned in a note explaining why it is absent.
+const manifestXml = fs.readFileSync(path.join(ROOT, 'android/app/src/main/AndroidManifest.xml'), 'utf8');
+const liveManifest = manifestXml.replace(/<!--[\s\S]*?-->/g, '');
+const declaresAdIdPermission = liveManifest.includes('permission.AD_ID');
+
+assert.strictEqual(declaresAdIdPermission, shipsAdSdk,
+  declaresAdIdPermission
+    ? 'AndroidManifest.xml requests com.google.android.gms.permission.AD_ID, but no\n' +
+      'advertising SDK is in the build for it to use. Google reads that permission\n' +
+      'mechanically and it drives the advertising-ID question on the Data Safety\n' +
+      'form, so a build that tells players no ads are served while asking for the\n' +
+      'advertising ID gives two answers to one question.'
+    : 'An advertising SDK is in the build but AndroidManifest.xml does not declare\n' +
+      'com.google.android.gms.permission.AD_ID. Apps targeting Android 13 or later\n' +
+      'need it to read the advertising ID; without it AdMob falls back and the\n' +
+      'Data Safety declaration will not match what the SDK actually does.');
+console.log(`  ✅ the advertising ID permission matches the build (${shipsAdSdk ? 'declared' : 'absent'})`);
+
 // ── Case 5: a number on screen matches the number in the code ─────────────
 //
 // The achievements screen says "30" in thirteen languages. It is correct today.

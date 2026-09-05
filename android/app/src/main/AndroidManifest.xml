@@ -46,5 +46,16 @@
     <!-- soundHaptic.js calls navigator.vibrate(); Android silently ignores it
          without this permission, so every haptic in the game did nothing. -->
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+    <!-- No advertising SDK ships in this build, so nothing here can use the
+         advertising ID. The permission was added ahead of AdMob and stayed.
+
+         This is not the same kind of statement as a sentence in the privacy
+         policy: Google reads it mechanically, and it drives the advertising-ID
+         question on the Data Safety form. A build that tells players no ads are
+         served while asking for the advertising ID is two answers to one
+         question, and the machine-readable one wins.
+
+         Gate 2-14 case 4b ties this to the gradle dependency and to the policy,
+         so all three come back together when advertising goes in:
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" /> -->
 </manifest>
