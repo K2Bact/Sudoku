@@ -1,5 +1,6 @@
 import { ALL_PRACTICE_MISSIONS } from '../../../src/data/academy/practice/index.js';
 import { ACADEMY_STAGES } from '../../../src/data/academyStrategies.js';
+import { LOCALES } from '../../lib/locales.js';
 
 console.log('====================================================');
 console.log('🧪 ACADEMY INTERACTIVE PRACTICE HARNESS (64 MISSIONS)');
@@ -34,8 +35,14 @@ ACADEMY_STAGES.forEach(stage => {
         errors.push(`[${m.id}] Invalid correctVal: ${m.correctVal}`);
       }
 
-      const langs = ['ko', 'en', 'ja', 'zh', 'es'];
-      langs.forEach(lang => {
+      // Every language the app ships, read from the app — not a list written here.
+      //
+      // This used to be ['ko','en','ja','zh','es'] and it passed for months while
+      // two shipped languages had no practice text at all. `zh` and `es` exist in
+      // this data but the app never asks for them: the selector offers `zh-CN`,
+      // `zh-TW` and `es-ES`. So the check was verifying keys nobody reads, and the
+      // keys players actually hit were missing and falling back to English.
+      LOCALES.forEach(lang => {
         const titleText = m.title?.[lang];
         const guideText = m.guide?.[lang];
         if (!titleText) errors.push(`[${m.id}] Missing title for lang: ${lang}`);

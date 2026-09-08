@@ -4,6 +4,7 @@ import { useInteractivePractice } from '../../../hooks/useInteractivePractice.js
 import { PracticeBoardRenderer } from './PracticeBoardRenderer.jsx';
 import { PracticeKeypad } from './PracticeKeypad.jsx';
 import { useTranslation } from '../../../i18n/i18nContext.jsx';
+import { pickLocale } from '../langHelper.js';
 
 export function InteractivePracticeSection({
   strategyId,
@@ -69,9 +70,9 @@ export function InteractivePracticeSection({
         <div className="practice-mission-container" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {/* Guide Instruction Box */}
           <div className="practice-guide-box">
-            <strong>{currentMission.title[lang] || currentMission.title.en}</strong>
+            <strong>{pickLocale(currentMission.title, lang)}</strong>
             <p style={{ marginTop: '4px', margin: 0 }}>
-              {currentMission.guide[lang] || currentMission.guide.en}
+              {pickLocale(currentMission.guide, lang)}
             </p>
           </div>
 

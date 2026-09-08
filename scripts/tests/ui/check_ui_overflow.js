@@ -14,11 +14,12 @@
 import { chromium } from 'playwright';
 import { spawn, execSync } from 'child_process';
 import http from 'http';
+import { LOCALES } from '../../lib/locales.js';
 
 const PORT = 5199;
 const PREVIEW_URL = `http://localhost:${PORT}`;
 const VIEWPORT = { width: 360, height: 800 }; // Strictest compact Android viewport
-const LANGUAGES = ['ko', 'en', 'ja', 'zh-TW', 'zh-CN', 'es-ES', 'de', 'fr', 'pt', 'it', 'ru', 'hi', 'ar'];
+const LANGUAGES = LOCALES; // 목록을 여기 적지 않는다 — scripts/tests/lib/locales.js 가 앱에서 읽어온다
 
 function waitForServer(url, timeout = 10000) {
   const start = Date.now();

@@ -19,24 +19,24 @@ export const DIAGRAM_TRANSLATIONS = {
   ...STAGE5_DIAGRAMS
 };
 
+/**
+ * Read one diagram caption in the requested language.
+ *
+ * `lang` is the app's locale code as-is (`zh-TW`, `es-ES`, …). This function
+ * used to hold a chain of `startsWith` branches that mapped those codes down
+ * to the shorter keys this data once used — and the chain had to be extended
+ * by hand every time a language was added. Its sibling in langHelper.js was
+ * never extended, so the two disagreed about which key wins for Chinese.
+ *
+ * The data now uses the same codes as the rest of the app, so there is
+ * nothing to map. One lookup, one fallback.
+ */
 export function getDiagramText(type, key, lang = 'ko') {
   const strategyDict = DIAGRAM_TRANSLATIONS[type];
   if (!strategyDict) return '';
   const item = strategyDict[key];
   if (!item) return '';
-  const normalized = (lang || 'ko').toLowerCase();
-  if (normalized.startsWith('zh')) return item.zh || item['zh-TW'] || item.en || item.ko || '';
-  if (normalized.startsWith('es')) return item.es || item['es-ES'] || item.en || item.ko || '';
-  if (normalized.startsWith('de')) return item.de || item.en || item.ko || '';
-  if (normalized.startsWith('fr')) return item.fr || item.en || item.ko || '';
-  if (normalized.startsWith('pt')) return item.pt || item.en || item.ko || '';
-  if (normalized.startsWith('it')) return item.it || item.en || item.ko || '';
-  if (normalized.startsWith('ru')) return item.ru || item.en || item.ko || '';
-  if (normalized.startsWith('hi')) return item.hi || item.en || item.ko || '';
-  if (normalized.startsWith('ar')) return item.ar || item.en || item.ko || '';
-  if (normalized.startsWith('ja')) return item.ja || item.en || item.ko || '';
-  if (normalized.startsWith('en')) return item.en || item.ko || '';
-  return item.ko || item.en || '';
+  return item[lang] || item.en || item.ko || '';
 }
 
 export default DIAGRAM_TRANSLATIONS;

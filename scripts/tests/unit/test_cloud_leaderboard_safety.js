@@ -6,6 +6,7 @@
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
+import { LOCALES } from '../../lib/locales.js';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -145,7 +146,7 @@ assert(Array.isArray(lv1Ranks) && lv1Ranks.length >= 10, 'Lv1 ranks must return 
 console.log('  ✅ 3. leaderboardService 4-category dynamic rank, isolation & realistic IQ tests passed');
 
 // 3. Verify i18n translation completeness across all 13 languages
-const languages = ['ko', 'en', 'ja', 'zh-TW', 'zh-CN', 'es-ES', 'de', 'fr', 'pt', 'it', 'ru', 'hi', 'ar'];
+const languages = LOCALES; // 목록을 여기 적지 않는다 — scripts/tests/lib/locales.js 가 앱에서 읽어온다
 const requiredLeaderboardKeys = [
   'classicTab', 'speedrunTab', 'iqTab', 'pvpTab', 'myStanding',
   'unranked', 'record', 'topSolvers'

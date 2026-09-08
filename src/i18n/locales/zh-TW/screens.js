@@ -3,7 +3,7 @@ export const screens = {
     ghost: {
       ahead: '領先 {time}',
       behind: '落後 {time}',
-      ghostHintNotice: '💡 由于使用了提示，本局將不計入個人最佳記錄（PB）。'
+      ghostHintNotice: '💡 由於使用了提示，本局將不計入個人最佳記錄（PB）。'
     }
   },
   home: {
@@ -21,10 +21,10 @@ export const screens = {
       lockedToast: '至少通關此難度 1 次後解鎖。'
     },
     modes: {
-      classic: { badge: '經典模式', title: '經典單人', desc: '沉浸于逻辑思考的純粹數獨體驗', startBtn: '開始新遊戲' },
+      classic: { badge: '經典模式', title: '經典單人', desc: '沉浸於邏輯思考的純粹數獨體驗', startBtn: '開始新遊戲' },
       timeAttack: { badge: '極速衝榜', title: '⚡ 計時競速', desc: '分秒必争！挑戰你的極速通關紀錄', startBtn: '開始競速' },
       timeLimit: { badge: '限時生存', title: '⏳ 極限生存', desc: 'Lv.{level} 限時 {minutes} 分鐘！在倒計時結束前生存下來', startBtn: '開始生存挑戰' },
-      daily: { title: '每日挑戰', desc: '每日專属謎題與月度大師徽章', badge: 'NEW' },
+      daily: { title: '每日挑戰', desc: '每日專屬謎題與月度大師徽章', badge: 'NEW' },
       battle: { title: '1v1 在線對決', desc: '全球玩家即時對戰' },
       aiBattle: { title: 'AI 機器人對戰', desc: '1:1 AI 速度對決' },
       academy: { title: '數獨學院', desc: '學習 32 種實戰解題策略' },
@@ -44,16 +44,16 @@ export const screens = {
     unlockModalDesc: '{date} 的謎題為過往挑戰。\n觀看簡短廣告即可立即解鎖進行挑戰。\n是否觀看廣告？',
     unlockModalConfirmBtn: '📺 觀看廣告解鎖',
     unlockModalCancelBtn: '取消',
-    missionCardTitle: '🎯 今日專属任務',
+    missionCardTitle: '🎯 今日專屬任務',
     missionCompleted: '今日任務已完成！✅',
     missionStartBtn: '開始任務 🚀',
     missionReward: '+1 免费提示與簽到',
     tiers: { beginner: '初學·新秀', intermediate: '中級', advanced: '大師' },
     missions: {
-      beginnerLv1Title: '【Lv.1 入門】通關 1 局數獨', beginnerLv1Desc: '完成 Lv.1 入門難度，建立基礎逻辑思维。',
+      beginnerLv1Title: '【Lv.1 入門】通關 1 局數獨', beginnerLv1Desc: '完成 Lv.1 入門難度，建立基礎邏輯思維。',
       beginnerLv2Title: '【Lv.2 初級】通關 1 局數獨', beginnerLv2Desc: '完成 Lv.2 初級謎題，巩固數獨基本功。',
-      medLv3Title: '【Lv.3 中級以上】通關 1 局數獨', medLv3Desc: '完成 Lv.3 中級以上謎題，检验進階推理力。',
-      advLv4Title: '【Lv.4 高級以上】通關 1 局數獨', advLv4Desc: '擊破 Lv.4 以上高難度謎題，证明大師實力。',
+      medLv3Title: '【Lv.3 中級以上】通關 1 局數獨', medLv3Desc: '完成 Lv.3 中級以上謎題，检驗進階推理力。',
+      advLv4Title: '【Lv.4 高級以上】通關 1 局數獨', advLv4Desc: '擊破 Lv.4 以上高難度謎題，證明大師實力。',
       advLv5Title: '【Lv.5 大師】通關 1 局數獨', advLv5Desc: '挑戰 Lv.5 大師極限難度，衝擊最高段位。',
       battleTitle: '參加 1 場 1v1 在線或 AI 對決', battleDesc: '參與 1 場即時對戰或 AI 練習賽。',
       speedrunTitle: '⚡ 完成 1 局計時競速', speedrunDesc: '在競速模式中利用連擊加速通關。'
@@ -61,11 +61,11 @@ export const screens = {
   },
   removeAds: {
     title: '去除廣告與高級版',
-    heroTitle: '享受純净無干扰的數獨體验',
+    heroTitle: '享受純净無干扰的數獨體驗',
     heroDesc: '永久移除底部橫幅廣告與遊戲結束後的插頁廣告。',
     benefitsTitle: '👑 頂級會員特权',
     benefit1: '完全移除所有橫幅與全屏廣告',
-    benefit2: '極致專註體验並节省設備电量',
+    benefit2: '極致專註體驗並節省設備电量',
     benefit3: '支持獨立開發团队與持續更新',
     buyBtn: '永久去除廣告 ({price})',
     restoreBtn: '恢復购買記錄',
@@ -80,8 +80,8 @@ export const screens = {
     exitTooltip: '退出教學',
     step1Title: '🎯 第 1 步：選擇格子並輸入數字',
     step1Desc: '點擊高亮的 [第 1 行第 3 格] 空格，並在鍵盤上輸入 [9]！',
-    step2Title: '✏️ 第 2 步：铅笔筆記（填写候選數）',
-    step2Desc: '在工具栏開啟 [筆記] 切换為候選數模式，並為该格標記 [3]！',
+    step2Title: '✏️ 第 2 步：铅筆筆記（填写候選數）',
+    step2Desc: '在工具栏開啟 [筆記] 切换為候選數模式，並為該格標記 [3]！',
     step3Title: '🔒 第 3 步：快速輸入模式',
     step3Desc: '點擊快速輸入鎖定數字 [4]，連續點擊空格即可快速填入！',
     step4Title: '🎉 第 4 步：新手教學完成！',
@@ -96,7 +96,7 @@ export const screens = {
     languages: {
       auto: '系統預設'
     },
-    gameplaySection: '🎮 遊戲规則',
+    gameplaySection: '🎮 遊戲規則',
     limitMistakes: '失誤 3 次限制 (❤️)',
     limitMistakesDesc: '犯錯 3 次則遊戲結束',
     autoCheck: '即時自動检查錯誤',
@@ -104,7 +104,7 @@ export const screens = {
     soundSection: '🔊 声音與震動',
     soundFx: '音效',
     soundFxDesc: '數字輸入與按钮點擊音效',
-    hapticFx: '触覺震動反馈',
+    hapticFx: '觸覺震動反馈',
     hapticFxDesc: '填入正確或錯誤時的手指震動',
     adPrivacyBtn: '廣告隱私設定',
     adPrivacyDesc: '重新選擇個人化廣告同意',
@@ -112,14 +112,14 @@ export const screens = {
     resetDataDesc: '重置所有本地遊戲統計與記錄',
     resetConfirm: '⚠️ 警告：所有遊玩記錄、持有提示、大腦指數統計將被永久刪除。是否確定重置？',
     resetSuccess: '數據已成功重置。',
-    privacySection: '🛡️ 隐私保护',
+    privacySection: '🛡️ 隱私保护',
     privacyPolicyBtn: '查看完整隱私政策',
     privacySubtitle: '隱私保護',
     privacyModalTitle: '隱私政策',
     privacy: {
       subtitle: 'Sudoku 無需帳號，不收集姓名、電子郵件或聯絡方式。',
       sec1Title: '1. 無需註冊', sec1Desc: '本應用無需註冊，不會收集您的姓名、電子郵件、電話號碼、通訊錄或位置資訊。使用連線功能（1v1 對戰、雲端備份）時，僅會傳送一組隨機產生的 ID。',
-      sec2Title: '2. 本地存储與刪除权利', sec2Desc: '遊戲進度、提示數量、主題設定仅安全保存在您的設備本地。',
+      sec2Title: '2. 本地存储與刪除权利', sec2Desc: '遊戲進度、提示數量、主題設定僅安全保存在您的設備本地。',
       sec3Title: '3. 1v1 對決與大腦指數', sec3Desc: '即時 1v1 對戰會傳送隨機產生的玩家 ID 與解題記錄。該 ID 儲存於本機並重複使用，不與您的姓名或帳號連結。',
       sec4Title: '4. 廣告 (Google AdMob)', sec4Desc: '為維持遊戲免費，本應用程式可能透過 Google AdMob SDK 顯示廣告。廣告啟用時，AdMob 可能收集廣告識別碼。廣告僅出現在遊戲畫面底部橫幅與獎勵影片中。'
     }
@@ -140,12 +140,12 @@ export const screens = {
     totalPlayed: '總局數',
     totalWon: '獲勝局數',
     winRate: '勝率',
-    shareText: '[Sudoku IQ 大腦報告]\n我的數獨IQ: {iq}分 ({percentile})\n等級: {tier}\n立即一起挑戰極速逻辑推理！',
+    shareText: '[Sudoku IQ 大腦報告]\n我的數獨IQ: {iq}分 ({percentile})\n等級: {tier}\n立即一起挑戰極速邏輯推理！',
     copiedToast: '大腦分析結果已復制至剪貼板。',
     focus: '專註力',
     durability: '專註耐力',
-    accuracy: '精准度',
-    logic: '逻辑推理',
+    accuracy: '精準度',
+    logic: '邏輯推理',
     speed: '处理速度',
     shareCardBtn: '🔗 分享大腦分析卡片',
     overallStats: '📊 綜合累計數據',
@@ -157,14 +157,14 @@ export const screens = {
       grandMaster: '👑 宗師級大腦',
       grandMasterDesc: '超越全體玩家前 {percentile}%！極少數玩家能達到的頂級大師推理力。',
       mensa: '🧠 門薩級高智商',
-      mensaDesc: '超越全體玩家前 {percentile}%！展現門薩級别的卓越逻辑分析能力。',
-      superior: '⚡ 敏銳思维',
+      mensaDesc: '超越全體玩家前 {percentile}%！展現門薩級別的卓越邏輯分析能力。',
+      superior: '⚡ 敏銳思維',
       superiorDesc: '超越全體玩家前 {percentile}%！具備敏銳直覺與出色的問題解決力。',
-      aboveAverage: '💡 优异逻辑力',
+      aboveAverage: '💡 优异邏輯力',
       aboveAverageDesc: '超越全體玩家前 {percentile}%！具備穩定且靈活的思考模式。',
       balanced: '🎯 全方位平衡大腦',
-      balancedDesc: '超越全體玩家前 {percentile}%！五大認知領域均衡發展的典範状態。',
-      developing: '🌱 成长潜力',
+      balancedDesc: '超越全體玩家前 {percentile}%！五大認知領域均衡發展的典範狀態。',
+      developing: '🌱 成長潜力',
       developingDesc: '剛開啟大腦鍛煉階段。持續解題將让大腦指數迅速攀升！'
     }
   },

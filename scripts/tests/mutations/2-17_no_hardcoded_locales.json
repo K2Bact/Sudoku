@@ -1,0 +1,17 @@
+{
+  "gate": "2-17",
+  "name": "No Hand-Copied Locale Lists",
+  "command": "node scripts/tests/unit/test_no_hardcoded_locales.js",
+  "greenMarker": "The list lives in one place",
+  "note": "This gate is the one that keeps the others honest. Four checks each held their own copy of the locale list and one still said five languages, so it stayed green while two shipped locales were broken behind it — a check that copies the list cannot detect the list changing, because the check is one of the copies. Documents can ask people not to do this; only this gate stops it.",
+  "mutations": [
+    {
+      "name": "a check goes back to writing the list beside the assertion",
+      "why": "This is the original defect, restaged. `['ko','en','ja','zh','es']` in test_practice_missions.js passed for months while zh-TW and es-ES had no academy text at all. If the gate does not fire here, the next person adding a language gets the same silent pass.",
+      "file": "scripts/tests/unit/test_battle_ai_separation.js",
+      "find": "const locales = LOCALES;",
+      "replace": "const locales = ['ko', 'en', 'ja', 'zh-CN', 'es-ES'];",
+      "expectFailure": "로케일 목록 사본"
+    }
+  ]
+}

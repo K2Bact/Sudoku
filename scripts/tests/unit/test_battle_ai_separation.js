@@ -6,6 +6,7 @@
 
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join } from 'path';
+import { LOCALES } from '../../lib/locales.js';
 
 let passed = 0;
 let failed = 0;
@@ -25,7 +26,7 @@ console.log('🧪 QA Gate: AI Battle vs 1v1 PvP Isolation & Popup Audit');
 console.log('======================================================\n');
 
 // 1. 13-Language Dictionary Audit for AI Battle Isolation
-const locales = ['ko', 'en', 'ja', 'zh-TW', 'zh-CN', 'es-ES', 'de', 'fr', 'pt', 'it', 'ru', 'hi', 'ar'];
+const locales = LOCALES; // 목록을 여기 적지 않는다 — scripts/tests/lib/locales.js 가 앱에서 읽어온다
 
 for (const lang of locales) {
   console.log(`▶ Testing Locale [${lang}]...`);

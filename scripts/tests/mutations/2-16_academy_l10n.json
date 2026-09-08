@@ -1,0 +1,25 @@
+{
+  "gate": "2-16",
+  "name": "Academy Content Under The l10n Engine",
+  "command": "node scripts/tests/unit/test_academy_l10n.js",
+  "greenMarker": "Academy content passes the shared l10n gates",
+  "note": "Roughly five thousand strings — strategy cards, diagram captions, practice missions — used to sit outside every l10n gate because the academy stores them with the axis inverted (item → locale, not locale → key). The engine could not be fed them, so nobody noticed the academy was using its own locale codes and serving Simplified Chinese to Traditional readers. This gate inverts the axis and runs the engine's own gate functions, so the two mutations below check that the inversion still reaches the data and that the imported rules still bite.",
+  "mutations": [
+    {
+      "name": "a Simplified character creeps into Traditional Chinese",
+      "why": "This is the exact defect the academy shipped with for months: zh-TW readers served Simplified text. Gate 4 exists to catch it and was never shown this data. If swapping 後 for 后 here does not turn the gate red, the academy is outside the engine again — whatever the pipeline says.",
+      "file": "src/data/academy/diagrams/stage1Diagrams.js",
+      "find": "\"zh-TW\": \"📍 最後空格: 3x3 九宮格內的最後空格\"",
+      "replace": "\"zh-TW\": \"📍 最后空格: 3x3 九宮格內的最后空格\"",
+      "expectFailure": "Simplified character"
+    },
+    {
+      "name": "one language loses a string and the block ships incomplete",
+      "why": "A missing key does not crash — the lookup falls back to English and renders. That silence is why partial translations survive: the screen looks fine to anyone who does not read the language. Gate 1 is the only thing that can see it, and it can only see it if the adapter is still handing over every locale.",
+      "file": "src/data/academy/diagrams/stage1Diagrams.js",
+      "find": "      \"zh-TW\": \"📍 最後空格: 3x3 九宮格內的最後空格\",\n",
+      "replace": "",
+      "expectFailure": "Gate 1"
+    }
+  ]
+}

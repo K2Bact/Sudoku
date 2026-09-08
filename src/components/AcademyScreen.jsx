@@ -6,32 +6,17 @@ import { InteractivePracticeSection } from './academy/practice/InteractivePracti
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
 import { ACADEMY_STAGES } from '../data/academyStrategies';
+import { pickLocale } from './academy/langHelper';
 
 export function AcademyScreen({ onBack }) {
   const { t, activeLanguage } = useTranslation();
-  const lang = (activeLanguage || 'ko').startsWith('ko')
-    ? 'ko'
-    : (activeLanguage || '').startsWith('ja')
-      ? 'ja'
-      : (activeLanguage || '').startsWith('zh')
-        ? 'zh'
-        : (activeLanguage || '').startsWith('es')
-          ? 'es'
-          : (activeLanguage || '').startsWith('de')
-            ? 'de'
-            : (activeLanguage || '').startsWith('fr')
-              ? 'fr'
-              : (activeLanguage || '').startsWith('pt')
-                ? 'pt'
-                : (activeLanguage || '').startsWith('it')
-                  ? 'it'
-                  : (activeLanguage || '').startsWith('ru')
-                    ? 'ru'
-                    : (activeLanguage || '').startsWith('hi')
-                      ? 'hi'
-                      : (activeLanguage || '').startsWith('ar')
-                        ? 'ar'
-                        : 'en';
+  // The locale code goes straight through. It used to be squashed here into a
+  // shorter set (zh-CN and zh-TW both became 'zh', es-ES became 'es') because the
+  // academy data was keyed that way — a second code scheme, private to this
+  // screen. Two Chinese locales sharing one key meant Traditional readers were
+  // served Simplified, and nothing could report that because both codes resolved
+  // to a key that existed. The data now uses the app's own codes.
+  const lang = activeLanguage || 'ko';
   const [activeTab, setActiveTab] = useState('stage1'); // 'stage1' | 'stage2' | 'stage3' | 'stage4' | 'stage5'
 
   const handleTabChange = (tabKey) => {
@@ -89,7 +74,7 @@ export function AcademyScreen({ onBack }) {
                 <div key={strat.id} className="strategy-item-card">
                   <div className="strategy-header">
                     {(() => {
-                      const fullTitle = strat.title[lang] || strat.title.en || '';
+                      const fullTitle = pickLocale(strat.title, lang);
                       const match = fullTitle.match(/^(.+?)\s*\((.+?)\)$/);
                       if (match) {
                         return (
@@ -102,10 +87,10 @@ export function AcademyScreen({ onBack }) {
                       return <h4 className="strategy-title"><span className="strat-main-name">{fullTitle}</span></h4>;
                     })()}
                     <span className={`strategy-badge ${currentStage.badgeClass || 'beginner'}`}>
-                      {strat.badge[lang] || strat.badge.en}
+                      {pickLocale(strat.badge, lang)}
                     </span>
                   </div>
-                  <p className="strategy-desc">{strat.desc[lang] || strat.desc.en}</p>
+                  <p className="strategy-desc">{pickLocale(strat.desc, lang)}</p>
                   <div className="strategy-diagram-wrap">
                     <InteractivePracticeSection strategyId={strat.id} lang={lang}>
                       <TutorialMiniGrid type={strat.id} lang={lang} />
