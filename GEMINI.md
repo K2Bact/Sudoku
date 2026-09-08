@@ -157,4 +157,9 @@ something that does not need doing.** So the rules for that file are:
    moment there are two, nobody can tell which one is true — which is exactly
    how the two archived files ended up contradicting the repository.
 4. Narrative — how a problem was found, fixed and verified — goes in
-   `../SudokuDiary.md`. `BACKLOG.md` holds only what remains to be done.
+   `docs/SudokuDiary.md`. `BACKLOG.md` holds only what remains to be done.
+   *(Moved inside the repository on 2026-09-08; it had been sitting one level up
+   at `../SudokuDiary.md` with 214 KB and no backup.)*
+5. Console declarations, device-verification history and the values that change at
+   release live in `docs/RELEASE_STATE.md`. None of that leaves a trace in code, so no
+   gate can catch it drifting — the file is the only record.
