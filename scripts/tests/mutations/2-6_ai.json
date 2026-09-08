@@ -3,7 +3,7 @@
   "name": "AI Battle vs 1v1 PvP Isolation & Popup Audit",
   "command": "node scripts/tests/unit/test_battle_ai_separation.js",
   "greenMarker": "AI vs 1v1 isolation guaranteed",
-  "note": "The AI match loop was moved out of battleService so a practice match cannot touch the PvP transport. The isolation is structural and has to stay that way.",
+  "note": "Two things this gate holds down. The AI match loop was moved out of battleService so a practice match cannot touch the PvP transport — that isolation is structural and has to stay that way. And battle.css leans on a CSS Grid Stack to keep card height identical across thirteen languages, which is invisible in the CSS itself and only survives while it is written down. The second mutation edits a file in ../app_common, which the harness restores by content hash like any other; note that the run's `git status` cross-check only covers this repository, so that one file is verified by hash alone.",
   "mutations": [
     {
       "name": "the AI session reaches back into the PvP service",
@@ -12,6 +12,14 @@
       "find": "import { aiBotService } from '../engine/aiBotService.js';",
       "replace": "import { aiBotService } from '../engine/aiBotService.js';\nimport { battleService } from './battleService.js';",
       "expectFailure": "must not import"
+    },
+    {
+      "name": "the layout standard stops naming the property the CSS depends on",
+      "why": "`grid-area: 1 / 1` in battle.css looks like dead styling. It is the whole Grid Stack pattern: every option's description is stacked in one cell so the browser measures the longest one in the ACTIVE language and the container stops shifting height when the player switches chips. Somebody rewriting the standard without naming the property leaves the CSS looking removable, and the next person removes it — after which German and Spanish start moving the buttons under the card. The rule and the code have to fall together.",
+      "file": "../app_common/l10n_engine/GLOBAL_L10N_STANDARDS.md",
+      "find": ".option-desc { grid-area: 1 / 1; }",
+      "replace": ".option-desc { position: absolute; }",
+      "expectFailure": "must document the Grid Stack pattern"
     }
   ]
 }

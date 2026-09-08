@@ -1,109 +1,114 @@
-# 🚨 SUIDOKU PROJECT CRITICAL IMMUTABLE RULES & QA PROTOCOL
+# Suidoku — 앱 전용 규칙
 
-> This document defines mandatory, non-negotiable project rules for all AI models working on the Suidoku codebase.
+> **먼저 `../app_common/AGENTS.md` 를 읽으십시오.** 이 파일은 그것을 상속하며,
+> 스도쿠에서만 참인 것만 담습니다. 공통 규칙(빌드 금지·커밋 승인·비밀 관리·파일
+> 책임 분리·측정한 숫자만 보고·변형 감사·검사 범위)은 저쪽에 있습니다.
+>
+> **이 파일이 정본입니다.** `CLAUDE.md` 와 `GEMINI.md` 는 여기를 가리키는 안내판이며
+> 규칙을 담지 않습니다. 규칙을 벤더별로 복사하지 않습니다.
 
----
-
-## 🚫 1. [CRITICAL] NO UNPROMPTED AAB / APK BUILDS
-* **NEVER run `bundleRelease`, `assembleRelease`, or any Android AAB/APK binary build commands unless the user EXPLICITLY commands you to build (e.g. "AAB 빌드해", "릴리즈 파일 만들어").**
-* For testing, inspecting, checking, fixing, or adding translations, **STOP after running tests/validation (`npm run qa`). DO NOT build binary packages on your own.**
-
----
-
-## 📏 2. [CRITICAL] ONE FILE, ONE SET OF RESPONSIBILITIES
-
-**The rule is about separating responsibilities. The line budget only tells you when to look.**
-
-| Scope | Warn | Fail |
-|---|---|---|
-| Logic (`*.js`, `*.jsx`) | 200 code lines | 280 code lines |
-| Styles (`*.css`) | — | 320 code lines |
-
-* **Comments and blank lines are NOT counted.** Explain as much as the code needs; the
-  budget is for logic only.
-* **Never shorten a comment to get under the limit.** That is not a fix — it makes the
-  code less clear while leaving the real problem in place. This actually happened on
-  2026-09-02: `battleService.js` hit 302 lines and a comment was compressed back to 299,
-  while the file went on doing matchmaking, progress, rematch and AI battles all at once.
-  When it crossed the line again it was split into `aiBattleSession.js`, and *that* was
-  the fix.
-* **When a file is flagged, ask what it does — not how long it is.** The gate prints the
-  file's top-level units so you can see the seams. If you cannot name each unit's single
-  job in one phrase, that is where to split.
-* `src/i18n/` and `src/data/` are **excluded**: flat translation and puzzle tables have no
-  responsibilities to separate.
-* Enforced by QA gate `0-1` (`scripts/tests/unit/test_file_responsibility.js`). The warning
-  tier is a standing backlog, not noise — files on it should shrink over time, not grow.
+```
+com.powerneja.suidoku    ·    React 19 · Vite 8 · Capacitor 8 · Firebase RTDB
+실기 기본 단말            R3CW60KA6YM (SM-F731N, Z플립5)
+```
 
 ---
 
-## 🌐 3. [CRITICAL] MULTILINGUAL (I18N) & UI INTEGRITY PROTOCOL
+## 1. 다국어 — 13개 로케일
 
-> **Corrected 2026-09-08.** This section said "ALL 5 languages" and listed six
-> language buttons. The app ships **13 locales** and has for some time. A rule
-> that names a stale number teaches the next reader the wrong shape of the
-> problem — and this one would have had them register a string in five files
-> and call it done.
+```
+ar  de  en  es-ES  fr  hi  it  ja  ko  pt  ru  zh-CN  zh-TW
+```
 
-1. **Zero Hardcoded User-Facing Text**:
-   * NEVER write raw Korean/English strings directly in JSX or code templates (e.g. `${name} 님이...` is FORBIDDEN).
-   * All user-facing strings MUST use `t('section.key')` and be registered across **all 13 locales**:
-     `ar de en es-ES fr hi it ja ko pt ru zh-CN zh-TW`
-   * Gate `1` (key completeness) fails the build if any locale is missing a key, so a
-     partial addition cannot ship — but it also means **adding one string is a 13-file change.**
-2. **Language Button Endonym Rule**:
-   * Language selector buttons MUST ONLY display native endonyms without redundant parentheses.
-   * The list lives in `src/i18n/dictionaries.js` (`nativeName`) — **14 entries: 13 locales
-     plus System Default.** Do not hardcode a second copy of this list anywhere; a duplicate
-     list is how the button set and the locale set drift apart.
-   * NO `(Korean)`, `(English)`, `(자동)`, `(Auto)`, `(韓文)` parentheses allowed.
-3. **Grid Balance**:
-   * The selector grid must not leave an orphan slot. With 14 entries this is a 2-column
-     layout; if the locale count changes, check the layout rather than assuming.
-4. **Dynamic Interpolation**:
-   * Dynamic variables MUST use `{variable}` syntax in dictionaries and be passed via `t('key', { variable: value })`.
-5. **Never delete a key to silence a gate.** Orphan keys (translated but uncalled) are
-   inventory, not defects — `scripts/scan/run_scan.js` grades them `NOTE`. 74 were removed
-   deliberately in `643189d` along with a check that fails the build when new ones appear.
+1. **화면에 뜨는 문자열을 코드에 직접 쓰지 않습니다.** `${name} 님이…` 같은 템플릿도
+   금지입니다. 모두 `t('section.key')` 를 거칩니다.
+2. **문구 하나를 넣는 것은 13개 파일 변경입니다.** 게이트 1(키 완전성)이 누락을
+   막지만, 처음부터 그 크기로 생각하십시오.
+3. **언어 버튼은 `src/i18n/dictionaries.js` 의 `nativeName` 하나에서만 나옵니다.**
+   14개(13 로케일 + 시스템 기본값). 이 목록을 다른 곳에 복사하지 마십시오 — 복사본이
+   생기는 순간 버튼 집합과 로케일 집합이 갈라집니다.
+   괄호 병기 금지: `(Korean)`, `(자동)`, `(韓文)` 등.
+4. **동적 값은 `{variable}` 로 보간합니다.** 문장을 조각내어 조립하지 마십시오 —
+   어순이 다른 언어에서 깨집니다.
+5. **게이트를 조용히 시키려고 키를 지우지 마십시오.** 번역돼 있으나 안 불리는 키는
+   결함이 아니라 재고이며 스캔에서 `NOTE` 로 분류됩니다. 74개를 `643189d` 에서
+   의도적으로 지웠고, 같은 커밋에 새 고아 키가 생기면 빌드를 실패시키는 검사를
+   붙였습니다.
+
+> UI 레이아웃 규칙(외톨이 글자·줄바꿈·오버플로우)은
+> `../app_common/l10n_engine/GLOBAL_L10N_STANDARDS.md` 에 있습니다.
 
 ---
 
-## 🎮 4. [CRITICAL] CORE GAMEPLAY RUNTIME SCENARIO INTEGRITY
-1. **Revival Life Recovery (부활)**:
-   * When a player revives via rewarded ad after 3 mistakes, `mistakes` MUST be set to `2` (`setMistakes(2)`) in ALL game modes so the header displays `실수 2/3`.
-2. **1v1 Battle Result**:
-   * Victory / Defeat subtitles, mistake disqualification reasons, and heart states (`💀 실격`) must be 100% localized with dynamic opponent names.
-3. **Calendar Headers**:
-   * Weekdays must use localized day labels (`일~토`, `S~S`, `日~土`, `D~S`).
+## 2. 게임플레이 무결성
+
+1. **부활(리워드 광고) 후 실수는 `2`** — `setMistakes(2)` 를 모든 모드에서 적용해
+   헤더가 `실수 2/3` 을 표시하게 합니다.
+2. **1v1 결과 화면** — 승/패 부제, 실격 사유, 하트 상태(`💀 실격`)를 전부 현지화하고
+   상대 이름을 동적으로 넣습니다.
+3. **캘린더 요일 머리글** — 로케일 요일 라벨을 씁니다(`일~토`, `S~S`, `日~土`).
+4. **진행률 분모는 처음에 빈 칸** — 공통 규칙 §2.4. 81칸을 쓰면 게이지가 0%가 아니라
+   힌트 비율에서 시작합니다.
 
 ---
 
-## 🧪 5. [CRITICAL] AUTOMATED QA GATES (`npm run qa`)
+## 3. 광고 — 지금은 테스트 단위 ID
 
-Before declaring ANY work complete, you MUST run:
+**실제 광고 단위 ID로 바꾸지 마십시오.** 프로덕션 승인 전까지 샘플 ID
+(`ca-app-pub-3940256099942544/…`)로 둡니다. 실제 단위로 바꾸는 순간 개발자 기기의
+클릭이 무효 트래픽이 되고, 그것이 AdMob 계정이 정지되는 경로입니다.
+
+**동의 판단은 `canRequestAds` 로만 합니다.** 상태 문자열로 재구현하지 마십시오 —
+맞춤 광고를 거부한 이용자는 `status = OBTAINED` 이면서 `canRequestAds = TRUE` 이고,
+"거부 = 광고 없음" 으로 짜면 거부한 EEA 이용자 전원의 수익이 조용히 사라집니다.
+게이트 2-10 이 이 지름길을 금지합니다.
+
+**배너는 네이티브 오버레이입니다.** React 컴포넌트는 높이만 비우고, 언마운트 시
+반드시 `hideBanner()` 를 부릅니다. 부르지 않으면 게임 화면을 나가도 홈 화면 위에
+광고가 남습니다.
+
+**광고 실패가 화면 전환을 막으면 안 됩니다.** 진행 콜백은 `finally` 에서 부릅니다.
+
+> 현재 상태·실기 검증 이력·출시 전에 바꿀 값 다섯 개는 `docs/RELEASE_STATE.md`.
+
+---
+
+## 4. QA 파이프라인
 
 ```bash
 npm run qa
 ```
 
-> **Corrected 2026-09-08.** This section used to list five scripts and describe a
-> "5-language audit (415 keys)". Both numbers were stale and the list was a subset.
-> **Do not copy a step count from this file into a report — count it from the run.**
-> A figure that gets carried forward without being measured is how "39 steps" ended
-> up in the diary for several rounds when the real number was 34.
-
-**34 steps across three tiers** (measured 2026-09-08 — verify, do not quote):
+3계층 구조입니다. **단계 수는 실행 로그에서 세십시오 — 여기서 옮겨 적지 마십시오.**
 
 ```
-0-1 … 0-6    파일 책임 분리 · oxlint · ESM 확장자 · 커밋된 비밀 · Firebase 설정 · 스캔
-2-1 … 2-15   스도쿠 엔진 · PRNG · 지갑 · 아카데미 · AI 격리 · 리더보드 · 전송 계약
-             1v1 매칭 · 광고 정직성 · 네이티브 대화상자 · 기기 하네스 · 결제 정직성
-             개인정보 주장 일치 · 번역 키 도달성
-3-0 … 3-10   번들 빌드 · 하드코딩 문구 · 매니페스트 · 모달 · 대비 · 홈 레이아웃
-             뒤로가기 · 13개 언어 오버플로우 · 실플레이 E2E · 광고 배치 E2E · 1v1 E2E
+0-x   파일 책임 분리 · oxlint · ESM 확장자 · 커밋된 비밀 · Firebase 설정 · 스캔
+2-x   엔진 · PRNG · 지갑 · 아카데미 · AI 격리 · 리더보드 · 전송 계약 · 1v1 매칭
+      광고 정직성 · 네이티브 대화상자 · 기기 하네스 · 결제 정직성
+      개인정보 주장 일치 · 번역 키 도달성
+3-x   번들 빌드 · 하드코딩 문구 · 매니페스트 · 모달 · 대비 · 홈 레이아웃
+      뒤로가기 · 13개 언어 오버플로우 · 실플레이 E2E · 광고 배치 E2E · 1v1 E2E
 ```
 
-**게이트가 통과한다고 게이트가 일하는 것은 아니다.** 변형 감사
-(`scripts/tests/run_mutation_audit.js`)가 각 게이트가 지킨다고 주장하는 것을 실제로
-부수고 그 게이트가 **그 이유로** 실패하는지 확인한다. 현재 64개 변형 전부 잡힘.
-게이트를 고치거나 추가했으면 변형도 같이 추가할 것.
+**변형 감사** — `node scripts/tests/run_mutation_audit.js`.
+변형 정의는 `scripts/tests/mutations/*.json`, 작성 규칙은 그 폴더의 `README.md`.
+게이트를 고치거나 추가했으면 변형도 같이 추가합니다.
+
+---
+
+## 5. 이 앱의 문서
+
+```
+docs/BACKLOG.md            할 일 — 단일 원본. archive/ 는 읽지 마십시오
+docs/RELEASE_STATE.md      콘솔 신고 이력 · 실기 검증 · 출시 전 전환 목록
+docs/SudokuDiary.md        경위·발견·검증 (서사). 할 일을 여기 쓰지 마십시오
+docs/TECHNICAL_SPECIFICATION.md
+docs/POST_MORTEM_MISTAKES_REGISTRY.md   2026-08-15 시점 스냅샷. 이후는 일지
+```
+
+`docs/archive/` 의 `PROJECT_IDEAS_AND_BACKLOG.md` 와 `ROADMAP_AND_SPEC.md` 는
+2026-09-02 에 `BACKLOG.md` 로 통합됐습니다. **기록으로 남긴 것이지 참조용이 아닙니다.**
+
+통합한 이유가 규칙 그 자체입니다 — 그 두 문서의 "출시 전 필수 게이트" 4개 중 3개가
+이미 끝났는데도 "대기 중" 으로 적혀 있었습니다. **끝난 일이 대기 중으로 남아 있으면
+다음 사람이 없는 일을 하려 듭니다.**

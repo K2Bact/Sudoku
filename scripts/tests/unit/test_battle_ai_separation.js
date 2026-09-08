@@ -130,12 +130,25 @@ assert(
 console.log('\n▶ Testing Multilingual Auto-Equalizer Zero-Layout-Shift System...');
 const aiBattleContent = readFileSync('src/components/AIBattleScreen.jsx', 'utf8');
 const battleCssContent = readFileSync('src/styles/battle.css', 'utf8');
-const ruleExists = existsSync('.gemini/rules/multilingual_layout_rules.md');
+// The Grid Stack pattern is only safe while somebody writes down why it is there.
+// This used to require `.gemini/rules/multilingual_layout_rules.md` — a file only one
+// of the three assistants working here ever read. On 2026-09-08 that half and the
+// other half (in the playbook) were merged into the l10n constitution, which is where
+// rules the validator enforces already live. The assertion follows the content, not
+// the old path: what matters is that the pattern is documented somewhere every agent
+// reads, and that the document actually describes THIS pattern.
+const LAYOUT_STANDARD = '../app_common/l10n_engine/GLOBAL_L10N_STANDARDS.md';
+const layoutDoc = existsSync(LAYOUT_STANDARD) ? readFileSync(LAYOUT_STANDARD, 'utf8') : '';
 
 assert(aiBattleContent.includes('ai-level-spec-card'), 'AIBattleScreen renders dedicated ai-level-spec-card');
 assert(aiBattleContent.includes('spec-desc-grid-stack'), 'AIBattleScreen uses auto-equalizing spec-desc-grid-stack');
 assert(battleCssContent.includes('grid-area: 1 / 1'), 'battle.css uses grid-area 1 / 1 for adaptive height synchronization');
-assert(ruleExists, '.gemini/rules/multilingual_layout_rules.md exists in project');
+assert(layoutDoc.includes('grid-area: 1 / 1'),
+  'GLOBAL_L10N_STANDARDS must document the Grid Stack pattern that battle.css relies on. ' +
+  'Without it the next person deletes `grid-area: 1 / 1` as dead CSS and every ' +
+  'language-dependent card starts shifting height again.');
+assert(/Delta Height\s*=\s*0/.test(layoutDoc),
+  'GLOBAL_L10N_STANDARDS must state the Delta Height = 0 requirement the pattern exists to meet.');
 
 // 8. Android Native System Insets & Safe Area Clean Break Audit
 console.log('\n▶ Testing Android Native System Insets & Safe Area Inset Protection...');
