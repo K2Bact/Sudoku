@@ -1,0 +1,25 @@
+{
+  "gate": "2-18",
+  "name": "Translation Actually Happened",
+  "command": "node scripts/tests/unit/test_translation_actually_happened.js",
+  "greenMarker": "기계로 확인 가능한 미번역 흔적이 없습니다",
+  "note": "Every one of the thirteen locales is machine translated and none has had a native review, so this gate deliberately does not judge whether a sentence reads well — it cannot, and claiming it could would be the same fault as a fifty-character list wearing the name of a complete check. What it does catch is machine translation failing visibly: the source language left in place, an empty value, or English shipped as if it had been translated. The allowlist for the third case is enumerated by hand precisely so it stays short enough to read; a gate that reports seventy-eight harmless matches gets ignored, and an ignored gate looks like coverage.",
+  "mutations": [
+    {
+      "name": "Korean is copied into German and never translated",
+      "why": "This is what a half-finished translation pass leaves behind, and it is invisible in review: the string renders, the layout holds, and only a German speaker notices. Korean is this project's source language, so Hangul outside the ko locale can only mean somebody copied before translating.",
+      "file": "src/i18n/locales/de/screens.js",
+      "find": "gameplaySection: '🎮 Spielregeln',",
+      "replace": "gameplaySection: '🎮 게임 규칙',",
+      "expectFailure": "한글이 없다"
+    },
+    {
+      "name": "an English string ships in French as though it were translated",
+      "why": "The noisy half of the gate. Seventy-eight values legitimately match English — Pause is German, Sudoku is the app's name — so the allowlist has to absorb those without absorbing this. If the exception list ever grows wide enough to swallow a real omission, this mutation stops failing and says so.",
+      "file": "src/i18n/locales/fr/screens.js",
+      "find": "hapticFx: 'Retour haptique',",
+      "replace": "hapticFx: 'Haptic Feedback (Vibration)',",
+      "expectFailure": "영어를 그대로 둔 자리가 없다"
+    }
+  ]
+}

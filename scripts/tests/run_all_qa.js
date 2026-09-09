@@ -53,6 +53,7 @@ runStep('2-14. Privacy Claims Match Actual Behaviour', 'node scripts/tests/unit/
 runStep('2-15. Every Translated Key Is Reachable', 'node scripts/tests/unit/test_locale_keys_reachable.js');
 runStep('2-16. Academy Content Under The l10n Engine', 'node scripts/tests/unit/test_academy_l10n.js');
 runStep('2-17. No Hand-Copied Locale Lists', 'node scripts/tests/unit/test_no_hardcoded_locales.js');
+runStep('2-18. Translation Actually Happened', 'node scripts/tests/unit/test_translation_actually_happened.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests
