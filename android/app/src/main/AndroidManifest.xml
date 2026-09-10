@@ -14,7 +14,7 @@
              Swap this and the five unit ids in .env together at release. -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-4962315343548854~7282504859" />
 
         <meta-data
             android:name="com.google.android.gms.games.APP_ID"
