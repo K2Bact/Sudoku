@@ -50,11 +50,17 @@
 | 계정 세부정보 (한국 개발자) | ✅ 사업자등록번호 입력으로 차단 해제 |
 | 세금 정보 (W-8BEN) | ✅ **완료** — AdMob 광고 수익 원천징수 **0%** (조세조약 8조 1절) |
 | Android 개발자 인증 | ✅ 자동 완료 — Play Console 등록 개발자는 이미 인증 대상입니다 |
-| **인앱 상품 생성** | ❌ **아직** — 이제 이것만 하면 결제를 켤 수 있습니다 |
+| **일회성 제품 생성** | ❌ **아직. 그리고 이것만으로는 안 됩니다 — R-5 참조** |
 
 > **🔴 W-8BEN 은 영구가 아닙니다. 만료 2029-12-31.**
 > 만료되면 **조용히 30% 로 돌아갑니다.** 알림이 온다는 보장이 없으므로 2029년
 > 하반기에 재제출 일정을 직접 잡아야 합니다.
+
+> **⚠️ 2026-09-11 — 이 표의 마지막 줄을 "상품만 만들면 끝" 으로 읽지 마십시오.**
+> Play Console 은 결제 권한이 든 빌드가 올라와 있어야 제품 생성을 열어주고,
+> 코드가 설치하라고 적어둔 패키지는 **존재하지 않습니다.** 판매자 계정 준비가
+> 끝났다는 위의 표는 전부 사실이지만, 그것과 "팔 수 있다" 는 다릅니다.
+> **R-5 에 실제 순서와 남은 결정이 있습니다.**
 
 **상품 ID 는 여전히 정해야 합니다. 한 번 만들면 영원히 못 바꿉니다.**
 - 코드의 현재 값: `remove_ads_permanent` (`src/billing/index.js`)
@@ -72,14 +78,23 @@
 > **가격은 코드가 만들지 않습니다.** 스토어가 주는 문자열을 그대로 씁니다.
 > 직접 조립하려던 것이 `"영구 제거하기 ({price})"` 가 화면에 찍힌 원인이었습니다.
 
-### R-2. 결제 활성화 — 상품 생성 후
+### R-2. 결제 활성화 — ~~상품 생성 후~~ **R-5 로 대체됨 (2026-09-11)**
+
+여기 이렇게 적혀 있었습니다.
 
 ```
 npm i @capacitor-community/in-app-purchases && npx cap sync
 .env 에 VITE_BILLING_PROVIDER=play
+자리 코드는 한 줄도 바뀌지 않습니다.
 ```
-자리 코드는 한 줄도 바뀌지 않습니다. `src/billing/playBillingProvider.js` 가
-완성돼 있고 잠들어 있습니다(상품 조회·구매·소유 확인·acknowledge·복원).
+
+**세 줄 다 틀렸습니다.** 그 패키지는 npm 에 없고(404), 실존하는 대안들은 API 가
+전혀 달라 `playBillingProvider.js` 를 다시 써야 하며, 순서도 반대입니다 —
+플러그인이 먼저 빌드에 들어가야 Play Console 이 제품 생성을 열어줍니다.
+
+원문을 지우지 않고 남기는 이유: **이 지시를 그대로 따라 두 번 잘못 안내했고**,
+다음에 읽는 사람이 같은 문장을 다시 믿지 않으려면 틀렸다는 표시가 같은 자리에
+있어야 합니다. → **R-5**
 
 ### R-3. 광고 — **SDK 통합은 끝났습니다 (2026-09-05)**
 
@@ -124,6 +139,103 @@ npm i @capacitor-community/in-app-purchases && npx cap sync
 
 Play Console → 앱 무결성 → 자동 보호 → `시작하기`.
 **코드 변경 없음.** 구글이 출시 번들에 위변조 방지를 입혀줍니다.
+
+---
+
+### R-5. 인앱 결제 — 계획이 존재하지 않는 패키지를 가리키고 있었습니다 (2026-09-11 신규)
+
+**출시된 앱은 멀쩡합니다.** `isAvailable` 이 false 라 광고 제거 화면이 아예
+열리지 않고, 아무것도 팔리지 않았고, 아무도 깨진 결제를 보지 않았습니다.
+결함은 **계획과 그 문서**에 있지 동작에 있지 않습니다.
+
+#### 무엇이 잘못돼 있었나
+
+`src/billing/index.js` 주석이 출시 절차를 이렇게 적어두고 있었습니다.
+
+```
+1. Play Console 에 상품 생성
+2. npm i @capacitor-community/in-app-purchases && npx cap sync
+3. VITE_BILLING_PROVIDER=play
+   "Step 3 alone is the switch. No screen or service code changes."
+```
+
+**세 가지가 전부 틀렸습니다.**
+
+**① 순서가 불가능합니다.** Play Console 은 `com.android.vending.BILLING` 권한이
+든 빌드가 업로드돼 있어야 일회성 제품 생성을 열어줍니다. 권한은 결제 라이브러리가
+가져오므로 **플러그인이 먼저입니다.** 상품을 먼저 만들 방법이 없습니다.
+
+**② 그 패키지가 존재하지 않습니다.**
+
+```
+npm view @capacitor-community/in-app-purchases   →  404 Not Found
+```
+
+**③ 실존하는 대안들은 API 가 전혀 다릅니다.** `playBillingProvider.js` 는
+설정만 바꾸면 켜지는 상태가 아니라 **다시 써야 하는 상태**입니다.
+
+| 우리 코드 | `@capgo/native-purchases` 실제 |
+|---|---|
+| `Plugins.InAppPurchases` | `NativePurchases` |
+| `initialize()` | 없음 (`isBillingSupported()`) |
+| `getProducts({productIds})` → `.products[].id` | `getProducts({productIdentifiers, productType})` → `.identifier` |
+| `purchase({productId})` → `.cancelled` | `purchaseProduct({productIdentifier, productType})` |
+| `acknowledge({transactionId})` | 없음 — 자동 승인 |
+| `getPurchases()` → `.purchases[].productId` | `getPurchases({productType})` → `.productIdentifier` |
+
+메서드 이름·인자 이름·반환 필드·플러그인 등록 이름까지 전부 다릅니다.
+
+#### 게이트 2-13 은 거짓말하지 않았습니다
+
+"Billing Honesty" 는 **못 파는 것을 파는 척하지 않는가**를 검사하고, 그건 참입니다.
+플러그인이 없으면 `isAvailable` 이 false 이고 화면이 안 열리는 것까지 확인합니다.
+
+**다만 그 패키지가 실재하는지는 검사하지 않습니다.** 오늘 하루 반복된 패턴과
+같습니다 — 게이트는 자기가 보는 것에 대해 맞고, 초록이 더 넓게 읽혔습니다.
+이 항목은 그 초록을 "결제는 준비됐다" 로 읽은 결과입니다.
+
+#### 무엇을 골라야 하나 — 미결
+
+Suidoku 는 **안드로이드 전용**이고 iOS 폴더가 없습니다. 상품은 **하나**,
+**영구 구매**, **구독 없음**입니다.
+
+| 패키지 | 버전 | 성격 | 비용 |
+|---|---|---|---|
+| **`@capgo/native-purchases`** | 8.7.0 (2026-08-24) | Play Billing 에 직접 연결. 버전이 Capacitor 메이저를 따라가고 우리가 Capacitor 8 | 무료 |
+| `@revenuecat/purchases-capacitor` | 13.5.1 | 구매 기록을 RevenueCat 서버가 관리 | 월 추적매출 $2,500 까지 무료, 초과분은 **총매출의 1%** |
+| `cordova-plugin-purchase` | 13.18.0 | Cordova 계열. 널리 쓰이지만 크고 오래됨 | 무료 |
+
+RevenueCat 이 해결하는 문제 — 구독 갱신 추적, iOS/안드로이드 구매 통합,
+영수증 검증 서버 — 를 **우리는 하나도 갖고 있지 않습니다.** 그래서 지금은
+`@capgo/native-purchases` 가 맞아 보이지만, **결정되지 않았습니다.**
+
+#### 결정 후의 실제 순서
+
+```
+1. 플러그인 설치 + npx cap sync       .env 는 none 그대로
+2. playBillingProvider.js 를 그 API 로 다시 작성
+3. 병합된 매니페스트에 BILLING 권한이 들어갔는지 확인
+4. 1.2.4 빌드 → 테스트 트랙 업로드      ← 이게 올라가야 상품을 만들 수 있음
+5. Play를 통한 수익 창출 → 제품 → 일회성 제품
+     ID `remove_ads_permanent` (변경 불가) · 비소비성 · 구매 옵션 + 가격 · **활성화**
+6. VITE_BILLING_PROVIDER=play → 1.2.5 빌드 → 업로드
+7. 라이선스 테스터 계정으로 실제 구매 검증
+```
+
+**업로드가 두 번 필요하고 순서를 바꿀 수 없습니다.** 6번을 5번보다 먼저 하면
+`isAvailable` 이 플러그인 존재만 보기 때문에 화면이 열리는데 버튼에 가격이 없고
+누르면 에러가 납니다.
+
+**5번의 활성화를 빠뜨리면** 구매 옵션이 `임시` 로 남고 Play Billing Library 가
+아예 반환하지 않습니다. 에러가 아니라 **상품이 없는 것처럼 보입니다** —
+1.2.2 를 업로드만 하고 출시를 안 눌렀던 것과 같은 함정입니다.
+
+#### 급하지 않습니다
+
+광고가 이미 붙어 있고 수익 경로가 있습니다. 결제는 **광고 제거를 팔고 싶을 때**
+하면 되고, 그때까지 화면은 닫혀 있는 것이 옳습니다. 서두를 이유가 없는데
+서둘러서 "결제된 척" 하는 화면을 한 번 출시한 적이 있습니다.
+
 
 ---
 
