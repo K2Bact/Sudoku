@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: '{opponent} completed the puzzle first.',
     defeatMistakeDesc: 'You were eliminated due to 3 mistakes.',
     disqualified: '💀 Eliminated',
+    finalProgress: 'Final Progress',
     ratingChange: '1v1 MMR Rating Change',
     aiModeLabel: 'AI Bot Practice Match (Lv.{level})',
     aiWonBadge: 'Practice Won',

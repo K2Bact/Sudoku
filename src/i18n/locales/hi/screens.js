@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: '{opponent} ने पहले पहेली हल कर ली।',
     defeatMistakeDesc: '3 गलतियों के कारण आप खेल से बाहर हैं।',
     disqualified: '💀 बाहर',
+    finalProgress: 'अंतिम प्रगति',
     ratingChange: '1v1 MMR रेटिंग परिवर्तन',
     aiModeLabel: 'एआई बॉट अभ्यास मैच (स्तर {level})',
     aiWonBadge: 'अभ्यास में जीत',

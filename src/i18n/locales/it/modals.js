@@ -41,6 +41,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'Ricompensa Giornaliera!',
+      streakBadge: 'Serie di {days} giorni',
       desc: 'Serie di {days} giorni raggiunta!\n+{count} suggerimento/i gratuito/i aggiunto/i.',
       confirm: 'Riscatta'
     },

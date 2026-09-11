@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: 'أكمل {opponent} اللغز أولاً.',
     defeatMistakeDesc: 'تم استبعادك بسبب ارتكاب 3 أخطاء.',
     disqualified: '💀 تم الاستبعاد',
+    finalProgress: 'التقدم النهائي',
     ratingChange: 'تغير تصنيف المبارزة (MMR)',
     aiModeLabel: 'مباراة تدريب ضد الذكاء الاصطناعي (مستوى {level})',
     aiWonBadge: 'فوز في التدريب',

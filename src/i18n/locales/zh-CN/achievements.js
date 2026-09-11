@@ -20,7 +20,7 @@ export const achievements = {
 
     // 1 ~ 7. 通关与进度
     first_win: { title: '初试身手', desc: '不限难度完成生涯第一局数独' },
-    win_5: { title: '五战五捷', desc: '累计通关 5 局数独' },
+    win_5: { title: '青铜解题家', desc: '累计通关 5 局数独' },
     win_10: { title: '数独爱好者', desc: '累计通关 10 局数独' },
     win_25: { title: '白银解题家', desc: '累计通关 25 局数独' },
     win_50: { title: '黄金老手', desc: '累计通关 50 局数独' },

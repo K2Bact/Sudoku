@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: '{opponent} 님이 퍼즐을 먼저 완성했습니다.',
     defeatMistakeDesc: '실수 3회(하트 소진)로 실격되어 패배하셨습니다.',
     disqualified: '💀 실격',
+    finalProgress: '최종 진행률',
     ratingChange: '1v1 MMR 레이팅 변동',
     aiModeLabel: 'AI 봇 연습 대전 (Lv.{level})',
     aiWonBadge: '연습 승리',

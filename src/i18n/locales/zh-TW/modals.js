@@ -44,6 +44,7 @@ export const modals = {
     },
     dailyReward: {
       title: '每日簽到獎勵已送達！',
+      streakBadge: '連續 {days} 天',
       desc: '連續第 {days} 天簽到完成！\n已獲得免費提示 +{count}。',
       confirm: '領取獎勵'
     },

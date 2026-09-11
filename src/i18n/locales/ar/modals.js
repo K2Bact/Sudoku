@@ -41,6 +41,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'مكافأة الحضور اليومي!',
+      streakBadge: '{days} يوم متواصل',
       desc: 'حضور متواصل: {days} يوم!\nتم الحصول على +{count} تلميح مجاني.',
       confirm: 'استلام المكافأة'
     },

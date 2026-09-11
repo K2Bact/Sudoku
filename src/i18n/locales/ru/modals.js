@@ -41,6 +41,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'Ежедневная награда!',
+      streakBadge: 'Серия: {days} дн.',
       desc: 'Серия: {days}-й день подряд!\nПолучено бесплатных подсказок: +{count}.',
       confirm: 'Забрать награду'
     },

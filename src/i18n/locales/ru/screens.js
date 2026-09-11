@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: '{opponent} решает судоку первым.',
     defeatMistakeDesc: 'Вы выбыли из-за 3 допущенных ошибок.',
     disqualified: '💀 Выбывание',
+    finalProgress: 'Итоговый прогресс',
     ratingChange: 'Изменение рейтинга MMR 1v1',
     aiModeLabel: 'Тренировочный матч с ИИ (Ур.{level})',
     aiWonBadge: 'Победа в тренировке',

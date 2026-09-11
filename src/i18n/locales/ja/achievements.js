@@ -17,7 +17,7 @@ export const achievements = {
 
     // 1 ~ 7. 完走 & 進行
     first_win: { title: '第一歩', desc: '難易度を問わず初めてナンプレパズルをクリア' },
-    win_5: { title: '5戦5勝', desc: '累計5パズルクリア達成' },
+    win_5: { title: 'ブロンズパズラー', desc: '累計5パズルクリア達成' },
     win_10: { title: 'ナンプレ愛好家', desc: '累計10パズルクリア達成' },
     win_25: { title: 'シルバーパズラー', desc: '累計25パズルクリア達成' },
     win_50: { title: 'ゴールドベテラン', desc: '累計50パズルクリア達成' },

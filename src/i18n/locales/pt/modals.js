@@ -41,6 +41,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'Recompensa Diária!',
+      streakBadge: 'Sequência de {days} dias',
       desc: 'Sequência de {days} dias atingida!\n+{count} dica(s) gratuita(s) adicionada(s).',
       confirm: 'Receber'
     },

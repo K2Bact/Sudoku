@@ -41,6 +41,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'デイリーログインボーナス！',
+      streakBadge: '{days}日連続',
       desc: '連続 {days}日目のログイン達成！\n無料ヒント +{count}個 が付与されました。',
       confirm: 'ボーナスを受け取る'
     },

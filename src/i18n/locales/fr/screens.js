@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: '{opponent} a complété la grille en premier.',
     defeatMistakeDesc: 'Vous êtes hors course après 3 erreurs.',
     disqualified: '💀 Hors course',
+    finalProgress: 'Progression finale',
     ratingChange: 'Évolution du classement MMR 1v1',
     aiModeLabel: 'Match d’entraînement IA (Lv.{level})',
     aiWonBadge: 'Entraînement gagné',

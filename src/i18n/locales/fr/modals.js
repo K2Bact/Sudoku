@@ -41,6 +41,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'Récompense quotidienne !',
+      streakBadge: 'Série de {days} j',
       desc: 'Série de {days} jour(s) atteinte !\n+{count} indice(s) gratuit(s) ajouté(s).',
       confirm: 'Récupérer'
     },

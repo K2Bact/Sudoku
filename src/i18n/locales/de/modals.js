@@ -41,6 +41,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'Tägliche Belohnung!',
+      streakBadge: '{days} Tage in Folge',
       desc: '{days} Tage in Folge erreicht!\n+{count} kostenlose Tipps hinzugefügt.',
       confirm: 'Abholen'
     },

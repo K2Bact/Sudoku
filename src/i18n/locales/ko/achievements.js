@@ -17,7 +17,7 @@ export const achievements = {
 
     // 1 ~ 7. 완주 & 진행
     first_win: { title: '첫 발자국', desc: '난이도 상관없이 생애 첫 스도쿠 퍼즐 완주' },
-    win_5: { title: '5전 5승', desc: '누적 5판 완주 달성' },
+    win_5: { title: '브론즈 퍼즐러', desc: '누적 5판 완주 달성' },
     win_10: { title: '스도쿠 애호가', desc: '누적 10판 완주 달성' },
     win_25: { title: '실버 퍼즐러', desc: '누적 25판 완주 달성' },
     win_50: { title: '골드 베테랑', desc: '누적 50판 완주 달성' },

@@ -41,6 +41,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'दैनिक पुरस्कार प्राप्त!',
+      streakBadge: '{days} दिन लगातार',
       desc: '{days} दिन लगातार खेलने पर!\n+{count} मुफ्त संकेत प्राप्त हुए।',
       confirm: 'पुरस्कार प्राप्त करें'
     },

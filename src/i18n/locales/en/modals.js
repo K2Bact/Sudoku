@@ -41,6 +41,7 @@ export const modals = {
     },
     dailyReward: {
       title: 'Daily Attendance Reward!',
+      streakBadge: 'Day {days} Streak',
       desc: 'Day {days} streak achieved!\n+{count} Free Hints added.',
       confirm: 'Claim Reward'
     },

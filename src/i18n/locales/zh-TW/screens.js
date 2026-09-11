@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: '{opponent} 先完成了拼圖。',
     defeatMistakeDesc: '因 3 次失誤（爱心耗尽）遗憾淘汰。',
     disqualified: '💀 淘汰',
+    finalProgress: '最終進度',
     ratingChange: '1v1 MMR 積分變動',
     aiModeLabel: 'AI 機器人練習對決 (Lv.{level})',
     aiWonBadge: '練習獲勝',

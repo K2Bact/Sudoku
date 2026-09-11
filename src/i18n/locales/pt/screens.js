@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: '{opponent} completou o tabuleiro primeiro.',
     defeatMistakeDesc: 'Você está fora após cometer 3 erros.',
     disqualified: '💀 Fora',
+    finalProgress: 'Progresso final',
     ratingChange: 'Variação de Pontuação MMR 1v1',
     aiModeLabel: 'Partida de Treino com IA (Nv.{level})',
     aiWonBadge: 'Treino Vencido',

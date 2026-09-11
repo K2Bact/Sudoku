@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: '{opponent} さんが先にパズルを完成させました。',
     defeatMistakeDesc: 'ミス3回により失格となりました。',
     disqualified: '💀 失格',
+    finalProgress: '最終進捗',
     ratingChange: '1v1 MMR レーティング変動',
     aiModeLabel: 'AIボット練習対戦 (Lv.{level})',
     aiWonBadge: '練習 勝利',

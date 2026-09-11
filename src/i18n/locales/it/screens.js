@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: '{opponent} ha completato lo schema per primo.',
     defeatMistakeDesc: 'Sei fuori gara dopo aver commesso 3 errori.',
     disqualified: '💀 Fuori',
+    finalProgress: 'Progresso finale',
     ratingChange: 'Variazione Punteggio MMR 1v1',
     aiModeLabel: 'Partita di Allenamento IA (Lv.{level})',
     aiWonBadge: 'Allenamento Vinto',

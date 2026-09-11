@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: '{opponent} hat das Rätsel zuerst gelöst.',
     defeatMistakeDesc: 'Du wurdest wegen 3 Fehlern disqualifiziert.',
     disqualified: '💀 Raus',
+    finalProgress: 'Endstand',
     ratingChange: '1v1 MMR-Wertungsänderung',
     aiModeLabel: 'KI-Bot-Übungsmatch (Lv.{level})',
     aiWonBadge: 'Übung gewonnen',

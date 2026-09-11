@@ -189,6 +189,7 @@ export const screens = {
     defeatDesc: '{opponent} 先完成了谜题。',
     defeatMistakeDesc: '因 3 次失误（爱心耗尽）遗憾淘汰。',
     disqualified: '💀 淘汰',
+    finalProgress: '最终进度',
     ratingChange: '1v1 MMR 积分变动',
     aiModeLabel: 'AI 机器人练习对决 (Lv.{level})',
     aiWonBadge: '练习获胜',

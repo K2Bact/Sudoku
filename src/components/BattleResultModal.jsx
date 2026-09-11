@@ -122,7 +122,13 @@ export function BattleResultModal({
         )}
 
         {/* Final Progress Comparison with Space-Between Rows & Badges & Hearts */}
+        {/*
+          카드에 제목을 붙인다. 이 카드는 "87%" 를 라벨 없이 보여주고 있었고,
+          그 숫자가 진행률인지 정답률인지 점수인지 화면이 말하지 않았다.
+          각 행에 라벨을 붙이면 좁은 폭에 이름·하트·값이 겹치므로 제목 하나로 덮는다.
+        */}
         <div className="final-comparison-card">
+          <div className="comp-card-title">{t('battleResult.finalProgress')}</div>
           <div className="comp-row">
             <div className="comp-player-info">
               <span className="comp-name">{t('battleResult.you')}</span>

@@ -196,6 +196,7 @@ export const screens = {
     defeatDesc: '{opponent} ha completado el puzle primero.',
     defeatMistakeDesc: 'Has quedado descalificado por acumular 3 fallos.',
     disqualified: '💀 Fuera',
+    finalProgress: 'Progreso final',
     ratingChange: 'Variación de puntos MMR 1v1',
     aiModeLabel: 'Duelo de práctica con IA (Lv.{level})',
     aiWonBadge: 'Victoria de práctica',

@@ -36,7 +36,7 @@ export function DailyRewardModal({ rewardInfo, onConfirm }) {
           fontSize: '13px'
         }}>
           <Award size={16} />
-          <span>Day {streakDays} Streak</span>
+          <span>{t('modals.dailyReward.streakBadge', { days: streakDays })}</span>
         </div>
 
         <p className="modal-desc mt-1">
