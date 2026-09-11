@@ -30,12 +30,35 @@
  * 영구적으로 제거되었습니다!" — a complete simulation of a payment, with the
  * product handed over free. A player could not tell that apart from a purchase.
  *
- * TO GO LIVE at real release, in this order:
- *   1. create the product in Play Console: an in-app product (managed),
- *      id `remove_ads_permanent`, then activate it
- *   2. npm i @capacitor-community/in-app-purchases && npx cap sync
- *   3. set VITE_BILLING_PROVIDER=play in .env
- * Step 3 alone is the switch. No screen or service code changes.
+ * TO GO LIVE at real release. The order below is not a preference — the first
+ * two steps are forced by Play Console, and the earlier version of this comment
+ * had them backwards:
+ *
+ *   1. npm i @capacitor-community/in-app-purchases && npx cap sync
+ *      This is what puts `com.android.vending.BILLING` in the merged manifest;
+ *      the Play Billing Library declares it, we do not write it by hand.
+ *      Keep VITE_BILLING_PROVIDER=none for this build.
+ *
+ *   2. Build and upload to a test track.
+ *      Play Console refuses to create the product until an uploaded build
+ *      carries that permission — the one-time products page says so and offers
+ *      nothing but an upload button. So the product cannot come first.
+ *
+ *   3. Play Console → Play를 통한 수익 창출 → 제품 → 일회성 제품.
+ *      (Google renamed "인앱 상품" to "일회성 제품".) Create it with id
+ *      `remove_ads_permanent` — non-consumable, since the benefit is permanent
+ *      — add at least one purchase option with a price, then ACTIVATE it.
+ *      An un-activated purchase option stays 임시 and the Billing Library does
+ *      not return it at all: no error, just a product that appears not to exist.
+ *
+ *   4. set VITE_BILLING_PROVIDER=play in .env, build, upload.
+ *
+ * Two uploads, and step 4 has to be the later one. `isAvailable` only asks
+ * whether the plugin is present, not whether the product exists, so flipping
+ * the switch before step 3 makes the Remove Ads screen reachable with no price
+ * on the button and an error when it is tapped.
+ *
+ * Step 4 alone is the switch. No screen or service code changes.
  */
 
 import { NoBillingProvider } from './noBillingProvider.js';
