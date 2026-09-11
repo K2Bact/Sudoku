@@ -55,6 +55,35 @@ const MANIFEST_DIR = path.join(ROOT, 'scripts/tests/mutations');
 const BACKUP_DIR = path.join(ROOT, 'test_output/mutation_backups');
 
 const sha = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+
+/**
+ * 파일을 쓰되, 윈도우에서 일시적으로 잠긴 경우 잠깐 기다렸다 다시 시도한다.
+ *
+ * 이 감사는 소스를 고쳤다 되돌린다. 되돌리는 쪽에서 예외가 나면 **작업트리가
+ * 변이 상태로 남는다** — 감사가 낼 수 있는 결과 중 가장 나쁘다. 잘못된 판정은
+ * 다시 돌리면 되지만, 더럽혀진 트리는 다음에 무엇을 빌드하든 오염시킨다.
+ *
+ * 2026-09-11 에 실제로 났다. `npm run build` 직후 `aiBattleSession.js` 를
+ * 되돌리는 자리에서 `UNKNOWN (errno -4094)` 이 났고 감사가 죽었다. 원인은
+ * 코드가 아니라 다른 프로세스(백신이나 방금 끝난 빌드)가 파일을 잡고 있던
+ * 것이고, 몇십 밀리초면 풀린다. 백업 덕분에 손으로 복구할 수 있었지만
+ * **복구가 필요했다는 것 자체가 이 자리의 결함이다.**
+ *
+ * 끝까지 실패하면 던진다. 조용히 넘어가면 더러운 트리를 깨끗하다고 보고하게 된다.
+ */
+function writeWithRetry(file, body, attempts = 6) {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      fs.writeFileSync(file, body, 'utf8');
+      return;
+    } catch (e) {
+      const transient = e.code === 'UNKNOWN' || e.code === 'EBUSY' || e.code === 'EPERM';
+      if (!transient || i === attempts - 1) throw e;
+      // 동기 대기. 이 함수는 finally 안에서도 불리므로 await 을 쓸 수 없다.
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50 * (i + 1));
+    }
+  }
+}
 const gitStatus = () => execSync('git status --porcelain', { cwd: ROOT }).toString();
 
 /** Run a gate and hand back its combined output. Exit code is recorded but never judged on its own. */
@@ -291,14 +320,46 @@ for (const manifest of selected) {
       }
     };
 
+    /*
+     * `rebuildFixture` — 게이트가 기준선 스냅샷과 대조한다면, 그 스냅샷을 다시
+     * 찍어 통과시키려는 시도까지 재현해야 한다.
+     *
+     * 게이트 2-19 는 "지금 쓰는 한자 목록" 과 대조한다. 그 목록은 한 명령으로
+     * 다시 만들 수 있고, **실패할 때마다 습관적으로 다시 만들면 게이트가
+     * 아무것도 막지 않는다.** 그것이 이 게이트가 죽는 가장 그럴듯한 경로다.
+     *
+     * 이 필드가 있는 변이는 오염을 넣은 뒤 스냅샷을 다시 만들고 나서 게이트를
+     * 돌린다. 그래도 빨개져야 한다 — 스냅샷과 짝을 이루는 자기모순 검사는
+     * 근거가 데이터에 있어 재생성으로 지워지지 않기 때문이다.
+     *
+     * 스냅샷 파일은 아래 finally 에서 다른 변이 파일과 같은 방식으로 되돌린다.
+     */
+    const fixtureFiles = [];
+    const rebuildFixture = () => {
+      if (!mut.rebuildFixture) return;
+      try { execSync(mut.rebuildFixture, { cwd: ROOT, stdio: 'pipe' }); }
+      catch (e) { /* 재생성이 실패해도 게이트를 돌려 무슨 말을 하는지 본다 */ }
+    };
+    if (mut.rebuildFixture) {
+      // 재생성이 건드릴 파일을 미리 백업한다. 무엇이 바뀔지는 명령이 알지만,
+      // 이 감사가 아는 것은 "작업트리를 원상복구해야 한다" 뿐이다.
+      for (const f of fs.readdirSync(path.join(ROOT, 'scripts/tests/fixtures'))) {
+        if (!f.endsWith('.json')) continue;
+        const fp = path.join(ROOT, 'scripts/tests/fixtures', f);
+        fixtureFiles.push([fp, fs.readFileSync(fp, 'utf8')]);
+      }
+    }
+
     let res;
     try {
       inFlight = { full, original, rel };
-      fs.writeFileSync(full, original.replace(mut.find, expandBait(mut.replace)), 'utf8');
+      writeWithRetry(full, original.replace(mut.find, expandBait(mut.replace)));
       rebuild();
+      rebuildFixture();
       res = runGate(manifest.command);
     } finally {
-      fs.writeFileSync(full, original, 'utf8');
+      for (const [fp, body] of fixtureFiles) writeWithRetry(fp, body);
+      writeWithRetry(full, original);
       rebuild();
       inFlight = null;
       if (sha(full) === hashesBefore[rel]) fs.unlinkSync(backup);
@@ -307,7 +368,39 @@ for (const manifest of selected) {
     const stillGreen = isGreen(manifest, res);
     const rightReason = res.out.includes(mut.expectFailure);
 
-    if (stillGreen) {
+    /*
+     * `expectSurvival` — 일부러 통과해야 하는 변이.
+     *
+     * 게이트가 무엇을 잡는가만 검사하면 한쪽만 고정된다. **무엇을 잡으면 안
+     * 되는가**도 고정해야 한다. 오탐은 누락보다 덜 위험해 보이지만, 시끄러운
+     * 게이트는 무시당하고 무시당하는 게이트는 검사처럼 보이는 장식이 된다.
+     *
+     * 실제로 그런 일이 있었다. 하드코딩 스캐너(3-1)가 한국어 **주석**을
+     * 위반으로 보고했다. 그것을 조용히 만드는 가장 쉬운 방법은 주석을 영어로
+     * 바꾸는 것이고, 그러면 이 저장소에서 가장 값나가는 것 — 왜 그렇게
+     * 고쳤는지의 기록 — 이 사라진다. 그래서 "주석은 통과해야 한다" 를
+     * 변이로 고정했다.
+     *
+     * 남용하면 위험하다. SURVIVED 를 이 플래그로 덮어 통과시키는 순간
+     * 이 감사는 아무 말도 하지 않게 된다. 그래서 `why` 에 왜 통과가 옳은지
+     * 적혀 있지 않으면 받지 않는다.
+     */
+    if (mut.expectSurvival) {
+      if (!mut.why || mut.why.length < 40) {
+        console.log(`  🚫 ${mut.name}`);
+        console.log('       expectSurvival 인데 why 가 비었거나 너무 짧다 —');
+        console.log('       통과가 옳은 이유를 적지 않은 면제는 면제가 아니다');
+        results.push({ gate: manifest.gate, mutation: mut.name, verdict: 'UNJUSTIFIED_SURVIVAL' });
+      } else if (stillGreen) {
+        console.log(`  ✅ ${mut.name}  [통과해야 정상]`);
+        results.push({ gate: manifest.gate, mutation: mut.name, verdict: 'CAUGHT' });
+      } else {
+        console.log(`  ❌ ${mut.name}  [통과해야 정상]`);
+        console.log('       the gate went red on something it must not object to.');
+        console.log(`       ${mut.why}`);
+        results.push({ gate: manifest.gate, mutation: mut.name, verdict: 'FALSE_POSITIVE' });
+      }
+    } else if (stillGreen) {
       console.log(`  ❌ ${mut.name}`);
       console.log('       the gate stayed green. It does not protect this.');
       console.log(`       ${mut.why}`);
@@ -351,6 +444,9 @@ if (bad.length) {
   for (const b of bad) console.log(`  ${b.verdict.padEnd(17)} ${b.gate}  ${b.mutation}`);
   console.log('');
   console.log('SURVIVED means the gate passes while the thing it guards is broken.');
+  console.log('FALSE_POSITIVE means the gate objected to something it must not —');
+  console.log('  noise, which gets a gate muted, and a muted gate reads as coverage.');
+  console.log('UNJUSTIFIED_SURVIVAL means expectSurvival was claimed with no reason written.');
   console.log('WRONG_REASON means an earlier failure hid this one — the check is unproven.');
   console.log('ANCHOR_* means the manifest rotted. Repoint it; do not delete the mutation.');
 }

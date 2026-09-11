@@ -3,7 +3,7 @@
   "name": "Academy 64 Interactive Missions Math & Logic Truth",
   "command": "node scripts/tests/unit/test_practice_missions.js",
   "greenMarker": "INTERACTIVE MISSIONS ARE 100% VALIDATED",
-  "note": "This gate held a stale expected count of 27/54 for a while. Deleting a stage made the numbers agree and it printed PERFECT — a gate can reward the very deletion it exists to prevent, which is why the counts are asserted against constants now.",
+  "note": "This gate has now been wrong in two different ways, and both were the same mistake wearing different clothes. First it held a stale expected count of 27/54, so deleting a stage made the numbers agree and it printed PERFECT — it rewarded the deletion it existed to prevent. Then it turned out to check the guide text for the answer and never the title, and 34 of 64 missions had been naming the wrong number in their titles across all thirteen languages. In both cases the gate looked at whether something was present rather than whether two things agreed. The counts are pinned to constants now, and every number a title or guide claims is checked twice: against the target cell the screen actually draws, and against what the other twelve languages say about the same puzzle. Neither check alone is enough — the first passes a title that swaps the answer for the eliminated candidate, the second passes a mistake all thirteen languages share — and the mutation list below records the SURVIVED verdict that proved it.",
   "mutations": [
     {
       "name": "a whole practice stage is dropped from the aggregator",
@@ -12,6 +12,30 @@
       "find": "import { STAGE1_PRACTICE } from './stage1Practice.js';",
       "replace": "const STAGE1_PRACTICE = {};",
       "expectFailure": "missions"
+    },
+    {
+      "name": "a title names a number the puzzle never produces",
+      "why": "This is the shipped bug, restored. The title said [9] 확정 while correctVal was 6 — in all thirteen languages, because the Korean source was wrong and twelve translations carried it faithfully. It survived for months behind a gate that read the guide and never the title, so this mutation is the only reason to believe the new half of the check works. Note the digit chosen: 9 is not the answer and not the eliminated candidate, so no legitimate reading of the puzzle allows it.",
+      "file": "src/data/academy/practice/stage1Practice.js",
+      "find": "\"ko\":\"실전 예시 2: 가로/세로/박스 연계로 [6] 확정\"",
+      "replace": "\"ko\":\"실전 예시 2: 가로/세로/박스 연계로 [9] 확정\"",
+      "expectFailure": "title claims [9]"
+    },
+    {
+      "name": "one language's title swaps the answer for the candidate the technique removes",
+      "why": "The hole in the first check, and the reason a second one exists. The allowed set holds two values — the answer and the eliminated candidate — because titles legitimately name either ('eliminate [8] from the box' is true when 8 is what gets removed). So swapping one for the other stays inside the allowed set and the first check passes it; this mutation was recorded SURVIVED before the cross-language comparison was added. What catches it is that thirteen languages describe one puzzle: ko now says [7] while ja and both Chinese locales still say [4], and that disagreement is detectable without parsing any grammar.",
+      "file": "src/data/academy/practice/stage3WingsPractice.js",
+      "find": "\"ko\":\"실전 예시 1: X-Wing 꼭짓점 격자로 [4] 확정\"",
+      "replace": "\"ko\":\"실전 예시 1: X-Wing 꼭짓점 격자로 [7] 확정\"",
+      "expectFailure": "names different numbers in different languages"
+    },
+    {
+      "name": "the eliminated candidate is deleted from the target cell",
+      "why": "The allowed set is derived from cells[targetIndex].eliminatedNotes, so that field is load-bearing for the check and not merely decoration for the diagram. Removing it narrows the allowed set to correctVal alone, which must then reject the titles that legitimately name the eliminated value. If this mutation survives, the derivation is not actually reading the cell and the check has quietly become a copy again.",
+      "file": "src/data/academy/practice/stage2PairsPractice.js",
+      "find": "\"notes\":[3],\"highlightNotes\":[3],\"eliminatedNotes\":[8],\"type\":\"target\"",
+      "replace": "\"notes\":[3],\"highlightNotes\":[3],\"type\":\"target\"",
+      "expectFailure": "claims [8]"
     }
   ]
 }

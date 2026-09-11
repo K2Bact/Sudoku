@@ -11,6 +11,39 @@
       "find": "  if (!t || typeof t.playerId !== 'string' || !t.playerId) return false;",
       "replace": "  return false;",
       "expectFailure": "ticket"
+    },
+    {
+      "name": "a host claims the peer's ticket but not its own",
+      "why": "The half-fix, and the reason this is two claims rather than one. Taking the peer atomically stops two searchers from grabbing the same waiting player, which is the obvious race — and it is not enough. A host that leaves its own ticket in the queue is still advertising itself as available, so a third searcher claims it a moment later and builds a room against somebody who has already moved on. Withdrawing that advertisement has to happen in the same breath as taking the peer.",
+      "file": "src/firebase/battleService.js",
+      "find": "const mine = await this.channel.claimTicket(this.myPlayerId);\n    if (!mine) return false;                 // 누가 이미 나를 데려갔다",
+      "replace": "const mine = { playerId: this.myPlayerId, playerName: this.myPlayerName, level: this.searchingLevel, timestamp: Date.now() };",
+      "expectFailure": "phantom opponent"
+    },
+    {
+      "name": "claiming a ticket goes back to read-then-delete",
+      "why": "The original shape of the bug. listQueue() followed by dequeue(peer) leaves a gap in which two searchers read the same ticket, so both delete it and both host. On the local transport a single JS thread hides this, which is exactly why the transport contract states the requirement rather than relying on whichever transport is in use — and why a transport that cannot claim atomically must return null instead of falling back.",
+      "file": "src/firebase/transport/localTransport.js",
+      "find": "    const before = this.listQueue();\n    const ticket = before.find((t) => t.playerId === playerId);\n    if (!ticket) return null;\n    this.dequeue(playerId);\n    return ticket;",
+      "replace": "    const ticket = this.listQueue().find((t) => t.playerId === playerId)\n      || { playerId, playerName: playerId, level: 3, timestamp: Date.now() };\n    this.dequeue(playerId);\n    return ticket;",
+      "expectFailure": "phantom opponent"
+    },
+    {
+      "name": "the opponent's completion overwrites a result already decided",
+      "why": "The shipped behaviour, restored. handlePlayerProgress reassigned the winner on any 100% report without asking whether the match was already settled. Each device records its own completion first and then receives the other's, so a simultaneous finish left BOTH players on the defeat screen — a match nobody won. Note what this mutation proves about the gate rather than the code: a harness that inspected only one player would see winner=opponent, which is a perfectly ordinary losing result, and pass. Only comparing the two devices reveals it.",
+      "file": "src/firebase/battleService.js",
+      "find": "      if (room.winnerReason === 'my_completion') {",
+      "replace": "      if (false) {",
+      "expectFailure": "devices disagree"
+    },
+    {
+      "name": "the tiebreak keeps whichever completion was recorded first",
+      "why": "The obvious fix that is also wrong, and the reason the tiebreak needs a shared rule instead of local ordering. Each device sees its own completion first, so refusing to reconsider gives both players a victory screen — the same contradiction as before with the sign flipped. The gate must reject this as firmly as it rejects the original, which is why the assertion is that the two devices agree rather than that anybody in particular won.",
+      "file": "src/firebase/battleService.js",
+      "find": "        if (opponentWasFaster) {",
+      "replace": "        if (false) {",
+      "expectFailure": "devices disagree"
     }
-  ]
+  ],
+  "note": "Three simultaneous searchers were added later, after ChatGPT flagged the matchmaking race on review. The id comparison that fixed the two-player case decides who hosts but never checks that either player is still free: with D < E < F all pressing at once, E claims D and hosts while F claims E — which is legitimate, because E's ticket was still in the queue. E already has a room so it drops F's match_created, and F sits against an opponent who never answers. Note that all three DO get a room under the bug, so a gate counting matches would pass it; what the gate asserts is that no room points at an opponent who is in a different room."
 }

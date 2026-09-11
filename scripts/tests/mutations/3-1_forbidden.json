@@ -11,6 +11,23 @@
       "find": "export function DailyRewardModal({ rewardInfo, onConfirm }) {",
       "replace": "export function DailyRewardModal({ rewardInfo, onConfirm }) {\n  const hardcoded = '출석 보상을 받았습니다';",
       "expectFailure": "DailyRewardModal"
+    },
+    {
+      "name": "a Korean trailing comment is added to a component",
+      "why": "The noise this change removes, pinned so it stays removed. A comment never reaches a player, so reporting it is a false positive — and the cost is not just irritation: the obvious way to silence it is to write the comment in English, which would strip this codebase of the reasoning it carries. Recorded with expectSurvival so the audit asserts the gate stays quiet.",
+      "file": "src/components/DailyRewardModal.jsx",
+      "find": "  const { t } = useTranslation();",
+      "replace": "  const { t } = useTranslation();   // 여기서 번역 함수를 가져온다",
+      "expectSurvival": true
+    },
+    {
+      "name": "a hardcoded Korean string sits after code on the same line",
+      "why": "The other end. Stripping trailing comments must not become a way to smuggle a string past the scanner, so this puts real hardcoded Korean after a statement on one line. If it survives, the comment stripping ate code and the gate has been quietly weakened rather than quietened.",
+      "file": "src/components/DailyRewardModal.jsx",
+      "find": "  const { t } = useTranslation();",
+      "replace": "  const { t } = useTranslation(); const label = '연속 출석';",
+      "expectFailure": "HARDCODED"
     }
-  ]
+  ],
+  "note": "The scanner used to skip only whole-line comments, so a Korean trailing comment on a code line was reported as a hardcoded string. That is noise rather than a miss, but a noisy gate gets muted — or worse, gets quietened by rewriting Korean comments into English, and the comments explaining why each fix was made are the most valuable thing in this repository. Trailing comments are now stripped before scanning. The two mutations below hold both ends: a Korean comment must NOT fail, and a Korean string sitting after code on the same line must still fail."
 }

@@ -1,0 +1,42 @@
+{
+  "gate": "2-19",
+  "name": "CJK Script Purity",
+  "command": "node scripts/tests/unit/test_cjk_script_purity.js",
+  "greenMarker": "세 로케일 모두 자기 문자 체계만 쓴다",
+  "note": "This gate replaces a forbidden-character list that could not work. That list started at 52 characters, was widened to 165, and found 33 Simplified characters in zh-TW the moment it was widened — which made widening look like the fix. It was not: while the 165-character list was green, ja carried 39 Simplified characters across 490 occurrences and zh-TW carried 4 across 23. A blocklist cannot be complete and cannot know that it is incomplete, so its green means 'these particular characters are absent', which is read as 'nothing is wrong'. The two checks here are built the other way round. Self-consistency asks the corpus which form it uses and cannot be wrong when it fires, but goes silent when the correct form appears nowhere — which is exactly what happened, since ja wrote 确 134 times and 確 zero times in the academy files while the correct forms sat in src/i18n/locales/ja/ that the first investigation never read. The usage snapshot covers that blind spot by being complete by construction. Its weakness is procedural rather than logical: regenerate it reflexively whenever it fails and it stops protecting anything.",
+  "mutations": [
+    {
+      "name": "a Simplified character returns to Japanese text",
+      "why": "The shipped bug, restored at its most common instance. 确 appeared 134 times in Japanese academy text where 確 belongs. Both checks should fire on this one — the snapshot because 确 is no longer a character ja uses, and self-consistency because 確 is now present in the same corpus — and that overlap is deliberate: the snapshot alone would be satisfied by regenerating it, while self-consistency would still object.",
+      "file": "src/data/academy/practice/stage1Practice.js",
+      "find": "行・列・ブロック連携で",
+      "replace": "行・列・ブロック连携で",
+      "expectFailure": "「连」"
+    },
+    {
+      "name": "a Simplified character returns to Traditional Chinese text",
+      "why": "The other half of what the 165-character blocklist missed. 网 is Simplified for 網 and appeared 5 times in zh-TW; it is invisible to self-consistency because zh-CN left it unconverted too, so the pair 网/網 was never observed in aligned strings. Only the usage snapshot can catch it, which is why the snapshot exists. The first version of this anchor matched two strings in the same file; the audit reported ANCHOR_AMBIGUOUS rather than running it, which is the right refusal — a mutation that lands somewhere other than where it is described proves nothing about the gate.",
+      "file": "src/data/academy/practice/stage5Practice.js",
+      "find": "\"zh-TW\":\"鰭狀 X-Wing 主體",
+      "replace": "\"zh-TW\":\"鳍狀 X-Wing 主體",
+      "expectFailure": "목록에 없는 한자"
+    },
+    {
+      "name": "the snapshot is regenerated to bless contamination",
+      "why": "The failure mode this gate is most likely to die of, recorded so it is not a surprise. A snapshot that gets regenerated whenever it goes red blocks nothing, and regeneration is one command. This mutation writes contamination into the source and then rebuilds the snapshot around it; self-consistency must still object, because 確 remains in the same corpus and a locale cannot be using both forms of one character. If this mutation survives, the gate is a rubber stamp and the comment in its header is a lie.",
+      "file": "src/data/academy/practice/stage1Practice.js",
+      "find": "行・列・ブロック連携で",
+      "replace": "行・列・ブロック连携で",
+      "rebuildFixture": "node scripts/tests/fixtures/build_han_inventory.js",
+      "expectFailure": "「连」"
+    },
+    {
+      "name": "a Chinese string is filed under the Korean key",
+      "why": "Korean UI text uses no Han characters at all, so this check needs no list and no snapshot — one Han character in ko means a string landed in the wrong slot. Worth a mutation because it is the cheapest check in the file and the one most likely to be deleted as trivial.",
+      "file": "src/data/academy/practice/stage1Practice.js",
+      "find": "\"ko\":\"실전 예시 2: 가로/세로/박스 연계로 [6] 확정\"",
+      "replace": "\"ko\":\"실전 예시 2: 가로/세로/박스 連携로 [6] 확정\"",
+      "expectFailure": "한국어 문자열에 한자"
+    }
+  ]
+}

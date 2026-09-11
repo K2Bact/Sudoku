@@ -15,6 +15,15 @@ let errors = [];
 const EXPECTED_STRATEGIES = 32;
 const EXPECTED_MISSIONS = 64;
 
+/**
+ * 한 자리 숫자를 감싼 대괄호만 고른다. 후보 묶음은 제외한다.
+ *
+ * `[3,8]` 은 은닉쌍의 후보 두 개이고 `[2,5,8]` 은 삼중수다. 그것들은 정답이나
+ * 소거값을 가리키는 말이 아니므로 이 검사의 대상이 아니다. 뒤따르는 쉼표나
+ * 숫자를 부정형 전방탐색으로 걸러 `[3]` 과 `[3,8]` 을 구분한다.
+ */
+const SINGLE_BRACKETED_DIGIT = /\[(\d)\](?![\s]*[,0-9])/g;
+
 ACADEMY_STAGES.forEach(stage => {
   console.log(`\n▶ Stage: ${stage.id}`);
   stage.strategies.forEach(strat => {
@@ -34,6 +43,16 @@ ACADEMY_STAGES.forEach(stage => {
       if (!m.correctVal || m.correctVal < 1 || m.correctVal > 9) {
         errors.push(`[${m.id}] Invalid correctVal: ${m.correctVal}`);
       }
+
+      // 문장이 말해도 되는 숫자를, 화면이 실제로 그리는 칸에서 끌어낸다.
+      // 이 두 줄이 아래 제목 검사의 근거 전부다. 여기에 숫자를 적지 않는 것이
+      // 요점이다 — 적어두면 데이터가 바뀔 때 같이 낡는다.
+      const targetCell = m.cells?.[m.targetIndex] || {};
+      const eliminated = targetCell.eliminatedNotes || [];
+      const allowed = new Set([m.correctVal, ...eliminated]);
+
+      /** field → lang → 그 문장이 말한 한 자리 숫자들. 언어 간 대조에 쓴다. */
+      const saidBy = {};
 
       // Every language the app ships, read from the app — not a list written here.
       //
@@ -58,6 +77,69 @@ ACADEMY_STAGES.forEach(stage => {
             }
           }
         }
+
+        // 제목도 검사한다. 여기가 비어 있었고, 버그는 정확히 여기 있었다.
+        //
+        // 위의 안내문 검사는 오래 초록이었다. 그동안 34개 미션의 제목이 엉뚱한
+        // 숫자를 말하고 있었다 — "[9] 확정" 인데 정답은 6 인 식으로, 13개 언어
+        // 전부. 번역 잘못이 아니라 한국어 원본이 틀렸고 12개 언어가 충실히
+        // 옮긴 것이다. 게이트가 두 필드 중 한쪽만 봤기 때문에 안 걸렸다.
+        //
+        // 안내문 검사 자체도 약하다. `includes(String(correctVal))` 는 문자열
+        // 어디에든 그 숫자가 있으면 통과한다 — correctVal 이 2 일 때
+        // "2개 가로줄에서" 의 2 로도 통과한다. 존재를 보고 일치를 안 본 것이다.
+        //
+        // 그래서 아래 규칙은 값을 이 파일에 적어두지 않고 데이터에서 끌어낸다.
+        // 제목·안내문이 대괄호로 감싼 한 자리 숫자는 둘 중 하나여야 한다:
+        //   · correctVal                                  플레이어가 넣을 답
+        //   · cells[targetIndex].eliminatedNotes 의 값     기법이 지우는 후보
+        // 제목은 이 둘 중 하나를 말하거나, 아무 숫자도 말하지 않는다.
+        // 셋째 숫자가 나오면 그 문장은 화면의 퍼즐과 다른 말을 하고 있다.
+        [
+          ['title', titleText],
+          ['guide', guideText],
+        ].forEach(([field, text]) => {
+          if (!text) return;
+          for (const hit of text.matchAll(SINGLE_BRACKETED_DIGIT)) {
+            const n = Number(hit[1]);
+            if (allowed.has(n)) continue;
+            errors.push(
+              `[${m.id}] Lang '${lang}' ${field} claims [${n}] but the cell allows ` +
+                `{${[...allowed].join(', ')}} (correctVal ${m.correctVal}` +
+                `${eliminated.length ? `, eliminates ${eliminated.join(',')}` : ''}): "${text}"`,
+            );
+          }
+          (saidBy[field] ||= {})[lang] = new Set(
+            [...text.matchAll(SINGLE_BRACKETED_DIGIT)].map((h) => h[1]),
+          );
+        });
+      });
+
+      // 위 검사만으로는 부족하다. 허용 집합은 두 값을 받아들이므로 정답과
+      // 소거값을 맞바꾼 제목은 그대로 통과한다 — 변이 테스트에서 실제로
+      // SURVIVED 가 나왔다. 그 구멍을 언어 간 대조로 막는다.
+      //
+      // 13개 언어는 같은 퍼즐 하나를 설명한다. 그러니 숫자를 말하는 언어들은
+      // 같은 숫자를 말해야 한다. 한 언어만 다른 숫자를 말하면 그 언어가 틀렸다.
+      // 숫자를 아예 말하지 않는 제목은 주장을 하지 않은 것이므로 대조에서 뺀다
+      // (실제로 "X-Wing Corner Lock" 처럼 숫자 없는 제목이 146곳 있다).
+      //
+      // 두 검사는 서로 다른 것을 잡는다. 같이 있어야 한다:
+      //   허용 집합    13개 언어가 다 같이 틀린 경우 (이번에 나온 34개 미션)
+      //   언어 간 대조 한 언어만 벗어난 경우 (번역 중 숫자가 어긋나는 경우)
+      Object.entries(saidBy).forEach(([field, byLang]) => {
+        const groups = new Map();
+        for (const [lang, digits] of Object.entries(byLang)) {
+          if (!digits.size) continue;
+          const key = [...digits].sort().join(',');
+          (groups.get(key) || groups.set(key, []).get(key)).push(lang);
+        }
+        if (groups.size <= 1) return;
+        const shown = [...groups].map(([k, ls]) => `[${k}] in ${ls.join(',')}`).join(' vs ');
+        errors.push(
+          `[${m.id}] ${field} names different numbers in different languages — ${shown}. ` +
+            `All thirteen describe one puzzle, so one of these is a translation that drifted.`,
+        );
       });
     });
 

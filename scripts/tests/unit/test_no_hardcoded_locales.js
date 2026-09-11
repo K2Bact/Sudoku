@@ -83,7 +83,22 @@ console.log(`  단일 출처: scripts/lib/locales.js → ${LOCALES.length}개 �
 // being compared (zh-CN vs zh-TW is a legitimate thing to write); three or
 // more is somebody transcribing the list.
 const CODE = "(?:[a-z]{2}(?:-[A-Za-z]{2})?)";
-const LIST = new RegExp(`\\[\\s*(['"])${CODE}\\1\\s*,\\s*(['"])${CODE}\\2\\s*,\\s*(['"])${CODE}\\3`);
+const LIST = new RegExp(`\\[\\s*(['"])${CODE}\\1\\s*,\\s*(['"])${CODE}\\2\\s*,\\s*(['"])${CODE}\\3`, 'g');
+
+/**
+ * 주석을 공백으로 덮되 줄 수는 유지한다. 행 번호가 그대로 맞아야 한다.
+ *
+ * 이 게이트는 원래 줄마다 `startsWith('//')` 로 주석을 건너뛰었다. 그러면
+ * 줄 끝 주석(`const n = 1; // ['ko','en','ja']`)이 위반으로 보고된다.
+ * 오탐은 누락보다 낫지만, 시끄러운 게이트는 무시당하고 무시당하는 게이트는
+ * 검사처럼 보이는 장식이 된다.
+ */
+function blankComments(src) {
+  const keepNewlines = (s) => s.replace(/[^\n]/g, ' ');
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, keepNewlines)
+    .replace(/(^|[^:\\])\/\/[^\n]*/g, (m, lead) => lead + ' '.repeat(m.length - lead.length));
+}
 
 const offenders = [];
 
@@ -92,15 +107,44 @@ for (const dir of SEARCH_DIRS) {
     const rel = path.relative(ROOT, file).split(path.sep).join('/');
     if (ALLOWED.includes(rel)) continue;
 
-    const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);
-    lines.forEach((line, i) => {
-      if (line.trimStart().startsWith('//') || line.trimStart().startsWith('*')) return;
-      if (!LIST.test(line)) return;
+    /*
+     * 줄 단위가 아니라 파일 전체에 건다. 이유가 있다.
+     *
+     * 줄 단위로 보는 동안 이 게이트는 여러 줄로 쪼갠 목록을 통째로 놓쳤다:
+     *
+     *     const langs = [
+     *       'ko',
+     *       'en',
+     *       'ja',
+     *     ];
+     *
+     * 이 게이트가 막으려는 바로 그 형태다. 포매터가 배열 한 줄을 넘기는
+     * 순간 검사가 조용히 꺼지고, 꺼진 것을 알 방법이 없다. 원래 사고를 낸
+     * `['ko','en','ja','zh','es']` 도 줄바꿈만 하면 통과했다.
+     *
+     * "파일 전체에 정규식을 걸지 않는다" 는 규칙이 있고, 그 규칙이 막으려는
+     * 것은 `[\s\S]*` 처럼 끝이 열린 패턴이 파일을 가로질러 엉뚱한 짝을
+     * 맺는 일이다. 여기 쓰는 패턴은 원소 사이의 `\s*` 뿐이고 배열 원소 세
+     * 개로 닫혀 있어 그런 확장이 일어나지 않는다. 행 번호는 일치 위치까지의
+     * 줄바꿈을 세어 복원한다.
+     */
+    const src = blankComments(fs.readFileSync(file, 'utf8'));
+    for (const m of src.matchAll(LIST)) {
       // Only complain when the literal actually names locales this app ships.
-      const quoted = [...line.matchAll(/['"]([a-z]{2}(?:-[A-Za-z]{2})?)['"]/g)].map((m) => m[1]);
+      const chunk = src.slice(m.index, m.index + 400);
+      const arrayEnd = chunk.indexOf(']');
+      const inside = arrayEnd === -1 ? chunk : chunk.slice(0, arrayEnd);
+      const quoted = [...inside.matchAll(/['"]([a-z]{2}(?:-[A-Za-z]{2})?)['"]/g)].map((q) => q[1]);
       const hits = quoted.filter((c) => LOCALES.includes(c));
-      if (hits.length >= 3) offenders.push({ rel, line: i + 1, text: line.trim().slice(0, 88), hits });
-    });
+      if (hits.length < 3) continue;
+      const line = src.slice(0, m.index).split('\n').length;
+      offenders.push({
+        rel,
+        line,
+        text: inside.replace(/\s+/g, ' ').trim().slice(0, 88),
+        hits,
+      });
+    }
   }
 }
 

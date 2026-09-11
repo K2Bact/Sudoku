@@ -149,6 +149,122 @@ assert.strictEqual(B.currentRoom.opponentProgress, A.currentRoom.myProgress,
   'The opponent bar must show the value that was actually sent');
 console.log(`  ✅ B sees A at ${B.currentRoom.opponentProgress}%`);
 
+// ── 5b. Three searching at once: the id rule alone is not enough ──────────
+//
+// Comparing ids decides WHO hosts. It does not check whether either player is
+// still free, and with three searchers that gap is the whole bug.
+//
+// All three see an empty queue, so all three enqueue and all three broadcast.
+// With D < E < F: E takes D's ticket and hosts, and in the same moment F takes
+// E's ticket — which is not F doing anything wrong, because E's ticket was
+// still sitting in the queue. E already has a room so it drops F's
+// match_created, and F is left holding a room against an opponent who will
+// never answer: the name renders, the progress bar stays at zero.
+//
+// The assertion that matters is not "everyone got a room". Under the bug all
+// three DO get a room; two of those rooms are simply lies. What has to hold is
+// that no room points at an opponent who is in a different room, and that the
+// player who paired with nobody is still searching rather than sitting with a
+// consumed ticket that no one can find.
+//
+// Fixing it takes two claims, not one: a host must atomically take the peer's
+// ticket AND its own. Its own ticket is the public promise that it is still
+// available, and it has to withdraw that promise in the same breath.
+console.log('▶ 5b. Three players search at once — nobody gets a phantom opponent');
+storage.clear();
+seen.length = 0;
+const trio = [
+  ['D', await newPlayer(11)],
+  ['E', await newPlayer(12)],
+  ['F', await newPlayer(13)],
+];
+await Promise.all(trio.map(([, p]) => p.startQuickMatch(3, () => {})));
+await wait(700);
+
+const nameById = new Map(trio.map(([n, p]) => [p.myPlayerId, n]));
+const inRoom = trio.filter(([, p]) => p.currentRoom);
+
+for (const [name, p] of inRoom) {
+  const peerName = nameById.get(p.currentRoom.opponentId);
+  assert(peerName, `${name} is in a room against an id belonging to no player in this test`);
+  const peer = trio.find(([n]) => n === peerName)[1];
+  assert(
+    peer.currentRoom && peer.currentRoom.code === p.currentRoom.code,
+    `${name} thinks it is playing ${peerName}, but ${peerName} is ` +
+      `${peer.currentRoom ? `in room ${peer.currentRoom.code}` : 'in no room'} while ${name} is ` +
+      `in ${p.currentRoom.code}. That is the phantom opponent: the match starts, the name shows, ` +
+      `and the bar never moves. A host must claim both its own ticket and the peer's, atomically ` +
+      `— see claimBothTickets in battleService and claimTicket in the transport contract.`,
+  );
+}
+assert.strictEqual(inRoom.length, 2,
+  `Exactly two of three must pair and the third stays queued. Got ${inRoom.length} in rooms ` +
+  `(${inRoom.map(([n]) => n).join(',')}) — three means somebody is talking to nobody.`);
+const oddOne = trio.find(([, p]) => !p.currentRoom);
+assert(oddOne[1].searchingLevel,
+  `${oddOne[0]} paired with nobody, so it must still be searching. If its ticket was consumed ` +
+  `while it stopped searching, it waits forever and no one can find it.`);
+console.log(`  ✅ ${inRoom.map(([n]) => n).join('+')} in one room, ${oddOne[0]} still searching`);
+
+for (const [, p] of trio) {
+  p.leaveRoom();
+  p.channel.close();
+}
+
+// ── 5c. Both players finish at once: exactly one of them won ───────────────
+//
+// handlePlayerProgress used to overwrite the winner whenever the opponent
+// reported 100%, with no check on whether the match had already been decided.
+// Each device records its own completion first and then receives the other's,
+// so both flipped to winner: 'opponent' — a match where BOTH players are shown
+// the defeat screen and nobody won.
+//
+// "Keep whichever was recorded first" is not a fix either: each device sees its
+// own completion first, so both would show victory instead. The same
+// contradiction, pointing the other way. What is needed is a rule that leads
+// two devices to the same answer, which is why the completion message carries
+// the solver's own elapsed time — two durations compare cleanly without the
+// two clocks agreeing — with the player id as the tiebreak of last resort.
+//
+// The assertion is symmetry: the two devices must name the same winner. A
+// harness that only looked at one side would have passed the broken build.
+console.log('▶ 5c. Simultaneous completion — exactly one winner, and both agree');
+storage.clear();
+seen.length = 0;
+const G = await newPlayer(21);
+const H = await newPlayer(22);
+await G.startQuickMatch(3, () => {});
+await wait(120);
+await H.startQuickMatch(3, () => {});
+await wait(300);
+assert(G.currentRoom && H.currentRoom && G.currentRoom.code === H.currentRoom.code,
+  'setup: G and H must be in one room before the finish is tested');
+
+// Both report a finished board in the same tick, before either message lands.
+G.sendProgress({}, 0);
+H.sendProgress({}, 0);
+await wait(400);
+
+const gWon = G.currentRoom.winner === 'me';
+const hWon = H.currentRoom.winner === 'me';
+assert(G.currentRoom.winner && H.currentRoom.winner,
+  'both devices must have decided a winner after both boards were completed');
+assert(
+  gWon !== hWon,
+  `The two devices disagree: G says winner=${G.currentRoom.winner} (${G.currentRoom.winnerReason}) ` +
+    `and H says winner=${H.currentRoom.winner} (${H.currentRoom.winnerReason}). ` +
+    `${!gWon && !hWon ? 'Both players are looking at a defeat screen for a match somebody won. ' : ''}` +
+    `${gWon && hWon ? 'Both players are being told they won the same match. ' : ''}` +
+    `A simultaneous finish has to be resolved by a rule both sides compute identically ` +
+    `— see the elapsed-time tiebreak in handlePlayerProgress.`,
+);
+console.log(`  ✅ ${gWon ? 'G' : 'H'} won, ${gWon ? 'H' : 'G'} lost — one result, agreed on both devices`);
+
+G.leaveRoom();
+H.leaveRoom();
+G.channel.close();
+H.channel.close();
+
 A.leaveRoom();
 B.leaveRoom();
 C.leaveRoom();

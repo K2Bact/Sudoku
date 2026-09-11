@@ -54,6 +54,8 @@ runStep('2-15. Every Translated Key Is Reachable', 'node scripts/tests/unit/test
 runStep('2-16. Academy Content Under The l10n Engine', 'node scripts/tests/unit/test_academy_l10n.js');
 runStep('2-17. No Hand-Copied Locale Lists', 'node scripts/tests/unit/test_no_hardcoded_locales.js');
 runStep('2-18. Translation Actually Happened', 'node scripts/tests/unit/test_translation_actually_happened.js');
+runStep('2-19. CJK Script Purity (no Simplified in ja or zh-TW)', 'node scripts/tests/unit/test_cjk_script_purity.js');
+runStep('2-20. Ad Lifecycle Races (init cache, banner show/hide)', 'node scripts/tests/unit/test_ad_lifecycle_races.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests

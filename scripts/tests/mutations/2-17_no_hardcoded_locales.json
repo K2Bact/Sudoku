@@ -3,7 +3,7 @@
   "name": "No Hand-Copied Locale Lists",
   "command": "node scripts/tests/unit/test_no_hardcoded_locales.js",
   "greenMarker": "The list lives in one place",
-  "note": "This gate is the one that keeps the others honest. Four checks each held their own copy of the locale list and one still said five languages, so it stayed green while two shipped locales were broken behind it — a check that copies the list cannot detect the list changing, because the check is one of the copies. Documents can ask people not to do this; only this gate stops it.",
+  "note": "This gate is the one that keeps the others honest. Four checks each held their own copy of the locale list and one still said five languages, so it stayed green while two shipped locales were broken behind it — a check that copies the list cannot detect the list changing, because the check is one of the copies. Documents can ask people not to do this; only this gate stops it. It also had the same class of hole itself: it scanned line by line, so a list broken across lines by a formatter escaped it entirely, and the escape was invisible. It now reads whole files with comments blanked out, and the mutation for the multi-line form is below. The first thing the widened version caught was a hand-written locale list in a file created to support another gate — which is the honest measure of how easy this mistake is to make.",
   "mutations": [
     {
       "name": "a check goes back to writing the list beside the assertion",
@@ -12,6 +12,22 @@
       "find": "const locales = LOCALES;",
       "replace": "const locales = ['ko', 'en', 'ja', 'zh-CN', 'es-ES'];",
       "expectFailure": "로케일 목록 사본"
+    },
+    {
+      "name": "the copied list is broken across lines, the way a formatter would leave it",
+      "why": "The hole this gate had until it was widened. The rule was written as a per-line regex, so the identical violation escaped simply by having newlines between its elements — which is what prettier does to any array past the print width. Nobody has to intend it: format the offending line once and the check switches itself off with no output. The fix reads whole files with comments blanked, and this mutation is the only reason to believe the fix works rather than merely looks different.",
+      "file": "scripts/tests/unit/test_battle_ai_separation.js",
+      "find": "const locales = LOCALES;",
+      "replace": "const locales = [\n  'ko',\n  'en',\n  'ja',\n  'zh-CN',\n  'es-ES',\n];",
+      "expectFailure": "로케일 목록 사본"
+    },
+    {
+      "name": "a locale list is commented out rather than deleted",
+      "why": "The noise side of the same change. Blanking comments before scanning means commented-out code no longer reports as a violation, and that has to stay true or the gate becomes something people learn to ignore. A gate that cries about dead code in a comment gets muted, and a muted gate reads as coverage. This mutation must NOT fail the build — it is recorded with expectFailure empty so the audit asserts survival on purpose.",
+      "file": "scripts/tests/unit/test_battle_ai_separation.js",
+      "find": "const locales = LOCALES;",
+      "replace": "const locales = LOCALES; // was ['ko', 'en', 'ja', 'zh-CN', 'es-ES']",
+      "expectSurvival": true
     }
   ]
 }
