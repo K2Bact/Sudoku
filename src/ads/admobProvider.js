@@ -70,6 +70,35 @@ function unitIds() {
 }
 
 /**
+ * 우리 기기만 테스트 광고를 받게 한다.
+ *
+ * `VITE_ADMOB_TESTING` 은 전부 아니면 전무다. `true` 면 모든 이용자가 테스트
+ * 광고를 보므로 수익이 0 이고, `false` 면 **우리 기기도 실제 광고를 받는다.**
+ * 그 상태에서 우리가 광고를 누르면 무효 트래픽이고, 그것이 AdMob 계정이
+ * 정지되는 경로다.
+ *
+ * 그래서 "테스트하려면 앱을 깔지 말라" 가 답이 될 수 없다. 기기에 깔아서
+ * 확인하는 것은 해야 하는 일이다. 구글이 주는 답은 기기를 등록하는 것이고,
+ * SDK 문서의 표현 그대로 **"등록된 기기의 요청은 테스트 광고를 받고 무효
+ * 트래픽을 생성하지 않는다."** 등록되지 않은 기기는 그대로 실제 광고를 받는다.
+ *
+ * 기기 ID 는 앱을 한 번 실행하면 logcat 에 찍힌다:
+ *   adb logcat | findstr "RequestConfiguration.Builder"
+ * 거기 나온 해시를 `.env` 의 `VITE_ADMOB_TEST_DEVICE_IDS` 에 넣는다
+ * (쉼표로 여러 개). 이 값은 기기마다 다르고 앱을 지웠다 깔면 바뀔 수 있다.
+ *
+ * 비어 있으면 아무 기기도 등록하지 않는다 — 그때는 `VITE_ADMOB_TESTING` 이
+ * 유일한 방어선이므로, 그것을 끄기 전에 여기를 채우는 것이 순서다.
+ */
+function testDeviceIds() {
+  const env = readEnv();
+  return String(env.VITE_ADMOB_TEST_DEVICE_IDS || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/**
  * 던져진 실패 뒤 다시 시도하기까지 기다리는 시간.
  *
  * 0 이면 화면을 옮길 때마다 동의 정보를 다시 받아오려 들고, 통신이 끊긴
@@ -164,7 +193,14 @@ export class AdMobProvider {
           return false;
         }
 
-        await admob.initialize({ initializeForTesting: false });
+        // 등록할 기기가 있을 때만 켠다. 이 플래그는 "전부 테스트" 스위치가
+        // 아니라 아래 목록을 테스트 기기로 등록할지 여부다 — 목록이 비어 있는데
+        // 켜면 아무 기기도 등록되지 않고 이름만 오해를 부른다.
+        const testDevices = testDeviceIds();
+        await admob.initialize({
+          initializeForTesting: testDevices.length > 0,
+          testingDevices: testDevices
+        });
         return true;
       } catch (e) {
         this.canRequestAds = false;
