@@ -188,32 +188,69 @@ zh-TW 간체 4종 23회                    변환기가 빠뜨린 자리
 > 문서에 *"The Early access track is currently only available to select developers"*
 > 라고 되어 있다. 콘솔이 링크를 보여줬으므로 대상일 가능성이 높지만 **확인하지 않았다.**
 
-### 프로덕션으로 가기 전에
+### 🔴 광고는 프로덕션 이후에 풀린다 — 순서를 세 번 틀린 끝에 확인 (2026-09-11)
+
+**이 문서는 "app-ads.txt 검증이 끝나면 프로덕션" 이라고 적고 있었다. 불가능한
+순서다.** 검증도 승인도 앱이 스토어에 공개된 뒤에야 시작된다.
+
+구글 문서 세 곳이 같은 말을 한다. 원문 그대로 옮긴다.
+
+> **All Android apps must be publicly available in a supported store in order to
+> link to AdMob.**
+> **Your app must be published. This means that your app is available to users.**
+> — [App readiness](https://support.google.com/admob/answer/10564477?hl=en)
+
+> **The AdMob app-ads.txt crawler checks for your app-ads.txt file based on the
+> developer website in your app's store listing.**
+> — [app-ads.txt 설정](https://support.google.com/admob/answer/9363762?hl=en)
+
+> **Apps won't be able to fully serve ads until they're verified with an
+> app-ads.txt file and approved after the app readiness review.**
+> **Once your app is verified, the app readiness review will begin.**
+> — [2025년 1월 요건](https://support.google.com/admob/answer/14538460?hl=en)
+
+#### 실제 순서
 
 ```
-⬜ 1. app-ads.txt 검증 완료 — AdMob → 앱 → 앱 설정에서 상태 확인
-       크롤링 최대 24시간 + 앱 준비 상태 심사. 그전까지는 광고가 덜 채워진다
-⬜ 2. 1.2.4 를 비공개 테스트에서 며칠 관찰
-       충돌 없음 · 광고 서빙 · 1v1 제보 없음
-⬜ 3. Play Console 정책 상태 · 앱 콘텐츠 전부 초록
-⬜ 4. 프로덕션 출시
+1. 프로덕션 출시                  ← 나머지 전부가 이것에 걸려 있다
+2. AdMob → 앱 스토어 연결          "publicly available" 이어야 연결된다
+3. app-ads.txt 크롤링·검증        문서는 24시간, 콘솔 화면은 "도메인 URL 변경 감지까지 최대 7일"
+4. 앱 준비 상태 심사               검증이 끝나야 시작. 보통 2~3일
+5. 승인 → 광고 정상 게재           그전까지는 limited ad serving
 ```
 
-### ⚠️ 첫 프로덕션은 비율 출시가 안 된다 (2026-09-11 확인 완료)
+**1번 전에는 2·3·4 중 어느 것도 진행되지 않는다.** 비공개 테스트로 기다리는 것은
+끝나지 않을 일을 기다리는 것이다.
 
-아침까지 이 항목은 **미확인**이었다. 공식 문서로 확인했다.
+#### 왜 세 번이나 틀렸는가 — 기전을 적어둔다
+
+문서를 **하나씩 따로 읽고 순서를 조립했다.**
+
+```
+app-ads.txt 문서   "검증돼야 광고가 완전히 서빙된다"      → 출시 전에 해야겠네
+앱 준비 문서       "승인돼야 광고가 서빙된다"            → 이것도 출시 전에
+연결 문서          "스토어에 공개돼 있어야 연결된다"      ← 이 줄을 읽지 않았다
+```
+
+앞의 둘만 보면 둘 다 "출시 전 준비" 로 읽힌다. **세 번째 문장이 그 둘을 출시
+이후로 밀어버리는데, 그 문장을 찾기 전에 순서를 만들었다.**
+
+인앱 결제에서도 같은 일이 있었다. 코드 주석이 "상품 생성 → 플러그인 설치" 라고
+적고 있었고, 콘솔은 결제 권한이 든 빌드가 먼저라고 말했다.
+
+> **조각조각 맞는 사실로 틀린 순서를 만들 수 있다.** 순서를 물을 때는 각 단계의
+> 설명이 아니라 **전제 조건**을 찾아야 한다 — "무엇을 하면 되는가" 가 아니라
+> "무엇이 있어야 이것을 할 수 있는가".
+
+#### 첫 프로덕션 — 범위는 국가로 줄인다
+
+비율 출시는 첫 출시에 쓸 수 없다 (확인 완료).
 
 > Rollout percentage options are unavailable for a first release.
-> Staged rollouts can only be used for app updates, not when publishing an app
-> for the first time.
 > — [Play Console 고객센터](https://support.google.com/googleplay/android-developer/answer/6346149)
 
-**5% → 20% → 50% 같은 단계적 출시를 쓸 수 없다.** 첫 출시는 선택한 국가·지역의
-적격 이용자 전체에게 한 번에 나간다.
-
-그래서 **초기 범위를 줄이는 방법은 비율이 아니라 국가다.** 비공개 테스트가 8개
-국가이므로, 프로덕션도 같은 범위에서 시작해 넓히는 것이 자연스럽다. 넓히는 것은
-쉽고 좁히는 것은 이용자를 잃는 일이다.
+**2026-09-11 결정: 한국만으로 시작하고 하나씩 늘린다.** 넓히는 것은 나중에 쉽고,
+좁히는 것은 이미 받은 이용자를 잃는 일이다.
 
 
 ### 🔴 실제 광고 ID 를 켠 뒤 절대 하지 말 것
