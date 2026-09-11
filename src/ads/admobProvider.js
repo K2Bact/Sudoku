@@ -34,13 +34,34 @@ function plugin() {
  * `isTesting` is passed alongside so the SDK marks the request as a test even if
  * a real unit id is configured. Both signals, not one.
  */
+/**
+ * 설정값을 읽는 한 곳.
+ *
+ * Vite 는 빌드 시점에 `import.meta.env.X` 를 literal 로 바꿔 넣는다. 그래서
+ * 앱에서는 그것만으로 충분하다. 하지만 Node 에서 이 모듈을 그대로 불러오면
+ * `import.meta.env` 가 없고, 그러면 광고 단위 아이디가 빈 문자열이 되어
+ * showBanner 가 아무 일도 하지 않고 false 를 돌려준다.
+ *
+ * 그 침묵이 문제였다. 광고 수명주기를 검사하려고 쓴 첫 판본이 3개 절을
+ * 통과했는데, 실제로는 매 절이 "아이디가 없어서 즉시 반환" 을 확인하고 있었다.
+ * 통과가 검사의 통과가 아니라 검사가 닿지 못했다는 뜻이었다.
+ *
+ * `process.env` 를 대체로 읽는다. 브라우저 번들에는 process 가 없으므로
+ * typeof 로 막고, 앱 동작은 달라지지 않는다.
+ */
+function readEnv() {
+  const viteEnv = (typeof import.meta !== 'undefined' && import.meta.env) || null;
+  if (viteEnv) return viteEnv;
+  return (typeof process !== 'undefined' && process.env) || {};
+}
+
 function isTestingAds() {
-  const env = (typeof import.meta !== 'undefined' && import.meta.env) || {};
+  const env = readEnv();
   return String(env.VITE_ADMOB_TESTING || '').toLowerCase() === 'true';
 }
 
 function unitIds() {
-  const env = (typeof import.meta !== 'undefined' && import.meta.env) || {};
+  const env = readEnv();
   return {
     banner: env.VITE_ADMOB_BANNER_ID || '',
     interstitial: env.VITE_ADMOB_INTERSTITIAL_ID || '',
@@ -48,11 +69,32 @@ function unitIds() {
   };
 }
 
+/**
+ * 던져진 실패 뒤 다시 시도하기까지 기다리는 시간.
+ *
+ * 0 이면 화면을 옮길 때마다 동의 정보를 다시 받아오려 들고, 통신이 끊긴
+ * 동안에는 그 시도가 실패보다 비싸다. 너무 길면 통신이 돌아와도 광고가
+ * 돌아오지 않는다. 30초는 한 판 사이에 한 번 정도 다시 시도하는 간격이다.
+ */
+const RETRY_AFTER_ERROR_MS = 30000;
+
 export class AdMobProvider {
   constructor() {
     this.initPromise = null;
     /** Set by init(). Null until consent has been resolved one way or the other. */
     this.canRequestAds = null;
+    /** 마지막으로 예외가 던져진 시각. 동의 거부에는 쓰지 않는다 — 그건 결론이다. */
+    this.transientFailureAt = null;
+    /**
+     * 배너가 보여야 하는가에 대한 현재 의도.
+     *
+     * showBanner 는 init() 과 네이티브 호출을 await 한다. 그 사이에 화면이
+     * 바뀌어 hideBanner 가 먼저 끝나면, 뒤늦게 깨어난 showBanner 가 숨기라고
+     * 한 화면 위에 배너를 띄운다. 배너는 화면 하단에 고정된 네이티브
+     * 오버레이라서 지금 보이는 것을 덮는다. 의도를 따로 들고 있어야
+     * await 에서 깨어난 쪽이 자기가 낡았는지 알 수 있다.
+     */
+    this.bannerWanted = false;
   }
 
   get id() {
@@ -85,6 +127,27 @@ export class AdMobProvider {
    */
   init() {
     if (this.initPromise) return this.initPromise;
+
+    /*
+     * 실패를 영구히 기억하지 않는다. 단, 결론이 난 실패는 기억한다.
+     *
+     * 예전에는 첫 호출의 프로미스를 그대로 캐시했다. 앱을 켠 순간 통신이
+     * 끊겨 있으면 동의 정보 조회가 던지고, 그 false 가 프로세스가 사는 동안
+     * 캐시된다. 통신이 돌아와도 그 세션 내내 광고가 꺼진 채로 남았다.
+     *
+     * 그렇다고 전부 다시 시도하면 안 된다. 세 가지 결과를 갈라야 한다:
+     *   · 이용자가 동의하지 않았다   → 영구적으로 맞다. 다시 묻는 것이 위반이다.
+     *   · 플러그인이 없다 (웹)        → 영구적으로 맞다. 바뀔 일이 없다.
+     *   · 예외가 던져졌다             → 일시적일 수 있다. 다시 시도해도 된다.
+     *
+     * 그래서 catch 에서만 캐시를 비우고, 쿨다운을 둔다. 쿨다운이 없으면
+     * 통신이 계속 끊긴 상태에서 화면을 옮길 때마다 동의 폼을 다시 받아오려
+     * 들고, 그건 실패보다 비싸다.
+     */
+    if (this.transientFailureAt && Date.now() - this.transientFailureAt < RETRY_AFTER_ERROR_MS) {
+      return Promise.resolve(false);
+    }
+
     this.initPromise = (async () => {
       const admob = plugin();
       if (!admob) return false;
@@ -105,7 +168,13 @@ export class AdMobProvider {
         return true;
       } catch (e) {
         this.canRequestAds = false;
-        console.warn('[ads] consent or initialize failed; ads stay off:', e?.message || e);
+        // 일시적 실패로 취급한다 — 캐시를 비워 쿨다운 뒤 다시 시도할 수 있게.
+        // 여기서 비워도 이 호출의 반환값은 영향받지 않는다: 바깥의
+        // `return this.initPromise` 는 이 async 본문이 돌기 전에 이미 실행됐고,
+        // 호출자는 그 프로미스 객체를 들고 있다.
+        this.transientFailureAt = Date.now();
+        this.initPromise = null;
+        console.warn('[ads] consent or initialize failed; ads stay off for now:', e?.message || e);
         return false;
       }
     })();
@@ -171,12 +240,19 @@ export class AdMobProvider {
    * not sit on top of the keypad; this puts the ad in that space.
    */
   async showBanner() {
+    // 의도를 먼저, 동기적으로 세운다. await 뒤에 세우면 그 사이에 들어온
+    // hideBanner 를 덮어쓴다.
+    this.bannerWanted = true;
+
     const admob = plugin();
     const ids = unitIds();
     if (!admob || !ids.banner) return false;
     // init() resolves consent. Without it we do not know whether this user may
     // be shown an ad at all, and asking anyway is the violation.
     await this.init();
+    // 기다리는 동안 화면이 바뀌었으면 여기서 멈춘다. 이 확인이 없으면
+    // 숨기라고 한 화면 위에 배너가 뜬다.
+    if (!this.bannerWanted) return false;
     if (!this.canRequestAds) return false;
     try {
       await admob.showBanner({
@@ -186,6 +262,12 @@ export class AdMobProvider {
         margin: 0,
         isTesting: isTestingAds()
       });
+      // 네이티브 호출이 도는 동안에도 화면은 바뀔 수 있다. 그때는 이미 떠버린
+      // 배너를 되돌린다 — 의도가 '숨김' 인데 화면에 남아 있게 두지 않는다.
+      if (!this.bannerWanted) {
+        await this.hideBanner();
+        return false;
+      }
       return true;
     } catch (e) {
       // A banner that fails to load must not take the screen with it. The
@@ -196,6 +278,10 @@ export class AdMobProvider {
   }
 
   async hideBanner() {
+    // 의도를 먼저, 동기적으로. 이 대입이 await 뒤로 밀리면 진행 중인
+    // showBanner 가 자기가 낡았다는 것을 알 방법이 없다.
+    this.bannerWanted = false;
+
     const admob = plugin();
     if (!admob) return;
     try {

@@ -9,12 +9,32 @@
  *   listQueue()          matchmaking tickets currently waiting
  *   enqueue(ticket)      { playerId, playerName, level, timestamp }
  *   dequeue(playerId)    remove a ticket
+ *   claimTicket(id)      take a ticket atomically; the ticket to the winner,
+ *                        null to everyone else. See below — this is not dequeue.
  *   close()              release listeners/sockets
  *
  * The constructor takes (playerId, onMessage) and delivers every peer message
  * to onMessage, already filtered so a player never receives their own.
  * `listQueue`, `enqueue` and `dequeue` may return promises — callers await or
  * fire-and-forget, and the local transport resolves synchronously.
+ *
+ * ── Why claimTicket exists and dequeue is not enough ─────────────────────
+ * Claiming used to be `listQueue()` then `dequeue(peer)`. Two searchers can
+ * read the same ticket in the gap between those two calls, so both delete it
+ * and both build a room. The waiting player takes whichever match_created
+ * arrives first and drops the rest, so the waiter is fine — but the losing
+ * host sits in a room against an opponent who will never answer: the name
+ * shows, the progress bar stays at zero. Three searchers make it plain:
+ * with A < B < C, A stands down to both and B and C each pick A.
+ *
+ * claimTicket closes the gap. Whoever sees the value is the one who removed
+ * it, so exactly one caller becomes the host and the others stay in the queue
+ * and pair up on the next ticket broadcast.
+ *
+ * A transport that cannot claim atomically must return null rather than fall
+ * back to read-then-delete. Nobody hosting is recoverable — both searchers
+ * remain waiters and the id comparison pairs them a moment later. A phantom
+ * opponent is not recoverable: the player watches a frozen bar until they quit.
  * ──────────────────────────────────────────────────────────────────────────
  *
  * Firebase is used when its config is present, and the local same-device

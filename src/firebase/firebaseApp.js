@@ -88,6 +88,10 @@ export function getDatabase() {
         remove: rtdb.remove,
         push: rtdb.push,
         get: rtdb.get,
+        // 매치메이킹 티켓 선점에 필요하다. `get` 다음에 `remove` 를 부르면 두
+        // 검색자가 같은 티켓을 둘 다 차지할 수 있다 — 읽기와 쓰기 사이가
+        // 열려 있기 때문이다. runTransaction 은 그 틈을 없앤다.
+        runTransaction: rtdb.runTransaction,
         onDisconnect: rtdb.onDisconnect,
         serverTimestamp: rtdb.serverTimestamp
       };
