@@ -726,6 +726,86 @@ const a = 'x//y'; const b = '안녕';   // ← 뒤쪽 한국어가 가려집니�
 코드에 쓰지 않습니다.
 
 
+### C-6. 위치 권한을 추가하면 광고가 위치를 가져가기 시작합니다 (2026-09-12 신규)
+
+**지금 할 일은 없습니다.** 조건이 성립하지 않기 때문이고, 적어두는 이유는
+나중에 **모르는 사이에 켜지는 종류**이기 때문입니다.
+
+#### 구글이 보낸 공지 (2026-09-12 수신)
+
+> Later this year, we'll release an update to the Google Mobile Ads (GMA) SDK
+> that will enable the collection of coarse location **from apps that request and
+> receive location permissions from a user's device.**
+>
+> The GMA SDK will retrieve the device's coarse location … **when location
+> permissions have been granted by the user to your app.** The GMA SDK will only
+> collect a device's coarse location, even if precise location permissions have
+> been obtained.
+
+#### 지금 해당되지 않는 이유 — 확인함
+
+```
+소스 매니페스트            LOCATION 권한 없음
+병합 매니페스트            0건    ← 라이브러리가 붙이는 것까지 포함해서 확인
+Play Console AAB 권한 10개  위치 없음
+```
+
+**병합 매니페스트를 본 것이 요점입니다.** 우리가 선언하지 않아도 Firebase 나
+AdMob 라이브러리가 권한을 붙일 수 있으므로, 소스만 보면 확인이 아닙니다.
+
+권한을 선언하지 않으면 이용자가 허용할 방법 자체가 없고, 그러면 SDK 가 가져갈
+것이 없습니다.
+
+#### 1v1 도 위치를 쓰지 않습니다 — 확인함
+
+매칭 티켓에 담기는 것 전부:
+
+```js
+{ playerId, playerName, level, timestamp }
+```
+
+매칭 조건은 **난이도와 티켓 신선도(30초)** 뿐입니다. `battleService.js`,
+`battleValidation.js`, `BattleLobbyScreen.jsx` 어디에도 location·region·country·
+timezone 참조가 없습니다.
+
+지연(ping)이 문제되지 않는 이유도 구조에 있습니다. 전송 계층 주석 그대로:
+
+> every message here is ~100 bytes
+
+주고받는 것은 진행률 숫자 하나이고 실시간 조작이 아닙니다. 지연이 실제로
+승부에 닿는 유일한 지점이 **동시 완성**인데, 그것은 2026-09-11 에 소요 시간
+결승 규칙으로 처리했습니다 — 네트워크 도착 순서에 기대지 않습니다.
+
+**그래서 지역 매칭을 도입할 유인이 없습니다.**
+
+#### 언제 이 항목이 살아나는가
+
+**누군가 위치 권한을 선언하는 순간.** 예를 들어 지역별 리더보드, 지역 매칭,
+"내 주변 플레이어" 같은 기능입니다.
+
+그 순간 GMA SDK 가 **자동으로** 대략 위치를 수집하기 시작합니다. 기능을 만든
+사람이 광고 SDK 의 동작까지 같이 바뀐다는 것을 모를 수 있고, 그것이 이 항목을
+적어두는 유일한 이유입니다.
+
+**그때 해야 할 것:**
+
+```
+1. Play Console → 데이터 보안 → 위치 수집 "예" 로 변경
+2. 개인정보처리방침(k2bact.github.io/privacy.html)에 명시
+3. 원치 않으면 GMA SDK 설정 플래그로 수집 비활성화
+```
+
+3번 플래그는 업데이트된 SDK 에 들어오며, 구글이 *"detailed technical integration
+guides"* 를 별도 공지로 보낸다고 했습니다. **그 공지가 오면 이 항목에 링크를
+추가하십시오.**
+
+#### 켤 이유는 없어 보입니다
+
+위치를 주면 광고 지역 적합성이 올라 단가에 도움이 될 수 있습니다. 그러나
+**스도쿠 게임이 위치 권한을 요구하면** 설치 전환율이 떨어지고 데이터 보안 신고가
+복잡해집니다. 단가 몇 푼과 바꿀 거래가 아닙니다.
+
+
 ## 📌 이 파일을 쓰는 규칙
 
 1. **코드로 확인한 것만 "완료" 로 적습니다.** 확인하지 않았으면 "미확인" 이라고 적으세요.
