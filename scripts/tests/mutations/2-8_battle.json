@@ -19,6 +19,22 @@
       "find": "  if (level !== undefined && t.level !== level) return false;",
       "replace": "  // if (level !== undefined && t.level !== level) return false;",
       "expectFailure": "level"
+    },
+    {
+      "name": "the claim keeps the ticket it saw before the retry",
+      "why": "The shipped bug, restored exactly. Firebase re-runs a transaction update function when the server rejects the optimistic write, and returning null from it is a write that commits rather than an abort. So the retry that found the ticket already taken still came back committed, while the ticket seen on the first call sat in the closure and was returned as a successful claim. Two hosts then build a room against the same waiting player, and the later one waits forever on an opponent already in someone else’s game — the ghost the transaction was added to remove.",
+      "file": "src/firebase/transport/firebaseTransport.js",
+      "find": "          if (sawTicket) {\n            seen = null;\n            return undefined;           // 남이 가져갔다 — 중단한다\n          }\n",
+      "replace": "",
+      "expectFailure": "another client already took it"
+    },
+    {
+      "name": "every null is treated as a lost race",
+      "why": "The wrong fix for the mutation above, kept because it was actually written and actually shipped to the gate. Aborting on !current looks like the obvious repair and passes every claim assertion except one: null on the FIRST call means this client has no cached value for the path yet, not that the ticket is gone. Aborting there never reaches the server, the ticket is never seen, and matchmaking stops completely — gate 3-10 went red and instrumenting the real transport showed searcher B receiving null twice and a ticket never. The cold-cache case is what separates the two readings of null, and without it this mutation survives.",
+      "file": "src/firebase/transport/firebaseTransport.js",
+      "find": "          if (sawTicket) {",
+      "replace": "          if (true) {",
+      "expectFailure": "empty local cache, not a lost race"
     }
   ]
 }

@@ -287,7 +287,18 @@ for (const manifest of selected) {
     const rel = mut.file;
     const full = path.join(ROOT, rel);
     const original = fs.readFileSync(full, 'utf8');
-    const occurrences = original.split(mut.find).length - 1;
+
+    // Manifests are written with "\n", the working tree on Windows is CRLF.
+    // A plain substring match therefore fails on every anchor that spans a
+    // line, and reports ANCHOR_MISSING for a manifest that is perfectly
+    // correct — 2-16's "one language loses a string" sat rotted for exactly
+    // this reason while its file and its text were both still there. Match in
+    // the file's own line endings so a manifest does not have to know which
+    // machine checked it out.
+    const eol = original.includes('\r\n') ? '\r\n' : '\n';
+    const toFile = (s) => (eol === '\r\n' ? s.replace(/\r?\n/g, '\r\n') : s);
+    const find = toFile(mut.find);
+    const occurrences = original.split(find).length - 1;
 
     if (occurrences === 0) {
       console.log(`  ❌ ${mut.name}`);
@@ -353,7 +364,7 @@ for (const manifest of selected) {
     let res;
     try {
       inFlight = { full, original, rel };
-      writeWithRetry(full, original.replace(mut.find, expandBait(mut.replace)));
+      writeWithRetry(full, original.replace(find, toFile(expandBait(mut.replace))));
       rebuild();
       rebuildFixture();
       res = runGate(manifest.command);

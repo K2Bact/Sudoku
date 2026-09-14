@@ -24,6 +24,7 @@ runStep('0-1. File Size & Responsibility Separation', 'node scripts/tests/unit/t
 runStep('0-2. Oxlint Static Code Analysis', 'npx oxlint');
 runStep('0-3. Node ESM Import Extension Compliance', 'node scripts/tests/unit/test_esm_import_extensions.js');
 runStep('0-4. No Committed Secrets or Signing Material', 'node scripts/tests/unit/test_no_committed_secrets.js');
+runStep('0-4b. The Secrets Gate Catches Planted Material', 'node scripts/tests/unit/test_secrets_gate_catches_bait.js');
 runStep('0-5. Firebase Config Reaches the Build (1v1 is live)', 'node scripts/tests/unit/test_firebase_config_present.js');
 runStep('0-6. Scan — Did the Signed-Up Player Turn Up?', 'node scripts/scan/run_scan.js');
 

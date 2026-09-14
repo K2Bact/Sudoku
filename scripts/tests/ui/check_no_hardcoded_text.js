@@ -104,8 +104,24 @@ for (const f of targetFiles) {
    * 한국어로 설명하고 있고, 그게 이 프로젝트에서 가장 값나가는 부분이다.
    *
    * 이 구멍을 메우려면 토큰화가 필요하다. 그때까지는 여기 적힌 것이 전부다.
+   *
+   * ── `\r` 를 먼저 떼는 이유 ─────────────────────────────────────────────
+   * 위 정규식의 `.*$` 가 **`\r` 를 넘지 못한다.** `.` 는 줄 종결자를 제외한
+   * 모든 글자이고 `\r` 가 줄 종결자이기 때문이다. 그래서 CRLF 파일에서는
+   * 줄 끝 주석이 한 줄도 걷히지 않고, 바로 위에 적어놓은 그 소음이 전부
+   * 되살아난다.
+   *
+   * 이 저장소는 `core.autocrlf = true` 라 git 은 LF 로 보관하고 작업 폴더는
+   * CRLF 다. 그러면 **같은 코드가 체크아웃 설정에 따라 통과하기도 하고
+   * 실패하기도 한다** — 커밋된 내용은 그대로인데 판정이 달라지므로, diff 에는
+   * 아무것도 안 보이고 원인도 안 보인다. 실제로 `firebaseTransport.js` 의
+   * 줄 끝 한국어 주석이 LF 일 때 통과하고 CRLF 일 때 3건으로 잡혔다.
+   *
+   * 줄 종결자는 코드의 의미가 아니다. 판정에 들어오면 안 된다.
    */
-  const lines = raw.split('\n').map((line) => line.replace(/(^|[^:\\])\/\/.*$/, '$1'));
+  const lines = raw
+    .split('\n')
+    .map((line) => line.replace(/\r$/, '').replace(/(^|[^:\\])\/\/.*$/, '$1'));
   lines.forEach((line, idx) => {
     const trimmed = line.trim();
     if (trimmed.startsWith('//') || trimmed.startsWith('*')) return;

@@ -57,8 +57,8 @@
       "name": "the version in settings drifts from the version that ships",
       "why": "build.gradle said 1.2.1 build 15 while the settings screen said 1.2.0 build 14. A bug report then names a build that was never uploaded.",
       "file": "android/app/build.gradle",
-      "find": "versionName \"1.2.3\"",
-      "replace": "versionName \"1.2.9\"",
+      "find": "versionName \"1.2.5\"",
+      "replace": "versionName \"1.2.4\"",
       "expectFailure": "build.gradle"
     },
     {

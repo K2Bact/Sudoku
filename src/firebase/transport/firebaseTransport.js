@@ -136,6 +136,32 @@ export class FirebaseTransport {
    *
    * 트랜잭션은 읽기와 쓰기를 하나로 묶는다. 값을 본 쪽이 곧 지운 쪽이고,
    * 서버가 한 명에게만 committed 를 준다.
+   *
+   * ── 갱신 함수는 여러 번 불리고, null 이 두 가지를 뜻한다 ─────────────────
+   * 트랜잭션을 걸어놓고도 같은 유령이 돌아올 수 있었다. Firebase 는 낙관적
+   * 쓰기가 서버에서 거절되면 갱신 함수를 새 값으로 **다시 부른다.** 그래서
+   * 처음 본 값을 마지막 성공의 증거로 보관하면 안 된다.
+   *
+   *   1회차  티켓이 보인다        → seen = 티켓, null 반환(지우기)
+   *   2회차  이미 남이 가져갔다    → null 이 들어온다
+   *
+   * 여기서 `return current` 만 했었다. current 는 null 이고, **null 을 돌려
+   * 주는 것은 "지워라" 라는 쓰기지 중단이 아니다.** 그 쓰기는 성공하므로
+   * committed = true 가 되고, seen 에는 1회차의 티켓이 남아 있어 함수가 그
+   * 티켓을 선점 성공으로 돌려줬다. 남이 이미 가져간 상대를 잡았다고 믿는 것 —
+   * 고치려던 유령이 그대로 돌아온다. 중단은 `undefined` 다.
+   *
+   * 그런데 `!current` 를 곧바로 중단으로 바꾸면 1v1 이 아예 안 된다. 실제로
+   * 그렇게 고쳤다가 게이트 3-10 이 두 브라우저를 못 만나게 했고, 계측을
+   * 넣어 보니 검색자 B 의 갱신 함수가 **티켓을 한 번도 못 보고 null 만 두 번**
+   * 받았다. 이 경로의 로컬 캐시가 비어 있어서 Firebase 가 **첫 호출을 null 로**
+   * 시작하기 때문이다. 그 null 은 "남이 가져갔다" 가 아니라 "아직 안 받았다"
+   * 이고, 거기서 `return current` 로 null 을 돌려주는 것이 서버 왕복을 부르는
+   * 동작이었다. 원래 코드의 그 줄은 실수가 아니라 일하고 있었다.
+   *
+   * 그래서 두 null 을 가른다. **이 트랜잭션 안에서 티켓을 본 적이 있는가**가
+   * 기준이다. 본 적 없이 온 null 은 캐시가 빈 것이고, 본 뒤에 온 null 은 남이
+   * 가져간 것이다.
    */
   async claimTicket(playerId) {
     const api = this.api || (await this.ready);
@@ -150,8 +176,17 @@ export class FirebaseTransport {
     try {
       const ticketRef = api.ref(api.db, `${QUEUE_PATH}/${playerId}`);
       let seen = null;
+      let sawTicket = false;
       const res = await api.runTransaction(ticketRef, (current) => {
-        if (!current) return current;   // 이미 남이 가져갔다 — 건드리지 않는다
+        if (!current) {
+          // null 이 두 가지를 뜻한다. 위 설명 참고.
+          if (sawTicket) {
+            seen = null;
+            return undefined;           // 남이 가져갔다 — 중단한다
+          }
+          return current;               // 아직 안 받았다 — 서버 응답을 부른다
+        }
+        sawTicket = true;
         seen = current;
         return null;                    // 지운다
       });

@@ -9,8 +9,32 @@
  * 목록에 없는 글자가 항상 있고, 없다는 사실을 목록 자신은 알 수 없다.
  *
  * 방향을 뒤집는다. 지금 실제로 쓰이는 글자를 전부 적어두고, 그 밖의 글자가
- * 들어오면 막는다. 이 목록은 구성상 완전하다 — 앱의 모든 문자열을 읽어서
- * 만들었으므로 빠진 글자가 없고, 새 글자는 예외 없이 검토를 거친다.
+ * 들어오면 막는다.
+ *
+ * ── 「구성상 완전하다」 고 적혀 있던 자리 ──────────────────────────────────
+ * 2026-09-11 에 이 자리에는 이렇게 적혀 있었다.
+ *
+ *     이 목록은 구성상 완전하다 — 앱의 모든 문자열을 읽어서 만들었으므로
+ *     빠진 글자가 없고, 새 글자는 예외 없이 검토를 거친다.
+ *
+ * 완전하지 않았다. 아카데미 쪽 수집이 소스 텍스트에 `"ja":"…"` 정규식을
+ * 거는 방식이었고, `"ja": "…"` (콜론 뒤 공백) 을 놓쳤다. `stage1Diagrams.js`
+ * 전체가 그 형식이다 — 아카데미 380블록 중 10블록이 수집 밖에 있었다.
+ * 그 파일의 ja 문자열에서 確定 를 간체 确定 로 바꾸고 게이트 2-19 를 돌렸더니
+ * 통과했다. 수집기가 그 글자를 본 적이 없으니 "목록 밖의 글자" 도 될 수 없다.
+ *
+ * 주석이 틀렸다는 것보다 나쁜 것은, 그 주석이 근거로 인용됐다는 점이다.
+ * 문서가 "CJK 전수 검사 완료" 로 옮겨 적은 출처가 여기였다.
+ *
+ * 그래서 정규식을 공백 허용으로 넓히지 않았다. 그것은 이번 형식만 덮고,
+ * 따옴표 종류·escape·템플릿 리터럴·줄바꿈이 다음에 같은 일을 한다. 대신
+ * 아카데미 축은 `academy_corpus.js` 가 **모듈이 실제로 내보내는 객체**를
+ * 걸어서 만든다. 문법이 어떻게 적혀 있든 결과가 같고, 게이트 2-16 과 2-19 가
+ * 같은 말뭉치를 본다.
+ *
+ * 지금 이 목록이 덮는 범위는 정확히 이것이다: **아카데미 export 객체 전체 +
+ * `src/i18n/locales/<loc>/` 파일 텍스트.** 그 밖(예: `dictionaries.js` 의
+ * `nativeName`)은 포함하지 않는다. "앱의 모든 문자열" 이 아니다.
  *
  * 이것은 "검사가 읽어야 할 값을 손으로 베껴 적은 목록" 이 아니다. 사람이
  * 타이핑하지 않고 앱에서 생성하며, 목적이 값의 확인이 아니라 변화의 감지다.
@@ -27,6 +51,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { academyCorpus } from './academy_corpus.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../../..');
@@ -34,7 +59,6 @@ const SRC = path.join(ROOT, 'src');
 const I18N = path.join(SRC, 'i18n/locales');
 const OUT = path.join(HERE, 'cjk_han_inventory.json');
 
-const VAL = '((?:[^"\\\\]|\\\\.)*)';
 const HAN = /\p{Script=Han}/u;
 
 /**
@@ -70,7 +94,7 @@ export function walk(dir, out = []) {
 /**
  * 이 앱은 번역문을 두 가지 방식으로 저장한다. 둘 다 읽어야 한다.
  *
- *   A) 아카데미:  한 줄에 {"ko":"…","ja":"…"} — 항목이 먼저, 로케일이 나중
+ *   A) 아카데미:  {ko:"…", ja:"…"} 블록 — 항목이 먼저, 로케일이 나중
  *   B) i18n:      src/i18n/locales/<loc>/*.js — 로케일이 먼저, 키가 나중
  *
  * 처음 이 조사를 할 때 A 만 읽었고, ja 의 한자가 245종이라고 셌다. 실제로는
@@ -80,8 +104,6 @@ export function walk(dir, out = []) {
  * 침묵이 나온다.
  */
 export function inventory(loc) {
-  const i18nFiles = new Set(walk(I18N));
-  const academyFiles = walk(SRC).filter((f) => !i18nFiles.has(f));
   const counts = new Map();
   const bump = (ch, where) => {
     const e = counts.get(ch) || { n: 0, where: new Set() };
@@ -90,12 +112,14 @@ export function inventory(loc) {
     counts.set(ch, e);
   };
 
-  const re = new RegExp('"' + loc + '":"' + VAL + '"', 'g');
-  for (const f of academyFiles) {
-    for (const m of fs.readFileSync(f, 'utf8').matchAll(re)) {
-      for (const ch of m[1]) if (HAN.test(ch)) bump(ch, path.relative(ROOT, f));
-    }
+  // A) 아카데미 — export 객체에서. 소스에 어떻게 적혀 있든 같은 결과가 나온다.
+  const { dictionaries } = academyCorpus();
+  for (const [key, str] of Object.entries(dictionaries[loc] || {})) {
+    for (const ch of str) if (HAN.test(ch)) bump(ch, key);
   }
+
+  // B) i18n — 파일 텍스트에서. 이쪽은 축이 이미 `로케일/키` 라 파일 하나가
+  //    통째로 한 로케일이고, 문자열만 따로 뽑을 필요가 없다.
   for (const f of walk(path.join(I18N, loc))) {
     // 주석은 한국어 설명일 수 있다. 번역문만 센다.
     const text = fs
@@ -110,34 +134,39 @@ export function inventory(loc) {
 /**
  * 간체↔번체 대응을 앱 자신의 데이터에서 관찰한다.
  *
- * zh-CN 과 zh-TW 는 같은 내용을 두 표기로 적은 것이다. 같은 줄에 나란히 있는
- * 두 문자열이 길이가 같고 한 자리만 다르면, 그 자리가 곧 관찰된 한 쌍이다.
- * 대응표를 어디서 가져오지 않고 앱에서 얻는 것이 요점이다.
+ * zh-CN 과 zh-TW 는 같은 내용을 두 표기로 적은 것이다. 같은 **키**의 두
+ * 문자열이 길이가 같으면 자리마다 맞대어 보고, 다른 자리를 관찰된 쌍으로
+ * 삼는다. 대응표를 어디서 가져오지 않고 앱에서 얻는 것이 요점이다.
+ *
+ * 전에는 「같은 줄에 나란히 있는 두 문자열」 을 맞대었다. 그러면 한 줄에
+ * 우연히 같이 있는 무관한 문자열도 짝이 된다 — 임의의 甲乙 / 丙丁 를 두 줄
+ * 넣으면 甲↔丙, 乙↔丁 가 대응쌍으로 승격됐다. 줄은 두 문자열이 같은 내용의
+ * 두 표기라는 근거가 아니다. 키가 그 근거다. 그래서 키로 맞댄다.
+ *
+ * 주석에는 「한 자리만 다르면」 이라고 적혀 있었지만 코드는 자리 수를 재지
+ * 않았다. 재보니 자리 수를 1로 제한하면 114쌍이 7쌍으로 줄어 검사 1이
+ * 무력해진다. 키로 맞대는 것만으로 위 오탐이 사라지므로 제한하지 않는다 —
+ * 대신 주석을 코드에 맞춘다. (키 기준으로 바꾼 뒤에도 관찰된 쌍은 114개로
+ * 줄 기준과 같았다. 잃은 것도 얻은 것도 없다.)
  *
  * 한 번만 관찰된 쌍은 오타이거나 실제로 다른 낱말일 수 있어 버린다.
  */
 export function observedPairs() {
-  const i18nFiles = new Set(walk(I18N));
-  const files = walk(SRC).filter((f) => !i18nFiles.has(f));
+  const { dictionaries } = academyCorpus();
+  const cnAll = dictionaries['zh-CN'] || {};
+  const twAll = dictionaries['zh-TW'] || {};
   const seen = new Map();
-  const reCN = new RegExp('"zh-CN":"' + VAL + '"', 'g');
-  const reTW = new RegExp('"zh-TW":"' + VAL + '"', 'g');
 
-  for (const f of files) {
-    for (const line of fs.readFileSync(f, 'utf8').split('\n')) {
-      if (!line.includes('"zh-CN"') || !line.includes('"zh-TW"')) continue;
-      const cn = [...line.matchAll(reCN)].map((m) => m[1]);
-      const tw = [...line.matchAll(reTW)].map((m) => m[1]);
-      if (cn.length !== tw.length) continue;
-      for (let i = 0; i < cn.length; i++) {
-        if (cn[i].length !== tw[i].length) continue;
-        for (let j = 0; j < cn[i].length; j++) {
-          const [s, t] = [cn[i][j], tw[i][j]];
-          if (s === t || !HAN.test(s) || !HAN.test(t)) continue;
-          const k = s + '|' + t;
-          seen.set(k, (seen.get(k) || 0) + 1);
-        }
-      }
+  for (const key of Object.keys(cnAll)) {
+    const cn = cnAll[key];
+    const tw = twAll[key];
+    if (typeof cn !== 'string' || typeof tw !== 'string') continue;
+    if (cn.length !== tw.length) continue;
+    for (let i = 0; i < cn.length; i++) {
+      const [s, t] = [cn[i], tw[i]];
+      if (s === t || !HAN.test(s) || !HAN.test(t)) continue;
+      const k = s + '|' + t;
+      seen.set(k, (seen.get(k) || 0) + 1);
     }
   }
   return [...seen].filter(([, n]) => n >= 2).map(([k]) => k.split('|'));

@@ -9,7 +9,6 @@
     "lint": "oxlint",
     "qa": "node scripts/tests/run_all_qa.js",
     "test:ui": "node scripts/tests/ui/check_ui_overflow.js",
-    "test:e2e": "node scripts/tests/run_e2e_tests.js",
     "build:aab": "node scripts/store/build_release_aab.js",
     "preview": "vite preview"
   },

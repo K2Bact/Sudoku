@@ -1,5 +1,28 @@
 Suidoku 검사 체계 감사 대응. 이전 세션에서 넘어왔다.
 
+---
+
+> ## ✅ 1차 대응 완료 (2026-09-13)
+>
+> **우선순위 다섯 개(V01·V02·V03·V07·V13)를 재현하고 고쳤다.** 결과는
+> `SudokuAITalk.md` §감사 대응 1차, 경위는 `docs/SudokuDiary.md`
+> 「2026-09-12 ~ 09-13」, 남은 목록은 `docs/BACKLOG.md`.
+>
+> ```
+> 재현·수정  V01 V02 V03 V07 V13 + V11(ESM 한 줄)
+> 추가 발견  3-1 이 CRLF 에서 오탐 · 실행기가 여러 줄 앵커를 CRLF 에서 못 찾음
+> 미해결    2-9 변형이 6회 중 5회만 잡는다 (간헐)
+> 손 안 댐   V04 V05 V06 V08 V09 V10 V11(나머지) V12 · D01~D08
+> QA 40단계 exit 0 · 변형 96/96 (2-9 간헐로 회차에 따라 95/96)
+> ```
+>
+> **아래 §1 「감사 내용이 아직 커밋되지 않았다」 는 이미 해결됐다** — 핸드오프를
+> 쓴 커밋 `8f70398` 이 같이 넣었다. §2~§7 은 여전히 유효하니 그대로 읽어라.
+> 특히 §3 이 이번에 **V03 에서 정확히 들어맞았다**: 지적도 기전도 맞았는데
+> 권고대로 고쳤더니 1v1 이 죽었다.
+
+---
+
 ## 할 일
 
 `SudokuAITalk.md` 의 **§ChatGPT 검사 체계·개발 지침 정당성 감사 (2026-09-12)** 를 읽어라.
@@ -82,8 +105,8 @@ V03  Firebase claimTicket 재시도 경합         1v1 실사용에 닿음
 ### 7. 검사 도구는 저장소 것을 써라
 
 ```
-node scripts/tests/run_all_qa.js              39단계
-node scripts/tests/run_mutation_audit.js      38게이트 89변이 (--gate 로 하나만 가능)
+node scripts/tests/run_all_qa.js              40단계   (2026-09-13 실측. 0-4b 신설 전 39)
+node scripts/tests/run_mutation_audit.js      39게이트 96변이 (--gate 로 하나만 가능)
 node scripts/scan/run_scan.js                 스캔
 ```
 

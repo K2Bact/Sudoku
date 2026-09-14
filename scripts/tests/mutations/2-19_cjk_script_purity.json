@@ -22,6 +22,14 @@
       "expectFailure": "목록에 없는 한자"
     },
     {
+      "name": "a Simplified character lands in a file the collector could not read",
+      "why": "The blind spot the four mutations above could not find, because every one of them anchors in a file written as \"ja\":\"…\". The collector built the usage snapshot with a regex that required exactly that shape, so `stage1Diagrams.js` — written as \"ja\": \"…\" with a space after the colon — was outside the corpus entirely: 10 of the academy's 380 blocks. Changing 確定 to 确定 there left both 2-19 and 2-16 green, while the file's own header said the snapshot was complete by construction. The collector now walks the exported objects instead of the source text, so the shape of the source cannot decide what gets checked; this mutation is the proof, and it belongs in a spaced-colon file specifically.",
+      "file": "src/data/academy/diagrams/stage1Diagrams.js",
+      "find": "フルハウス: 8個の数字が埋まり最後の正解 [9] が確定",
+      "replace": "フルハウス: 8個の数字が埋まり最後の正解 [9] が确定",
+      "expectFailure": "「确」"
+    },
+    {
       "name": "the snapshot is regenerated to bless contamination",
       "why": "The failure mode this gate is most likely to die of, recorded so it is not a surprise. A snapshot that gets regenerated whenever it goes red blocks nothing, and regeneration is one command. This mutation writes contamination into the source and then rebuilds the snapshot around it; self-consistency must still object, because 確 remains in the same corpus and a locale cannot be using both forms of one character. If this mutation survives, the gate is a rubber stamp and the comment in its header is a lie.",
       "file": "src/data/academy/practice/stage1Practice.js",

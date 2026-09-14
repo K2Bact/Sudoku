@@ -18,14 +18,19 @@
  * were served Simplified for months. Gate 4 exists precisely to catch
  * Simplified characters in zh-TW. It never saw the data.
  *
- * This gate inverts the axis and runs the engine's own gate functions over
- * the result — the rules are imported, never restated here. If a rule
- * changes in app_common, this gate changes with it.
+ * This gate runs the engine's own gate functions over the inverted corpus —
+ * the rules are imported, never restated here. If a rule changes in
+ * app_common, this gate changes with it.
+ *
+ * The inversion itself lives in `../fixtures/academy_corpus.js`, shared with
+ * gate 2-19. It used to happen here, while 2-19 collected the same strings by
+ * running a regex over the source text; that regex missed `"ja": "…"` with a
+ * space after the colon, so a Simplified character dropped into
+ * `stage1Diagrams.js` was invisible to it. Two collectors over one corpus
+ * drift, and the drift is silent. There is one now.
  */
 
-import { ACADEMY_STAGES } from '../../../src/data/academyStrategies.js';
-import { ALL_PRACTICE_MISSIONS } from '../../../src/data/academy/practice/index.js';
-import { DIAGRAM_TRANSLATIONS } from '../../../src/data/academy/diagramTranslations.js';
+import { academyCorpus } from '../fixtures/academy_corpus.js';
 import { LOCALES } from '../../lib/locales.js';
 
 import { auditGate1Completeness } from '../../../../app_common/l10n_engine/core/gate1_completeness.mjs';
@@ -39,44 +44,10 @@ console.log('======================================================');
 console.log('🧪 QA Gate: Academy content under the l10n engine');
 console.log('======================================================\n');
 
-/** locale → { key: string } — the shape every core gate takes. */
-const dictionaries = Object.fromEntries(LOCALES.map((l) => [l, {}]));
-
-let blocks = 0;
-
-/** Record one localised object under a dotted key. */
-function put(key, dict) {
-  if (!dict || typeof dict !== 'object') return;
-  blocks++;
-  for (const loc of LOCALES) {
-    const v = dict[loc];
-    if (typeof v === 'string') dictionaries[loc][key] = v;
-  }
-}
-
-// 1. Strategy cards
-for (const stage of ACADEMY_STAGES) {
-  for (const strat of stage.strategies) {
-    put(`academy.${strat.id}.badge`, strat.badge);
-    put(`academy.${strat.id}.title`, strat.title);
-    put(`academy.${strat.id}.desc`, strat.desc);
-  }
-}
-
-// 2. Practice missions
-for (const [stratId, missions] of Object.entries(ALL_PRACTICE_MISSIONS)) {
-  for (const m of missions) {
-    put(`practice.${stratId}.${m.id}.title`, m.title);
-    put(`practice.${stratId}.${m.id}.guide`, m.guide);
-  }
-}
-
-// 3. Diagram captions
-for (const [type, entries] of Object.entries(DIAGRAM_TRANSLATIONS)) {
-  for (const [key, dict] of Object.entries(entries)) {
-    put(`diagram.${type}.${key}`, dict);
-  }
-}
+// 축을 뒤집는 일은 `academy_corpus.js` 가 한다. 이 게이트가 자기 안에서 하던
+// 일이었는데, 게이트 2-19 가 같은 말뭉치를 소스 정규식으로 따로 모으고 있었고
+// 그쪽이 `"ja": "…"` 형식을 놓쳤다. 수집기가 둘이면 언젠가 갈라진다.
+const { dictionaries, blocks } = academyCorpus();
 
 const counts = LOCALES.map((l) => Object.keys(dictionaries[l]).length);
 console.log(`  로케일 ${LOCALES.length}개 · 블록 ${blocks}개 · 문자열 ${counts.reduce((a, b) => a + b, 0)}개\n`);

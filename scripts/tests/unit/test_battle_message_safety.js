@@ -99,4 +99,72 @@ assert(transport.isCrossDevice === false,
 transport.close();
 console.log('  ✅ Contract is complete and the local transport reports its real reach');
 
+// ── Firebase ticket claiming under a transaction retry ───────────────────
+//
+// Gate 2-9 proves two searchers meet, but it runs on the local transport and
+// makes zero Firebase calls, so nothing in the pipeline exercised this method.
+// It has to be driven directly.
+//
+// The contract being pinned is the SDK's, not ours: runTransaction may call the
+// update function more than once — when the optimistic write is rejected, it
+// re-runs it with the value the server actually holds. Returning `undefined`
+// aborts (committed = false); returning anything else, null included, is a
+// write that commits. claimTicket kept the ticket it saw on the first call in a
+// closure and returned it whenever the transaction committed, so the retry that
+// found the ticket already gone still reported a successful claim — two hosts,
+// one waiting player, and the ghost opponent the transaction was added to kill.
+console.log('\n▶ Firebase claimTicket under a transaction retry');
+{
+  const { FirebaseTransport } = await import('../../../src/firebase/transport/firebaseTransport.js');
+  const TICKET = { playerId: 'peer-1', level: 3 };
+
+  /** An api whose runTransaction feeds `sequence` to the update function in turn. */
+  const fakeApi = (sequence) => ({
+    db: {},
+    ref: () => ({}),
+    calls: 0,
+    async runTransaction(_ref, updateFn) {
+      for (const current of sequence) {
+        this.calls++;
+        if (updateFn(current) === undefined) return { committed: false };
+      }
+      return { committed: true };
+    },
+  });
+
+  const claim = async (sequence) => {
+    const t = Object.create(FirebaseTransport.prototype);
+    t.api = fakeApi(sequence);
+    t.ready = Promise.resolve(t.api);
+    const got = await t.claimTicket('peer-1');
+    return { claimed: got != null, calls: t.api.calls };
+  };
+
+  const uncontended = await claim([TICKET]);
+  assert.strictEqual(uncontended.calls, 1, 'the uncontended case must reach the update function');
+  assert.strictEqual(uncontended.claimed, true, 'an uncontended ticket must be claimed');
+
+  const absent = await claim([null]);
+  assert.strictEqual(absent.claimed, false, 'a queue with no ticket must not produce a claim');
+
+  const contended = await claim([TICKET, null]);
+  assert.strictEqual(contended.calls, 2, 'the contended case must actually retry, or it proves nothing');
+  assert.strictEqual(contended.claimed, false,
+    'a retry that finds the ticket gone must fail the claim — another client already took it');
+
+  // The case that matters most, and the one this test did not have when the
+  // first attempt at the fix was written. `null` on the FIRST call does not
+  // mean the ticket is gone — it means this client has no cached value for the
+  // path yet, which is the normal opening move. Aborting there never reaches
+  // the server, so the ticket is never seen and matchmaking stops entirely:
+  // gate 3-10 went red, and instrumenting the real transport showed searcher B
+  // receiving null twice and a ticket never. Only the second null, after a
+  // ticket has been seen in the same transaction, means somebody took it.
+  const coldCache = await claim([null, TICKET]);
+  assert.strictEqual(coldCache.claimed, true,
+    'null before any ticket is an empty local cache, not a lost race — the claim must still succeed');
+  assert.strictEqual(coldCache.calls, 2, 'the cold-cache case must reach the server round trip');
+}
+console.log('  ✅ Claims an uncontended ticket and one that arrives after a cold cache; refuses an absent one and one taken during a retry');
+
 console.log('\n🎉 [PASS] Battle Message Validation & Transport Contract Verified!\n');

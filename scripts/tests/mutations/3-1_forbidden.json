@@ -27,6 +27,14 @@
       "find": "  const { t } = useTranslation();",
       "replace": "  const { t } = useTranslation(); const label = '연속 출석';",
       "expectFailure": "HARDCODED"
+    },
+    {
+      "name": "a Korean trailing comment sits on a CRLF line",
+      "why": "The same control as above, with a carriage return before the newline. It matters because the strip regex ends in .*$ and . cannot cross \r — \r is a line terminator — so on a CRLF file no trailing comment is removed at all and every Korean one is reported. This repository sets core.autocrlf=true, meaning git stores LF and the working tree holds CRLF, so the same committed code passed or failed depending on the checkout while git diff showed nothing. It was found when three Korean trailing comments in firebaseTransport.js went red after an edit rewrote that file CRLF; HEAD content fed through the scanner as CRLF produced two violations on its own. The control above happens to target an LF file, so it was passing on luck. expectSurvival, like its sibling.",
+      "file": "src/components/DailyRewardModal.jsx",
+      "find": "  const { t } = useTranslation();",
+      "replace": "  const { t } = useTranslation();   // 줄 끝 주석, CRLF 줄에서\r",
+      "expectSurvival": true
     }
   ],
   "note": "The scanner used to skip only whole-line comments, so a Korean trailing comment on a code line was reported as a hardcoded string. That is noise rather than a miss, but a noisy gate gets muted — or worse, gets quietened by rewriting Korean comments into English, and the comments explaining why each fix was made are the most valuable thing in this repository. Trailing comments are now stripped before scanning. The two mutations below hold both ends: a Korean comment must NOT fail, and a Korean string sitting after code on the same line must still fail."

@@ -109,6 +109,31 @@ for (const { name, re } of SECRET_CONTENT_PATTERNS) {
   console.log(`  ${hits.length === 0 ? '✅' : '❌'} working tree — ${name}: ${hits.length} hit(s)`);
 }
 
+// 4b. Secret-looking content in the *index*.
+//
+// Step 2 checks staged file NAMES only, and step 4's `git grep` with no
+// revision reads the working tree. Between them sits a real gap: `git add`
+// a credential, then edit the working copy clean, and the blob queued for the
+// next commit carries the secret while every check here passes. Reproduced in
+// a throwaway repository against this exact file — staged bait present,
+// working tree clean, exit 0, "Repository Clean" printed.
+//
+// `git fsck --unreachable` does not cover it either: Git counts the index as a
+// reachability root, so a staged blob is never reported as unreachable.
+// `--cached` is the only thing that reads what is actually queued.
+console.log('');
+for (const { name, re } of SECRET_CONTENT_PATTERNS) {
+  const res = gitAllowExit1(['grep', '--cached', '-I', '-n', '-E', '-e', re.source, '--']);
+  if (!res.ok) {
+    violations.push(`scanner failed to run on the index for "${name}" (${res.error})`);
+    console.log(`  ❌ index — ${name}: SCANNER ERROR`);
+    continue;
+  }
+  const hits = lines(res.out).filter((l) => !CONTENT_EXCLUSIONS.test(l) && !/\.example:/i.test(l));
+  hits.slice(0, 5).forEach((h) => violations.push(`index (${name}): ${h.slice(0, 160)}`));
+  console.log(`  ${hits.length === 0 ? '✅' : '❌'} index — ${name}: ${hits.length} hit(s)`);
+}
+
 // 5. Secret-looking content anywhere in reachable history
 console.log('');
 const commits = lines(sh('git rev-list --all'));
@@ -127,6 +152,12 @@ for (const { name, re } of SECRET_CONTENT_PATTERNS) {
 
 // 5. Objects `git add` left behind without a commit
 const fsckRes = shAllowExit1('git fsck --unreachable --no-reflogs');
+// A scanner that did not run found nothing, which is not the same as there
+// being nothing. Every other tool call in this file makes that distinction;
+// this one silently treated a crashed fsck as an empty result.
+if (!fsckRes.ok) {
+  violations.push(`git fsck failed to run (${fsckRes.error}) — cannot certify unreachable objects as clean`);
+}
 const unreachable = lines(fsckRes.out).filter((l) => l.startsWith('unreachable blob'));
 let leakedBlobs = 0;
 for (const line of unreachable) {

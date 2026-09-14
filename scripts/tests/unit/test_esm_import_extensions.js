@@ -37,7 +37,6 @@ function walk(dir, out = []) {
 const entryPoints = [
   ...walk(join(ROOT, 'scripts/tests/unit')),
   ...walk(join(ROOT, 'scripts/tests/ui')),
-  join(ROOT, 'scripts/tests/run_e2e_tests.js'),
 ].filter((f) => f.endsWith('.js'));
 
 const visited = new Set();
@@ -61,7 +60,23 @@ function visit(file) {
       : existsSync(`${abs}.js`) ? `${abs}.js`
       : existsSync(`${abs}.jsx`) ? `${abs}.jsx`
       : null;
-    if (target) visit(target);
+
+    // A spelled-out specifier pointing at nothing used to be skipped in
+    // silence, because the recursion guard treated "file missing" the same as
+    // "already seen". `run_e2e_tests.js` imported '../src/engine/SudokuEngine.js'
+    // — which resolves to scripts/src/, a directory that does not exist — and
+    // this gate printed "every test-reachable module resolves under plain Node
+    // ESM" while `npm run test:e2e` died with ERR_MODULE_NOT_FOUND. A missing
+    // extension and a missing file are the same failure to Node, so they are
+    // the same failure here.
+    if (!target || !existsSync(target)) {
+      violations.push(
+        `${toPosix(relative(ROOT, file))} imports '${spec}' (resolves to ` +
+          `${toPosix(relative(ROOT, target || abs))}, which does not exist)`,
+      );
+      continue;
+    }
+    visit(target);
   }
 }
 

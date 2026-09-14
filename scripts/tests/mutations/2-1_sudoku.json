@@ -5,12 +5,20 @@
   "greenMarker": "Sudoku Mathematical Integrity, Immutability & Solver Engine 100% Verified",
   "mutations": [
     {
-      "name": "the generator stops guaranteeing a unique solution",
-      "why": "A puzzle with two solutions marks a correct entry as a mistake. The player is right, the app says they are wrong, and there is nothing they can do about it.",
+      "name": "the generator export is renamed",
+      "why": "An import-contract check, not a behaviour one. It was called \"the generator stops guaranteeing a unique solution\", but renaming an export makes the gate die at load — it would fail identically if the generator were perfect, so it proved nothing about uniqueness. Kept under an honest name, because a renamed export is a real way to break the suite, and paired with the behaviour mutation below that actually removes the guarantee.",
       "file": "src/engine/SudokuEngine.js",
       "find": "export function generatePuzzle(",
       "replace": "export function __unusedGenerate(",
       "expectFailure": "generatePuzzle"
+    },
+    {
+      "name": "the generator stops restoring a clue whose removal creates a second solution",
+      "why": "The guarantee itself, removed. generatePuzzle blanks cells at random and puts one back whenever countSolutions says the board now has more than one answer; skipping that restore ships puzzles with several valid answers. The gate used to accept this — it asserted the puzzle was solvable and that the solver s answer matched the solution shipped beside it, which stays true of an ambiguous board, and the word unique appeared only in its heading. It now counts solutions with a brute force that shares no code with the engine, because using the engine s own countSolutions would let the generator mark its own work.",
+      "file": "src/engine/SudokuEngine.js",
+      "find": "if (countSolutions(puzzle, 2) !== 1) {",
+      "replace": "if (false) {",
+      "expectFailure": "exactly one solution"
     }
   ]
 }
