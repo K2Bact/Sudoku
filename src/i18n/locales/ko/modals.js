@@ -45,6 +45,10 @@ export const modals = {
       desc: '연속 {days}일차 출석 완료!\n무료 힌트 +{count}개가 충전되었습니다.',
       confirm: '보상 받기'
     },
+    adReward: {
+      dismissed: '광고를 끝까지 시청하셔야 보상이 지급됩니다.',
+      unavailable: '지금은 광고를 불러올 수 없습니다.\n잠시 후 다시 시도해 주세요.'
+    },
     hintReward: {
       title: '무료 힌트 충전',
       desc: '짧은 광고를 시청하시면\n무료 힌트 1개가 즉시 충전됩니다.',

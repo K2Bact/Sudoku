@@ -45,6 +45,10 @@ export const modals = {
       desc: '{days} Tage in Folge erreicht!\n+{count} kostenlose Tipps hinzugefügt.',
       confirm: 'Abholen'
     },
+    adReward: {
+      dismissed: 'Werbung bis zum Ende ansehen, um die Belohnung zu erhalten.',
+      unavailable: 'Gerade ist keine Werbung verfügbar.\nBitte später erneut versuchen.'
+    },
     hintReward: {
       title: 'Kostenlose Tipps aufladen',
       desc: 'Kurze Werbung ansehen,\num sofort +1 Tipp zu erhalten.',

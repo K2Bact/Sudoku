@@ -3,10 +3,12 @@ import { AlertTriangle, PlayCircle, RotateCcw, Home } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
 import { adsService } from '../services/adsService';
 import { useTranslation } from '../i18n/i18nContext';
+import { adRewardMessage, watchRewardedAd } from './common/adRewardMessage';
 
 export function GameOverModal({ hasRevived = false, onRevive, onRestart, onReturnHome }) {
   const { t } = useTranslation();
   const [isWatchingAd, setIsWatchingAd] = useState(false);
+  const [adFailure, setAdFailure] = useState(null);
 
   const canRevive = !hasRevived && Boolean(onRevive);
 
@@ -14,13 +16,25 @@ export function GameOverModal({ hasRevived = false, onRevive, onRestart, onRetur
   // provider or AdMob is live. It used to run its own setTimeout and grant the
   // revive unconditionally, which meant the ad service was never consulted and
   // a player who closed a real ad early would still be revived.
+  //
+  // A failed ad now says so and leaves every button in place. Before, a revive
+  // that found no ad did nothing visible, and one closed early never returned
+  // at all — this modal hides its buttons while watching, so the player was
+  // left on a spinner with no way to restart or go home.
   const handleWatchAd = async () => {
+    if (isWatchingAd) return;
     soundHaptic.playSelectSound();
+    setAdFailure(null);
     setIsWatchingAd(true);
-    const { rewarded } = await adsService.showRewarded();
+    const result = await watchRewardedAd(adsService);
     setIsWatchingAd(false);
-    if (rewarded && onRevive) onRevive();
+    if (result.rewarded) {
+      if (onRevive) onRevive();
+      return;
+    }
+    setAdFailure(result);
   };
+  const adMessage = adRewardMessage(adFailure, t);
 
   const handleRestartClick = () => {
     soundHaptic.playSelectSound();
@@ -54,6 +68,11 @@ export function GameOverModal({ hasRevived = false, onRevive, onRestart, onRetur
           </div>
         ) : (
           <div className="modal-actions-vertical w-100 mt-2">
+            {adMessage && (
+              <p className="modal-desc ad-reward-notice" role="status" style={{ whiteSpace: 'pre-line' }}>
+                {adMessage}
+              </p>
+            )}
             {canRevive && (
               <button type="button" className="btn btn-primary btn-lg watch-ad-btn" onClick={handleWatchAd}>
                 <PlayCircle size={20} />

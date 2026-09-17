@@ -21,11 +21,33 @@ import { getBillingProvider } from '../billing/index.js';
 
 const AD_REMOVED_KEY = 'suidoku_remove_ads_purchased_v1';
 const LAST_INTERSTITIAL_TIME_KEY = 'suidoku_last_interstitial_time_v1';
+const FIRST_SEEN_KEY = 'suidoku_ads_first_seen_v1';
 // One hour. The interstitial is the only ad that takes the screen away from a
-// player who did nothing wrong — they just won — and its length is the
-// advertiser's to choose, not ours. Frequency is the only dial we hold, so it
-// is set where the ad is a rare interruption rather than a toll on winning.
+// player who did nothing wrong — they just won — so it is set where the ad is a
+// rare interruption rather than a toll on winning.
+//
+// This used to say frequency was the only dial we hold and the ad's length was
+// the advertiser's. Not quite: AdMob's app-level "High-engagement ads" setting
+// caps how long an interstitial can keep the skip button away — 12 seconds
+// when on (the default), 5 when off. It was switched off on 2026-09-17. That
+// dial lives in the AdMob console, not in this file.
 const MIN_INTERSTITIAL_INTERVAL_MS = 60 * 60 * 1000;
+// 48 hours from first launch before any interstitial.
+//
+// The cap above measured time since the last interstitial, and on a fresh
+// install there is no last interstitial — the stored value is absent, read as
+// 0, and "now minus 0" is always more than an hour. So the very first game a
+// new player ever won ended in a full-screen ad. Someone installing the app
+// saw that on their first win. A first session is where a player decides
+// whether to keep the app; an ad there is the likeliest thing to end it.
+//
+// The clock starts at first launch, not first win, so it counts from install.
+// Players who already had the app get the same 48 hours from the first launch
+// of the version that introduced this — there is no install time to read.
+// A reinstall wipes localStorage and restarts the grace; without a server
+// there is no record that survives that, and erring toward fewer ads is the
+// cheaper mistake.
+const NEW_PLAYER_GRACE_MS = 48 * 60 * 60 * 1000;
 
 class AdsService {
   /** Which provider is live: 'fake' during closed testing, 'admob' at release. */
@@ -93,12 +115,33 @@ class AdsService {
     }
   }
 
-  /** Frequency cap, so a player finishing several games is not buried in ads. */
-  canShowInterstitial() {
+  /**
+   * Record when this player first opened the app, once. Returns that time.
+   *
+   * Called at startup so the grace counts from launch; canShowInterstitial
+   * also calls it, so a missed startup call shortens nothing — it only starts
+   * the clock later. A value in the future (the device clock was moved back)
+   * is replaced with now: left alone it would suppress ads until that future
+   * moment plus 48 hours, with no upper bound on how far away that is.
+   */
+  markFirstSeen(now = Date.now()) {
+    try {
+      const stored = parseInt(localStorage.getItem(FIRST_SEEN_KEY) || '', 10);
+      if (Number.isFinite(stored) && stored > 0 && stored <= now) return stored;
+      localStorage.setItem(FIRST_SEEN_KEY, String(now));
+    } catch {
+      /* storage unavailable: treat this launch as the first */
+    }
+    return now;
+  }
+
+  /** New-player grace, then a frequency cap, so no one is buried in ads. */
+  canShowInterstitial(now = Date.now()) {
     if (this.isAdsRemoved()) return false;
+    if (now - this.markFirstSeen(now) < NEW_PLAYER_GRACE_MS) return false;
     try {
       const last = parseInt(localStorage.getItem(LAST_INTERSTITIAL_TIME_KEY) || '0', 10);
-      return Date.now() - last >= MIN_INTERSTITIAL_INTERVAL_MS;
+      return now - last >= MIN_INTERSTITIAL_INTERVAL_MS;
     } catch (e) {
       return false;
     }
@@ -142,7 +185,7 @@ class AdsService {
   }
 
   async showRewarded() {
-    if (this.isAdsRemoved()) return { rewarded: true };
+    if (this.isAdsRemoved()) return { rewarded: true, reason: null };
     return getAdProvider().showRewarded();
   }
 }

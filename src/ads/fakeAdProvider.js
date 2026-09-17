@@ -38,7 +38,7 @@ export class FakeAdProvider {
 
   showRewarded() {
     return new Promise((resolve) => {
-      setTimeout(() => resolve({ rewarded: true }), REWARDED_MS);
+      setTimeout(() => resolve({ rewarded: true, reason: null }), REWARDED_MS);
     });
   }
 

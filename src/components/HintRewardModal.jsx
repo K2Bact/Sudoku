@@ -1,31 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Lightbulb, PlayCircle } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
 import { adsService } from '../services/adsService';
 import { useTranslation } from '../i18n/i18nContext';
+import { adRewardMessage, watchRewardedAd } from './common/adRewardMessage';
 
 export function HintRewardModal({ isOpen, onClose, onRewardSuccess, adHintsUsed = 0, maxAdHints = 2 }) {
   const { t } = useTranslation();
   const [isWatchingAd, setIsWatchingAd] = useState(false);
+  const [adFailure, setAdFailure] = useState(null);
+
+  // Closed by the parent too, not only by the Later button.
+  useEffect(() => {
+    if (!isOpen) setAdFailure(null);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const remaining = Math.max(0, maxAdHints - adHintsUsed);
+  const adMessage = adRewardMessage(adFailure, t);
 
-  // See GameOverModal: the ad itself belongs to adsService, not to this modal.
+  // See GameOverModal: the ad itself belongs to adsService, not to this modal,
+  // and a failed ad has to say so instead of quietly doing nothing.
   const handleWatchAd = async () => {
-    if (remaining <= 0) return;
+    if (remaining <= 0 || isWatchingAd) return;
     soundHaptic.playSelectSound();
+    setAdFailure(null);
     setIsWatchingAd(true);
-    const { rewarded } = await adsService.showRewarded();
+    const result = await watchRewardedAd(adsService);
     setIsWatchingAd(false);
-    if (!rewarded) return;
+    if (!result.rewarded) {
+      setAdFailure(result);
+      return;
+    }
     soundHaptic.playCompleteChime();
     if (onRewardSuccess) onRewardSuccess();
   };
 
   const handleClose = () => {
     soundHaptic.playSelectSound();
+    // This modal stays mounted while closed, so a failure message would still
+    // be sitting there the next time it opens.
+    setAdFailure(null);
     if (onClose) onClose();
   };
 
@@ -66,6 +82,11 @@ export function HintRewardModal({ isOpen, onClose, onRewardSuccess, adHintsUsed 
           </div>
         ) : (
           <div className="modal-actions-vertical w-100 mt-2">
+            {adMessage && (
+              <p className="modal-desc ad-reward-notice" role="status" style={{ whiteSpace: 'pre-line' }}>
+                {adMessage}
+              </p>
+            )}
             <button type="button"
               className="btn btn-primary btn-lg watch-ad-btn"
               onClick={handleWatchAd}

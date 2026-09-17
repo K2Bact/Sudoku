@@ -241,6 +241,235 @@ console.log('▶ 5. 숨김이 아직 끝나지 않았어도 배너가 뜨지 않
   console.log('  ✅ 진행 중인 숨김도 낡은 showBanner 를 막는다');
 }
 
+// ── 6. 보상형 광고는 무슨 일이 있어도 끝난다 ─────────────────────────────
+//
+// @capacitor-community/admob 8.1.0 의 안드로이드 구현은 showRewardVideoAd 의
+// 약속을 **보상을 받았을 때만** resolve 한다. 닫힘(Dismissed)과 표시 실패
+// (FailedToShow)는 이벤트만 쏘고 약속은 건드리지 않는다. 그래서 광고를 중간에
+// 닫으면 `await showRewardVideoAd()` 가 영원히 끝나지 않았고, 부활 창은 버튼을
+// 모두 숨긴 채 스피너만 돌았다 — 다시 시작도, 홈도 못 누르는 상태.
+//
+// 기기에서 한 번 닫아보면 재현되지만 그 경로는 한 번도 실기 검증된 적이 없다
+// (2026-09-05 기록은 보상 받는 경로뿐). 가짜 플러그인이 네이티브와 같은 방식으로
+// 움직이게 만들고 — 보상 때만 약속을 풀고, 나머지는 이벤트만 — 각 경로가
+// 정해진 시간 안에 끝나는지를 본다.
+console.log('▶ 6. 보상형 광고: 닫든 실패하든 결과가 돌아온다');
+
+function makeRewardStub() {
+  const listeners = new Map();
+  const ctl = { prepareMode: 'resolve', prepareCalls: 0, showCalls: 0 };
+  let resolveShow = null;
+  let rejectShow = null;
+  const stub = {
+    requestConsentInfo: () => Promise.resolve({ status: 'OBTAINED', canRequestAds: true }),
+    initialize: () => Promise.resolve(),
+    addListener(name, fn) {
+      if (!listeners.has(name)) listeners.set(name, new Set());
+      listeners.get(name).add(fn);
+      return Promise.resolve({ remove: () => { listeners.get(name).delete(fn); return Promise.resolve(); } });
+    },
+    prepareRewardVideoAd() {
+      ctl.prepareCalls++;
+      if (ctl.prepareMode === 'reject') return Promise.reject(new Error('No fill'));
+      if (ctl.prepareMode === 'hang') return new Promise(() => {});
+      return Promise.resolve({ adUnitId: 'stub' });
+    },
+    // 네이티브와 같다: 이 약속은 보상 때만 풀린다. 닫힘·실패는 풀지 않는다.
+    showRewardVideoAd() {
+      ctl.showCalls++;
+      return new Promise((resolve, reject) => { resolveShow = resolve; rejectShow = reject; });
+    },
+  };
+  const emit = (name, data = {}) => {
+    for (const fn of [...(listeners.get(name) || [])]) fn(data);
+  };
+  return {
+    stub,
+    ctl,
+    emit,
+    earn: () => {
+      emit('onRewardedVideoAdReward', { type: 'Reward', amount: 1 });
+      resolveShow({ type: 'Reward', amount: 1 });
+    },
+    rejectShow: (e) => rejectShow(e),
+    resolveShowWith: (v) => resolveShow(v),
+    listenerCount: () => [...listeners.values()].reduce((n, s) => n + s.size, 0),
+  };
+}
+
+/** `promise` 가 ms 안에 끝났는지. 끝나지 않는 약속을 기다리다 게이트가 멈추지 않게 한다. */
+async function within(promise, ms) {
+  let timer;
+  const late = new Promise((r) => { timer = setTimeout(() => r({ settled: false }), ms); });
+  const out = await Promise.race([promise.then((value) => ({ settled: true, value })), late]);
+  clearTimeout(timer);
+  return out;
+}
+const tick = () => new Promise((r) => setTimeout(r, 0));
+async function untilShown(ctl) {
+  for (let i = 0; i < 50 && ctl.showCalls === 0; i++) await tick();
+  assert.strictEqual(ctl.showCalls, 1, '광고 표시까지 도달해야 한다 — 닿지 못한 검사는 아무것도 증명하지 않는다');
+}
+async function rewardProvider(r) {
+  const p = await newProvider(r.stub);
+  // 실제 값(15초 · 30초 · 3분)을 기다리지 않도록 줄인다. 시간 초과 검사가 아닌
+  // 절에서는 넉넉히 두어, 타이머가 아니라 이벤트가 결과를 냈다는 것을 보장한다.
+  p.rewardLoadTimeoutMs = 5000;
+  p.rewardDismissGraceMs = 5000;
+  p.rewardShowCeilingMs = 5000;
+  return p;
+}
+const SETTLE_MS = 500;
+
+{
+  // 6a. 보상 없이 닫힘. 출하된 결함 — 여기서 영원히 멈췄다. 맨 앞에 둔다:
+  //     이 결함을 되살렸을 때 다른 절이 먼저 터지면 원인이 가려진다.
+  const r = makeRewardStub();
+  const p = await rewardProvider(r);
+  const run = p.showRewarded();
+  await untilShown(r.ctl);
+  r.emit('onRewardedVideoAdDismissed');
+  const done = await within(run, SETTLE_MS);
+  assert(done.settled,
+    '광고를 중간에 닫았는데 결과가 돌아오지 않는다. 플러그인은 이 경우 약속을 풀지 ' +
+    '않으므로 닫힘 이벤트를 들어야 한다. 이것이 출하된 결함이다 — 부활 창이 버튼을 ' +
+    '숨긴 채 스피너만 돌았다.');
+  assert.deepStrictEqual(done.value, { rewarded: false, reason: 'dismissed' }, '중간에 닫으면 보상 없음, 이유는 dismissed');
+  assert.strictEqual(r.listenerCount(), 0, '닫힌 뒤 리스너가 남아 있다');
+  console.log('  ✅ 보상 없이 닫힘: 멈추지 않고 dismissed 로 끝난다');
+}
+{
+  // 6b. 보상 → 닫힘. 보상 순간이 아니라 닫힌 뒤에 끝나야 한다.
+  const r = makeRewardStub();
+  const p = await rewardProvider(r);
+  const run = p.showRewarded();
+  await untilShown(r.ctl);
+  r.earn();
+  const early = await within(run, 50);
+  assert.strictEqual(early.settled, false,
+    '보상 이벤트 순간에 끝났다. 광고가 아직 화면에 있는데 부활·힌트가 적용되면 ' +
+    '게임판이 광고 뒤에서 바뀐다. 닫힘까지 기다려야 한다.');
+  r.emit('onRewardedVideoAdDismissed');
+  const done = await within(run, SETTLE_MS);
+  assert(done.settled, '보상 후 닫혔는데 결과가 돌아오지 않았다');
+  assert.deepStrictEqual(done.value, { rewarded: true, reason: null }, '끝까지 본 광고는 보상이다');
+  assert.strictEqual(r.listenerCount(), 0, '끝난 뒤에도 리스너가 남아 있다 — 다음 광고의 이벤트를 이 흐름이 받는다');
+  console.log('  ✅ 보상 → 닫힘: 닫힌 뒤에 보상으로 끝나고 리스너를 정리한다');
+}
+{
+  // 6c. 불러왔지만 띄우지 못함 — 이것도 이벤트만 온다.
+  const r = makeRewardStub();
+  const p = await rewardProvider(r);
+  const run = p.showRewarded();
+  await untilShown(r.ctl);
+  r.emit('onRewardedVideoAdFailedToShow', { code: 0, message: 'show failed' });
+  const done = await within(run, SETTLE_MS);
+  assert(done.settled, '표시 실패 이벤트가 왔는데 결과가 돌아오지 않는다');
+  assert.deepStrictEqual(done.value, { rewarded: false, reason: 'failed_to_show' });
+  console.log('  ✅ 표시 실패: failed_to_show 로 끝난다');
+}
+{
+  // 6d. 불러오기 실패 (no fill). 「준비 중」 심사 동안 흔해지는 경우.
+  const r = makeRewardStub();
+  r.ctl.prepareMode = 'reject';
+  const p = await rewardProvider(r);
+  const done = await within(p.showRewarded(), SETTLE_MS);
+  assert(done.settled, '불러오기가 실패했는데 결과가 돌아오지 않는다');
+  assert.deepStrictEqual(done.value, { rewarded: false, reason: 'unavailable' });
+  assert.strictEqual(r.ctl.showCalls, 0, '불러오지 못한 광고를 띄우려 하면 안 된다');
+  console.log('  ✅ 불러오기 실패: unavailable, 표시는 시도하지 않는다');
+}
+{
+  // 6e. 불러오기가 응답하지 않음 — 시간 제한이 없으면 여기서도 멈춘다.
+  const r = makeRewardStub();
+  r.ctl.prepareMode = 'hang';
+  const p = await rewardProvider(r);
+  p.rewardLoadTimeoutMs = 30;
+  const done = await within(p.showRewarded(), SETTLE_MS);
+  assert(done.settled, '응답 없는 불러오기에 시간 제한이 없다. 스피너가 끝나지 않는다.');
+  assert.deepStrictEqual(done.value, { rewarded: false, reason: 'unavailable' });
+  assert.strictEqual(r.ctl.showCalls, 0, '시간이 지난 불러오기 뒤에 표시를 시도하면 안 된다');
+  console.log('  ✅ 불러오기 무응답: 시간 제한 뒤 unavailable');
+}
+{
+  // 6f. 보상은 받았는데 닫힘 이벤트가 끝내 오지 않음 — 받은 보상은 줘야 한다.
+  const r = makeRewardStub();
+  const p = await rewardProvider(r);
+  p.rewardDismissGraceMs = 30;
+  const run = p.showRewarded();
+  await untilShown(r.ctl);
+  r.earn();
+  const done = await within(run, SETTLE_MS);
+  assert(done.settled, '보상 후 닫힘 이벤트가 없으면 결과가 영영 안 온다');
+  assert.deepStrictEqual(done.value, { rewarded: true, reason: null }, '받은 보상을 이벤트 누락 때문에 뺏으면 안 된다');
+  console.log('  ✅ 보상 후 닫힘 누락: 유예 뒤 보상으로 끝난다');
+}
+{
+  // 6g. 아무 신호도 없음 — 마지막 상한.
+  const r = makeRewardStub();
+  const p = await rewardProvider(r);
+  p.rewardShowCeilingMs = 40;
+  const run = p.showRewarded();
+  await untilShown(r.ctl);
+  const done = await within(run, SETTLE_MS);
+  assert(done.settled, '표시된 광고가 아무것도 알리지 않으면 영원히 기다린다');
+  assert.deepStrictEqual(done.value, { rewarded: false, reason: 'failed_to_show' });
+  console.log('  ✅ 무신호: 상한 뒤 failed_to_show');
+}
+{
+  // 6h. 보상 뒤에 표시 호출이 reject — 받은 보상은 그대로.
+  const r = makeRewardStub();
+  const p = await rewardProvider(r);
+  const run = p.showRewarded();
+  await untilShown(r.ctl);
+  r.emit('onRewardedVideoAdReward', { type: 'Reward', amount: 1 });
+  r.rejectShow(new Error('late native error'));
+  const done = await within(run, SETTLE_MS);
+  assert(done.settled, '보상 뒤 오류에 결과가 돌아오지 않는다');
+  assert.deepStrictEqual(done.value, { rewarded: true, reason: null }, '보상 뒤에 난 오류가 보상을 되돌리면 안 된다');
+  console.log('  ✅ 보상 뒤 오류: 보상 유지');
+}
+{
+  // 6i. 웹 구현: 광고 없이 { type: '', amount: 0 } 을 즉시 돌려준다.
+  const r = makeRewardStub();
+  const p = await rewardProvider(r);
+  const run = p.showRewarded();
+  await untilShown(r.ctl);
+  r.resolveShowWith({ type: '', amount: 0 });
+  const done = await within(run, SETTLE_MS);
+  assert(done.settled, '빈 응답에 결과가 돌아오지 않는다 — 상한까지 스피너가 돈다');
+  assert.deepStrictEqual(done.value, { rewarded: false, reason: 'unavailable' }, '광고를 안 보여준 응답은 보상이 아니다');
+  console.log('  ✅ 빈 보상 응답: 보상 아님, 바로 끝난다');
+}
+{
+  // 6j. 연타 — 두 번째 탭은 진행 중인 흐름에 합류한다.
+  const r = makeRewardStub();
+  const p = await rewardProvider(r);
+  const first = p.showRewarded();
+  const second = p.showRewarded();
+  assert.strictEqual(first, second, '진행 중에 다시 부르면 같은 흐름이어야 한다');
+  await untilShown(r.ctl);
+  assert.strictEqual(r.ctl.prepareCalls, 1, '연타가 광고를 두 번 불러오면 안 된다');
+  r.emit('onRewardedVideoAdDismissed');
+  await within(first, SETTLE_MS);
+  const third = p.showRewarded();
+  assert.notStrictEqual(third, first, '끝난 뒤에는 새 흐름이 시작되어야 한다 — 영원히 옛 결과를 돌려주면 안 된다');
+  r.ctl.prepareMode = 'reject';
+  await within(third, SETTLE_MS);
+  console.log('  ✅ 연타: 한 번만 불러오고, 끝나면 다음 요청을 받는다');
+}
+{
+  // 6k. 동의가 없으면 요청도 안 하고 unavailable.
+  const r = makeRewardStub();
+  r.stub.requestConsentInfo = () => Promise.resolve({ status: 'OBTAINED', canRequestAds: false });
+  const p = await rewardProvider(r);
+  const done = await within(p.showRewarded(), SETTLE_MS);
+  assert(done.settled, '동의가 없을 때 결과가 돌아오지 않는다');
+  assert.deepStrictEqual(done.value, { rewarded: false, reason: 'unavailable' });
+  assert.strictEqual(r.ctl.prepareCalls, 0, '동의 없이 광고를 불러오면 위반이다');
+  console.log('  ✅ 동의 없음: 요청 없이 unavailable');
+}
+
 console.log('\n======================================================');
 console.log('🎉 광고 수명주기 경합 게이트 통과');
 console.log('======================================================');

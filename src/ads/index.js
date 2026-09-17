@@ -9,8 +9,12 @@
  *                       a placement that claims a sponsor while this is false
  *                       is telling the player something untrue.
  *   init()              Promise; safe to call repeatedly, resolves when ready
- *   showRewarded()      Promise<{ rewarded: boolean }> — resolves when the ad
- *                       finishes. `rewarded` false means no reward is owed.
+ *   showRewarded()      Promise<{ rewarded: boolean, reason: string|null }> —
+ *                       MUST resolve, whatever the ad does. `rewarded` false
+ *                       means no reward is owed, and `reason` says why:
+ *                       'dismissed' (closed early), 'unavailable' (no ad to
+ *                       give), 'failed_to_show'. Callers tell the player —
+ *                       a silent false looks like a broken button.
  *   showInterstitial()  Promise<void> — resolves when the ad is dismissed
  * ──────────────────────────────────────────────────────────────────────────
  *

@@ -89,9 +89,15 @@ const PLACEMENTS = [
   'src/components/DailyChallengeScreen.jsx',
   'src/components/modals/GameModalsContainer.jsx'
 ];
+// watchRewardedAd(adsService) counts only because the helper itself is checked
+// to call adsService.showRewarded — otherwise a helper could become the place
+// an ad gets faked.
+const helperSrc = read('src/components/common/adRewardMessage.js');
+assert(/adsService\.showRewarded\s*\(/.test(helperSrc) && !/setTimeout/.test(helperSrc),
+  'watchRewardedAd must call adsService.showRewarded and must not stand in for the ad itself');
 for (const file of PLACEMENTS) {
   const src = read(file);
-  assert(/adsService\.(showRewarded|showInterstitial)\s*\(/.test(src),
+  assert(/adsService\.(showRewarded|showInterstitial)\s*\(|watchRewardedAd\(adsService\)/.test(src),
     `${file} does not call adsService — an ad placement that resolves itself is ` +
     'not an ad placement, and will keep working identically after AdMob is ' +
     'switched on, i.e. it will never show an ad');
@@ -143,15 +149,28 @@ assert(/requestConsentInfo\(/.test(initBody),
 // guard was the first attempt and it counted four: init() checks the same flag
 // for itself, which is correct and has nothing to do with the request paths. A
 // count also cannot say WHICH path is open, so each method is read on its own.
-for (const method of ['showBanner', 'showRewarded', 'showInterstitial']) {
-  const at = admobSrc.indexOf(`async ${method}(`);
-  assert(at > -1, `AdMobProvider has no ${method} — the seam is missing a placement`);
+const methodBody = (name, prefix = 'async ') => {
+  const at = admobSrc.indexOf(`  ${prefix}${name}(`);
+  assert(at > -1, `AdMobProvider has no ${name} — the seam is missing a placement`);
   const close = admobSrc.indexOf(`\n  }`, at);
-  const body = admobSrc.slice(at, close > -1 ? close : undefined);
-  assert(/canRequestAds/.test(body),
+  return admobSrc.slice(at, close > -1 ? close : undefined);
+};
+// The rewarded request lives in runRewarded; showRewarded only lets a second tap
+// join a flow already running. Checking showRewarded's own body would pass a
+// guard that is no longer on the path, so the check follows the request.
+for (const [placement, method] of [
+  ['showBanner', 'showBanner'],
+  ['showRewarded', 'runRewarded'],
+  ['showInterstitial', 'showInterstitial'],
+]) {
+  assert(/canRequestAds/.test(methodBody(method)),
     `${method} requests an ad without checking canRequestAds. That serves an ad to ` +
-    'a player who has not been asked, which is the whole reason this flow exists.');
+    'a player who has not been asked, which is the whole reason this flow exists.' +
+    (placement !== method ? ` (${placement} reaches the SDK through ${method}.)` : ''));
 }
+const showRewardedBody = methodBody('showRewarded', '');
+assert(/this\.runRewarded\(/.test(showRewardedBody) && !/prepareRewardVideoAd/.test(showRewardedBody),
+  'showRewarded must reach the SDK only through runRewarded, where consent is checked');
 // The SDK already decides whether a request is allowed. Re-deriving it from the
 // status string loses the case proven on a device: a player who DECLINES
 // personalised ads ends up OBTAINED with canRequestAds still true, because
@@ -205,14 +224,143 @@ const capMs = Function(`"use strict"; return (${capMatch[1]});`)();
 assert(capMs >= 60 * 60 * 1000,
   `The post-game interstitial cooldown is ${Math.round(capMs / 60000)} minutes; ` +
   'it must be at least 60. This is the only ad that takes the screen from a ' +
-  'player who did nothing but win, and its length belongs to the advertiser, ' +
-  'not to us — frequency is the only dial we hold. Shortening it is a decision ' +
-  'to interrupt more often, not a tuning detail.');
+  'player who did nothing but win. Shortening it is a decision to interrupt ' +
+  'more often, not a tuning detail.');
 console.log(`  ✅ Cooldown is ${Math.round(capMs / 60000)} minutes`);
 
-assert(/if\s*\(this\.isAdsRemoved\(\)\)\s*return false;/.test(svc),
-  'A player who removed ads must never meet the interstitial');
-console.log('  ✅ Never shown to a player who removed ads');
+// ── 8b. A new player is not met with an interstitial ─────────────────────
+//
+// Driven through the real service with a controlled clock, not read off the
+// source. The shipped defect was a state the source looked fine in: the cap
+// compared against a stored timestamp that a fresh install does not have, read
+// it as 0, and let the first win of a brand-new player through. A regex over
+// the constant could not have seen that; only running the check with empty
+// storage does.
+console.log('▶ 8b. New players get 48 hours before any interstitial');
+{
+  const store = new Map();
+  globalThis.localStorage = {
+    getItem: (k) => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => store.set(k, String(v)),
+    removeItem: (k) => store.delete(k),
+  };
+  const { adsService } = await import('../../../src/services/adsService.js');
+  const H = 60 * 60 * 1000;
+  const t0 = Date.UTC(2026, 8, 17, 0, 0, 0);
+
+  // Empty storage is a fresh install. This is the exact case that shipped.
+  assert.strictEqual(adsService.canShowInterstitial(t0), false,
+    'A fresh install must not be shown an interstitial on its first win — ' +
+    'empty storage reads as "no ad for a very long time", which is how the ' +
+    'first game a new player ever won ended in a full-screen ad');
+  assert.strictEqual(adsService.markFirstSeen(t0 + 5 * H), t0,
+    'First launch is recorded once; later calls must not move it forward');
+  assert.strictEqual(adsService.canShowInterstitial(t0 + 47 * H + 59 * 60 * 1000), false,
+    'One minute short of 48 hours is still inside the grace');
+  assert.strictEqual(adsService.canShowInterstitial(t0 + 48 * H), true,
+    'At 48 hours the grace ends and the normal cap takes over');
+  console.log('  ✅ Silent from first launch until 48 hours, then eligible');
+
+  // After the grace the hourly cap still applies — the grace replaces nothing.
+  store.set('suidoku_last_interstitial_time_v1', String(t0 + 48 * H));
+  assert.strictEqual(adsService.canShowInterstitial(t0 + 48 * H + 30 * 60 * 1000), false,
+    'Half an hour after an interstitial, the hourly cap must still hold');
+  assert.strictEqual(adsService.canShowInterstitial(t0 + 49 * H), true,
+    'An hour after the last interstitial, the next one is allowed');
+  console.log('  ✅ The hourly cap still applies once the grace is over');
+
+  // A device clock moved backwards must not suppress ads without limit.
+  store.set('suidoku_ads_first_seen_v1', String(t0 + 1000 * H));
+  store.delete('suidoku_last_interstitial_time_v1');
+  assert.strictEqual(adsService.markFirstSeen(t0 + 60 * H), t0 + 60 * H,
+    'A first-launch time in the future must be replaced with now');
+  assert.strictEqual(adsService.canShowInterstitial(t0 + 108 * H), true,
+    'Reset to now, the grace must still end 48 hours later');
+  console.log('  ✅ A future-dated first launch is reset, not trusted');
+
+  store.set('suidoku_remove_ads_purchased_v1', 'true');
+  assert.strictEqual(adsService.canShowInterstitial(t0 + 500 * H), false,
+    'A player who removed ads must never meet the interstitial');
+  console.log('  ✅ Never shown to a player who removed ads');
+
+  delete globalThis.localStorage;
+}
+
+// The grace must start at launch. canShowInterstitial also stamps first-seen,
+// so without this call the clock would start at the first win and a player
+// who took a day to win anything would lose that day of grace. Scoped to
+// main.jsx, the file that runs once at startup.
+const mainSrc = read('src/main.jsx').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+assert(/adsService\.markFirstSeen\s*\(\s*\)/.test(mainSrc),
+  'main.jsx must call adsService.markFirstSeen() at startup so the 48-hour ' +
+  'grace counts from first launch, not from the first win');
+console.log('  ✅ The grace clock starts at app launch');
+
+// ── 9. A rewarded ad that pays nothing says so ────────────────────────────
+//
+// All three rewarded placements ended in `if (!rewarded) return;`. A revive
+// that found no ad changed nothing on screen, which reads as a broken button —
+// and while AdMob reviews the app, "no ad available" is common. Gate 2-20 proves
+// the provider always comes back; this proves the placements tell the player
+// what came back.
+console.log('▶ 9. Every rewarded placement tells the player when there is no reward');
+{
+  const { adRewardMessage, watchRewardedAd } = await import('../../../src/components/common/adRewardMessage.js');
+  const t = (k) => `<${k}>`;
+
+  assert.strictEqual(adRewardMessage({ rewarded: true, reason: null }, t), null, 'a paid-out ad needs no message');
+  assert.strictEqual(adRewardMessage({ rewarded: false, reason: 'dismissed' }, t), '<modals.adReward.dismissed>',
+    'closing early is something the player can choose not to do, so it gets its own message');
+  for (const reason of ['unavailable', 'failed_to_show', undefined, 'something new']) {
+    assert.strictEqual(adRewardMessage({ rewarded: false, reason }, t), '<modals.adReward.unavailable>',
+      `reason ${reason} must fall back to "no ad right now", never to silence`);
+  }
+
+  // Caught here so a helper that lets the throw through fails on this assertion,
+  // not on an unhandled "boom" that would say nothing about why it matters.
+  let threw;
+  try {
+    threw = await watchRewardedAd({ showRewarded: () => Promise.reject(new Error('boom')) });
+  } catch (e) {
+    threw = { escaped: e?.message };
+  }
+  assert.deepStrictEqual(threw, { rewarded: false, reason: 'unavailable' },
+    'a throw on the way to the ad must come back as a result, or the placement keeps its spinner');
+  const garbage = await watchRewardedAd({ showRewarded: () => Promise.resolve(undefined) });
+  assert.deepStrictEqual(garbage, { rewarded: false, reason: 'unavailable' },
+    'a malformed result must not be read as a reward');
+  console.log('  ✅ dismissed and unavailable get distinct messages; throws and garbage come back as unavailable');
+
+  // Each placement, scoped to its own handler — a message rendered somewhere else
+  // in the file is not proof that this handler reaches it.
+  const handlerBody = (src, name) => {
+    const at = src.indexOf(`const ${name} = async`);
+    assert(at > -1, `${name} not found`);
+    const end = src.indexOf('\n  };', at);
+    return src.slice(at, end > -1 ? end : undefined);
+  };
+  const placements = [
+    ['src/components/GameOverModal.jsx', 'handleWatchAd', /setAdFailure\(result\)/],
+    ['src/components/HintRewardModal.jsx', 'handleWatchAd', /setAdFailure\(result\)/],
+    ['src/components/DailyChallengeScreen.jsx', 'handleUnlockWithAd', /notify\(adRewardMessage\(result, t\)\)/],
+  ];
+  for (const [file, handler, tellsPlayer] of placements) {
+    const src = read(file).replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+    const body = handlerBody(src, handler);
+    assert(/watchRewardedAd\(adsService\)/.test(body),
+      `${file} ${handler} must go through watchRewardedAd, which always returns a result`);
+    assert(!/if\s*\(\s*!\s*rewarded\s*\)\s*return\s*;/.test(body),
+      `${file} ${handler} still returns silently when no reward is given`);
+    assert(tellsPlayer.test(body),
+      `${file} ${handler} does not tell the player why nothing happened. A silent ` +
+      'failure looks like a broken button — and during the AdMob review, no ad is common.');
+    if (/setAdFailure/.test(tellsPlayer.source)) {
+      assert(/adRewardMessage\(adFailure, t\)/.test(src) && /\{adMessage && \(/.test(src),
+        `${file} records the failure but never renders the message`);
+    }
+  }
+  console.log('  ✅ Revive, hint refill and past-day unlock each tell the player when the ad pays nothing');
+}
 
 console.log('\n======================================================');
 console.log('🎉 Ad honesty gate passed — nothing claims an ad it cannot serve.');

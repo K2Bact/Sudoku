@@ -6,6 +6,7 @@ import { soundHaptic } from '../utils/soundHaptic';
 import { adsService } from '../services/adsService';
 import { useTranslation } from '../i18n/i18nContext';
 import { useNotify } from './common/ConfirmProvider';
+import { adRewardMessage, watchRewardedAd } from './common/adRewardMessage';
 
 export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyMission }) {
   const { t } = useTranslation();
@@ -35,10 +36,16 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
    * player who dismisses a real ad early gets nothing.
    */
   const handleUnlockWithAd = async (targetDate) => {
+    if (watchingAdForDate) return;
     setWatchingAdForDate(targetDate);
-    const { rewarded } = await adsService.showRewarded();
+    const result = await watchRewardedAd(adsService);
     setWatchingAdForDate(null);
-    if (!rewarded) return;
+    if (!result.rewarded) {
+      // Used to return silently: the overlay vanished and the day stayed locked
+      // with no word about why.
+      notify(adRewardMessage(result, t));
+      return;
+    }
     if (onStartDailyPuzzle) onStartDailyPuzzle(targetDate);
   };
 

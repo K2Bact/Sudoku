@@ -45,6 +45,10 @@ export const modals = {
       desc: '連続 {days}日目のログイン達成！\n無料ヒント +{count}個 が付与されました。',
       confirm: 'ボーナスを受け取る'
     },
+    adReward: {
+      dismissed: '報酬を受け取るには、広告を最後まで視聴してください。',
+      unavailable: '現在、広告を読み込めません。\nしばらくしてから再度お試しください。'
+    },
     hintReward: {
       title: '無料ヒントの補充',
       desc: '短い広告を視聴すると、\n無料ヒントが1個補充されます。',

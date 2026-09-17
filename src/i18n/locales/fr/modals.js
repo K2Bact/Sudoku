@@ -45,6 +45,10 @@ export const modals = {
       desc: 'Série de {days} jour(s) atteinte !\n+{count} indice(s) gratuit(s) ajouté(s).',
       confirm: 'Récupérer'
     },
+    adReward: {
+      dismissed: 'Regardez la pub jusqu’au bout pour obtenir la récompense.',
+      unavailable: 'Aucune pub disponible pour le moment.\nRéessayez dans un instant.'
+    },
     hintReward: {
       title: 'Recharge d’indices gratuits',
       desc: 'Regardez une courte vidéo pour\nobtenir immédiatement +1 indice.',

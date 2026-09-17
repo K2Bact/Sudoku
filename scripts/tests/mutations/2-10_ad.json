@@ -17,9 +17,9 @@
       "name": "the rewarded ad is requested without checking consent",
       "why": "One deleted guard serves a personalised ad to a player who was never asked. Every other test keeps passing, which is exactly why this is checked in the source rather than left to a device run that happened once.",
       "file": "src/ads/adMobProvider.js",
-      "find": "    if (!this.canRequestAds) return { rewarded: false };",
+      "find": "    if (!this.canRequestAds) return { rewarded: false, reason: 'unavailable' };",
       "replace": "",
-      "expectFailure": "showRewarded requests an ad without checking canRequestAds"
+      "expectFailure": "runRewarded requests an ad without checking canRequestAds"
     },
     {
       "name": "consent is never requested at all",
@@ -36,6 +36,70 @@
       "find": "    adsService.hasPrivacyOptions()",
       "replace": "    Promise.resolve(false)",
       "expectFailure": "never asks whether a privacy options form exists"
+    },
+    {
+      "name": "a fresh install is shown an interstitial on its first win",
+      "why": "The shipped defect, restored. The hourly cap compares against the last interstitial, and a fresh install has none: the stored value is absent, read as 0, and now minus 0 is always past an hour. Someone who installed the app met a full-screen ad on the first game they ever won. Removing the grace check brings that back, and the gate must see it by running the service against empty storage — the source of the cap looked correct the whole time.",
+      "file": "src/services/adsService.js",
+      "find": "    if (now - this.markFirstSeen(now) < NEW_PLAYER_GRACE_MS) return false;\n",
+      "replace": "",
+      "expectFailure": "A fresh install must not be shown an interstitial"
+    },
+    {
+      "name": "the new-player grace is quietly shortened to an hour",
+      "why": "Forty-eight hours is a product decision, taken so a player gets through their first sessions before any interruption. Shrinking the constant still suppresses the very first win and would pass a check that only looked at t=0, which is why the gate probes one minute short of the boundary.",
+      "file": "src/services/adsService.js",
+      "find": "const NEW_PLAYER_GRACE_MS = 48 * 60 * 60 * 1000;",
+      "replace": "const NEW_PLAYER_GRACE_MS = 1 * 60 * 60 * 1000;",
+      "expectFailure": "One minute short of 48 hours"
+    },
+    {
+      "name": "a first-launch time in the future is trusted",
+      "why": "If the device clock is moved back after first launch, the stored time sits in the future and now minus it stays negative — the interstitial would be suppressed until that moment plus 48 hours, with no upper bound. The guard replaces a future value with now.",
+      "file": "src/services/adsService.js",
+      "find": "stored > 0 && stored <= now",
+      "replace": "stored > 0",
+      "expectFailure": "must be replaced with now"
+    },
+    {
+      "name": "the grace clock is no longer started at launch",
+      "why": "canShowInterstitial stamps first-seen too, so without the startup call nothing breaks visibly — the clock simply starts at the first win instead of at install, and a player who took a day to win anything loses that day of grace. Behaviour cannot show this from the service alone, so the gate checks main.jsx, the file that runs once at startup.",
+      "file": "src/main.jsx",
+      "find": "adsService.markFirstSeen();",
+      "replace": "",
+      "expectFailure": "main.jsx must call adsService.markFirstSeen()"
+    },
+    {
+      "name": "the revive button goes silent again when there is no ad",
+      "why": "The shipped behaviour: a revive that found no ad changed nothing on screen, indistinguishable from a broken button. During the AdMob review no-fill is common, so this is the case players actually meet.",
+      "file": "src/components/GameOverModal.jsx",
+      "find": "    setAdFailure(result);\n  };",
+      "replace": "  };",
+      "expectFailure": "GameOverModal.jsx handleWatchAd does not tell the player why nothing happened"
+    },
+    {
+      "name": "the past-day unlock fails without a word",
+      "why": "The daily calendar is the third rewarded placement and the easiest to forget, because its waiting overlay simply disappears on failure and the day looks as it did before the tap.",
+      "file": "src/components/DailyChallengeScreen.jsx",
+      "find": "      notify(adRewardMessage(result, t));\n",
+      "replace": "",
+      "expectFailure": "DailyChallengeScreen.jsx handleUnlockWithAd does not tell the player why nothing happened"
+    },
+    {
+      "name": "a throw on the way to the ad escapes the placement",
+      "why": "Every placement sets a watching flag before awaiting and clears it after. A throw between the two leaves the flag set — the same spinner trap as the unsettled promise, by a different road.",
+      "file": "src/components/common/adRewardMessage.js",
+      "find": "  } catch (e) {\n    console.warn('[ads] rewarded ad threw:', e?.message || e);\n    return { rewarded: false, reason: 'unavailable' };\n  }",
+      "replace": "  } catch (e) {\n    throw e;\n  }",
+      "expectFailure": "a throw on the way to the ad must come back as a result"
+    },
+    {
+      "name": "closing the ad early is reported as no ad available",
+      "why": "Collapsing the two messages tells a player who skipped the ad to try again later, when trying again now and watching to the end would work. The difference is the one thing the player controls.",
+      "file": "src/components/common/adRewardMessage.js",
+      "find": "  return result.reason === 'dismissed'\n    ? t('modals.adReward.dismissed')\n    : t('modals.adReward.unavailable');",
+      "replace": "  return t('modals.adReward.unavailable');",
+      "expectFailure": "closing early is something the player can choose not to do"
     }
   ]
 }

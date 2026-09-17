@@ -45,6 +45,10 @@ export const modals = {
       desc: 'Day {days} streak achieved!\n+{count} Free Hints added.',
       confirm: 'Claim Reward'
     },
+    adReward: {
+      dismissed: 'Watch the ad to the end to receive the reward.',
+      unavailable: 'No ad is available right now.\nPlease try again in a moment.'
+    },
     hintReward: {
       title: 'Free Hint Recharge',
       desc: 'Watch a short ad to\nreceive +1 Free Hint immediately.',

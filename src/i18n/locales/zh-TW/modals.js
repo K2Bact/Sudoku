@@ -48,6 +48,10 @@ export const modals = {
       desc: '連續第 {days} 天簽到完成！\n已獲得免費提示 +{count}。',
       confirm: '領取獎勵'
     },
+    adReward: {
+      dismissed: '需要看完廣告才能獲得獎勵。',
+      unavailable: '暫時無法載入廣告，\n請稍後再試。'
+    },
     hintReward: {
       title: '領取免費提示',
       desc: '觀看簡短廣告即可立即獲得\n免費提示 1 個。',

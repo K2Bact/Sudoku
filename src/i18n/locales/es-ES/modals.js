@@ -48,6 +48,10 @@ export const modals = {
       desc: '¡Día {days} consecutivo completado!\nHas recibido +{count} pista(s) gratis.',
       confirm: 'Recoger'
     },
+    adReward: {
+      dismissed: 'Mira el anuncio hasta el final para recibir la recompensa.',
+      unavailable: 'Ahora mismo no hay anuncios disponibles.\nInténtalo de nuevo en un momento.'
+    },
     hintReward: {
       title: 'Obtener pista gratis',
       desc: 'Mira un anuncio breve para recibir\n1 pista adicional de inmediato.',

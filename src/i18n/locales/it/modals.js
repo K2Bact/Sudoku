@@ -45,6 +45,10 @@ export const modals = {
       desc: 'Serie di {days} giorni raggiunta!\n+{count} suggerimento/i gratuito/i aggiunto/i.',
       confirm: 'Riscatta'
     },
+    adReward: {
+      dismissed: 'Guarda l’annuncio fino alla fine per ottenere la ricompensa.',
+      unavailable: 'Al momento non ci sono annunci disponibili.\nRiprova tra poco.'
+    },
     hintReward: {
       title: 'Ricarica Suggerimenti Gratis',
       desc: 'Guarda un breve annuncio per\nottenere subito +1 suggerimento.',

@@ -36,6 +36,62 @@
       "find": "    // 의도를 먼저, 동기적으로. 이 대입이 await 뒤로 밀리면 진행 중인\n    // showBanner 가 자기가 낡았다는 것을 알 방법이 없다.\n    this.bannerWanted = false;\n\n    const admob = plugin();\n    if (!admob) return;\n    try {\n      await admob.hideBanner();",
       "replace": "    const admob = plugin();\n    if (!admob) { this.bannerWanted = false; return; }\n    try {\n      await admob.hideBanner();\n      this.bannerWanted = false;",
       "expectFailure": "물러나야 한다"
+    },
+    {
+      "name": "a rewarded ad closed early never returns",
+      "why": "The shipped defect. In @capacitor-community/admob 8.1.0 showRewardVideoAd resolves only from the earned-reward listener; closing early emits Dismissed and leaves the call pending forever. Without listening for Dismissed the flow never settles, and the game-over modal — which hides every button while it waits — becomes a spinner the player cannot leave. The gate runs this case first so no other case can fail ahead of it and hide it.",
+      "file": "src/ads/rewardedWatch.js",
+      "find": "  listen('onRewardedVideoAdDismissed', () => settle(earnedResult() || { rewarded: false, reason: 'dismissed' }));\n",
+      "replace": "",
+      "expectFailure": "광고를 중간에 닫았는데 결과가 돌아오지 않는다"
+    },
+    {
+      "name": "the reward is applied while the ad is still on screen",
+      "why": "Settling at the Rewarded event looks harmless and passes every case that only checks the final value. But the reward arrives before the player closes the ad, so a revive or a hint would change the board behind a full-screen ad. The gate checks the flow is still pending between the reward and the close.",
+      "file": "src/ads/rewardedWatch.js",
+      "find": "    earned = true;\n",
+      "replace": "    earned = true;\n    settle({ rewarded: true, reason: null });\n",
+      "expectFailure": "보상 이벤트 순간에 끝났다"
+    },
+    {
+      "name": "a rewarded ad that never loads keeps the spinner forever",
+      "why": "A load that neither resolves nor rejects is the other way to hang. Removing the ceiling passes every case where the network answers, which is every case on a desk.",
+      "file": "src/ads/admobProvider.js",
+      "find": "      await withTimeout(\n        admob.prepareRewardVideoAd({ adId: ids.rewarded, isTesting: isTestingAds() }),\n        this.rewardLoadTimeoutMs,\n      );",
+      "replace": "      await admob.prepareRewardVideoAd({ adId: ids.rewarded, isTesting: isTestingAds() });",
+      "expectFailure": "응답 없는 불러오기에 시간 제한이 없다"
+    },
+    {
+      "name": "rewarded listeners are left attached after the ad ends",
+      "why": "Listeners that outlive their flow receive the next ad's events: a Dismissed from the second ad would settle nothing now, but a stale Rewarded listener could mark a later flow as earned. The result looks right in every single-ad case.",
+      "file": "src/ads/rewardedWatch.js",
+      "find": "      if (h && typeof h.remove === 'function') Promise.resolve(h.remove()).catch(() => {});",
+      "replace": "      void h;",
+      "expectFailure": "닫힌 뒤 리스너가 남아 있다"
+    },
+    {
+      "name": "a second tap loads a second rewarded ad",
+      "why": "The buttons hide while watching, but a double tap lands before the re-render. Two flows means two loads, two sets of listeners, and a reward that can be granted twice.",
+      "file": "src/ads/admobProvider.js",
+      "find": "    if (this.rewardedInFlight) return this.rewardedInFlight;\n",
+      "replace": "",
+      "expectFailure": "진행 중에 다시 부르면 같은 흐름이어야 한다"
+    },
+    {
+      "name": "an error after the reward takes the reward back",
+      "why": "Once the Rewarded event has fired the player has watched the ad. A native error arriving afterwards must not turn that into \"no reward\".",
+      "file": "src/ads/rewardedWatch.js",
+      "find": "    settle(earnedResult() || { rewarded: false, reason: 'failed_to_show' });\n  };",
+      "replace": "    settle({ rewarded: false, reason: 'failed_to_show' });\n  };",
+      "expectFailure": "보상 뒤에 난 오류가 보상을 되돌리면 안 된다"
+    },
+    {
+      "name": "an empty reward payload is treated as a reward",
+      "why": "The plugin's web implementation resolves at once with { type: '', amount: 0 } and shows nothing. Counting any resolution as a reward grants revives and hints for an ad nobody saw, and then leaves a spinner until the grace timer runs out.",
+      "file": "src/ads/rewardedWatch.js",
+      "find": "      if (item && (item.type || item.amount)) markEarned();",
+      "replace": "      if (true) markEarned();",
+      "expectFailure": "빈 응답에 결과가 돌아오지 않는다"
     }
   ]
 }

@@ -45,6 +45,10 @@ export const modals = {
       desc: 'Sequência de {days} dias atingida!\n+{count} dica(s) gratuita(s) adicionada(s).',
       confirm: 'Receber'
     },
+    adReward: {
+      dismissed: 'Assista ao anúncio até o fim para receber a recompensa.',
+      unavailable: 'Nenhum anúncio disponível no momento.\nTente novamente em instantes.'
+    },
     hintReward: {
       title: 'Recarregar Dicas Grátis',
       desc: 'Assista a um vídeo curto para\nreceber +1 dica imediatamente.',

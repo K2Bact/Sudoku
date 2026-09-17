@@ -19,6 +19,8 @@
  * the RESULT OF A METHOD CALL, never the plugin itself.
  */
 
+import { watchRewarded, withTimeout } from './rewardedWatch.js';
+
 function plugin() {
   if (typeof window === 'undefined') return null;
   const plugins = window.Capacitor && window.Capacitor.Plugins;
@@ -124,6 +126,19 @@ export class AdMobProvider {
      * await 에서 깨어난 쪽이 자기가 낡았는지 알 수 있다.
      */
     this.bannerWanted = false;
+    /** The rewarded flow in progress, so a second tap joins it instead of loading another ad. */
+    this.rewardedInFlight = null;
+    /**
+     * How long to wait for a rewarded ad to load. Without a ceiling a load that
+     * never answers leaves the player on a spinner with every button hidden.
+     * Instance fields rather than constants so the lifecycle gate can shrink
+     * them instead of waiting fifteen real seconds.
+     */
+    this.rewardLoadTimeoutMs = 15000;
+    /** After the reward is earned, how long to wait for the ad to close before trusting the reward anyway. */
+    this.rewardDismissGraceMs = 30000;
+    /** Absolute ceiling on a shown rewarded ad that reports nothing at all. */
+    this.rewardShowCeilingMs = 180000;
   }
 
   get id() {
@@ -250,25 +265,51 @@ export class AdMobProvider {
     }
   }
 
-  async showRewarded() {
+  /**
+   * Resolves { rewarded, reason } — always, whatever the ad does.
+   *
+   *   rewarded true   reason null
+   *   rewarded false  reason 'dismissed'       closed before the reward
+   *                   reason 'unavailable'     no plugin, no consent, failed or slow to load
+   *                   reason 'failed_to_show'  loaded but could not be shown
+   *
+   * "Always" is the point. Awaiting showRewardVideoAd() directly left the
+   * promise pending forever when the ad was closed early, and the game-over
+   * modal sat on a spinner with every button hidden. See rewardedWatch.js.
+   */
+  showRewarded() {
+    if (this.rewardedInFlight) return this.rewardedInFlight;
+    const run = this.runRewarded().finally(() => {
+      this.rewardedInFlight = null;
+    });
+    this.rewardedInFlight = run;
+    return run;
+  }
+
+  async runRewarded() {
     const admob = plugin();
     const ids = unitIds();
-    if (!admob || !ids.rewarded) return { rewarded: false };
+    if (!admob || !ids.rewarded) return { rewarded: false, reason: 'unavailable' };
     // init() resolves consent. Without it we do not know whether this user may
     // be shown an ad at all, and asking anyway is the violation.
     await this.init();
-    if (!this.canRequestAds) return { rewarded: false };
+    if (!this.canRequestAds) return { rewarded: false, reason: 'unavailable' };
+
     try {
-      await admob.prepareRewardVideoAd({ adId: ids.rewarded, isTesting: isTestingAds() });
-      const result = await admob.showRewardVideoAd();
-      // The SDK reports the reward it granted; no reward object means the
-      // player closed the ad early and is owed nothing.
-      return { rewarded: Boolean(result && (result.type || result.amount)) };
+      await withTimeout(
+        admob.prepareRewardVideoAd({ adId: ids.rewarded, isTesting: isTestingAds() }),
+        this.rewardLoadTimeoutMs,
+      );
     } catch (e) {
-      console.warn('[ads] rewarded ad failed:', e?.message || e);
-      return { rewarded: false };
+      console.warn('[ads] rewarded ad did not load:', e?.message || e);
+      return { rewarded: false, reason: 'unavailable' };
     }
+    return watchRewarded(admob, {
+      dismissGraceMs: this.rewardDismissGraceMs,
+      showCeilingMs: this.rewardShowCeilingMs,
+    });
   }
+
 
   /**
    * The banner is a native overlay pinned to the bottom of the screen, not an
