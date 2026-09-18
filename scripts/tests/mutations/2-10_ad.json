@@ -100,6 +100,30 @@
       "find": "  return result.reason === 'dismissed'\n    ? t('modals.adReward.dismissed')\n    : t('modals.adReward.unavailable');",
       "replace": "  return t('modals.adReward.unavailable');",
       "expectFailure": "closing early is something the player can choose not to do"
+    },
+    {
+      "name": "the post-game ad is requested inside the new-player grace",
+      "why": "An ad that can never be shown is still a request, and unfilled-by-us requests lower the match rate the account is judged on.",
+      "file": "src/services/adsService.js",
+      "find": "    if (!this.canShowInterstitial(now)) return Promise.resolve(false);\n",
+      "replace": "",
+      "expectFailure": "An ad was requested inside the 48-hour grace"
+    },
+    {
+      "name": "the hourly cap starts even when no ad was shown",
+      "why": "Stamping the cap before checking readiness makes one unloaded win silently cost the player nothing and the app an hour of eligible impressions.",
+      "file": "src/services/adsService.js",
+      "find": "    if (!this.isPostGameAdReady(now)) return { shown: false, reason: 'not_ready' };\n",
+      "replace": "",
+      "expectFailure": "An ad that was not shown must not start the hourly cap"
+    },
+    {
+      "name": "the victory screen renders under the ad again",
+      "why": "The ordering this change introduced: the victory screen waits for the ad sequence. Rendering it on victory alone puts its buttons beneath a live interstitial.",
+      "file": "src/components/modals/GameModalsContainer.jsx",
+      "find": "      {showVictory && victoryPhase === 'modal' && (",
+      "replace": "      {showVictory && (",
+      "expectFailure": "VictoryModal must render only once"
     }
   ]
 }

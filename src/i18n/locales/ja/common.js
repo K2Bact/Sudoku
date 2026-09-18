@@ -8,7 +8,7 @@ export const common = {
     restart: 'やり直す',
     restartConfirm: 'このパズルを最初からやり直しますか？',
     newGame: '新しいゲーム',
-    home: 'メインホーム',
+    home: 'ホーム',
     pause: '一時停止',
     resume: '再開する',
     exitAppPrompt: '戻るボタンをもう一度押すとアプリを終了します。',
@@ -40,7 +40,7 @@ export const common = {
     timeAttackMistake: 'ミス {count}回 (+10秒)',
     combo: '🔥 {count} 連続!',
     restartShort: 'やり直し',
-    newGameShort: '新規対局',
+    newGameShort: '新しいゲーム',
     themeTooltip: 'テーマ変更',
     soundOn: '効果音OFF',
     soundOff: '効果音ON'
@@ -77,23 +77,23 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 グランドマスター',
-      desc: '全プレイヤーの上位{percentile}%！ ごく少数だけが到達する1%マスター級の論理力です。'
+      desc: 'ごく少数だけが到達する1%マスター級の論理力です。'
     },
-    mensa: {
-      title: '🧠 メンサ級上位知能',
-      desc: '全プレイヤーの上位{percentile}%！ メンサレベルの優れた論理的分析力を発揮しています。'
+    expert: {
+      title: '🧠 達人級の論理力',
+      desc: 'このゲームで際立った推理力を発揮しています。'
     },
     superior: {
       title: '⚡ 優秀な頭脳',
-      desc: '全プレイヤーの上位{percentile}%！ 鋭い直感と優れた問題解決能力を持っています。'
+      desc: '鋭い直感と優れた問題解決能力を持っています。'
     },
     aboveAverage: {
       title: '💡 平均以上の論理力',
-      desc: '全プレイヤーの上位{percentile}%！ 安定した柔軟な思考でパズルを解いています。'
+      desc: '安定した柔軟な思考でパズルを解いています。'
     },
     balanced: {
       title: '🎯 バランスの良い頭脳',
-      desc: '全プレイヤーの上位{percentile}%！ 5つの認知能力が均等に発達した理想的な状態です。'
+      desc: '5つの認知能力が均等に発達した理想的な状態です。'
     },
     developing: {
       title: '🌱 成長中の頭脳',

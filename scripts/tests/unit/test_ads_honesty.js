@@ -61,8 +61,13 @@ const result = await fake.showRewarded();
 assert.strictEqual(result.rewarded, true,
   'Hints, revives and past-puzzle unlocks all depend on this resolving; a ' +
   'placeholder that never rewards silently breaks three features');
-await fake.showInterstitial();
-console.log('  ✅ Rewards granted, interstitial resolves');
+// The placeholder never loads an interstitial, so a win goes straight to the
+// victory screen instead of pausing for an ad that does not exist.
+assert.strictEqual(await fake.preloadInterstitial(), false, 'the placeholder loads no interstitial');
+assert.strictEqual(fake.isInterstitialReady(), false, 'the placeholder never has an interstitial ready');
+assert.deepStrictEqual(await fake.showPreparedInterstitial(), { shown: false, reason: 'not_ready' },
+  'showing with nothing loaded must resolve at once, not hang the victory sequence');
+console.log('  ✅ Rewards granted; no interstitial is ever pending on the placeholder');
 
 // ── 4. No placement claims a sponsor while the default is fake ────────────
 console.log('▶ 4. No vendor or sponsor claims in ad UI strings');
@@ -87,7 +92,7 @@ const PLACEMENTS = [
   'src/components/GameOverModal.jsx',
   'src/components/HintRewardModal.jsx',
   'src/components/DailyChallengeScreen.jsx',
-  'src/components/modals/GameModalsContainer.jsx'
+  'src/hooks/useVictoryAd.js'
 ];
 // watchRewardedAd(adsService) counts only because the helper itself is checked
 // to call adsService.showRewarded — otherwise a helper could become the place
@@ -97,7 +102,7 @@ assert(/adsService\.showRewarded\s*\(/.test(helperSrc) && !/setTimeout/.test(hel
   'watchRewardedAd must call adsService.showRewarded and must not stand in for the ad itself');
 for (const file of PLACEMENTS) {
   const src = read(file);
-  assert(/adsService\.(showRewarded|showInterstitial)\s*\(|watchRewardedAd\(adsService\)/.test(src),
+  assert(/adsService\.(showRewarded|preloadPostGameAd)\s*\(|watchRewardedAd\(adsService\)|ads:\s*adsService\b/.test(src),
     `${file} does not call adsService — an ad placement that resolves itself is ` +
     'not an ad placement, and will keep working identically after AdMob is ' +
     'switched on, i.e. it will never show an ad');
@@ -161,7 +166,7 @@ const methodBody = (name, prefix = 'async ') => {
 for (const [placement, method] of [
   ['showBanner', 'showBanner'],
   ['showRewarded', 'runRewarded'],
-  ['showInterstitial', 'showInterstitial'],
+  ['preloadPostGameAd', 'preloadInterstitial'],
 ]) {
   assert(/canRequestAds/.test(methodBody(method)),
     `${method} requests an ad without checking canRequestAds. That serves an ad to ` +
@@ -171,6 +176,10 @@ for (const [placement, method] of [
 const showRewardedBody = methodBody('showRewarded', '');
 assert(/this\.runRewarded\(/.test(showRewardedBody) && !/prepareRewardVideoAd/.test(showRewardedBody),
   'showRewarded must reach the SDK only through runRewarded, where consent is checked');
+// Showing never loads. The only interstitial request is preloadInterstitial, where
+// consent is checked; an interstitial that loaded on show would skip that gate.
+assert(!/prepareInterstitial/.test(methodBody('showPreparedInterstitial')),
+  'showPreparedInterstitial must never load an ad — loading belongs to preloadInterstitial, behind consent');
 // The SDK already decides whether a request is allowed. Re-deriving it from the
 // status string loses the case proven on a device: a player who DECLINES
 // personalised ads ends up OBTAINED with canRequestAds still true, because
@@ -284,6 +293,78 @@ console.log('▶ 8b. New players get 48 hours before any interstitial');
   console.log('  ✅ Never shown to a player who removed ads');
 
   delete globalThis.localStorage;
+}
+
+console.log('▶ 8c. The post-game ad is loaded, paused for and counted only when allowed');
+{
+  const store = new Map();
+  globalThis.localStorage = {
+    getItem: (k) => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => store.set(k, String(v)),
+    removeItem: (k) => store.delete(k),
+  };
+  const { adsService } = await import('../../../src/services/adsService.js');
+  const { getAdProvider } = await import('../../../src/ads/index.js');
+  const provider = getAdProvider();
+  const real = {
+    preload: provider.preloadInterstitial, ready: provider.isInterstitialReady, show: provider.showPreparedInterstitial,
+  };
+  const H = 60 * 60 * 1000;
+  const t0 = Date.UTC(2026, 8, 18, 0, 0, 0);
+  let loads = 0;
+  let shows = 0;
+  let loaded = true;
+  provider.preloadInterstitial = async () => { loads++; return true; };
+  provider.isInterstitialReady = () => loaded;
+  provider.showPreparedInterstitial = async () => { shows++; return { shown: true, reason: null }; };
+  try {
+    store.set('suidoku_ads_first_seen_v1', String(t0));
+    await adsService.preloadPostGameAd(t0 + H);
+    assert.strictEqual(loads, 0,
+      'An ad was requested inside the 48-hour grace. It can never be shown there, so the request ' +
+      'only lowers the match rate');
+    assert.strictEqual(adsService.isPostGameAdReady(t0 + H), false,
+      'Inside the grace the win must not pause for an ad, even if one happens to be loaded');
+
+    const after = t0 + 49 * H;
+    await adsService.preloadPostGameAd(after);
+    assert.strictEqual(loads, 1, 'After the grace the post-game ad must be loaded ahead of the win');
+    loaded = false;
+    assert.strictEqual(adsService.isPostGameAdReady(after), false,
+      'Allowed but not loaded must not pause the win — the win never waits for a load');
+    const unready = await adsService.showPostGameAd(after);
+    assert.strictEqual(store.get('suidoku_last_interstitial_time_v1'), undefined,
+      'An ad that was not shown must not start the hourly cap');
+    assert.deepStrictEqual(unready, { shown: false, reason: 'not_ready' });
+    loaded = true;
+    assert.strictEqual(adsService.isPostGameAdReady(after), true, 'Allowed and loaded: the win pauses for it');
+    assert.deepStrictEqual(await adsService.showPostGameAd(after), { shown: true, reason: null });
+    assert.strictEqual(shows, 1, 'showPostGameAd must reach the provider');
+    assert.strictEqual(store.get('suidoku_last_interstitial_time_v1'), String(after),
+      'A shown ad must start the hourly cap, or the next win shows another');
+    assert.strictEqual(adsService.isPostGameAdReady(after + 30 * 60 * 1000), false,
+      'Half an hour later the cap must keep the next win ad-free');
+    await adsService.preloadPostGameAd(after + 30 * 60 * 1000);
+    assert.strictEqual(loads, 1, 'Inside the cap nothing should be requested');
+    console.log('  ✅ Not loaded in the grace or cap · no pause unless loaded · the cap starts only on a shown ad');
+
+    // The victory screen comes after the ad, and its buttons carry none. An ad behind
+    // Next Game is the placement AdMob's guidance names as the one to avoid.
+    const container = read('src/components/modals/GameModalsContainer.jsx')
+      .replace(/\{\/\*[\s\S]*?\*\/\}/g, '').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+    assert(/victoryPhase\s*===\s*'modal'\s*&&\s*\(\s*<VictoryModal/.test(container),
+      'VictoryModal must render only once the post-game ad sequence reaches its modal phase — ' +
+      'otherwise the victory screen appears under the ad');
+    assert(!/adsService/.test(container),
+      'GameModalsContainer calls adsService again. The ad belongs before the victory screen, ' +
+      'not behind its Next Game or Home buttons');
+    console.log('  ✅ The victory screen waits for the ad, and its buttons carry none');
+  } finally {
+    Object.assign(provider, {
+      preloadInterstitial: real.preload, isInterstitialReady: real.ready, showPreparedInterstitial: real.show,
+    });
+    delete globalThis.localStorage;
+  }
 }
 
 // The grace must start at launch. canShowInterstitial also stamps first-seen,

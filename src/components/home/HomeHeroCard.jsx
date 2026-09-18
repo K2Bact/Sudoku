@@ -12,7 +12,7 @@ export function HomeHeroCard({ iqReport, won }) {
         <span className="hero-tag"><Brain size={12} /> {t('home.brainReportTitle')}</span>
         <h2 className="hero-iq">Sudoku IQ {iqReport.iqScore}</h2>
         <div className="hero-stats-line">
-          <span>{t('home.brainPercentileShort', { percentile: iqReport.topPercentile, won })}</span>
+          <span>{t('home.brainPercentileShort', { won })}</span>
         </div>
         <div className="hero-tier-pill">
           {tierName}

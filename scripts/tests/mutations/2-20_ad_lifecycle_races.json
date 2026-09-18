@@ -92,6 +92,102 @@
       "find": "      if (item && (item.type || item.amount)) markEarned();",
       "replace": "      if (true) markEarned();",
       "expectFailure": "빈 응답에 결과가 돌아오지 않는다"
+    },
+    {
+      "name": "a debug APK requests ads the way .env says",
+      "why": "Every APK goes onto the developer's own phone, and .env is production: real unit ids, testing off. Dropping the debug override makes a debug build show that phone live ads, and a tap on one is invalid traffic — the account-suspension path the whole test-ad setup exists to avoid.",
+      "file": "src/ads/admobProvider.js",
+      "find": "  if (isDebugBuild()) return true;\n",
+      "replace": "",
+      "expectFailure": "디버그 APK 의 banner 가 테스트로 요청되지 않았다"
+    },
+    {
+      "name": "a debug APK keeps the registered test devices",
+      "why": "With a device registered, the plugin sends the real unit id and relies on Google to answer with a test ad. Registration is by a hash that can differ after a reinstall — on 2026-09-17 the Flip 5 did not match .env. Clearing the list in debug makes the plugin substitute Google's sample unit id, so no live unit is ever requested.",
+      "file": "src/ads/admobProvider.js",
+      "find": "  if (isDebugBuild()) return [];\n",
+      "replace": "",
+      "expectFailure": "디버그 빌드는 등록 기기를 비워야 한다"
+    },
+    {
+      "name": "every build is treated as a debug build",
+      "why": "The opposite failure, and the one a safety-minded edit is likely to make. Forcing test ads everywhere passes every debug check and silently zeroes production revenue.",
+      "file": "src/ads/admobProvider.js",
+      "find": "  return typeof window !== 'undefined' && Boolean(window.Capacitor && window.Capacitor.DEBUG === true);",
+      "replace": "  return true;",
+      "expectFailure": "릴리스 빌드의 banner 가 테스트로 요청됐다"
+    },
+    {
+      "name": "the victory screen appears as soon as the interstitial starts",
+      "why": "The plugin resolves showInterstitial the moment the ad is on screen (8.1.0: ad.show(activity); call.resolve()). Treating that as the end puts the victory screen and its buttons under a live ad, which is the ordering this whole change exists to remove.",
+      "file": "src/ads/interstitialWatch.js",
+      "find": "    Promise.resolve(admob.showInterstitial()).catch((e) => {",
+      "replace": "    Promise.resolve(admob.showInterstitial()).then(() => settle({ shown: true, reason: null })).catch((e) => {",
+      "expectFailure": "광고가 떠 있는 동안 풀렸다"
+    },
+    {
+      "name": "overlapping preloads each request an interstitial",
+      "why": "The game screen re-renders during play and preload runs each time. Without the in-flight join every render is a separate ad request for one impression, which drags the match rate down.",
+      "file": "src/ads/interstitialWatch.js",
+      "find": "    if (this.loading) return this.loading;\n",
+      "replace": "",
+      "expectFailure": "매번 요청하면 요청만 쌓이고"
+    },
+    {
+      "name": "the interstitial is requested without checking consent",
+      "why": "preloadInterstitial is now the only place an interstitial is requested. Dropping the consent check there serves an ad to someone who was never asked.",
+      "file": "src/ads/admobProvider.js",
+      "find": "    if (!this.canRequestAds) return false;\n    return this.interstitial.load(",
+      "replace": "    return this.interstitial.load(",
+      "expectFailure": "동의 없는 이용자에게 전면광고를 요청했다"
+    },
+    {
+      "name": "a shown interstitial with no dismiss event holds the victory screen forever",
+      "why": "The web stub and some failure paths emit nothing. Without the ceiling a shown-but-never-dismissed ad leaves the player on the pause overlay with no way forward.",
+      "file": "src/ads/interstitialWatch.js",
+      "find": "  timers.push(setTimeout(() => settle({ shown: showed, reason: 'no_dismiss_event' }), showCeilingMs));\n",
+      "replace": "",
+      "expectFailure": "닫힘 이벤트가 끝내 안 오면"
+    },
+    {
+      "name": "an interstitial that never appears is waited on until the ceiling",
+      "why": "No Showed event means nothing is on screen. Waiting the full two-minute ceiling there freezes the player on the board they just won.",
+      "file": "src/ads/interstitialWatch.js",
+      "find": "    if (!showed) settle({ shown: false, reason: 'not_shown' });",
+      "replace": "    /* wait for the ceiling */",
+      "expectFailure": "광고가 뜨지 않았는데(Showed 없음)"
+    },
+    {
+      "name": "a stale interstitial counts as loaded",
+      "why": "A loaded interstitial expires after an hour and then does not show. Counting it as ready makes the win pause for an ad that will never appear.",
+      "file": "src/ads/interstitialWatch.js",
+      "find": "    return this.loadedAt !== null && now - this.loadedAt < this.maxAgeMs;",
+      "replace": "    return this.loadedAt !== null;",
+      "expectFailure": "55분이 넘은 광고를 준비됐다고 했다"
+    },
+    {
+      "name": "the win goes straight to the ad with no pause",
+      "why": "Sudoku is tapped quickly and the last tap wins. With no pause the next tap lands on the ad as it appears — an accidental click, which AdMob counts against the account. AdMob asks tap-heavy apps for exactly this delay.",
+      "file": "src/hooks/useVictoryAd.js",
+      "find": "  setPhase('pause');\n  await wait(VICTORY_AD_PAUSE_MS);\n",
+      "replace": "",
+      "expectFailure": "준비됐으면 멈춤이 광고보다 먼저여야 한다"
+    },
+    {
+      "name": "the win waits for an ad that is not loaded",
+      "why": "A late ad lands on a player who has moved on. The win must only pause for an ad already loaded.",
+      "file": "src/hooks/useVictoryAd.js",
+      "find": "  if (!ads.isPostGameAdReady()) {\n    setPhase('modal');\n    return;\n  }\n",
+      "replace": "",
+      "expectFailure": "광고가 준비 안 됐으면 멈춤 없이"
+    },
+    {
+      "name": "the ad still shows after the player has left during the pause",
+      "why": "Leaving during the pause means the win screen is gone. An ad over whatever came next has no reason attached to it.",
+      "file": "src/hooks/useVictoryAd.js",
+      "find": "  await wait(VICTORY_AD_PAUSE_MS);\n  if (isCancelled()) return;\n",
+      "replace": "  await wait(VICTORY_AD_PAUSE_MS);\n",
+      "expectFailure": "멈춤 사이 화면을 떠났으면"
     }
   ]
 }

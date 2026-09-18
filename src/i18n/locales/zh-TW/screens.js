@@ -11,7 +11,7 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: '剩餘提示',
     brainReportTitle: '大腦活性分析',
-    brainPercentileShort: '超越前 {percentile}% · 通關 {won} 局',
+    brainPercentileShort: '已通關 {won} 局',
     startSelectedLevel: '開始 Lv.{level} {name}',
     modeTabs: { classic: '經典', timeAttack: '計時競速', timeLimit: '極限生存' },
     rivalModes: {
@@ -68,30 +68,31 @@ export const screens = {
     benefit2: '極致專註體驗並節省設備电量',
     benefit3: '支持獨立開發团队與持續更新',
     buyBtn: '永久去除廣告 ({price})',
-    restoreBtn: '恢復购買記錄',
+    restoreBtn: '恢復購買記錄',
     alreadyPurchased: '您已拥有頂級會員特权！ 🎉',
     processing: '💳 处理中...',
     purchaseBtn: '永久去除廣告',
-    buySuccess: '购買成功！感谢您的支持。',
-    restoreSuccess: '购買記錄已成功恢復。',
-    restoreFail: '未找到可恢復的购買記錄。'
+    buySuccess: '購買成功！感謝您的支持。',
+    restoreSuccess: '購買記錄已成功恢復。',
+    restoreFail: '未找到可恢復的購買記錄。',
+    buyFail: '無法完成購買，請稍後再試。'
   },
   tutorialOverlay: {
     exitTooltip: '退出教學',
     step1Title: '🎯 第 1 步：選擇格子並輸入數字',
     step1Desc: '點擊高亮的 [第 1 行第 3 格] 空格，並在鍵盤上輸入 [9]！',
-    step2Title: '✏️ 第 2 步：铅筆筆記（填写候選數）',
+    step2Title: '✏️ 第 2 步：鉛筆筆記（填寫候選數）',
     step2Desc: '在工具栏開啟 [筆記] 切换為候選數模式，並為該格標記 [3]！',
     step3Title: '🔒 第 3 步：快速輸入模式',
     step3Desc: '點擊快速輸入鎖定數字 [4]，連續點擊空格即可快速填入！',
     step4Title: '🎉 第 4 步：新手教學完成！',
-    step4Desc: '恭喜！您已掌握格子填写、筆記標記與快速輸入模式。',
+    step4Desc: '恭喜！您已掌握格子填寫、筆記標記與快速輸入模式。',
     finishBtn: '開始實戰遊戲',
     nextBtn: '下一步'
   },
   settings: {
     title: '設定',
-    themeSection: '🎨 视覺主題',
+    themeSection: '🎨 視覺主題',
     languageSection: '🌐 語言設定',
     languages: {
       auto: '系統預設'
@@ -117,11 +118,11 @@ export const screens = {
     privacySubtitle: '隱私保護',
     privacyModalTitle: '隱私政策',
     privacy: {
-      subtitle: 'Sudoku 無需帳號，不收集姓名、電子郵件或聯絡方式。',
-      sec1Title: '1. 無需註冊', sec1Desc: '本應用無需註冊，不會收集您的姓名、電子郵件、電話號碼、通訊錄或位置資訊。使用連線功能（1v1 對戰、雲端備份）時，僅會傳送一組隨機產生的 ID。',
-      sec2Title: '2. 本地存储與刪除权利', sec2Desc: '遊戲進度、提示數量、主題設定僅安全保存在您的設備本地。',
-      sec3Title: '3. 1v1 對決與大腦指數', sec3Desc: '即時 1v1 對戰會傳送隨機產生的玩家 ID 與解題記錄。該 ID 儲存於本機並重複使用，不與您的姓名或帳號連結。',
-      sec4Title: '4. 廣告 (Google AdMob)', sec4Desc: '為維持遊戲免費，本應用程式可能透過 Google AdMob SDK 顯示廣告。廣告啟用時，AdMob 可能收集廣告識別碼。廣告僅出現在遊戲畫面底部橫幅與獎勵影片中。'
+      subtitle: 'Sudoku 無需帳號。以下是本應用程式實際儲存與傳送的資訊。',
+      sec1Title: '1. 本機儲存與備份', sec1Desc: '您的紀錄、提示與設定儲存在本機。如果開啟了 Android 自動備份，Android 會把這些資料複製到您自己的 Google 雲端硬碟，並在重新安裝時還原。我們從不收集您的姓名、電子郵件、電話號碼、通訊錄或位置。',
+      sec2Title: '2. Google Play 遊戲', sec2Desc: '登入 Play 遊戲後，每次獲勝都會把您的進度（統計、成就、提示、設定）自動備份到 Play 遊戲存檔，並把您的 IQ 分數提交到 Play 遊戲排行榜。這些資料儲存在您自己的 Google 帳戶中。',
+      sec3Title: '3. 1v1 對戰', sec3Desc: '即時 1v1 對戰透過 Google Firebase 向對手傳送隨機產生的玩家 ID、自動暱稱（SudokuMaster_xxxx）與您的解題進度。該 ID 儲存在本機並重複使用，不與您的姓名或任何帳戶連結。',
+      sec4Title: '4. 廣告與購買', sec4Desc: '本應用程式透過 Google AdMob 顯示廣告：橫幅廣告、獲勝後的全螢幕廣告，以及自願觀看的獎勵影片。AdMob 可能會處理您的廣告 ID。「移除廣告」的購買由 Google Play 處理，我們不會收到您的付款資訊。'
     }
   },
   stats: {
@@ -140,7 +141,7 @@ export const screens = {
     totalPlayed: '總局數',
     totalWon: '獲勝局數',
     winRate: '勝率',
-    shareText: '[Sudoku IQ 大腦報告]\n我的數獨IQ: {iq}分 ({percentile})\n等級: {tier}\n立即一起挑戰極速邏輯推理！',
+    shareText: '[Sudoku IQ 大腦報告]\n我的數獨IQ: {iq}分\n等級: {tier}\n立即一起挑戰極速邏輯推理！',
     copiedToast: '大腦分析結果已復制至剪貼板。',
     focus: '專註力',
     durability: '專註耐力',
@@ -151,31 +152,30 @@ export const screens = {
     overallStats: '📊 綜合累計數據',
     attributesTitle: '🧠 五大核心認知能力',
     title: '大腦活性分析報告',
-    percentilePrefix: '前 ',
     shareTitle: '我的數獨大腦指數報告',
     tiers: {
       grandMaster: '👑 宗師級大腦',
-      grandMasterDesc: '超越全體玩家前 {percentile}%！極少數玩家能達到的頂級大師推理力。',
-      mensa: '🧠 門薩級高智商',
-      mensaDesc: '超越全體玩家前 {percentile}%！展現門薩級別的卓越邏輯分析能力。',
+      grandMasterDesc: '極少數玩家能達到的頂級大師推理力。',
+      expert: '🧠 專家級邏輯',
+      expertDesc: '在本遊戲中展現出色的邏輯分析能力。',
       superior: '⚡ 敏銳思維',
-      superiorDesc: '超越全體玩家前 {percentile}%！具備敏銳直覺與出色的問題解決力。',
+      superiorDesc: '具備敏銳直覺與出色的問題解決力。',
       aboveAverage: '💡 优异邏輯力',
-      aboveAverageDesc: '超越全體玩家前 {percentile}%！具備穩定且靈活的思考模式。',
+      aboveAverageDesc: '具備穩定且靈活的思考模式。',
       balanced: '🎯 全方位平衡大腦',
-      balancedDesc: '超越全體玩家前 {percentile}%！五大認知領域均衡發展的典範狀態。',
+      balancedDesc: '五大認知領域均衡發展的典範狀態。',
       developing: '🌱 成長潜力',
-      developingDesc: '剛開啟大腦鍛煉階段。持續解題將让大腦指數迅速攀升！'
+      developingDesc: '剛開啟大腦鍛煉階段。持續解題將讓大腦指數迅速攀升！'
     }
   },
   battleLobby: {
     title: '1v1 即時對決',
     cancelBtn: '取消匹配',
-    searching: '正在寻找實力相當的對手...',
+    searching: '正在尋找對手...',
     autoMatchTitle: '快速匹配',
     autoMatchDesc: '與全球玩家進行 1:1 極速對決',
-    mmrBadge: '實力匹配 · 當前勝率 {rate}%',
-    findOpponentBtn: '寻找對手',
+    mmrBadge: '我的通關率 {rate}%',
+    findOpponentBtn: '尋找對手',
     noOpponentFound: '找不到對手。要改與 AI 對戰嗎?',
     playAiInstead: '與 AI 對戰'
   },
@@ -222,9 +222,9 @@ export const screens = {
     aiSpeed: '解題速度：{speed}',
     level1Desc: '初級機器人：步調較慢，適合建立解題信心。',
     level2Desc: '普通機器人：穩定解題且失誤極少。',
-    level3Desc: '熟練機器人：速度敏捷，掌握中級解題策略。',
-    level4Desc: '大師機器人：極速解題，精通高難度技巧。',
-    level5Desc: '阿爾法數獨：極限極速，無懈可擊的大師級 AI。',
+    level3Desc: '熟練機器人：速度快，失誤少。',
+    level4Desc: '大師機器人：速度極快，很少失誤。',
+    level5Desc: '阿爾法數獨：最快、失誤最少的機器人。',
     startBtn: '開始 Lv.{level} {name} AI 對決'
   },
   academy: {
@@ -244,7 +244,8 @@ export const screens = {
       success: '答案 [{val}] 正確！您已完全掌握此技巧！',
       retry: '重新作答',
       error: '[{val}] 不是正確答案，請再次觀察高亮提示！',
-      prompt: '👇 請在下方數字鍵盤點擊目標空格 (?) 應填入的數字。'
+      prompt: '👇 請在下方數字鍵盤點擊目標空格 (?) 應填入的數字。',
+      promptEliminated: '👇 請點擊將從目標格中排除的候選數。'
     }
   },
   adBanner: {removeBtn: '去除廣告' }

@@ -2,8 +2,8 @@ export const achievements = {
   achievements: {
     categories: {
       all: 'すべて',
-      progression: '完走・成長',
-      logic: '論理・無欠点',
+      progression: 'クリア・成長',
+      logic: '論理・ノーミス',
       speed: 'スピード',
       difficulty: '難易度・生存',
       special: 'デイリー・対戦'
@@ -51,8 +51,8 @@ export const achievements = {
 
     // 27 ~ 30. デイリー, バトル & 脳力
     daily_first: { title: 'デイリー探検家', desc: '本日のデイリーチャレンジを初クリア' },
-    daily_streak_7: { title: '7日間の奇跡', desc: 'デイリーチャレンジに7日連続で挑戦＆クリア' },
+    daily_streak_7: { title: '7日間の奇跡', desc: '7日連続でログインする' },
     battle_first_win: { title: '剣闘士の初勝利', desc: '1v1オンライン対戦またはAI対戦で初勝利' },
-    iq_150: { title: 'メンサ級の頭脳', desc: '脳活性指数 Sudoku IQ 150点以上に到達' }
+    iq_150: { title: '天才級の頭脳', desc: '脳活性指数 Sudoku IQ 150点以上に到達' }
   }
 };

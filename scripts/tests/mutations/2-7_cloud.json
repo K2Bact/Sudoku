@@ -44,6 +44,46 @@
       "find": "gameMode === 'timeAttack'",
       "replace": "gameMode === 'neverThisMode'",
       "expectFailure": "prevent hints in Time Attack"
+    },
+    {
+      "name": "a save uploads local progress over the cloud without merging",
+      "why": "The shipped defect. Every win calls saveToCloud, and the snapshot is one slot per account. With one account on two phones the phone that won last erased the other's progress from the cloud; a freshly installed phone did it on its first win. Found with the same account signed in on two test phones on 2026-09-17.",
+      "file": "src/services/cloudSyncService.js",
+      "find": "          upload = { ...local, ...mergeProgress(JSON.parse(raw), local), syncedAt: now };",
+      "replace": "          JSON.parse(raw);",
+      "expectFailure": "A fresh phone's first win uploaded gamesWon 1 over the cloud's 90"
+    },
+    {
+      "name": "a save writes to the cloud after failing to read it",
+      "why": "Merging only protects the cloud if a failed read stops the write. A network error on the read looks exactly like an empty slot to code that only checks for data, and the upload then replaces whatever the other phone saved without ever seeing it.",
+      "file": "src/services/cloudSyncService.js",
+      "find": "      skipRemote = 'remote_unreadable';\n",
+      "replace": "",
+      "expectFailure": "saveToCloud wrote to the cloud after failing to read it"
+    },
+    {
+      "name": "a merge keeps the slower best time",
+      "why": "min and max are one character apart. The rule is shared by save and restore now, so getting it wrong would push the worse time into the cloud on every win and pull it onto every phone that restores.",
+      "file": "src/services/progressMerge.js",
+      "find": "      if (c && l) out[lv] = Math.min(c, l);",
+      "replace": "      if (c && l) out[lv] = Math.max(c, l);",
+      "expectFailure": "the faster best time wins a level both sides have"
+    },
+    {
+      "name": "the S+ grade achievement is unlocked only from the victory screen again",
+      "why": "The victory screen now comes after the post-game ad. A player who closes the app during that ad would lose an achievement the win had already earned.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "    rank: speedrunRankFor(level, gameMode, timerSeconds).rank,\n",
+      "replace": "",
+      "expectFailure": "must unlock the S+ grade achievement inside handleGameWinLogic"
+    },
+    {
+      "name": "the win no longer starts the cloud save",
+      "why": "The save used to run from the victory screen. With the ad in front of it, the backup would depend on the player sitting through the ad.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "    .then(() => cloudSyncService.saveToCloud())",
+      "replace": "    .then(() => null)",
+      "expectFailure": "The win must start the cloud save itself"
     }
   ]
 }

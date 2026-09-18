@@ -43,13 +43,20 @@ export class FakeAdProvider {
   }
 
   /**
-   * Resolves immediately. A rewarded ad has a placement that draws its own
-   * waiting state, so a delay there is honest; an interstitial has no UI of its
-   * own, and stalling the screen on nothing would just look like a freeze to a
-   * closed tester. The call path still runs, which is what has to keep working.
+   * Nothing is ever loaded, so the win goes straight to the victory screen with
+   * no pause. A placeholder that paused the game for an ad that does not exist
+   * would look like a freeze to a closed tester.
    */
-  showInterstitial() {
-    return Promise.resolve();
+  preloadInterstitial() {
+    return Promise.resolve(false);
+  }
+
+  isInterstitialReady() {
+    return false;
+  }
+
+  showPreparedInterstitial() {
+    return Promise.resolve({ shown: false, reason: 'not_ready' });
   }
 
   /**

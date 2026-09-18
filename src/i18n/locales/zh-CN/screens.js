@@ -11,7 +11,7 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: '剩余提示',
     brainReportTitle: '大脑活性分析',
-    brainPercentileShort: '超越前 {percentile}% · 通关 {won} 局',
+    brainPercentileShort: '已通关 {won} 局',
     startSelectedLevel: '开始 Lv.{level} {name}',
     modeTabs: { classic: '经典', timeAttack: '计时竞速', timeLimit: '极限生存' },
     rivalModes: {
@@ -74,7 +74,8 @@ export const screens = {
     purchaseBtn: '永久去除广告',
     buySuccess: '购买成功！感谢您的支持。',
     restoreSuccess: '购买记录已成功恢复。',
-    restoreFail: '未找到可恢复的购买记录。'
+    restoreFail: '未找到可恢复的购买记录。',
+    buyFail: '无法完成购买，请稍后再试。'
   },
   tutorialOverlay: {
     exitTooltip: '退出教学',
@@ -117,11 +118,11 @@ export const screens = {
     privacySubtitle: '隐私保护',
     privacyModalTitle: '隐私政策',
     privacy: {
-      subtitle: 'Sudoku 无需账号，不收集姓名、邮箱或联系方式。',
-      sec1Title: '1. 无需注册', sec1Desc: '本应用无需注册，不会收集您的姓名、邮箱、电话号码、通讯录或位置信息。使用联机功能（1v1 对战、云备份）时，仅会发送一个随机生成的 ID。',
-      sec2Title: '2. 本地存储与删除权利', sec2Desc: '游戏进度、提示数量、主题设置仅安全保存在您的设备本地。',
-      sec3Title: '3. 1v1 对决与大脑指数', sec3Desc: '实时 1v1 对战会发送随机生成的玩家 ID 和解题记录。该 ID 保存在本机并重复使用，不与您的姓名或账号关联。',
-      sec4Title: '4. 广告 (Google AdMob)', sec4Desc: '为保持游戏免费，本应用可能通过 Google AdMob SDK 展示广告。广告启用时，AdMob 可能收集广告标识符。广告仅出现在游戏界面底部横幅和激励视频中。'
+      subtitle: 'Sudoku 无需账号。以下是本应用实际保存和发送的信息。',
+      sec1Title: '1. 本机存储与备份', sec1Desc: '您的记录、提示和设置保存在本机。如果开启了 Android 自动备份，Android 会把这些数据复制到您自己的 Google 云端硬盘，并在重新安装时恢复。我们从不收集您的姓名、邮箱、电话号码、通讯录或位置。',
+      sec2Title: '2. Google Play 游戏', sec2Desc: '登录 Play 游戏后，每次获胜都会把您的进度（统计、成就、提示、设置）自动备份到 Play 游戏存档，并把您的 IQ 分数提交到 Play 游戏排行榜。这些数据保存在您自己的 Google 账号中。',
+      sec3Title: '3. 1v1 对战', sec3Desc: '实时 1v1 对战通过 Google Firebase 向对手发送随机生成的玩家 ID、自动昵称（SudokuMaster_xxxx）和您的解题进度。该 ID 保存在本机并重复使用，不与您的姓名或任何账号关联。',
+      sec4Title: '4. 广告与购买', sec4Desc: '本应用通过 Google AdMob 展示广告：横幅广告、获胜后的全屏广告以及自愿观看的激励视频。AdMob 可能会处理您的广告 ID。“移除广告”的购买由 Google Play 处理，我们不会收到您的支付信息。'
     }
   },
   stats: {
@@ -140,7 +141,7 @@ export const screens = {
     totalPlayed: '总局数',
     totalWon: '获胜局数',
     winRate: '胜率',
-    shareText: '[Sudoku IQ 报告]\n我的数独 IQ: {iq}分 ({percentile})\n等级: {tier}\n立即一起挑战极速逻辑推理！',
+    shareText: '[Sudoku IQ 报告]\n我的数独 IQ: {iq}分\n等级: {tier}\n立即一起挑战极速逻辑推理！',
     copiedToast: '大脑分析结果已复制至剪贴板。',
     focus: '专注力',
     durability: '专注耐力',
@@ -151,19 +152,18 @@ export const screens = {
     overallStats: '📊 综合累计数据',
     attributesTitle: '🧠 五大核心认知能力',
     title: '大脑活性分析报告',
-    percentilePrefix: '超越前 ',
     shareTitle: '我的数独大脑指数报告',
     tiers: {
       grandMaster: '👑 宗师级大脑',
-      grandMasterDesc: '超越全体玩家前 {percentile}%！极少数玩家能达到的顶级大师推理力。',
-      mensa: '🧠 门萨级高智商',
-      mensaDesc: '超越全体玩家前 {percentile}%！展现门萨级别的卓越逻辑分析能力。',
+      grandMasterDesc: '极少数玩家能达到的顶级大师推理力。',
+      expert: '🧠 专家级逻辑',
+      expertDesc: '在本游戏中展现出色的逻辑分析能力。',
       superior: '⚡ 敏锐思维',
-      superiorDesc: '超越全体玩家前 {percentile}%！具备敏锐直觉与出色的问题解决力。',
+      superiorDesc: '具备敏锐直觉与出色的问题解决力。',
       aboveAverage: '💡 优异逻辑力',
-      aboveAverageDesc: '超越全体玩家前 {percentile}%！具备稳定且灵活的思考模式。',
+      aboveAverageDesc: '具备稳定且灵活的思考模式。',
       balanced: '🎯 全方位平衡大脑',
-      balancedDesc: '超越全体玩家前 {percentile}%！五大认知领域均衡发展的典范状态。',
+      balancedDesc: '五大认知领域均衡发展的典范状态。',
       developing: '🌱 成长潜力',
       developingDesc: '刚开启大脑锻炼阶段。持续解题将让大脑指数迅速攀升！'
     }
@@ -171,10 +171,10 @@ export const screens = {
   battleLobby: {
     title: '1v1 即时对决',
     cancelBtn: '取消匹配',
-    searching: '正在寻找实力相当的对手...',
+    searching: '正在寻找对手...',
     autoMatchTitle: '快速匹配',
     autoMatchDesc: '与全球玩家进行 1:1 极速对决',
-    mmrBadge: '实力匹配 · 当前胜率 {rate}%',
+    mmrBadge: '我的通关率 {rate}%',
     findOpponentBtn: '寻找对手',
     noOpponentFound: '找不到对手。要改与 AI 对战吗?',
     playAiInstead: '与 AI 对战'
@@ -222,9 +222,9 @@ export const screens = {
     aiSpeed: '解题速度：{speed}',
     level1Desc: '初级机器人：步调较慢，适合建立解题信心。',
     level2Desc: '普通机器人：稳定解题且失误极少。',
-    level3Desc: '熟练机器人：速度敏捷，掌握中级解题策略。',
-    level4Desc: '大师机器人：极速解题，精通高难度技巧。',
-    level5Desc: '阿尔法数独：极限极速，无懈可击的大师级 AI。',
+    level3Desc: '熟练机器人：速度快，失误少。',
+    level4Desc: '大师机器人：速度极快，很少失误。',
+    level5Desc: '阿尔法数独：最快、失误最少的机器人。',
     startBtn: '开始 Lv.{level} {name} AI 对决'
   },
   academy: {
@@ -244,7 +244,8 @@ export const screens = {
       success: '答案 [{val}] 正确！您已完全掌握此技巧！',
       retry: '重新作答',
       error: '[{val}] 不是正确答案，请再次观察已给出的数字！',
-      prompt: '👇 请在下方数字键盘点击目标空格 (?) 应填入的数字。'
+      prompt: '👇 请在下方数字键盘点击目标空格 (?) 应填入的数字。',
+      promptEliminated: '👇 请点击将从目标格中排除的候选数。'
     }
   },
   adBanner: {removeBtn: '去广告' }

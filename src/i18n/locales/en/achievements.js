@@ -51,8 +51,8 @@ export const achievements = {
 
     // 27 ~ 30. Daily, Battle & Brain IQ
     daily_first: { title: 'Daily Explorer', desc: 'Clear your first Daily Challenge puzzle' },
-    daily_streak_7: { title: '7-Day Miracle', desc: 'Maintain a 7-day daily attendance clear streak' },
+    daily_streak_7: { title: '7-Day Miracle', desc: 'Check in 7 days in a row' },
     battle_first_win: { title: 'Gladiator Victory', desc: 'Win your first 1v1 Online Battle or AI Bot match' },
-    iq_150: { title: 'Mensa Brain', desc: 'Reach a Sudoku Brain IQ score of 150 or higher' }
+    iq_150: { title: 'Genius Brain', desc: 'Reach a Sudoku Brain IQ score of 150 or higher' }
   }
 };

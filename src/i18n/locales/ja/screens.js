@@ -3,7 +3,7 @@ export const screens = {
     ghost: {
       "ahead": "{time} リード",
       "behind": "{time} 遅れ",
-      "ghostHintNotice": "💡 ヒント使用のため、今回のPB記録更新は除外されます。"
+      "ghostHintNotice": "💡 ヒントを使用したため、今回のプレイは自己ベストの更新対象外です。"
     },
   },
   home: {
@@ -11,7 +11,7 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: '保有ヒント',
     brainReportTitle: '脳活性分析',
-    brainPercentileShort: '上位 {percentile}% · 完走 {won}局',
+    brainPercentileShort: 'クリア {won}回',
     startSelectedLevel: 'Lv.{level} {name} 開始',
     modeTabs: { classic: 'クラシック', timeAttack: 'タイムアタック', timeLimit: 'サバイバル' },
     rivalModes: {
@@ -23,7 +23,7 @@ export const screens = {
     modes: {
       classic: { badge: 'クラシック', title: 'クラシックシングル', desc: '落ち着いて論理を組み立てる正統派ナンプレ', startBtn: '新規ゲーム' },
       timeAttack: { badge: 'タイムアタック', title: '⚡ タイムアタック', desc: '1秒でも早い最速クリア記録に挑戦！', startBtn: 'タイムアタック開始' },
-      timeLimit: { badge: 'サバイバル', title: '⏳ サバイバル', desc: 'Lv.{level} 制限時間 {minutes}分！ 0秒になる前に生き残れ', startBtn: 'サバイバル開始' },
+      timeLimit: { badge: 'サバイバル', title: '⏳ サバイバル', desc: 'Lv.{level} 制限時間 {minutes}分！ 時間内にパズルを完成させよう！', startBtn: 'サバイバル開始' },
       daily: { title: '本日のデイリー', desc: '毎日新しいパズル＆月間マスターバッジ', badge: 'NEW' },
       battle: { title: '1v1 オンライン対戦', desc: 'グローバルリアルタイム対決' },
       aiBattle: { title: 'AI ボット対戦', desc: '1:1 AI スピード対決' },
@@ -36,27 +36,27 @@ export const screens = {
     header: 'デイリーチャレンジ ({month}月)',
     badgeTitle: '{month}月マスターバッジ',
     badgeDesc: '{completed}/{target} · 目標15',
-    unlockingAd: '📺 広告視聴中... 過去のパズルを解除',
+    unlockingAd: '📺 広告視聴中... 過去のパズルのロックを解除',
     calendarTitle: '📅 365日カレンダー',
     futureAlert: '未来の日付のパズルはまだ解除されていません。',
-    pastUnlockNotice: '💡 見逃した過去の日付(🔒)は、短い広告を視聴することでいつでも解除してスタンプを獲得できます。',
-    unlockModalTitle: '過去のデイリーパズル解除',
-    unlockModalDesc: '{date} のパズルは過去のチャレンジです。\n短い広告を視聴するとすぐに解除してプレイできます。\n広告を視聴しますか？',
+    pastUnlockNotice: '💡 見逃した過去の日付(🔒)は、短い広告を視聴することでいつでもロックを解除してスタンプを獲得できます。',
+    unlockModalTitle: '過去のデイリーパズルのロック解除',
+    unlockModalDesc: '{date} のパズルは過去のチャレンジです。\n短い広告を視聴するとすぐにロックを解除してプレイできます。\n広告を視聴しますか？',
     unlockModalConfirmBtn: '📺 広告を見て解除',
     unlockModalCancelBtn: 'キャンセル',
     missionCardTitle: '🎯 本日のカスタムミッション',
     missionCompleted: '本日のミッション達成！✅',
     missionStartBtn: 'ミッションに挑戦 🚀',
-    missionReward: '+1 ヒント＆出席',
+    missionReward: 'ヒント1個＋カレンダーにクリア記録',
     tiers: { beginner: '初級', intermediate: '中級', advanced: 'マスター' },
     missions: {
-      beginnerLv1Title: '【Lv.1 入門】ナンプレ1回クリア', beginnerLv1Desc: 'Lv.1 入門難易度を完走して基礎論理力を鍛えましょう。',
-      beginnerLv2Title: '【Lv.2 初級】ナンプレ1回クリア', beginnerLv2Desc: 'Lv.2 初級パズルを完走してナンプレの基本を固めましょう。',
-      medLv3Title: '【Lv.3 中級以上】ナンプレ1回クリア', medLv3Desc: 'Lv.3 中級以上のパズルを完走して本格的な推理力を試しましょう。',
+      beginnerLv1Title: '【Lv.1 入門】ナンプレ1回クリア', beginnerLv1Desc: 'Lv.1 入門難易度をクリアして基礎論理力を鍛えましょう。',
+      beginnerLv2Title: '【Lv.2 初級】ナンプレ1回クリア', beginnerLv2Desc: 'Lv.2 初級パズルをクリアしてナンプレの基本を固めましょう。',
+      medLv3Title: '【Lv.3 中級以上】ナンプレ1回クリア', medLv3Desc: 'Lv.3 中級以上のパズルをクリアして本格的な推理力を試しましょう。',
       advLv4Title: '【Lv.4 上級以上】ナンプレ1回クリア', advLv4Desc: 'Lv.4 以上の高難度パズルを撃破しマスター級の論理力を証明しましょう。',
-      advLv5Title: '【Lv.5 達人】ナンプレ1回クリア', advLv5Desc: 'Lv.5 達人最高難度パズルを完走して最上位ティアに挑戦しましょう。',
+      advLv5Title: '【Lv.5 達人】ナンプレ1回クリア', advLv5Desc: 'Lv.5 達人最高難度パズルをクリアして最上位ティアに挑戦しましょう。',
       battleTitle: '1v1 オンライン/AI 対戦に1回参加', battleDesc: 'リアルタイム1v1対戦またはAIボット練習マッチに1回参加しましょう。',
-      speedrunTitle: '⚡ タイムアタック1回クリア', speedrunDesc: 'タイムアタックモードでコンボ加速を活かして完走しましょう。'
+      speedrunTitle: '⚡ タイムアタック1回クリア', speedrunDesc: 'タイムアタックモードでコンボ加速を活かしてクリアしましょう。'
     }
   },
   removeAds: {
@@ -74,14 +74,15 @@ export const screens = {
     purchaseBtn: '広告を永久削除',
     buySuccess: '購入が正常に完了しました！ありがとうございます。',
     restoreSuccess: '購入履歴が正常に復元されました。',
-    restoreFail: '復元可能な購入履歴が見つかりません。'
+    restoreFail: '復元可能な購入履歴が見つかりません。',
+    buyFail: '購入を完了できませんでした。しばらくしてからもう一度お試しください。'
   },
   tutorialOverlay: {
     exitTooltip: 'チュートリアル終了',
     step1Title: '🎯 ステップ1: マス選択と数字入力',
     step1Desc: 'ハイライトされた [1行 3列] の空白マスをタップし、キーパッドで [9] を入力！',
-    step2Title: '✏️ ステップ2: 鉛筆メモ (候補数入力)',
-    step2Desc: 'ツールバーで [メモ] をONにして候補数モードに切り替え、[3] をメモ！',
+    step2Title: '✏️ ステップ2: メモ（候補数字の入力）',
+    step2Desc: 'ツールバーで [メモ] をONにしてメモ入力モードに切り替え、[3] をメモ！',
     step3Title: '🔒 ステップ3: 連続入力モード',
     step3Desc: '連続入力ボタンで [4] を固定し、空いているマスを連続タップして素早く入力！',
     step4Title: '🎉 ステップ4: チュートリアル完了！',
@@ -100,7 +101,7 @@ export const screens = {
     limitMistakes: 'ミス3回制限（ハート）',
     limitMistakesDesc: '3回間違えるとゲームオーバー',
     autoCheck: '誤答の自動判定',
-    autoCheckDesc: '間違った数字を入力時に即座に赤色で強調表示',
+    autoCheckDesc: '間違った数字を入力すると、すぐに赤色で表示します',
     soundSection: '🔊 サウンド＆バイブレーション',
     soundFx: '効果音',
     soundFxDesc: '数字入力音およびボタンタッチ音',
@@ -117,11 +118,11 @@ export const screens = {
     privacySubtitle: 'プライバシー保護',
     privacyModalTitle: 'プライバシーポリシー',
     privacy: {
-      subtitle: 'Sudokuはアカウント不要で、氏名・メールアドレス・連絡先を収集しません。',
-      sec1Title: '1. 会員登録は不要です', sec1Desc: '本アプリは会員登録が不要で、氏名・メールアドレス・電話番号・連絡先・位置情報を収集しません。オンライン機能（1v1対戦、クラウドバックアップ）の利用時には、ランダムに生成されたIDのみが送信されます。',
-      sec2Title: '2. ローカル保管と削除の権利', sec2Desc: '進行状況や設定はお使いの端末のローカルストレージのみに保管されます。',
-      sec3Title: '3. 1v1対戦と脳指数処理', sec3Desc: 'リアルタイム1v1対戦では、端末に保存され繰り返し使用されるランダム生成IDと、パズルの進行状況が送信されます。このIDは氏名やアカウントとは結び付いていません。',
-      sec4Title: '4. 広告 (Google AdMob)', sec4Desc: 'ゲームを無料で提供するため、本アプリは Google AdMob SDK を通じて広告を表示することがあります。広告が有効な場合、AdMob が広告識別子を収集することがあります。広告はゲーム画面下部のバナーとリワード動画にのみ表示されます。'
+      subtitle: 'Sudokuはアカウントなしで遊べます。アプリが実際に保存・送信する情報は以下のとおりです。',
+      sec1Title: '1. 端末への保存とバックアップ', sec1Desc: '記録・ヒント・設定はお使いの端末に保存されます。Androidの自動バックアップがオンの場合、Androidがこのデータをご自身のGoogleドライブにコピーし、再インストール時に復元します。氏名・メールアドレス・電話番号・連絡先・位置情報は収集しません。',
+      sec2Title: '2. Google Play ゲーム', sec2Desc: 'Play ゲームにログインしている場合、勝利するたびに進行状況（成績・実績・ヒント・設定）がPlay ゲームのセーブデータに自動でバックアップされ、IQスコアがPlay ゲームのリーダーボードに送信されます。これらのデータはご自身のGoogleアカウントに保管されます。',
+      sec3Title: '3. 1v1対戦', sec3Desc: 'リアルタイムの1v1対戦では、Google Firebaseを通じて、ランダムに生成したプレイヤーID、自動で付くニックネーム（SudokuMaster_xxxx）、パズルの進行状況を対戦相手に送信します。IDは端末に保存されて再利用されますが、氏名やアカウントとは結び付きません。',
+      sec4Title: '4. 広告と購入', sec4Desc: '本アプリはGoogle AdMobを通じて、バナー広告、勝利後の全画面広告、任意で視聴するリワード広告を表示します。AdMobは広告IDを処理する場合があります。広告削除の購入はGoogle Playが処理し、開発者が決済情報を受け取ることはありません。'
     }
   },
   stats: {
@@ -133,14 +134,14 @@ export const screens = {
     leaderboardTab: 'ランキング',
     summaryTitle: '総合成績サマリー',
     totalPlayed: '総プレイ数',
-    totalWon: '総完走数',
+    totalWon: '総クリア数',
     winRate: '勝率'
   },
   brainReport: {
     totalPlayed: "プレイ総数",
     totalWon: "クリア数",
     winRate: "勝率",
-    shareText: "[Sudoku IQ レポート]\n私のナンプレIQ: {iq}点 ({percentile})\nランク: {tier}\n今すぐナンプレで脳トレに挑戦しましょう！",
+    shareText: "[Sudoku IQ レポート]\n私のナンプレIQ: {iq}点\nランク: {tier}\n今すぐナンプレで脳トレに挑戦しましょう！",
     copiedToast: "脳分析レポートがクリップボードにコピーされました。",
     focus: "深い集中力",
     durability: "集中持続力",
@@ -151,19 +152,18 @@ export const screens = {
     overallStats: "📊 総合累積データ",
     attributesTitle: "🧠 5大認知能力",
     title: '脳活性レポート',
-    percentilePrefix: '上位 ',
     shareTitle: '私のナンプレ脳指数レポート',
     tiers: {
       grandMaster: '👑 グランドマスター',
-      grandMasterDesc: '全プレイヤーの上位{percentile}%！ ごく少数だけが到達する1%マスター級の論理力です。',
-      mensa: '🧠 メンサ級上位知能',
-      mensaDesc: '全プレイヤーの上位{percentile}%！ メンサレベルの優れた論理的分析力を発揮しています。',
+      grandMasterDesc: 'ごく少数だけが到達する1%マスター級の論理力です。',
+      expert: '🧠 達人級の論理力',
+      expertDesc: 'このゲームで際立った論理的分析力を発揮しています。',
       superior: '⚡ 優秀な頭脳',
-      superiorDesc: '全プレイヤーの上位{percentile}%！ 鋭い直感と優れた問題解決能力を持っています。',
+      superiorDesc: '鋭い直感と優れた問題解決能力を持っています。',
       aboveAverage: '💡 平均以上の論理力',
-      aboveAverageDesc: '全プレイヤーの上位{percentile}%！ 安定した柔軟な思考でパズルを解いています。',
+      aboveAverageDesc: '安定した柔軟な思考でパズルを解いています。',
       balanced: '🎯 バランスの良い頭脳',
-      balancedDesc: '全プレイヤーの上位{percentile}%！ 5つの認知能力が均等に発達した理想的な状態です。',
+      balancedDesc: '5つの認知能力が均等に発達した理想的な状態です。',
       developing: '🌱 成長中の頭脳',
       developingDesc: '脳トレを始めたばかりの段階です。続けるほど指数が急上昇します！'
     }
@@ -171,10 +171,10 @@ export const screens = {
   battleLobby: {
     title: '1v1 リアルタイムバトル',
     cancelBtn: 'マッチング取消',
-    searching: '実力の近い対戦相手を検索中...',
+    searching: '対戦相手を探しています...',
     autoMatchTitle: 'リアルタイム高速マッチ',
     autoMatchDesc: '世界中のプレイヤーと1:1スピード対戦',
-    mmrBadge: '実力マッチング · 勝率 {rate}%',
+    mmrBadge: 'あなたのクリア率 {rate}%',
     findOpponentBtn: '対戦相手を探す',
     noOpponentFound: '対戦相手が見つかりませんでした。AIと対戦しますか?',
     playAiInstead: 'AIと対戦'
@@ -204,7 +204,7 @@ export const screens = {
     rematchAcceptedToast: '🎉 再戦が承諾されました！ 新しいゲームを開始します。',
     rematchRejectedToast: '相手が再戦を拒否しました。',
     rematchOpponentLeftToast: '相手が対戦ルームを退出しました。',
-    homeBtn: 'メインホーム'
+    homeBtn: 'ホームに戻る'
   },
   rematchToast: {
     title: '{opponent} さんから再戦の申し込みが届きました！',
@@ -222,9 +222,9 @@ export const screens = {
     aiSpeed: '解答速度: {speed}',
     level1Desc: '初級ボット: ゆっくり解いて基本を学べる初心者向けボットです。',
     level2Desc: '一般ボット: 安定したペースで解き進め、ミスもほとんどありません。',
-    level3Desc: '熟練ボット: 素早いペースで中級技を駆使します。',
-    level4Desc: 'マスターボット: 非常に速いペースで高度な戦略を駆使します。',
-    level5Desc: 'アルファナンプレ: 極限の速度で完璧に解き切ります。',
+    level3Desc: '熟練ボット: 速いペースで、ミスは少なめです。',
+    level4Desc: 'マスターボット: 非常に速いペースで、ミスはまれです。',
+    level5Desc: 'アルファナンプレ: 最も速く、ミスの最も少ないボットです。',
     startBtn: 'Lv.{level} {name}と対戦'
   },
   academy: {
@@ -238,7 +238,8 @@ export const screens = {
       success: '正解 [{val}] です！テクニックを完全にマスターしました！',
       retry: 'もう一度挑戦',
       error: '[{val}] は正解ではありません。ヒント数字を再確認してください！',
-      prompt: '👇 下の数字キーパッドから目標マス (?) に入る数字をタップしてください。'
+      prompt: '👇 下の数字キーパッドから目標マス (?) に入る数字をタップしてください。',
+      promptEliminated: '👇 目標マスから消える候補の数字をタップしてください。'
     }
   },
   adBanner: {removeBtn: '広告非表示' }

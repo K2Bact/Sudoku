@@ -113,6 +113,138 @@ assert(ghost.getGhostForModeLevel('classic', 3)?.bestSeconds === 200, 'Ghost PB 
 localStorage.clear();
 console.log('  ✅ 2. cloudSyncService round-trip restores stats, wallet, daily & ghost intact');
 
+// ── 2b. A save merges with the cloud; it does not overwrite it ────────────
+//
+// Every win calls saveToCloud, and it used to upload this phone's local data
+// over the account's single Play Games snapshot. With one account on two phones,
+// whichever phone won last replaced the other's progress in the cloud — a freshly
+// installed phone uploaded a near-empty record on its first win. Found on
+// 2026-09-17 while the same account was signed in on two test phones.
+//
+// Driven through the real service with Play Games replaced at its boundary, so
+// what is checked is the payload that would actually be uploaded.
+{
+  const { playGamesService } = await import('../../../src/services/playGamesService.js');
+  const realLoad = playGamesService.loadSnapshot;
+  const realSave = playGamesService.saveSnapshot;
+  let uploaded = null;
+  let saveCalls = 0;
+  playGamesService.saveSnapshot = async (_name, data) => {
+    saveCalls++;
+    uploaded = JSON.parse(data);
+    return { success: true };
+  };
+  const cloudProgress = {
+    userId: 'pg_same_account', version: '1.1.2',
+    stats: { gamesPlayed: 120, gamesWon: 90, bestTimes: { 1: 95, 2: 140 }, timeLimitSurvivalWins: 8 },
+    achievements: { first_win: 1700000000000, streak_7: 1700000500000 },
+    wallet: { hints: 12, streakDays: 30, totalAdsWatched: 40 },
+    daily: { '2026-08-01': { completed: true }, '2026-08-02': { completed: true } },
+    ghost: { classic: { 3: { bestSeconds: 180 } }, timeAttack: {} },
+  };
+  const serve = (result) => { playGamesService.loadSnapshot = async () => result; };
+
+  try {
+    // A. A freshly installed phone wins its first game; the cloud holds months of play.
+    localStorage.clear();
+    localStorage.setItem(USER_STATS_KEY, JSON.stringify({ gamesPlayed: 1, gamesWon: 1, bestTimes: { 1: 80 } }));
+    serve({ success: true, snapshot: { data: JSON.stringify(cloudProgress) } });
+    const a = await cloudSyncService.saveToCloud();
+    assert.strictEqual(saveCalls, 1, 'the merged progress must still be uploaded');
+    assert.strictEqual(uploaded.stats.gamesWon, 90,
+      `A fresh phone's first win uploaded gamesWon ${uploaded.stats.gamesWon} over the cloud's 90. ` +
+      'The snapshot is one slot per account, so with the same account on two phones this ' +
+      'erased the other phone\'s progress from the cloud.');
+    assert.strictEqual(uploaded.stats.bestTimes[1], 80, 'the faster best time wins a level both sides have');
+    assert.strictEqual(uploaded.stats.bestTimes[2], 140, 'a level only the cloud has must survive the save');
+    assert(uploaded.achievements.streak_7, 'an achievement unlocked on the other phone must survive the save');
+    assert.strictEqual(uploaded.wallet.streakDays, 30, 'the longer streak must survive the save');
+    assert.strictEqual(Object.keys(uploaded.daily).length, 2, 'daily records from the other phone must survive the save');
+    assert.strictEqual(uploaded.ghost.classic[3].bestSeconds, 180, 'ghost PBs from the other phone must survive the save');
+    assert.strictEqual(a.merged, true, 'the result must say a merge happened');
+    assert.strictEqual(JSON.parse(localStorage.getItem(USER_STATS_KEY)).gamesWon, 1,
+      'a save must not rewrite this phone\'s own progress — pulling the other phone in is restore\'s job');
+    console.log('  ✅ 2b-A. a fresh phone\'s first win merges into the cloud instead of erasing it');
+
+    // B. No backup yet: the plugin opens the slot with createIfNotFound, so it is empty, not an error.
+    saveCalls = 0;
+    serve({ success: true, snapshot: { data: '' } });
+    const b = await cloudSyncService.saveToCloud();
+    assert.strictEqual(saveCalls, 1, 'with no backup yet, the first backup must still be written');
+    assert.strictEqual(uploaded.stats.gamesWon, 1, 'with nothing in the cloud, local progress is uploaded as it is');
+    assert.strictEqual(b.merged, false, 'nothing was merged');
+    console.log('  ✅ 2b-B. an empty slot gets the first backup');
+
+    // C. The read failed. Writing now would overwrite a slot we could not see.
+    saveCalls = 0;
+    serve({ success: false, reason: 'error', error: 'network' });
+    const c = await cloudSyncService.saveToCloud();
+    assert.strictEqual(saveCalls, 0,
+      'saveToCloud wrote to the cloud after failing to read it. That is the overwrite this ' +
+      'merge exists to prevent: whatever the other phone saved is replaced unseen.');
+    assert.strictEqual(c.method, 'local_only', 'an unread cloud means only the local copy was kept');
+    assert.strictEqual(c.remoteReason, 'remote_unreadable', 'the result must say why the cloud was skipped');
+    assert(localStorage.getItem(`suidoku_cloud_save_${c.userId}`), 'the local copy must still be written');
+    console.log('  ✅ 2b-C. a failed read skips the upload and keeps the local copy');
+
+    // D. Unparseable: nothing in it can be merged, and leaving it would block every future backup.
+    saveCalls = 0;
+    serve({ success: true, snapshot: { data: '{not json' } });
+    await cloudSyncService.saveToCloud();
+    assert.strictEqual(saveCalls, 1, 'an unreadable blob must be replaced, or no backup is ever made again');
+    assert.strictEqual(uploaded.stats.gamesWon, 1, 'it is replaced with local progress');
+    console.log('  ✅ 2b-D. an unparseable snapshot is replaced rather than blocking backups');
+  } finally {
+    playGamesService.loadSnapshot = realLoad;
+    playGamesService.saveSnapshot = realSave;
+    localStorage.clear();
+  }
+}
+
+// 2c. Everything a win earns is recorded at the win, not when the victory screen mounts.
+//
+// The post-game interstitial now sits between the win and the victory screen. The
+// S+ grade achievement and the cloud save used to run from VictoryModal's mount
+// effect, so a player who closed the app during that ad would have lost both.
+// Driven through the real handleGameWinLogic with no modal anywhere.
+{
+  const { handleGameWinLogic } = await import('../../../src/utils/gameCompletion.js');
+  const { cloudSyncService: sync } = await import('../../../src/services/cloudSyncService.js');
+  const realSave = sync.saveToCloud;
+  let saves = 0;
+  sync.saveToCloud = async () => { saves++; return { success: true }; };
+  // An unlock announces itself on window; the node window stub has no event target.
+  const hadDispatch = 'dispatchEvent' in window;
+  if (!hadDispatch) window.dispatchEvent = () => true;
+  if (typeof globalThis.CustomEvent !== 'function') globalThis.CustomEvent = class { constructor(type, init) { this.type = type; this.detail = init?.detail; } };
+  try {
+    localStorage.clear();
+    handleGameWinLogic({
+      level: 1, timerSeconds: 45, gameMode: 'classic', mistakes: 0, activeDailyDateKey: null,
+      clearGameState: () => {}, setIsVictory: () => {}, setHintsRemaining: () => {},
+    });
+    const unlocked = JSON.parse(localStorage.getItem('sudoku_achievements_v1') || '{}');
+    assert(unlocked.rank_s_plus,
+      'A 45-second level-1 win must unlock the S+ grade achievement inside handleGameWinLogic. ' +
+      'It used to unlock from VictoryModal, which now appears only after the post-game ad — ' +
+      'closing the app during that ad lost the achievement.');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.strictEqual(saves, 1,
+      'The win must start the cloud save itself; the victory screen may never be reached');
+
+    const modalSrc = fs.readFileSync(path.join(rootDir, 'src/components/VictoryModal.jsx'), 'utf8')
+      .replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+    assert(!/checkAndUnlockAchievements|saveToCloud|submitScore/.test(modalSrc),
+      'VictoryModal must not record the win again — it would double-submit, and it is not ' +
+      'guaranteed to mount');
+    console.log('  ✅ 2c. the grade achievement and cloud save happen at the win, not on the victory screen');
+  } finally {
+    sync.saveToCloud = realSave;
+    if (!hadDispatch) delete window.dispatchEvent;
+    localStorage.clear();
+  }
+}
+
 // 2. Verify leaderboardService & iqStatsService
 const { leaderboardService, LEADERBOARD_CATEGORIES } = await import('../../../src/services/leaderboardService.js');
 const { iqStatsService } = await import('../../../src/services/iqStatsService.js');

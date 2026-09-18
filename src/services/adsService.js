@@ -147,14 +147,40 @@ class AdsService {
     }
   }
 
-  async showInterstitial() {
-    if (!this.canShowInterstitial()) return;
+  /**
+   * Load the post-game interstitial ahead of the win, if one would be allowed.
+   *
+   * Called while a game is in progress. Nothing is loaded for a player inside
+   * the grace or the cap, or who removed ads — an ad that cannot be shown should
+   * not be requested.
+   */
+  preloadPostGameAd(now = Date.now()) {
+    if (!this.canShowInterstitial(now)) return Promise.resolve(false);
+    return Promise.resolve(getAdProvider().preloadInterstitial()).catch(() => false);
+  }
+
+  /**
+   * Whether the win should pause for an interstitial: allowed now AND already
+   * loaded. The win never waits for a load — AdMob warns that an ad arriving
+   * late lands on a player who has moved on, and this game is tapped quickly.
+   */
+  isPostGameAdReady(now = Date.now()) {
+    return this.canShowInterstitial(now) && Boolean(getAdProvider().isInterstitialReady(now));
+  }
+
+  /** Show the loaded post-game interstitial; resolves { shown, reason } after it closes. */
+  async showPostGameAd(now = Date.now()) {
+    if (!this.isPostGameAdReady(now)) return { shown: false, reason: 'not_ready' };
     try {
-      localStorage.setItem(LAST_INTERSTITIAL_TIME_KEY, Date.now().toString());
-    } catch (e) {
+      localStorage.setItem(LAST_INTERSTITIAL_TIME_KEY, now.toString());
+    } catch {
       /* a capped ad is better than a crash */
     }
-    await getAdProvider().showInterstitial();
+    try {
+      return await getAdProvider().showPreparedInterstitial();
+    } catch {
+      return { shown: false, reason: 'failed_to_show' };
+    }
   }
 
   /**

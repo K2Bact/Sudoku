@@ -20,6 +20,7 @@
  */
 
 import { watchRewarded, withTimeout } from './rewardedWatch.js';
+import { InterstitialSlot } from './interstitialWatch.js';
 
 function plugin() {
   if (typeof window === 'undefined') return null;
@@ -57,7 +58,30 @@ function readEnv() {
   return (typeof process !== 'undefined' && process.env) || {};
 }
 
+/**
+ * A debuggable APK — `gradlew assembleDebug` — never requests a live ad unit.
+ *
+ * Capacitor sets `window.Capacitor.DEBUG` from the installed app's
+ * FLAG_DEBUGGABLE (Bridge.isDevMode → JSExport.getGlobalJS). A debug APK has it;
+ * a release bundle signed for Play does not. So this is decided by what was
+ * actually installed, not by an environment variable someone has to remember.
+ *
+ * Why it has to be structural: every APK this project builds goes onto the
+ * developer's own phone (the Flip 5 is the APK device; the Flip 6 runs the store
+ * build). .env ships real unit ids with testing off, because that is what
+ * production needs. Built as-is, a debug APK would show that phone live ads,
+ * and a tap on one is invalid traffic — the path to a suspended AdMob account.
+ * On 2026-09-17, after a reinstall, the Flip 5 reported test-device hash B75B…
+ * while .env registered DD0A… — which phone that belonged to is not recorded,
+ * but the Flip 5 was not covered by it. The first debug APK that day was only
+ * safe because the build command overrode the variables by hand.
+ */
+function isDebugBuild() {
+  return typeof window !== 'undefined' && Boolean(window.Capacitor && window.Capacitor.DEBUG === true);
+}
+
 function isTestingAds() {
+  if (isDebugBuild()) return true;
   const env = readEnv();
   return String(env.VITE_ADMOB_TESTING || '').toLowerCase() === 'true';
 }
@@ -93,6 +117,11 @@ function unitIds() {
  * 유일한 방어선이므로, 그것을 끄기 전에 여기를 채우는 것이 순서다.
  */
 function testDeviceIds() {
+  // No registered devices on a debug build. The plugin uses the real unit id for
+  // a registered test device and trusts Google to serve it a test ad; with none
+  // registered it substitutes Google's sample unit id (AdViewIdHelper.getFinalAdId).
+  // A debug build takes the second path always, so a live unit id never leaves it.
+  if (isDebugBuild()) return [];
   const env = readEnv();
   return String(env.VITE_ADMOB_TEST_DEVICE_IDS || '')
     .split(',')
@@ -139,6 +168,13 @@ export class AdMobProvider {
     this.rewardDismissGraceMs = 30000;
     /** Absolute ceiling on a shown rewarded ad that reports nothing at all. */
     this.rewardShowCeilingMs = 180000;
+    /**
+     * The post-game interstitial is loaded ahead of time and shown at the win.
+     * Loading at the moment of showing put a second of latency between the
+     * player's tap and the ad appearing, which is how an ad lands under a finger
+     * still tapping; AdMob asks for ads to be loaded in advance for that reason.
+     */
+    this.interstitial = new InterstitialSlot();
   }
 
   get id() {
@@ -368,19 +404,25 @@ export class AdMobProvider {
     }
   }
 
-  async showInterstitial() {
+  isInterstitialReady(now = Date.now()) {
+    return this.interstitial.isReady(now);
+  }
+
+  /** Load the post-game interstitial now so it can be shown without delay at the win. */
+  async preloadInterstitial() {
     const admob = plugin();
     const ids = unitIds();
-    if (!admob || !ids.interstitial) return;
+    if (!admob || !ids.interstitial) return false;
     // init() resolves consent. Without it we do not know whether this user may
     // be shown an ad at all, and asking anyway is the violation.
     await this.init();
-    if (!this.canRequestAds) return;
-    try {
-      await admob.prepareInterstitial({ adId: ids.interstitial, isTesting: isTestingAds() });
-      await admob.showInterstitial();
-    } catch (e) {
-      console.warn('[ads] interstitial failed:', e?.message || e);
-    }
+    if (!this.canRequestAds) return false;
+    return this.interstitial.load(() =>
+      admob.prepareInterstitial({ adId: ids.interstitial, isTesting: isTestingAds() }));
+  }
+
+  /** Show what preloadInterstitial loaded; resolves { shown, reason } once it has closed. */
+  async showPreparedInterstitial() {
+    return this.interstitial.show(plugin());
   }
 }

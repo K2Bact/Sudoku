@@ -54,8 +54,8 @@ export const achievements = {
 
     // 27 ~ 30. Diario, batallas y coeficiente
     daily_first: { title: 'Explorador diario', desc: 'Completa tu primer Desafío Diario' },
-    daily_streak_7: { title: 'Racha de 7 días', desc: 'Completa el Desafío Diario 7 días consecutivos' },
+    daily_streak_7: { title: 'Racha de 7 días', desc: 'Entra en el juego 7 días seguidos' },
     battle_first_win: { title: 'Primera victoria 1v1', desc: 'Gana tu primera batalla online o contra IA' },
-    iq_150: { title: 'Mente nivel Mensa', desc: 'Alcanza un índice cerebral Sudoku IQ de 150+' }
+    iq_150: { title: 'Mente genial', desc: 'Alcanza un índice cerebral Sudoku IQ de 150+' }
   }
 };

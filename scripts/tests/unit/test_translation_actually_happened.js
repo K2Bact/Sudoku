@@ -68,6 +68,8 @@ const COINCIDENTAL = new Set([
   'it|home.nav.stats',                // Stats
   'it|common.home',                   // Home
   'it|battleResult.homeBtn',          // Home
+  'pt|settings.privacy.sec2Title',     // Google Play Games is the product's own name in pt-BR and hi
+  'hi|settings.privacy.sec2Title',     // idem
 ]);
 
 function flatten(obj, prefix = '', out = {}) {
@@ -102,7 +104,13 @@ console.log(`  로케일 ${LOCALES.length}개 · 키 ${keys.length}개\n`);
 const HANGUL = /[가-힯]/;
 const LATIN_ONLY = /^[\x20-\x7E\s]+$/;
 
-const problems = { hangul: [], empty: [], sameAsEn: [] };
+// Someone else's trademark, in any script. "Mensa" was taken out of the tier
+// names on 2026-09-17 and survived in the iq_150 achievement title in all 13
+// languages until the 1.2.6 AAB was opened on 2026-09-19 — transliterated, so a
+// search for the Latin word alone found six of the thirteen.
+const TRADEMARKS = /mensa(?![a-z])|멘사|メンサ|门萨|門薩|менс[аы]|مينسا|मेंसा/i;
+
+const problems = { hangul: [], empty: [], sameAsEn: [], trademark: [] };
 
 for (const loc of LOCALES) {
   for (const k of keys) {
@@ -110,6 +118,8 @@ for (const loc of LOCALES) {
     if (typeof v !== 'string') continue;
 
     if (!v.trim()) { problems.empty.push(`[${loc}] ${k}`); continue; }
+
+    if (TRADEMARKS.test(v)) problems.trademark.push(`[${loc}] ${k} = "${v.slice(0, 50)}"`);
 
     // The source language of this project is Korean. Hangul anywhere else means
     // a string was copied before it was translated.
@@ -139,6 +149,8 @@ function report(name, list, advice) {
 
 report('비한국어 로케일에 한글이 없다', problems.hangul,
   '원문을 복사하고 번역하지 않은 자리입니다. 해당 언어로 옮기십시오.');
+report('남의 상표 이름이 없다', problems.trademark,
+  '1인 개발에 법률 자문이 없다. 다른 단체·제품의 등록 상표를 등급이나 업적 이름으로 쓰지 않는다.');
 report('빈 문자열이 없다', problems.empty,
   '빈 값은 화면에 아무것도 그리지 않고 조용히 지나갑니다.');
 report('영어를 그대로 둔 자리가 없다', problems.sameAsEn,

@@ -15,7 +15,11 @@
  *                       'dismissed' (closed early), 'unavailable' (no ad to
  *                       give), 'failed_to_show'. Callers tell the player —
  *                       a silent false looks like a broken button.
- *   showInterstitial()  Promise<void> — resolves when the ad is dismissed
+ *   preloadInterstitial()       Promise<boolean> — load the post-game ad ahead of the win
+ *   isInterstitialReady(now)    boolean — loaded and not yet expired
+ *   showPreparedInterstitial()  Promise<{ shown, reason }> — MUST resolve, and only
+ *                               after the ad has closed; never loads, so an ad that
+ *                               is not ready is skipped rather than waited for
  * ──────────────────────────────────────────────────────────────────────────
  *
  * Same shape as transport/index.js, and for the same reason: the callers should

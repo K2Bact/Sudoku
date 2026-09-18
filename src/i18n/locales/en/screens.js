@@ -11,7 +11,7 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: 'Hints',
     brainReportTitle: 'Brain Analysis',
-    brainPercentileShort: 'Top {percentile}% · {won} Wins',
+    brainPercentileShort: '{won} puzzles cleared',
     startSelectedLevel: 'Start Lv.{level} {name}',
     modeTabs: { classic: 'Classic', timeAttack: 'Speedrun', timeLimit: 'Survival' },
     rivalModes: {
@@ -74,7 +74,8 @@ export const screens = {
     purchaseBtn: 'Remove Ads',
     buySuccess: 'Purchase completed successfully! Thank you.',
     restoreSuccess: 'Purchases restored successfully.',
-    restoreFail: 'No past purchases found to restore.'
+    restoreFail: 'No past purchases found to restore.',
+    buyFail: 'The purchase could not be completed. Please try again later.'
   },
   tutorialOverlay: {
     exitTooltip: 'Exit Tutorial',
@@ -117,11 +118,11 @@ export const screens = {
     privacySubtitle: 'Privacy Protection',
     privacyModalTitle: 'Privacy Policy',
     privacy: {
-      subtitle: 'Sudoku requires no account and collects no name, email or contact details.',
-      sec1Title: '1. No Sign-Up Required', sec1Desc: 'This app requires no sign-up and never collects your name, email, phone number, contacts or location. Online features — 1v1 battles and cloud backup — send a randomly generated ID only.',
-      sec2Title: '2. Local Storage & Deletion Rights', sec2Desc: 'Game progress, hints, and theme settings are safely stored only in local storage.',
-      sec3Title: '3. 1v1 Battles & Brain Index', sec3Desc: 'Real-time 1v1 matchmaking sends a randomly generated player ID that is stored on your device and reused, together with your puzzle progress. It is not linked to your name or to any account.',
-      sec4Title: '4. Advertising (Google AdMob)', sec4Desc: 'To keep the game free, this app may show ads through the Google AdMob SDK. When ads are active, AdMob may collect an advertising identifier. Ads appear only as a banner at the bottom of the game screen and as rewarded videos.'
+      subtitle: 'Sudoku needs no account. Here is what the app actually stores and sends.',
+      sec1Title: '1. Storage and Backup', sec1Desc: 'Your records, hints and settings are stored on your device. If Android Auto Backup is on, Android copies this data to your own Google Drive and restores it when you reinstall. We never collect your name, email, phone number, contacts or location.',
+      sec2Title: '2. Google Play Games', sec2Desc: 'While you are signed in to Play Games, every win automatically backs up your progress (stats, achievements, hints, settings) to Play Games saved data and submits your IQ score to a Play Games leaderboard. This data is kept in your own Google account.',
+      sec3Title: '3. 1v1 Battles', sec3Desc: 'Real-time 1v1 battles use Google Firebase to send your opponent a randomly generated player ID, an automatic nickname (SudokuMaster_xxxx) and your puzzle progress. The ID is stored on your device and reused; it is not linked to your name or any account.',
+      sec4Title: '4. Ads and Purchases', sec4Desc: 'The app shows ads through Google AdMob: a banner, a full-screen ad after a win, and optional rewarded videos. AdMob may process your advertising ID. The Remove Ads purchase is handled by Google Play; we never receive your payment details.'
     }
   },
   stats: {
@@ -140,7 +141,7 @@ export const screens = {
     totalPlayed: "Total Games",
     totalWon: "Puzzles Cleared",
     winRate: "Win Rate",
-    shareText: "[Sudoku IQ Report]\nMy Sudoku IQ: {iq} ({percentile})\nTier: {tier}\nChallenge your brain with Sudoku today!",
+    shareText: "[Sudoku IQ Report]\nMy Sudoku IQ: {iq}\nTier: {tier}\nChallenge your brain with Sudoku today!",
     copiedToast: "Brain report copied to clipboard.",
     focus: 'Concentration',
     durability: "Focus Stamina",
@@ -151,19 +152,18 @@ export const screens = {
     overallStats: "📊 Overall Cumulative Stats",
     attributesTitle: "🧠 5 Core Cognitive Skills",
     title: 'Brain IQ Report',
-    percentilePrefix: 'Top ',
     shareTitle: 'My Sudoku Brain IQ Report',
     tiers: {
       grandMaster: '👑 Grand Master',
-      grandMasterDesc: 'Top {percentile}% of all players! Mastermind-tier 1% deductive reasoning.',
-      mensa: '🧠 Mensa Level',
-      mensaDesc: 'Top {percentile}% of all players! Exceptional Mensa-tier logical analytical ability.',
+      grandMasterDesc: 'Mastermind-tier 1% deductive reasoning.',
+      expert: '🧠 Expert Logic',
+      expertDesc: 'Outstanding logical and analytical ability in this game.',
       superior: '⚡ Superior Mind',
-      superiorDesc: 'Top {percentile}% of all players! Sharp intuition and excellent problem-solving skills.',
+      superiorDesc: 'Sharp intuition and excellent problem-solving skills.',
       aboveAverage: '💡 Above Average',
-      aboveAverageDesc: 'Top {percentile}% of all players! Stable and flexible analytical mindset.',
+      aboveAverageDesc: 'Stable and flexible analytical mindset.',
       balanced: '🎯 Balanced Mind',
-      balancedDesc: 'Top {percentile}% of all players! Well-rounded development across all 5 cognitive pillars.',
+      balancedDesc: 'Well-rounded development across all 5 cognitive pillars.',
       developing: '🌱 Growing Mind',
       developingDesc: 'Early stage of brain training. Your cognitive index will soar with continuous play!'
     }
@@ -171,10 +171,10 @@ export const screens = {
   battleLobby: {
     title: '1v1 Real-Time Battle',
     cancelBtn: 'Cancel Match',
-    searching: 'Searching for an opponent of similar skill...',
+    searching: 'Searching for an opponent...',
     autoMatchTitle: 'Quick Match',
     autoMatchDesc: 'Speed matching with players worldwide',
-    mmrBadge: 'Skill-Based Match · Win Rate {rate}%',
+    mmrBadge: 'Your Clear Rate {rate}%',
     findOpponentBtn: 'Find Opponent',
     noOpponentFound: 'No opponent found. Play against the AI instead?',
     playAiInstead: 'Battle the AI'
@@ -222,9 +222,9 @@ export const screens = {
     aiSpeed: 'Speed: {speed}',
     level1Desc: 'Beginner Bot: Solves slowly to help you learn fundamentals.',
     level2Desc: 'Normal Bot: Steady solver with minimal errors.',
-    level3Desc: 'Hard Bot: Fast-paced solver utilizing intermediate tactics.',
-    level4Desc: 'Expert Bot: Very fast solver applying advanced strategies.',
-    level5Desc: 'AlphaDoku: Grandmaster AI solving at extreme speeds.',
+    level3Desc: 'Hard Bot: Fast pace, few mistakes.',
+    level4Desc: 'Expert Bot: Very fast pace, rare mistakes.',
+    level5Desc: 'AlphaDoku: The fastest bot, with the fewest mistakes.',
     startBtn: 'Start Lv.{level} {name} AI Battle'
   },
   academy: {
@@ -244,7 +244,8 @@ export const screens = {
       success: 'Correct [{val}]! Technique mastered completely!',
       retry: 'Try Again',
       error: '[{val}] is incorrect. Re-examine the given digits!',
-      prompt: '👇 Tap the target number (?) on the number keypad below.'
+      prompt: '👇 Tap the target number (?) on the number keypad below.',
+      promptEliminated: '👇 Tap the candidate that is removed from the target cell.'
     }
   },
   adBanner: {removeBtn: 'Remove Ads' }

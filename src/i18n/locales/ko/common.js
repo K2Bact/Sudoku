@@ -77,23 +77,23 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 그랜드 마스터',
-      desc: '전체 스도쿠 플레이어 중 상위 {percentile}%! 극소수만 도달하는 1% 마스터급 추론력입니다.'
+      desc: '극소수만 도달하는 1% 마스터급 추론력입니다.'
     },
-    mensa: {
-      title: '🧠 멘사급 상위 지능',
-      desc: '전체 플레이어 중 상위 {percentile}%! 멘사 레벨의 뛰어난 논리적 분석력을 보여주고 있습니다.'
+    expert: {
+      title: '🧠 전문가급 논리력',
+      desc: '이 게임에서 뛰어난 추리력을 보여주고 있습니다.'
     },
     superior: {
       title: '⚡ 우수 두뇌',
-      desc: '전체 플레이어 중 상위 {percentile}%! 날카로운 직관과 우수한 문제 해결 능력을 지녔습니다.'
+      desc: '날카로운 직관과 우수한 문제 해결 능력을 지녔습니다.'
     },
     aboveAverage: {
       title: '💡 평균 이상 논리력',
-      desc: '전체 플레이어 중 상위 {percentile}%! 안정적이고 유연한 사고방식으로 퍼즐을 해결합니다.'
+      desc: '안정적이고 유연한 사고방식으로 퍼즐을 해결합니다.'
     },
     balanced: {
       title: '🎯 균형 잡힌 두뇌',
-      desc: '전체 플레이어 중 상위 {percentile}%! 5대 인지 능력이 고르게 발달한 모범적인 상태입니다.'
+      desc: '5대 인지 능력이 고르게 발달한 모범적인 상태입니다.'
     },
     developing: {
       title: '🌱 성장하는 두뇌',

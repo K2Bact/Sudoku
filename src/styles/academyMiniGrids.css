@@ -130,11 +130,26 @@
   font-weight: 900;
   box-shadow: 0 1px 3px rgba(59, 130, 246, 0.4);
 }
+.mini-note-grid span.candidate-color-a {
+  color: #ffffff;
+  background: #3b82f6;
+  border-radius: 2px;
+  font-weight: 900;
+}
+.mini-note-grid span.candidate-color-b {
+  color: #1f2937;
+  background: #facc15;
+  border-radius: 2px;
+  font-weight: 900;
+}
+/* A solid chip, like the blue highlight beside it. Red text on a faint red tint
+   measured 2.7:1 against every theme's cell — under the 3:1 a struck-out candidate
+   needs to be read at 9px. White on #dc2626 holds about 4.8:1 whatever sits behind. */
 .mini-note-grid span.candidate-erased {
-  color: #ef4444;
+  color: #ffffff;
   text-decoration: line-through;
   font-weight: 900;
-  background: rgba(239, 68, 68, 0.18);
+  background: #dc2626;
   border-radius: 2px;
 }
 
@@ -230,6 +245,33 @@
 .mini-6x3-horizontal-board .mini-cell { width: 100%; max-width: none; flex: unset; border-radius: 3px; }
 .mini-6x3-horizontal-board > *:nth-child(6n + 3) { border-right: 3px solid #3b82f6 !important; }
 .mini-6x3-horizontal-board > *:nth-child(6n + 4) { border-left: 3px solid #3b82f6 !important; }
+
+/* 9x9 full board — for the in-house generated examples. Fish, chains and
+   uniqueness patterns reach across the whole grid; cropping them is how the old
+   diagrams ended up asserting eliminations the cells on screen could not support. */
+.mini-9x9-full-board {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 1.5px;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+  border: 2.5px solid var(--board-thick-line);
+  padding: 3px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background: var(--bg-surface);
+}
+.mini-9x9-full-board .mini-cell { width: 100%; max-width: none; flex: unset; border-radius: 2px; font-size: 0.8rem; }
+.mini-9x9-full-board > *:nth-child(9n + 3),
+.mini-9x9-full-board > *:nth-child(9n + 6) { border-right: 3px solid #3b82f6 !important; }
+.mini-9x9-full-board > *:nth-child(9n + 4),
+.mini-9x9-full-board > *:nth-child(9n + 7) { border-left: 3px solid #3b82f6 !important; }
+.mini-9x9-full-board > *:nth-child(n + 19):nth-child(-n + 27),
+.mini-9x9-full-board > *:nth-child(n + 46):nth-child(-n + 54) { border-bottom: 3px solid #3b82f6 !important; }
+.mini-9x9-full-board > *:nth-child(n + 28):nth-child(-n + 36),
+.mini-9x9-full-board > *:nth-child(n + 55):nth-child(-n + 63) { border-top: 3px solid #3b82f6 !important; }
+
 
 .mini-9cell {
   aspect-ratio: 1;

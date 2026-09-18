@@ -23,7 +23,7 @@ export function BrainReportScreen({ onBack }) {
     ? (t(`brainReport.tiers.${report.tierKey}`) || t(`tiers.${report.tierKey}.title`) || report.tierTitle)
     : report.tierTitle;
   const tierDesc = report.tierKey
-    ? (t(`brainReport.tiers.${report.tierKey}Desc`, { percentile: report.topPercentile }) || t(`tiers.${report.tierKey}.desc`, { percentile: report.topPercentile }) || report.tierDescription)
+    ? (t(`brainReport.tiers.${report.tierKey}Desc`) || t(`tiers.${report.tierKey}.desc`) || report.tierDescription)
     : report.tierDescription;
 
   // Every sub-score is computed from recorded play. See calculateCognitiveProfile.
@@ -38,10 +38,10 @@ export function BrainReportScreen({ onBack }) {
 
   const handleShareIQ = async () => {
     soundHaptic.playSelectSound();
-    const percentileText = `${t('brainReport.percentilePrefix')}${report.topPercentile}%`;
+    // The share line carries the score and the tier. It used to add "Top X% of
+    // players", which was this score on a fixed curve, not a place among players.
     const text = t('brainReport.shareText', {
       iq: report.iqScore,
-      percentile: percentileText,
       tier: tierDesc
     });
     const res = await shareContent({

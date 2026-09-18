@@ -121,7 +121,11 @@ export function InteractivePracticeSection({
           ) : (
             <div className="practice-hint-prompt">
               <HelpCircle size={14} />
-              <span>{t('academy.practiceUi.prompt')}</span>
+              <span>
+                {currentMission.asks === 'eliminated'
+                  ? t('academy.practiceUi.promptEliminated')
+                  : t('academy.practiceUi.prompt')}
+              </span>
             </div>
           )}
         </div>

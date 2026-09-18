@@ -70,7 +70,12 @@ ACADEMY_STAGES.forEach(stage => {
         if (guideText) {
           // In stage 1 beginner quiz missions (Full House, Last Free Cell), the answer is deliberately asked as a quiz riddle
           const isQuizQuestion = m.id.startsWith('full_house') || m.id.startsWith('last_free_cell');
-          if (!isQuizQuestion) {
+          // A mission that asks which candidate is removed must not print the answer.
+          const asksEliminated = m.asks === 'eliminated';
+          if (asksEliminated && guideText.includes(`[${m.correctVal}]`)) {
+            errors.push(`[${m.id}] Lang '${lang}' guide gives away the eliminated candidate [${m.correctVal}]`);
+          }
+          if (!isQuizQuestion && !asksEliminated) {
             const hasVal = guideText.includes(String(m.correctVal)) || guideText.includes(`[${m.correctVal}]`);
             if (!hasVal) {
               errors.push(`[${m.id}] Lang '${lang}' guide mentions wrong number! Expected correctVal [${m.correctVal}], got: "${guideText}"`);
@@ -146,6 +151,174 @@ ACADEMY_STAGES.forEach(stage => {
     console.log(`  ✅ [PASS] ${strat.id} (2 Missions: ${missions[0].id}, ${missions[1].id})`);
   });
 });
+
+// ── 판이 정답을 정말 정하는가 ────────────────────────────────────────────
+//
+// 위의 검사는 문장과 데이터가 같은 숫자를 말하는지만 본다. 데이터에 적힌
+// 정답이 그 판에서 실제로 유도되는지는 아무도 보지 않았고, 2026-09-18 에
+// 그 값을 치렀다: 은닉 쌍·삼중·사중 연습 6개가 「이 기법만으로는 정해지지
+// 않는 칸」 에 정답 하나를 요구하고 있었다. 은닉 부분집합은 그 칸들에서
+// 여분 후보를 지울 뿐, 어느 칸이 어느 숫자인지는 정하지 않는다. 그중 하나는
+// 더 나빴다 — 표기된 후보로는 **어떤 배치도 성립하지 않는** 판이었다.
+//
+// 화면은 그동안 "정답!" 이라고 답했다. 입력이 데이터의 correctVal 과 같은지
+// 비교한 결과일 뿐이고, 그것은 풀이의 증명이 아니다. 그래서 여기서 센다.
+//
+// 모든 연습을 셀 수는 없다. 상급 기법의 판은 관련 숫자의 후보만 그린
+// **부분 그림**이다(BUG+1 은 9칸에 숫자 3개만 나온다). 부분 그림에 대고
+// "한 칸에 한 숫자씩" 을 요구하면 옳은 그림이 빨갛게 된다. 그래서 판이
+// 스스로 완결됐다고 말할 때만 — 칸 수만큼(또는 그 이상) 서로 다른 숫자가
+// 보일 때만 — 센다. 그때는 배치가 존재해야 하고, 목표 칸의 값은 하나여야
+// 한다.
+const CLOSED_LAYOUTS = new Set(['row', 'box3x3']);
+let checked = 0;
+let skipped = 0;
+for (const missions of Object.values(ALL_PRACTICE_MISSIONS)) {
+  for (const m of missions) {
+    if (!CLOSED_LAYOUTS.has(m.layoutType)) { skipped++; continue; }
+
+    // 후보는 기법이 지우기 **전**의 것이다. 목표 칸의 eliminatedNotes 는 그
+    // 판에서 지워지는 값이므로, 후보 집합에 되돌려 놓고 센다.
+    const candidates = m.cells.map((c) => {
+      if (c.notes) return [...new Set([...c.notes, ...(c.eliminatedNotes || [])])];
+      if (typeof c.val === 'number' && c.val > 0) return [c.val];
+      if (c.val === 0 || c.val === undefined) return null; // 빈 칸 — 아래에서 채운다
+      return false; // '·', '✕' 같은 장식 칸: 이 판은 부분 그림이다
+    });
+    if (candidates.includes(false)) { skipped++; continue; }
+
+    const shown = new Set([m.correctVal]);
+    for (const c of candidates) if (c) for (const d of c) shown.add(d);
+    if (shown.size < m.cells.length) { skipped++; continue; }
+
+    const all = [...shown].sort((a, b) => a - b);
+    const cells = candidates.map((c) => c || all);
+    const values = new Set();
+    const place = (i, used, targetVal) => {
+      if (values.size > 1) return; // 이미 갈렸다
+      if (i === cells.length) { values.add(targetVal); return; }
+      for (const d of cells[i]) {
+        if (used.has(d)) continue;
+        used.add(d);
+        place(i + 1, used, i === m.targetIndex ? d : targetVal);
+        used.delete(d);
+      }
+    };
+    place(0, new Set(), null);
+    checked++;
+
+    if (values.size === 0) {
+      errors.push(
+        `[${m.id}] 이 판에는 성립하는 배치가 하나도 없다 — 표기된 후보끼리 모순이다. ` +
+          '화면은 정답을 맞다고 답하지만, 그 판은 스도쿠가 아니다.',
+      );
+    } else if (values.size > 1 || !values.has(m.correctVal)) {
+      errors.push(
+        `[${m.id}] 목표 칸이 ${[...values].sort().join(', ')} 중 어느 값도 될 수 있는데 ` +
+          `correctVal 은 ${m.correctVal} 이다. 기법이 정하지 못하는 칸에 정답 하나를 요구하고 있다.`,
+      );
+    }
+  }
+}
+console.log(`\n▶ 판이 정답을 정하는가: ${checked}개 미션 검증 · ${skipped}개는 부분 그림이라 제외`);
+
+// ── 전체 판(9x9)으로 그린 예제: 그 퍼즐의 해답과 맞는가 ─────────────────
+//
+// 상급 기법 예제 36개는 앱의 퍼즐 생성기로 만든 자체 퍼즐에서 뽑았다. 외부
+// 퍼즐은 쓰지 않는다(저작권 위험을 지지 않기 위해). 뽑을 때 유일해와 대조했지만,
+// 그 대조가 여기 없으면 누군가 한 칸을 고쳐도 아무도 모른다. 그래서 판에 적힌
+// 것만으로 다시 푼다:
+//   · 값이 적힌 칸은 고정, 후보가 적힌 칸은 그 후보(지워진 것 포함) 안에서만
+//   · 해가 정확히 하나여야 한다
+//   · 지워졌다고 표시한 후보는 그 칸의 해가 아니어야 한다
+//   · 답을 묻는 미션은 correctVal 이 목표 칸의 해, 지워지는 후보를 묻는 미션은
+//     correctVal 이 목표 칸의 후보이면서 해가 아니어야 한다
+const PEERS = Array.from({ length: 81 }, (_, i) => {
+  const r = Math.floor(i / 9), c = i % 9, set = new Set();
+  for (let k = 0; k < 9; k++) { set.add(r * 9 + k); set.add(k * 9 + c); }
+  const br = r - (r % 3), bc = c - (c % 3);
+  for (let a = 0; a < 3; a++) for (let b = 0; b < 3; b++) set.add((br + a) * 9 + bc + b);
+  set.delete(i);
+  return [...set];
+});
+let fullChecked = 0;
+for (const missions of Object.values(ALL_PRACTICE_MISSIONS)) {
+  for (const m of missions) {
+    if (m.layoutType !== 'grid9x9') continue;
+    fullChecked++;
+    const allowed = m.cells.map((c) => (c.notes ? [...new Set([...c.notes, ...(c.eliminatedNotes || [])])] : [c.val]));
+    const g = m.cells.map((c) => (c.notes ? 0 : c.val));
+    const sols = [];
+    const solve = () => {
+      if (sols.length > 1) return;
+      let best = -1;
+      let bestC = null;
+      for (let i = 0; i < 81; i++) {
+        if (g[i]) continue;
+        const used = new Set(PEERS[i].map((p) => g[p]));
+        const c = allowed[i].filter((d) => !used.has(d));
+        if (!c.length) return;
+        if (!bestC || c.length < bestC.length) { best = i; bestC = c; }
+      }
+      if (best < 0) { sols.push(g.slice()); return; }
+      for (const d of bestC) { g[best] = d; solve(); g[best] = 0; }
+    };
+    solve();
+    if (sols.length !== 1) {
+      errors.push(`[${m.id}] 판에 적힌 값·후보로 풀면 해가 ${sols.length}개다 — 판이 틀어졌다`);
+      continue;
+    }
+    const sol = sols[0];
+    m.cells.forEach((c, i) => {
+      for (const d of c.eliminatedNotes || []) {
+        if (d === sol[i]) errors.push(`[${m.id}] r${Math.floor(i / 9) + 1}c${(i % 9) + 1} 에서 해 ${d} 를 지운다고 표시했다`);
+      }
+    });
+    const t = m.targetIndex;
+    if (m.asks === 'eliminated') {
+      const cand = m.cells[t].notes || [];
+      if (!cand.includes(m.correctVal) || m.correctVal === sol[t]) {
+        errors.push(`[${m.id}] 지워지는 후보로 ${m.correctVal} 을 묻는데, 목표 칸의 해는 ${sol[t]} 이고 후보는 ${cand.join('')} 이다`);
+      }
+    } else if (m.correctVal !== sol[t]) {
+      errors.push(`[${m.id}] correctVal ${m.correctVal} 이 목표 칸의 해 ${sol[t]} 와 다르다`);
+    }
+  }
+}
+console.log(`▶ 9x9 예제 ${fullChecked}개를 판에 적힌 대로 다시 풀어 해답과 대조`);
+
+
+// ── 6x6 입문 그림(크로스해칭): 박스 안에서 그 숫자가 갈 곳이 목표 칸뿐인가 ──
+// 6x6 창은 실제 3x3 박스 경계를 그린다. 목표 칸이 든 박스에서, 이미 숫자가
+// 있는 칸을 빼고 나머지 빈칸은 전부 같은 행이나 열(창 안)에 correctVal 이
+// 있어야 하고, 목표 칸 자신은 그렇지 않아야 한다. 그리고 그 박스에 이미
+// correctVal 이 있으면 안 된다. 이것이 크로스해칭의 정의 그대로다.
+let hatchChecked = 0;
+for (const missions of Object.values(ALL_PRACTICE_MISSIONS)) {
+  for (const m of missions) {
+    if (m.layoutType !== 'grid6x6' || !m.id.startsWith('cross_hatching')) continue;
+    hatchChecked++;
+    const W = 6;
+    const v = (r, c) => m.cells[r * W + c]?.val;
+    const d = m.correctVal;
+    const tr = Math.floor(m.targetIndex / W), tc = m.targetIndex % W;
+    const br = tr - (tr % 3), bc = tc - (tc % 3);
+    const seesD = (r, c) => [...Array(W).keys()].some((k) => v(r, k) === d || v(k, c) === d);
+    for (let r = br; r < br + 3; r++) {
+      for (let c = bc; c < bc + 3; c++) {
+        const val = v(r, c);
+        if (val === d) errors.push(`[${m.id}] 목표 박스에 이미 ${d} 가 있다`);
+        if (r === tr && c === tc) {
+          if (seesD(r, c)) errors.push(`[${m.id}] 목표 칸이 같은 행/열의 ${d} 에 막혀 있다`);
+          continue;
+        }
+        if (typeof val === 'number' && val > 0) continue;
+        if (!seesD(r, c)) errors.push(`[${m.id}] r${r + 1}c${c + 1} 도 ${d} 가 들어갈 수 있다 — 목표 칸 하나로 정해지지 않는다`);
+      }
+    }
+  }
+}
+console.log(`▶ 크로스해칭 입문 그림 ${hatchChecked}개를 박스 단위로 검증`);
 
 console.log('\n----------------------------------------------------');
 console.log(`Total Strategies Checked: ${totalStrategies} / ${EXPECTED_STRATEGIES}`);

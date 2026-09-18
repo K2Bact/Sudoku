@@ -15,10 +15,10 @@
     },
     {
       "name": "a Simplified character returns to Traditional Chinese text",
-      "why": "The other half of what the 165-character blocklist missed. 网 is Simplified for 網 and appeared 5 times in zh-TW; it is invisible to self-consistency because zh-CN left it unconverted too, so the pair 网/網 was never observed in aligned strings. Only the usage snapshot can catch it, which is why the snapshot exists. The first version of this anchor matched two strings in the same file; the audit reported ANCHOR_AMBIGUOUS rather than running it, which is the right refusal — a mutation that lands somewhere other than where it is described proves nothing about the gate.",
-      "file": "src/data/academy/practice/stage5Practice.js",
-      "find": "\"zh-TW\":\"鰭狀 X-Wing 主體",
-      "replace": "\"zh-TW\":\"鳍狀 X-Wing 主體",
+      "why": "The other half of what the 165-character blocklist missed. 网 is Simplified for 網 and appeared 5 times in zh-TW; it is invisible to self-consistency because zh-CN left it unconverted too, so the pair 网/網 was never observed in aligned strings. Only the usage snapshot can catch it, which is why the snapshot exists. The first version of this anchor matched two strings in the same file; the audit reported ANCHOR_AMBIGUOUS rather than running it, which is the right refusal — a mutation that lands somewhere other than where it is described proves nothing about the gate. (2026-09-18: 연습 문구는 공개 예제 생성기가 다시 쓰므로, 앵커를 전략 제목으로 옮겼다.)",
+      "file": "src/data/academy/stage5.js",
+      "find": "\"zh-TW\":\"帶鰭魚型 Finned X-Wing / Swordfish\"",
+      "replace": "\"zh-TW\":\"帶鳍魚型 Finned X-Wing / Swordfish\"",
       "expectFailure": "목록에 없는 한자"
     },
     {

@@ -1,0 +1,49 @@
+{
+  "gate": "3-11",
+  "name": "Academy Practice Play-Through (64 missions × 13 languages)",
+  "command": "node scripts/tests/ui/test_academy_practice_play.js",
+  "greenMarker": "Every academy practice plays correctly in every language",
+  "note": "Gate 2-5 proves each practice's answer follows from its board data. This gate proves the screen: the drawn board, the prompt, and what tapping does. Each mutation breaks one of those while leaving the data — and therefore gate 2-5 — untouched.",
+  "mutations": [
+    {
+      "name": "a wrong digit is accepted silently",
+      "why": "If the error state is never set, a wrong tap does nothing visible and the player cannot tell a miss from a missed tap. Data-level checks cannot see this; only playing it can.",
+      "file": "src/hooks/useInteractivePractice.js",
+      "find": "      setIsError(true);\n",
+      "replace": "",
+      "expectFailure": "was not refused"
+    },
+    {
+      "name": "a which-candidate-goes mission shows the ordinary prompt",
+      "why": "The prompt tells the player what to enter. Showing \"enter the number for the empty cell\" on a mission that asks which candidate is removed makes the correct answer look wrong.",
+      "file": "src/components/academy/practice/InteractivePracticeSection.jsx",
+      "find": "{currentMission.asks === 'eliminated'",
+      "replace": "{currentMission.asks === 'never'",
+      "expectFailure": "prompt"
+    },
+    {
+      "name": "the full-board layout falls back to a 3x3 box",
+      "why": "Without its own branch a 9x9 example renders through the default 3-column box grid: 81 cells in 27 rows, a board no player could read. The cell count is unchanged, so only the drawn width catches it — the fallback grid is narrower, so the check is that a 9x9 mission is drawn nine cells wide.",
+      "file": "src/components/academy/practice/PracticeBoardRenderer.jsx",
+      "find": "  if (layoutType === 'grid9x9') {",
+      "replace": "  if (layoutType === 'grid9x9-disabled') {",
+      "expectFailure": "cells per row"
+    },
+    {
+      "name": "academy boards mirror in Arabic again",
+      "why": "Found on 2026-09-18: the page is dir=rtl in Arabic and the academy grids were not on the left-to-right list the game board uses, so r1c1 drew on the right while every guide names cells counted from the left.",
+      "file": "src/index.css",
+      "find": "html[dir=\"rtl\"] .academy-screen-container [class*=\"-board\"],",
+      "replace": "html[dir=\"rtl\"] .academy-screen-container [class*=\"-board-disabled\"],",
+      "expectFailure": "board drawn right-to-left"
+    },
+    {
+      "name": "struck-out candidates go back to red on a faint tint",
+      "why": "Found on 2026-09-18: red text on a light red wash measured 2.7:1 on every theme — under the 3:1 a 9px struck-out candidate needs.",
+      "file": "src/styles/academyMiniGrids.css",
+      "find": "  color: #ffffff;\n  text-decoration: line-through;\n  font-weight: 900;\n  background: #dc2626;",
+      "replace": "  color: #ef4444;\n  text-decoration: line-through;\n  font-weight: 900;\n  background: rgba(239, 68, 68, 0.18);",
+      "expectFailure": "erased text contrast"
+    }
+  ]
+}

@@ -51,8 +51,8 @@ export const achievements = {
 
     // 27 ~ 30. 데일리, 배틀 & 두뇌지능
     daily_first: { title: '일일 탐험가', desc: '오늘의 데일리 챌린지 첫 완주' },
-    daily_streak_7: { title: '7일간의 기적', desc: '데일리 챌린지 7일 연속 출석 및 완주' },
+    daily_streak_7: { title: '7일간의 기적', desc: '7일 연속 출석' },
     battle_first_win: { title: '검투사의 첫 승', desc: '1v1 온라인 배틀 또는 AI 배틀 첫 승리' },
-    iq_150: { title: '멘사급 두뇌', desc: '두뇌 활성 지수 Sudoku IQ 150점 이상 도달' }
+    iq_150: { title: '천재급 두뇌', desc: '두뇌 활성 지수 Sudoku IQ 150점 이상 도달' }
   }
 };

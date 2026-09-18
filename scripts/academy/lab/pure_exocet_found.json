@@ -1,0 +1,69 @@
+[
+  {
+    "seed": "pje-3311",
+    "puzzle": "100200030009760420000800000003000009000039500701000600086000900010000080000005000",
+    "base": [
+      "r2c1",
+      "r2c2"
+    ],
+    "targets": [
+      "r3c6",
+      "r1c9"
+    ],
+    "digits": [
+      3,
+      5,
+      8
+    ],
+    "target": "r3c6",
+    "removed": 1,
+    "type": "answer",
+    "correct": 3,
+    "step": "Junior Exocet {3,5,8}: r2c1,r2c2 → r3c6,r1c9 => r3c6<>1"
+  },
+  {
+    "seed": "pje-11530",
+    "puzzle": "090205000016003000005700100000307000960004000040000089000000002350900048000006050",
+    "base": [
+      "r6c5",
+      "r6c6"
+    ],
+    "targets": [
+      "r4c1",
+      "r5c7"
+    ],
+    "digits": [
+      1,
+      2,
+      5
+    ],
+    "target": "r5c7",
+    "removed": 3,
+    "type": "eliminated",
+    "correct": 3,
+    "step": "Junior Exocet {1,2,5}: r6c5,r6c6 → r4c1,r5c7 => r5c7<>3"
+  },
+  {
+    "seed": "pje-9297",
+    "puzzle": "050004000060000902200000060000000500600000007070820040410000086300010005005007300",
+    "base": [
+      "r4c1",
+      "r4c2"
+    ],
+    "targets": [
+      "r5c5",
+      "r6c9"
+    ],
+    "digits": [
+      1,
+      4,
+      8,
+      9
+    ],
+    "target": "r5c5",
+    "removed": 5,
+    "type": "eliminated",
+    "correct": 5,
+    "step": "Junior Exocet {1,4,8,9}: r4c1,r4c2 → r5c5,r6c9 => r5c5<>5"
+  }
+]

@@ -150,7 +150,19 @@ export function inventory(loc) {
  * 줄 기준과 같았다. 잃은 것도 얻은 것도 없다.)
  *
  * 한 번만 관찰된 쌍은 오타이거나 실제로 다른 낱말일 수 있어 버린다.
+ *
+ * 그래도 자리 맞대기가 잡아내지 못하는 것이 하나 있다. 같은 자리에 있는 두
+ * 글자가 **같은 글자의 두 표기가 아니라 서로 다른 낱말**인 경우다. 스도쿠에서
+ * 실제로 그렇다: 중국 본토는 가로줄을 「行」, 세로줄을 「列」 이라 하고 대만은
+ * 그 둘이 반대다. 그래서 같은 키의 zh-CN/zh-TW 가 이 자리에서 갈리고, 검사 1은
+ * 「한 로케일이 두 형태를 같이 쓴다」 며 두 글자가 함께 나오는 문구를 막는다.
+ * 변환 누락이 아니라 번역이 옳은 경우이므로 이 짝만 제외한다. 다른 짝을 여기에
+ * 추가할 때는 두 글자가 정말 다른 낱말인지 먼저 확인할 것 — 이 목록은 검사를
+ * 조용히 시키는 곳이 아니다. 「和」 와 「與」 도 같은 이유로 들어 있다 — 둘 다
+ * 양쪽 표기에 실재하는 낱말이고, 번역이 서로 다른 접속사를 고른 것뿐이다.
  */
+const NOT_VARIANTS = new Set(['行|列', '列|行', '和|與', '與|和']);
+
 export function observedPairs() {
   const { dictionaries } = academyCorpus();
   const cnAll = dictionaries['zh-CN'] || {};
@@ -166,6 +178,7 @@ export function observedPairs() {
       const [s, t] = [cn[i], tw[i]];
       if (s === t || !HAN.test(s) || !HAN.test(t)) continue;
       const k = s + '|' + t;
+      if (NOT_VARIANTS.has(k)) continue;
       seen.set(k, (seen.get(k) || 0) + 1);
     }
   }

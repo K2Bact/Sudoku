@@ -13,6 +13,7 @@ import { DAILY_STORAGE_KEY } from '../utils/dailyChallenge.js';
 import { GHOST_STORAGE_KEY } from '../utils/ghostManager.js';
 import { iqStatsService } from './iqStatsService.js';
 import { playGamesService } from './playGamesService.js';
+import { mergeProgress } from './progressMerge.js';
 
 // Keys are imported from the modules that own them. They used to be re-typed here
 // and two of the three were wrong ('suidoku_wallet_state_v1', 'suidoku_daily_challenge_v1'),
@@ -80,18 +81,56 @@ class CloudSyncService {
   }
 
   /**
-   * Save player data bundle to Cloud
+   * Save player data bundle to Cloud — merged with what the cloud already holds.
+   *
+   * This used to upload this device's local data as-is. The snapshot is one slot
+   * per account, so with the same account on two phones the phone that won last
+   * replaced the other's progress; a freshly installed phone uploaded a near-empty
+   * record on its first win. Now the snapshot is read first and merged with the
+   * same rules restore uses (progressMerge.js).
+   *
+   * What the read can say, and what each means for the write:
+   *
+   *   empty data     no backup yet — the plugin opens with createIfNotFound, so a
+   *                  missing slot comes back empty, not as an error. Upload local.
+   *   data           merge, upload the merge.
+   *   unparseable    nothing in it can be recovered. Upload local rather than let
+   *                  one corrupt blob block every future backup.
+   *   read failed    DO NOT upload. Writing over a slot we could not read is the
+   *                  overwrite this exists to prevent. The local copy is still kept.
+   *   not signed in / not native / no plugin — the write fails the same way anyway.
+   *
+   * Local game data is not changed by a save. Pulling the other phone's progress
+   * into this one is restore's job, which the player chooses.
    */
   async saveToCloud() {
-    const payload = this.compileBackupPayload();
+    const local = this.compileBackupPayload();
     const now = Date.now();
-    const serialized = JSON.stringify(payload);
+
+    let upload = local;
+    let merged = false;
+    let skipRemote = null;
+    const remote = await playGamesService.loadSnapshot(SNAPSHOT_NAME);
+    if (remote.success) {
+      const raw = remote.snapshot?.data;
+      if (raw) {
+        try {
+          upload = { ...local, ...mergeProgress(JSON.parse(raw), local), syncedAt: now };
+          merged = true;
+        } catch (e) {
+          console.warn('[CloudSync] cloud snapshot unreadable, replacing it:', e?.message || e);
+        }
+      }
+    } else if (remote.reason === 'error') {
+      skipRemote = 'remote_unreadable';
+    }
+    const serialized = JSON.stringify(upload);
 
     // Local copy first: it is what a same-device restore reads, and it keeps
     // working when the player is signed out or offline.
     try {
       if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(`suidoku_cloud_save_${payload.userId}`, serialized);
+        localStorage.setItem(`suidoku_cloud_save_${local.userId}`, serialized);
         localStorage.setItem(LAST_SYNC_KEY, String(now));
       }
     } catch (e) {
@@ -102,20 +141,23 @@ class CloudSyncService {
     // the player signs into. `method` tells the caller which of the two happened
     // — reporting plain success for a device-local write is how this code used to
     // promise a cloud backup it never made.
-    const remote = await playGamesService.saveSnapshot(
-      SNAPSHOT_NAME,
-      serialized,
-      `Suidoku • ${payload.stats?.gamesWon || 0} wins`
-    );
+    const remoteSave = skipRemote
+      ? { success: false, reason: skipRemote }
+      : await playGamesService.saveSnapshot(
+          SNAPSHOT_NAME,
+          serialized,
+          `Suidoku • ${upload.stats?.gamesWon || 0} wins`
+        );
 
     return {
       success: true,
-      method: remote.success ? 'play_games' : 'local_only',
-      remoteReason: remote.success ? null : remote.reason,
+      method: remoteSave.success ? 'play_games' : 'local_only',
+      remoteReason: remoteSave.success ? null : remoteSave.reason,
+      merged,
       syncedAt: now,
-      userId: payload.userId,
-      gamesWon: payload.stats?.gamesWon || 0,
-      achievementsCount: (payload.achievements || []).length
+      userId: local.userId,
+      gamesWon: upload.stats?.gamesWon || 0,
+      achievementsCount: Object.keys(upload.achievements || {}).length
     };
   }
 
@@ -155,66 +197,26 @@ class CloudSyncService {
         };
       }
 
-      // Merge stats. Spread both sides first so any field this method does not
-      // know about survives — rebuilding the object from a fixed list used to
-      // delete timeLimitBestTimes (survival records) on every restore.
-      const localStats = loadStats();
-      const cloudStats = cloudData.stats || {};
-      const mergedStats = {
-        ...cloudStats,
-        ...localStats,
-        gamesPlayed: Math.max(localStats.gamesPlayed || 0, cloudStats.gamesPlayed || 0),
-        gamesWon: Math.max(localStats.gamesWon || 0, cloudStats.gamesWon || 0),
-        timeLimitSurvivalWins: Math.max(localStats.timeLimitSurvivalWins || 0, cloudStats.timeLimitSurvivalWins || 0)
-      };
-
-      // Every best-time table keeps the fastest value on each level
-      for (const table of ['bestTimes', 'timeAttackBestTimes', 'timeLimitBestTimes']) {
-        const merged = { ...(cloudStats[table] || {}), ...(localStats[table] || {}) };
-        [1, 2, 3, 4, 5].forEach((lv) => {
-          const c = cloudStats[table]?.[lv];
-          const l = localStats[table]?.[lv];
-          if (c && l) merged[lv] = Math.min(c, l);
-          else if (c) merged[lv] = c;
-        });
-        if (Object.keys(merged).length > 0) mergedStats[table] = merged;
-      }
+      // Same rules as saveToCloud, from one place — see progressMerge.js.
+      const merged = mergeProgress(cloudData, this.compileBackupPayload());
+      const mergedStats = merged.stats;
 
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem(USER_STATS_KEY, JSON.stringify(mergedStats));
 
-        // Restore achievements
+        // Each part is written only when the cloud carries it, so a backup that
+        // predates a field does not overwrite the local value with nothing.
         if (cloudData.achievements && typeof cloudData.achievements === 'object') {
-          const localAch = loadUnlockedAchievements();
-          const mergedAch = { ...localAch, ...cloudData.achievements };
-          saveUnlockedAchievements(mergedAch);
+          saveUnlockedAchievements(merged.achievements);
         }
-
-        // Wallet: keep the larger hint balance and the longer streak
         if (cloudData.wallet) {
-          const localW = readJson(WALLET_STORAGE_KEY) || {};
-          localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify({
-            ...cloudData.wallet,
-            ...localW,
-            hints: Math.max(localW.hints || 0, cloudData.wallet.hints || 0),
-            streakDays: Math.max(localW.streakDays || 0, cloudData.wallet.streakDays || 0),
-            totalAdsWatched: Math.max(localW.totalAdsWatched || 0, cloudData.wallet.totalAdsWatched || 0)
-          }));
+          localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify(merged.wallet));
         }
-
-        // Daily records and ghost PBs: union, local wins on conflict
         if (cloudData.daily && typeof cloudData.daily === 'object') {
-          localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify({
-            ...cloudData.daily,
-            ...(readJson(DAILY_STORAGE_KEY) || {})
-          }));
+          localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(merged.daily));
         }
         if (cloudData.ghost && typeof cloudData.ghost === 'object') {
-          const localG = readJson(GHOST_STORAGE_KEY) || {};
-          localStorage.setItem(GHOST_STORAGE_KEY, JSON.stringify({
-            classic: { ...(cloudData.ghost.classic || {}), ...(localG.classic || {}) },
-            timeAttack: { ...(cloudData.ghost.timeAttack || {}), ...(localG.timeAttack || {}) }
-          }));
+          localStorage.setItem(GHOST_STORAGE_KEY, JSON.stringify(merged.ghost));
         }
 
         localStorage.setItem(LAST_SYNC_KEY, String(Date.now()));

@@ -81,6 +81,7 @@ runStep('3-7. Playwright 13-Language Visual UI Overflow Scan', 'node scripts/tes
 runStep('3-8. Real Gameplay End-to-End (play, tap, win)', 'node scripts/tests/ui/test_gameplay_e2e.js');
 runStep('3-9. Ad Placements End-to-End (banner, purchase)', 'node scripts/tests/ui/test_ads_placements_e2e.js');
 runStep('3-10. 1v1 Matchmaking & Rematch End-to-End (two browsers)', 'node scripts/tests/unit/test_rematch_flow.js');
+runStep('3-11. Academy Practice Play-Through (64 missions × 13 languages)', 'node scripts/tests/ui/test_academy_practice_play.js');
 
 console.log('======================================================');
 console.log('🎉 [QA MASTER PIPELINE] 100% PERFECT! ALL TIERS & GATES PASSED.');

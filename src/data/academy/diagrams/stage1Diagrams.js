@@ -104,7 +104,7 @@ export const STAGE1_DIAGRAMS = {
     "label": {
       "ko": "📍 Naked Single: [셀 중심] 주변 8개 확정수에 막혀 후보수 [3] 1개만 노출",
       "en": "📍 Naked Single: Blocked by 8 surrounding digits, candidate [3] is exposed",
-      "ja": "📍 ネイキッドシングル: 周囲8個の数字に塞がれ候補数 [3] のみ露出",
+      "ja": "📍 ネイキッドシングル: 他の数字が入らないため、候補は [3] だけ",
       "zh-TW": "📍 唯餘解法: 受周圍 8 個確定數字封鎖，僅剩候選數 [3] 顯露",
       "zh-CN": "📍 唯余解法: 受周围 8 个确定数字封锁，仅剩候选数 [3] 显露",
       "es-ES": "📍 Naked Single: Bloqueado por 8 dígitos vecinos, solo queda el candidato [3]",

@@ -5,6 +5,8 @@ import { recordGhostRun } from './ghostManager.js';
 import { checkAndUnlockAchievements } from './achievementManager.js';
 import { iqStatsService } from '../services/iqStatsService.js';
 import { playGamesService } from '../services/playGamesService.js';
+import { cloudSyncService } from '../services/cloudSyncService.js';
+import { speedrunRankFor } from './speedrunRank.js';
 
 export function handleGameWinLogic({
   level,
@@ -67,8 +69,12 @@ export function handleGameWinLogic({
     }
   }
 
-  // 30 Core Achievements Autonomous Check & Unlock
+  // 30 Core Achievements Autonomous Check & Unlock — the clear grade included.
+  // The S+ unlock used to run from VictoryModal's mount; the modal now comes
+  // after the post-game interstitial, so everything the win earns is recorded
+  // here, before anything is shown.
   checkAndUnlockAchievements({
+    rank: speedrunRankFor(level, gameMode, timerSeconds).rank,
     level,
     timerSeconds,
     gameMode,
@@ -94,4 +100,11 @@ export function handleGameWinLogic({
     // 제출이 영원히 실패해도 아무도 모른다.
     console.warn('[GameCompletion] Play Games submission failed:', e?.message || e);
   }
+
+  // Cloud backup last, after everything above has been written locally, so the
+  // upload carries this win. Not awaited: the victory sequence must not wait on
+  // the network. Moved here from VictoryModal for the same reason as the grade.
+  Promise.resolve()
+    .then(() => cloudSyncService.saveToCloud())
+    .catch((e) => console.warn('[GameCompletion] cloud save failed:', e?.message || e));
 }

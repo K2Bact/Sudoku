@@ -51,8 +51,8 @@ export const achievements = {
 
     // 27 ~ 30. Diário & Duelos
     daily_first: { title: 'Explorador Diário', desc: 'Conclua seu primeiro Desafio Diário' },
-    daily_streak_7: { title: 'Milagre de 7 Dias', desc: 'Mantenha uma sequência diária de 7 dias consecutivos' },
+    daily_streak_7: { title: 'Milagre de 7 Dias', desc: 'Entre no jogo 7 dias seguidos' },
     battle_first_win: { title: 'Gladiador Vitorioso', desc: 'Vença seu primeiro duelo 1v1 online ou contra a IA' },
-    iq_150: { title: 'Cérebro Mensa', desc: 'Alcance uma pontuação de QI Sudoku de 150+' }
+    iq_150: { title: 'Cérebro genial', desc: 'Alcance uma pontuação de QI Sudoku de 150+' }
   }
 };

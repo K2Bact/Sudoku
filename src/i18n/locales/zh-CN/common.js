@@ -80,23 +80,23 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 宗师级大脑',
-      desc: '超越全体玩家前 {percentile}%！仅极少数人能达到的顶级极速推理力。'
+      desc: '仅极少数人能达到的顶级极速推理力。'
     },
-    mensa: {
-      title: '🧠 门萨级高智商',
-      desc: '超越全体玩家前 {percentile}%！展现门萨级别的卓越逻辑分析力。'
+    expert: {
+      title: '🧠 专家级逻辑',
+      desc: '在本游戏中展现出色的推理能力。'
     },
     superior: {
       title: '⚡ 卓越思维',
-      desc: '超越全体玩家前 {percentile}%！具备敏锐直觉与优异的问题解决力。'
+      desc: '具备敏锐直觉与优异的问题解决力。'
     },
     aboveAverage: {
       title: '💡 优于常人',
-      desc: '超越全体玩家前 {percentile}%！以稳定灵活的思维破解谜题。'
+      desc: '以稳定灵活的思维破解谜题。'
     },
     balanced: {
       title: '🎯 均衡大脑',
-      desc: '超越全体玩家前 {percentile}%！五大认知能力均衡发展的理想状态。'
+      desc: '五大认知能力均衡发展的理想状态。'
     },
     developing: {
       title: '🌱 成长潜力',

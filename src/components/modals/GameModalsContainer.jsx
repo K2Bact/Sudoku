@@ -1,13 +1,14 @@
 import React from 'react';
 import { GameOverModal } from '../GameOverModal';
 import { VictoryModal } from '../VictoryModal';
-import { adsService } from '../../services/adsService';
 import { BattleResultModal } from '../BattleResultModal';
 import { HintRewardModal } from '../HintRewardModal';
 import { DailyRewardModal } from '../DailyRewardModal';
 import { NewGameModal } from '../NewGameModal';
 import { StoreReviewModal } from './StoreReviewModal';
 import { AchievementToast } from './AchievementToast';
+import { VictoryPauseOverlay } from './VictoryPauseOverlay';
+import { useVictoryAd } from '../../hooks/useVictoryAd';
 
 /**
  * GameModalsContainer
@@ -68,22 +69,10 @@ export function GameModalsContainer({
 }) {
   const isGameActive = activeScreen === 'game';
 
-  /**
-   * The post-game interstitial. Both exits from a finished game go through here,
-   * which is the placement the Remove Ads screen has always sold ("remove
-   * post-game interstitial ads") and the one nothing actually called — the
-   * service had a showInterstitial method with no caller anywhere in the app.
-   *
-   * The service applies its own frequency cap, and the placeholder provider
-   * resolves instantly, so during closed testing this changes nothing a tester
-   * can see. Navigation runs whether or not the ad succeeds; an ad failure must
-   * never trap the player on the victory screen.
-   */
-  const afterGameAd = (proceed) => {
-    Promise.resolve(adsService.showInterstitial())
-      .catch(() => {})
-      .finally(() => proceed && proceed());
-  };
+  // The post-game interstitial runs between the win and this victory screen,
+  // not behind its buttons. See hooks/useVictoryAd.js for why it moved.
+  const showVictory = Boolean(isVictory && isGameActive);
+  const victoryPhase = useVictoryAd({ isVictory: showVictory, isGameActive });
 
   return (
     <>
@@ -98,14 +87,15 @@ export function GameModalsContainer({
       )}
 
       {/* 2. Victory Celebration */}
-      {isVictory && isGameActive && (
+      {showVictory && victoryPhase !== 'modal' && <VictoryPauseOverlay />}
+      {showVictory && victoryPhase === 'modal' && (
         <VictoryModal
           timerSeconds={timerSeconds}
           gameMode={gameMode}
           mistakes={mistakes}
           level={level}
-          onNextGame={() => afterGameAd(() => onNextGame(level))}
-          onReturnHome={() => afterGameAd(onReturnHome)}
+          onNextGame={() => onNextGame(level)}
+          onReturnHome={onReturnHome}
           onOpenLeaderboard={onOpenLeaderboard}
         />
       )}

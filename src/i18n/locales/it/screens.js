@@ -11,7 +11,7 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: 'Suggerimenti',
     brainReportTitle: 'Analisi Cerebrale',
-    brainPercentileShort: 'Top {percentile}% · {won} Vittorie',
+    brainPercentileShort: 'Puzzle completati: {won}',
     startSelectedLevel: 'Avvia Lv.{level} {name}',
     modeTabs: { classic: 'Classico', timeAttack: 'Cronometro', timeLimit: 'Sopravvivenza' },
     rivalModes: {
@@ -74,7 +74,8 @@ export const screens = {
     purchaseBtn: 'Rimuovi Pubblicità',
     buySuccess: 'Acquisto completato con successo! Grazie per il supporto.',
     restoreSuccess: 'Acquisti ripristinati con successo.',
-    restoreFail: 'Nessun acquisto precedente trovato da ripristinare.'
+    restoreFail: 'Nessun acquisto precedente trovato da ripristinare.',
+    buyFail: 'Non è stato possibile completare l’acquisto. Riprova più tardi.'
   },
   tutorialOverlay: {
     exitTooltip: 'Esci dal tutorial',
@@ -117,11 +118,11 @@ export const screens = {
     privacySubtitle: 'Protezione della privacy',
     privacyModalTitle: 'Informativa sulla Privacy',
     privacy: {
-      subtitle: 'Sudoku non richiede un account e non raccoglie nome, email o recapiti.',
-      sec1Title: '1. Nessuna registrazione', sec1Desc: 'Questa app non richiede registrazione e non raccoglie nome, email, numero di telefono, contatti o posizione. Le funzioni online — sfide 1v1 e backup cloud — inviano soltanto un identificatore generato casualmente.',
-      sec2Title: '2. Dati locali & cancellazione', sec2Desc: 'I progressi, i suggerimenti e i temi sono salvati in sicurezza solo sul tuo dispositivo.',
-      sec3Title: '3. Duelli 1v1 & Indice Mentale', sec3Desc: 'Le sfide 1v1 in tempo reale inviano un identificatore giocatore generato casualmente e registri di completamento. L’identificatore è salvato sul dispositivo e riutilizzato, e non è collegato al tuo nome né a un account.',
-      sec4Title: '4. Pubblicità (Google AdMob)', sec4Desc: 'Per mantenere il gioco gratuito, questa app può mostrare annunci tramite lo SDK Google AdMob. Quando la pubblicità è attiva, AdMob può raccogliere un identificatore pubblicitario. Gli annunci compaiono solo come banner in basso e video con premio.'
+      subtitle: 'Sudoku non richiede un account. Ecco cosa l\'app salva e invia davvero.',
+      sec1Title: '1. Archiviazione e backup', sec1Desc: 'Record, suggerimenti e impostazioni sono salvati sul tuo dispositivo. Se il backup automatico di Android è attivo, Android copia questi dati nel tuo Google Drive e li ripristina quando reinstalli l\'app. Non raccogliamo mai nome, email, numero di telefono, contatti o posizione.',
+      sec2Title: '2. Google Play Giochi', sec2Desc: 'Finché hai eseguito l\'accesso a Play Giochi, ogni vittoria salva automaticamente i tuoi progressi (statistiche, obiettivi, suggerimenti, impostazioni) nei dati salvati di Play Giochi e invia il tuo punteggio QI a una classifica di Play Giochi. Questi dati restano nel tuo account Google.',
+      sec3Title: '3. Duelli 1v1', sec3Desc: 'I duelli 1v1 in tempo reale usano Google Firebase per inviare all\'avversario un ID giocatore generato casualmente, un soprannome automatico (SudokuMaster_xxxx) e i tuoi progressi nel sudoku. L\'ID è salvato sul dispositivo e riutilizzato; non è collegato al tuo nome né ad alcun account.',
+      sec4Title: '4. Pubblicità e acquisti', sec4Desc: 'L\'app mostra annunci tramite Google AdMob: un banner, un annuncio a schermo intero dopo una vittoria e video con premio facoltativi. AdMob può trattare il tuo ID pubblicità. L\'acquisto Rimuovi pubblicità è gestito da Google Play; non riceviamo mai i tuoi dati di pagamento.'
     }
   },
   stats: {
@@ -140,7 +141,7 @@ export const screens = {
     totalPlayed: 'Partite Totali',
     totalWon: 'Schemi Risolti',
     winRate: 'Percentuale Vittorie',
-    shareText: '[Report QI Sudoku]\nIl mio QI Sudoku: {iq} ({percentile})\nLivello: {tier}\nMettiti alla prova con Sudoku oggi stesso!',
+    shareText: '[Report QI Sudoku]\nIl mio QI Sudoku: {iq}\nLivello: {tier}\nMettiti alla prova con Sudoku oggi stesso!',
     copiedToast: 'Report di analisi cerebrale copiato negli appunti.',
     focus: 'Concentrazione',
     durability: 'Resistenza',
@@ -151,19 +152,18 @@ export const screens = {
     overallStats: '📊 Statistiche Cumulative Globali',
     attributesTitle: '🧠 5 Pilastri Cognitivi',
     title: 'Report QI',
-    percentilePrefix: 'Top ',
     shareTitle: 'Il Mio Report QI Sudoku',
     tiers: {
       grandMaster: '👑 Gran Maestro',
-      grandMasterDesc: 'Top {percentile}% di tutti i giocatori! Ragionamento deduttivo magistrale degno dell’élite top 1%.',
-      mensa: '🧠 Livello Mensa',
-      mensaDesc: 'Top {percentile}% di tutti i giocatori! Capacità logica e analitica eccezionale.',
+      grandMasterDesc: 'Ragionamento deduttivo magistrale degno dell’élite top 1%.',
+      expert: '🧠 Logica esperta',
+      expertDesc: 'Eccellente capacità logica e analitica in questo gioco.',
       superior: '⚡ Mente Superiore',
-      superiorDesc: 'Top {percentile}% di tutti i giocatori! Intuito acuto e brillante risoluzione dei problemi.',
+      superiorDesc: 'Intuito acuto e brillante risoluzione dei problemi.',
       aboveAverage: '💡 Sopra la Media',
-      aboveAverageDesc: 'Top {percentile}% di tutti i giocatori! Pensiero analitico flessibile e stabile.',
+      aboveAverageDesc: 'Pensiero analitico flessibile e stabile.',
       balanced: '🎯 Mente Equilibrata',
-      balancedDesc: 'Top {percentile}% di tutti i giocatori! Sviluppo armonioso di tutte le 5 aree cognitive.',
+      balancedDesc: 'Sviluppo armonioso di tutte le 5 aree cognitive.',
       developing: '🌱 Mente in Sviluppo',
       developingDesc: 'Fase iniziale di allenamento. Il tuo indice cognitivo crescerà a ogni partita!'
     }
@@ -171,10 +171,10 @@ export const screens = {
   battleLobby: {
     title: 'Duello 1v1 in Tempo Reale',
     cancelBtn: 'Annulla Ricerca',
-    searching: 'Ricerca di un degno avversario...',
+    searching: 'Ricerca di un avversario...',
     autoMatchTitle: 'Partita Rapida',
     autoMatchDesc: 'Matchmaking veloce con giocatori di tutto il mondo',
-    mmrBadge: 'Match per abilità · Vittorie: {rate}%',
+    mmrBadge: 'Completamento: {rate}%',
     findOpponentBtn: 'Cerca Avversario',
     noOpponentFound: 'Nessun avversario trovato. Giocare contro l’IA?',
     playAiInstead: 'Sfida l’IA'
@@ -222,9 +222,9 @@ export const screens = {
     aiSpeed: 'Velocità: {speed}',
     level1Desc: 'Bot Principiante: Risolve con calma per aiutarti a imparare le basi.',
     level2Desc: 'Bot Normale: Risolutore costante con pochissimi errori.',
-    level3Desc: 'Bot Esperto: Ritmo veloce utilizzando tattiche intermedie.',
-    level4Desc: 'Bot Maestro: Molto veloce nell’applicare strategie avanzate.',
-    level5Desc: 'AlphaDoku: IA Gran Maestro con velocità di risoluzione estrema.',
+    level3Desc: 'Bot Esperto: Ritmo veloce e pochi errori.',
+    level4Desc: 'Bot Maestro: Molto veloce, errori rari.',
+    level5Desc: 'AlphaDoku: Il bot più veloce e con meno errori.',
     startBtn: 'Avvia Duello IA Lv.{level} {name}'
   },
   academy: {
@@ -244,7 +244,8 @@ export const screens = {
       success: 'Corretto [{val}]! Tecnica padroneggiata alla perfezione!',
       retry: 'Riprova',
       error: '[{val}] non è corretto. Ricontrolla i numeri iniziali!',
-      prompt: '👇 Tocca il numero corrispondente (?) sul tastierino qui sotto.'
+      prompt: '👇 Tocca il numero corrispondente (?) sul tastierino qui sotto.',
+      promptEliminated: '👇 Tocca il candidato che viene eliminato dalla casella obiettivo.'
     }
   },
   adBanner: {removeBtn: 'Senza Pubblicità' }

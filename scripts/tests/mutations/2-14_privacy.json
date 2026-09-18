@@ -25,16 +25,16 @@
       "name": "the policy says the records are kept only on the device",
       "why": "This is the sentence that shipped. Case 1's phrase list did not contain it, and Android Auto Backup was copying localStorage to Drive the whole time — which is why a player who deleted the app and reinstalled it still had their old hint balance.",
       "file": "docs/privacy.html",
-      "find": "게임 플레이와 관련된 기록은 기본적으로 사용자의 스마트폰 <strong>로컬 저장소(localStorage)</strong>에 보관됩니다. 다만 이 데이터가 기기 밖으로 복사되는 경로가 두 가지 있습니다.",
-      "replace": "게임 플레이와 관련된 모든 기록은 사용자의 스마트폰 <strong>로컬 저장소(localStorage)</strong>에만 보관됩니다.",
+      "find": "<p>클리어 기록, 승률, IQ 점수, 업적, 보유 힌트 수량, 테마 등 설정은 기기의 로컬 저장소(localStorage)에 저장됩니다.</p>",
+      "replace": "<p>게임 플레이와 관련된 모든 기록은 사용자의 스마트폰 <strong>로컬 저장소(localStorage)</strong>에만 보관됩니다.</p>",
       "expectFailure": "says the data stays on the device"
     },
     {
       "name": "a wording nobody put on the blocklist",
       "why": "The point of checking for a contradiction rather than for phrases. This sentence appears in no list anywhere and still has to fail.",
       "file": "docs/privacy.html",
-      "find": "      <p>두 경우 모두 사본은 이용자 본인의 Google 계정 안에 보관되며 개발자는 열람할 수 없습니다. 안드로이드 자동 백업은 기기 설정에서 끌 수 있습니다.</p>",
-      "replace": "      <p>Your game data never leaves your phone.</p>",
+      "find": "<p>이 방침이 바뀌면 이 페이지를 갱신하고 시행 일자를 고칩니다.</p>",
+      "replace": "<p>Your game data never leaves your phone.</p>",
       "expectFailure": "says the data stays on the device"
     },
     {
@@ -81,8 +81,8 @@
       "name": "the policy claims no ads are served while the SDK ships",
       "why": "Serving ads while telling players none are served is under-disclosure, which is the direction Play enforces. This is the sentence that was correct an hour ago and is a violation now.",
       "file": "docs/privacy.html",
-      "find": "This application delivers advertising through the <strong>Google AdMob SDK</strong> in order to stay free.",
-      "replace": "This application delivers advertising through the <strong>Google AdMob SDK</strong> in order to stay free. The current version serves no ads.",
+      "find": "The app is free and shows ads through <strong>Google AdMob</strong>:",
+      "replace": "The current version serves no ads. The app is free and shows ads through <strong>Google AdMob</strong>:",
       "expectFailure": "still tells players no ads are served"
     },
     {
@@ -92,6 +92,30 @@
       "find": "    <uses-permission android:name=\"com.google.android.gms.permission.AD_ID\" />",
       "replace": "",
       "expectFailure": "does not declare"
+    },
+    {
+      "name": "the in-app text stops mentioning the post-win interstitial",
+      "why": "Found on 2026-09-18: the in-app privacy text listed only the banner and rewarded video while a full-screen ad played after every win. Case 4c starts from the call in adsService.js and demands the description.",
+      "file": "src/i18n/locales/en/screens.js",
+      "find": "a banner, a full-screen ad after a win, and optional rewarded videos",
+      "replace": "a banner and optional rewarded videos",
+      "expectFailure": "lacks \"full-screen ad\""
+    },
+    {
+      "name": "the policy says the IQ score is not transmitted again",
+      "why": "Found on 2026-09-18: the hosted policy said IQ metrics stay on the device while gameCompletion submits them to a Play Games leaderboard.",
+      "file": "docs/privacy.html",
+      "find": "<p>None of this is linked to your name or your Google account. Your opponent sees your nickname and progress.</p>",
+      "replace": "<p>None of this is linked to your name or your Google account. Your opponent sees your nickname and progress. IQ metrics are computed on the device and are not transmitted.</p>",
+      "expectFailure": "says the IQ score is not sent"
+    },
+    {
+      "name": "a second </style> leaks CSS onto the page",
+      "why": "Found on 2026-09-18 on the live site: CSS rules printed as text above the header. Every wording check passed.",
+      "file": "docs/privacy.html",
+      "find": "    }\n    .lang-nav { text-align: center;",
+      "replace": "    }\n  </style>\n    .lang-nav { text-align: center;",
+      "expectFailure": "shows CSS as page text"
     }
   ]
 }

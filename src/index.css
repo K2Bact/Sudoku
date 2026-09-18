@@ -284,7 +284,15 @@ html[dir="rtl"] { text-align: right; }
 html[dir="rtl"] .sudoku-board-container,
 html[dir="rtl"] .sudoku-grid,
 html[dir="rtl"] .keypad-container,
-html[dir="rtl"] .keypad-grid {
+html[dir="rtl"] .keypad-grid,
+/* Academy grids too. They were missing from this list, so in Arabic every practice
+   and diagram board drew mirrored: r1c1 on the right, while the guide text names
+   cells as rXcY counted from the left. Candidate marks follow the same 1-9 layout
+   as the game board, so they stay left-to-right as well. */
+html[dir="rtl"] .academy-screen-container [class*="-board"],
+html[dir="rtl"] .academy-screen-container .mini-row-grid,
+html[dir="rtl"] .academy-screen-container .mini-note-grid,
+html[dir="rtl"] .academy-screen-container .practice-keypad-grid {
   direction: ltr !important;
   unicode-bidi: isolate;
 }

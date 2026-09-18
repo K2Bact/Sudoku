@@ -5,7 +5,7 @@
  * Provides:
  * 1. Classic Speedrun Leaderboard (Classic Lv.1~Lv.5)
  * 2. Time Attack Speedrun Leaderboard (Time Attack Lv.1~Lv.5)
- * 3. Global Brain IQ Leaderboard (Top % and Mensa Tier)
+ * 3. Brain IQ benchmark rows (score thresholds, not a ranking of real players)
  * 4. 1v1 PvP MMR Leaderboard
  */
 
@@ -69,10 +69,10 @@ class LeaderboardService {
       return [
         { rank: 1, name: PERCENTILE_LABELS[0], score: 156, tier: 'Grand Master', isBenchmark: true },
         { rank: 2, name: PERCENTILE_LABELS[1], score: 152, tier: 'Grand Master', isBenchmark: true },
-        { rank: 3, name: PERCENTILE_LABELS[2], score: 149, tier: 'Mensa Level', isBenchmark: true },
-        { rank: 4, name: PERCENTILE_LABELS[3], score: 145, tier: 'Mensa Level', isBenchmark: true },
-        { rank: 5, name: PERCENTILE_LABELS[4], score: 142, tier: 'Mensa Level', isBenchmark: true },
-        { rank: 6, name: PERCENTILE_LABELS[5], score: 138, tier: 'Mensa Level', isBenchmark: true },
+        { rank: 3, name: PERCENTILE_LABELS[2], score: 149, tier: 'Expert', isBenchmark: true },
+        { rank: 4, name: PERCENTILE_LABELS[3], score: 145, tier: 'Expert', isBenchmark: true },
+        { rank: 5, name: PERCENTILE_LABELS[4], score: 142, tier: 'Expert', isBenchmark: true },
+        { rank: 6, name: PERCENTILE_LABELS[5], score: 138, tier: 'Expert', isBenchmark: true },
         { rank: 7, name: PERCENTILE_LABELS[6], score: 135, tier: 'Superior', isBenchmark: true },
         { rank: 8, name: PERCENTILE_LABELS[7], score: 131, tier: 'Superior', isBenchmark: true },
         { rank: 9, name: PERCENTILE_LABELS[8], score: 128, tier: 'Superior', isBenchmark: true },

@@ -470,6 +470,251 @@ const SETTLE_MS = 500;
   console.log('  ✅ 동의 없음: 요청 없이 unavailable');
 }
 
+// ── 7. 디버그 APK 는 진짜 광고 단위를 요청하지 않는다 ──────────────────────
+//
+// 이 프로젝트가 만드는 APK 는 전부 개발자 폰에 깔린다. .env 는 프로덕션용이라
+// 실제 단위 ID 에 테스트 꺼짐이고, 그대로 빌드하면 개발자 폰이 실제 광고를
+// 받는다 — 누르면 무효 트래픽이다. 2026-09-17 플립5 는 재설치 뒤 .env 에 등록된
+// 테스트 기기 해시와 다른 해시를 보고했다. 그날 첫 디버그 APK 가 안전했던 것은
+// 빌드 명령에 변수를 손으로 덮어썼기 때문뿐이다.
+//
+// 그래서 판정을 사람의 기억에서 설치된 앱으로 옮겼다. Capacitor 가 FLAG_DEBUGGABLE
+// 로 window.Capacitor.DEBUG 를 세운다. 여기서는 .env 를 프로덕션과 같게 두고,
+// DEBUG 가 켜졌을 때 세 광고 모두 테스트로 요청되고 등록 기기가 비는지, 꺼졌을
+// 때는 .env 그대로인지를 본다. 둘째 절이 없으면 "항상 테스트" 로도 통과한다 —
+// 그러면 프로덕션 수익이 0 이 된다.
+console.log('▶ 7. 디버그 빌드는 .env 와 무관하게 테스트 광고만 요청한다');
+{
+  const saved = { t: process.env.VITE_ADMOB_TESTING, d: process.env.VITE_ADMOB_TEST_DEVICE_IDS };
+  process.env.VITE_ADMOB_TESTING = 'false';
+  process.env.VITE_ADMOB_TEST_DEVICE_IDS = 'REGISTERED_HASH_FROM_ENV';
+
+  const requestsFor = async (debug) => {
+    const seen = {};
+    const stub = {
+      requestConsentInfo: () => Promise.resolve({ status: 'OBTAINED', canRequestAds: true }),
+      initialize: (o) => { seen.initialize = o; return Promise.resolve(); },
+      showBanner: (o) => { seen.banner = o; return Promise.resolve(); },
+      hideBanner: () => Promise.resolve(),
+      prepareInterstitial: (o) => { seen.interstitial = o; return Promise.resolve(); },
+      showInterstitial: () => Promise.resolve(),
+      // 요청 옵션만 보면 되므로 불러오기에서 멈춘다.
+      prepareRewardVideoAd: (o) => { seen.rewarded = o; return Promise.reject(new Error('stop after request')); },
+      addListener: () => Promise.resolve({ remove: () => Promise.resolve() }),
+    };
+    const p = await newProvider(stub);
+    globalThis.window.Capacitor.DEBUG = debug;
+    await p.showBanner();
+    await p.preloadInterstitial();
+    await p.showRewarded();
+    return seen;
+  };
+
+  try {
+    const debug = await requestsFor(true);
+    for (const kind of ['banner', 'interstitial', 'rewarded']) {
+      assert(debug[kind], `디버그 빌드에서 ${kind} 요청에 도달하지 못했다 — 닿지 못한 검사는 아무것도 증명하지 않는다`);
+      assert.strictEqual(debug[kind].isTesting, true,
+        `디버그 APK 의 ${kind} 가 테스트로 요청되지 않았다. .env 는 프로덕션 값이고, 이 APK 는 ` +
+        '개발자 폰에 깔린다. 실제 광고를 누르면 무효 트래픽이고 AdMob 계정 정지 사유다.');
+    }
+    assert.deepStrictEqual(debug.initialize, { initializeForTesting: false, testingDevices: [] },
+      '디버그 빌드는 등록 기기를 비워야 한다. 등록된 기기에는 플러그인이 실제 단위 ID 를 쓰고 ' +
+      '(AdViewIdHelper), 비어 있어야 구글 샘플 ID 로 바꾼다. 기기 해시는 재설치로 달라질 수 있다.');
+
+    const release = await requestsFor(false);
+    for (const kind of ['banner', 'interstitial', 'rewarded']) {
+      assert.strictEqual(release[kind]?.isTesting, false,
+        `릴리스 빌드의 ${kind} 가 테스트로 요청됐다 — 프로덕션 수익이 0 이 된다`);
+    }
+    assert.deepStrictEqual(release.initialize.testingDevices, ['REGISTERED_HASH_FROM_ENV'],
+      '릴리스 빌드는 .env 에 등록된 테스트 기기를 그대로 써야 한다');
+    console.log('  ✅ 디버그: 세 광고 모두 테스트 · 등록 기기 없음  /  릴리스: .env 그대로');
+  } finally {
+    if (saved.t === undefined) delete process.env.VITE_ADMOB_TESTING; else process.env.VITE_ADMOB_TESTING = saved.t;
+    if (saved.d === undefined) delete process.env.VITE_ADMOB_TEST_DEVICE_IDS; else process.env.VITE_ADMOB_TEST_DEVICE_IDS = saved.d;
+  }
+}
+
+// ── 8. 승리 뒤 전면광고: 미리 불러두고, 닫힐 때까지 기다린다 ─────────────────
+//
+// 전면광고는 이제 승리와 승리 화면 사이에 있다. AdMob 안내대로 다음 버튼 뒤가
+// 아니라 쉬는 화면 앞이고, 늦게 도착한 광고가 다음 판 첫 터치를 받지 않도록 미리
+// 불러둔다. 여기서 깨지면 안 되는 것:
+//   - 불러오기는 동의 확인 뒤에만, 겹쳐 불러도 한 번만
+//   - 보여주기는 불러오지 않는다 — 준비 안 됐으면 기다리지 않고 건너뛴다
+//   - 플러그인의 showInterstitial 은 광고가 뜨는 순간 풀린다(8.1.0). 승리 화면은
+//     interstitialAdDismissed 까지 기다려야 한다
+//   - 아무 이벤트도 안 오면(웹 스텁 등) 오래 붙잡지 않는다
+//   - 끝나면 리스너를 떼어낸다
+console.log('▶ 8. 승리 뒤 전면광고는 미리 불러두고, 닫힐 때까지 승리 화면을 미룬다');
+{
+  const makeInterstitialStub = ({ canRequestAds = true } = {}) => {
+    const calls = [];
+    const listeners = new Map();
+    let releaseLoad = null;
+    const stub = {
+      onShow: null,
+      requestConsentInfo: () => Promise.resolve({ status: 'OBTAINED', canRequestAds }),
+      initialize: () => Promise.resolve(),
+      prepareInterstitial: () => {
+        calls.push('prepareInterstitial');
+        return new Promise((resolve) => { releaseLoad = resolve; });
+      },
+      showInterstitial: () => {
+        calls.push('showInterstitial');
+        if (stub.onShow) stub.onShow();
+        return Promise.resolve();
+      },
+      addListener: (name, fn) => {
+        listeners.set(name, fn);
+        return Promise.resolve({ remove: () => { listeners.delete(name); return Promise.resolve(); } });
+      },
+    };
+    return {
+      stub,
+      calls,
+      emit: (name) => listeners.get(name) && listeners.get(name)(),
+      listening: () => listeners.size,
+      loadCount: () => calls.filter((c) => c === 'prepareInterstitial').length,
+      releaseLoad: () => releaseLoad && releaseLoad(),
+    };
+  };
+  const STILL_WAITING = 'STILL_WAITING';
+  const settleSoon = (p, ms = 50) =>
+    Promise.race([p, new Promise((r) => setTimeout(() => r(STILL_WAITING), ms))]);
+  const flush = async (h) => { for (let i = 0; i < 20 && !h.calls.length; i++) await Promise.resolve(); };
+  const loaded = async (h) => {
+    const p = await newProvider(h.stub);
+    const loading = p.preloadInterstitial();
+    await flush(h);
+    h.releaseLoad();
+    assert.strictEqual(await loading, true, '불러오기가 성공해야 이어지는 검사가 대상에 닿는다');
+    return p;
+  };
+
+  // A. 동의가 없으면 불러오지 않는다.
+  {
+    const h = makeInterstitialStub({ canRequestAds: false });
+    const p = await newProvider(h.stub);
+    assert.strictEqual(await p.preloadInterstitial(), false, '동의가 없으면 불러오기는 false');
+    assert.strictEqual(h.loadCount(), 0,
+      '동의 없는 이용자에게 전면광고를 요청했다 — 동의 절차가 존재하는 이유를 건너뛴 것이다');
+    console.log('  ✅ A. 동의 없음: 요청 없음');
+  }
+
+  // B. 겹친 불러오기는 한 번. 준비 전 보여주기는 기다리지 않고 건너뛴다.
+  {
+    const h = makeInterstitialStub();
+    const p = await newProvider(h.stub);
+    const first = p.preloadInterstitial();
+    const second = p.preloadInterstitial();
+    await flush(h);
+    assert.strictEqual(p.isInterstitialReady(), false, '불러오는 중에는 준비되지 않았다');
+    assert.deepStrictEqual(await settleSoon(p.showPreparedInterstitial()), { shown: false, reason: 'not_ready' },
+      '준비 안 된 광고를 보여달라면 곧바로 건너뛰어야 한다 — 승리가 불러오기를 기다리면 안 된다');
+    assert(!h.calls.includes('showInterstitial'), '준비 안 된 광고의 show 를 플러그인에 보냈다');
+    for (let i = 0; i < 20; i++) await Promise.resolve();
+    assert.strictEqual(h.loadCount(), 1,
+      '게임 화면이 다시 그려질 때마다 preload 가 불린다. 매번 요청하면 요청만 쌓이고 노출은 하나 — 일치율이 떨어진다');
+    h.releaseLoad();
+    assert.deepStrictEqual([await first, await second], [true, true], '두 호출 모두 같은 불러오기의 결과를 받아야 한다');
+    assert.strictEqual(await p.preloadInterstitial(), true, '이미 준비됐으면 true');
+    assert.strictEqual(h.loadCount(), 1, '준비된 광고를 다시 요청했다');
+    console.log('  ✅ B. 겹친 불러오기는 한 번 · 준비 전 보여주기는 즉시 건너뜀');
+  }
+
+  // C. 보여주기는 닫힘 이벤트까지 기다리고, 리스너를 떼고, 광고를 소진한다.
+  {
+    const h = makeInterstitialStub();
+    const p = await loaded(h);
+    h.stub.onShow = () => h.emit('interstitialAdShowed');
+    const showing = p.showPreparedInterstitial();
+    assert.strictEqual(await settleSoon(showing), STILL_WAITING,
+      '광고가 떠 있는 동안 풀렸다. 플러그인의 showInterstitial 은 광고가 뜨자마자 풀리므로, ' +
+      '그걸 기다리면 승리 화면이 광고 밑에서 먼저 나타난다');
+    assert.strictEqual(h.loadCount(), 1, '보여주기가 광고를 다시 불러왔다');
+    h.emit('interstitialAdDismissed');
+    assert.deepStrictEqual(await settleSoon(showing), { shown: true, reason: null }, '닫힘 이벤트에서 풀려야 한다');
+    await new Promise((r) => setTimeout(r, 0));
+    assert.strictEqual(h.listening(), 0, '끝난 뒤 리스너가 남았다 — 다음 광고의 이벤트가 끝난 대기를 건드린다');
+    assert.strictEqual(p.isInterstitialReady(), false, '한 번 보여준 광고는 다시 쓸 수 없다');
+    console.log('  ✅ C. 닫힘 이벤트까지 기다리고, 리스너를 떼고, 광고를 소진한다');
+  }
+
+  // D. 보여주기 실패 이벤트는 곧바로 풀린다.
+  {
+    const h = makeInterstitialStub();
+    const p = await loaded(h);
+    h.stub.onShow = () => h.emit('interstitialAdFailedToShow');
+    assert.deepStrictEqual(await settleSoon(p.showPreparedInterstitial()), { shown: false, reason: 'failed_to_show' },
+      '보여주기에 실패했는데 승리 화면이 기다리고 있다');
+    console.log('  ✅ D. 보여주기 실패는 곧장 승리 화면으로');
+  }
+
+  // E. 안 뜨면 짧게만, 떴는데 안 닫히면 상한까지만.
+  {
+    const h = makeInterstitialStub();
+    const p = await loaded(h);
+    p.interstitial.showedTimeoutMs = 20;
+    p.interstitial.showCeilingMs = 1000;
+    assert.deepStrictEqual(await settleSoon(p.showPreparedInterstitial(), 300), { shown: false, reason: 'not_shown' },
+      '광고가 뜨지 않았는데(Showed 없음) 상한까지 붙잡았다. 이용자는 방금 이긴 판 위에서 멈춘 화면을 본다');
+
+    const h2 = makeInterstitialStub();
+    const p2 = await loaded(h2);
+    p2.interstitial.showedTimeoutMs = 20;
+    p2.interstitial.showCeilingMs = 80;
+    h2.stub.onShow = () => h2.emit('interstitialAdShowed');
+    assert.deepStrictEqual(await settleSoon(p2.showPreparedInterstitial(), 300), { shown: true, reason: 'no_dismiss_event' },
+      '닫힘 이벤트가 끝내 안 오면 상한에서 넘어가야 한다 — 영원히 기다리면 승리 화면이 안 나온다');
+    console.log('  ✅ E. 안 뜨면 짧게, 안 닫히면 상한까지만');
+  }
+
+  // F. 오래된 광고는 없는 것으로 친다.
+  {
+    const h = makeInterstitialStub();
+    const p = await loaded(h);
+    assert.strictEqual(p.isInterstitialReady(Date.now() + 56 * 60 * 1000), false,
+      '불러온 지 55분이 넘은 광고를 준비됐다고 했다. 전면광고는 한 시간이면 만료되고, 만료된 광고는 뜨지 않는다');
+    console.log('  ✅ F. 55분 지난 광고는 준비 안 됨');
+  }
+}
+
+// ── 9. 승리 순서: 준비됐으면 멈춤 → 광고 → 승리 화면, 아니면 곧장 승리 화면 ───
+console.log('▶ 9. 승리 순서는 멈춤 → 광고 → 승리 화면이고, 준비 안 됐으면 기다리지 않는다');
+{
+  const { victoryAdSequence, VICTORY_AD_PAUSE_MS } = await import('../../../src/hooks/useVictoryAd.js');
+  const run = async ({ ready, show = async () => ({ shown: true, reason: null }), cancelAt = null }) => {
+    const log = [];
+    let cancelled = false;
+    await victoryAdSequence({
+      ads: {
+        isPostGameAdReady: () => ready,
+        showPostGameAd: async () => { log.push('show'); return show(); },
+      },
+      setPhase: (ph) => { log.push(ph); if (ph === cancelAt) cancelled = true; },
+      wait: async (ms) => { log.push(`wait:${ms}`); },
+      isCancelled: () => cancelled,
+    });
+    return log;
+  };
+  const full = ['pause', `wait:${VICTORY_AD_PAUSE_MS}`, 'ad', 'show', 'modal'];
+
+  assert.deepStrictEqual(await run({ ready: false }), ['modal'],
+    '광고가 준비 안 됐으면 멈춤 없이 곧장 승리 화면이어야 한다 — 승리가 불러오기를 기다리면 안 된다');
+  assert.deepStrictEqual(await run({ ready: true }), full,
+    '준비됐으면 멈춤이 광고보다 먼저여야 한다. 빠르게 두드리는 게임이라 멈춤이 없으면 ' +
+    '마지막 터치 다음 터치가 막 뜬 광고에 떨어진다 — 의도하지 않은 클릭이다');
+  assert(VICTORY_AD_PAUSE_MS >= 500 && VICTORY_AD_PAUSE_MS <= 3000,
+    `멈춤 ${VICTORY_AD_PAUSE_MS}ms — 터치를 끊을 만큼 길고, 승리를 지루하게 만들지 않을 만큼 짧아야 한다`);
+  assert.deepStrictEqual(await run({ ready: true, show: async () => { throw new Error('boom'); } }), full,
+    '광고가 던져도 승리 화면은 나와야 한다');
+  assert.deepStrictEqual(await run({ ready: true, cancelAt: 'pause' }), ['pause', `wait:${VICTORY_AD_PAUSE_MS}`],
+    '멈춤 사이 화면을 떠났으면 광고를 띄우지 않는다 — 떠난 화면 위의 광고는 이유 없는 광고다');
+  console.log('  ✅ 준비 안 됨 → 곧장 · 준비됨 → 멈춤 → 광고 → 화면 · 던져도 화면 · 떠났으면 광고 없음');
+}
+
 console.log('\n======================================================');
 console.log('🎉 광고 수명주기 경합 게이트 통과');
 console.log('======================================================');

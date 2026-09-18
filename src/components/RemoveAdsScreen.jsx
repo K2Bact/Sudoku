@@ -55,7 +55,9 @@ export function RemoveAdsScreen({ onBack, onPurchaseSuccess }) {
     }
     // Backing out of the store dialog is a choice, not an error to report.
     if (res.reason === 'cancelled') return;
-    await notify(t('removeAds.restoreFail'));
+    // A failed purchase used to show the restore message, "no past purchases
+    // found", which answers a question the player did not ask.
+    await notify(t('removeAds.buyFail'));
   };
 
   const handleRestore = async () => {

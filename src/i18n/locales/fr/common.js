@@ -77,23 +77,23 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 Grand Maître',
-      desc: 'Top {percentile}% des joueurs ! Déduction magistrale digne du top 1% de l’élite.'
+      desc: 'Déduction magistrale digne du top 1% de l’élite.'
     },
-    mensa: {
-      title: '🧠 Niveau Mensa',
-      desc: 'Top {percentile}% des joueurs ! Esprit logique et capacité d’analyse exceptionnels.'
+    expert: {
+      title: '🧠 Logique experte',
+      desc: 'Raisonnement déductif remarquable dans ce jeu.'
     },
     superior: {
       title: '⚡ Logique supérieure',
-      desc: 'Top {percentile}% des joueurs ! Intuition affûtée et brillante résolution de problèmes.'
+      desc: 'Intuition affûtée et brillante résolution de problèmes.'
     },
     aboveAverage: {
       title: '💡 Au-dessus de la moyenne',
-      desc: 'Top {percentile}% des joueurs ! Esprit analytique souple et robuste.'
+      desc: 'Esprit analytique souple et robuste.'
     },
     balanced: {
       title: '🎯 Esprit équilibré',
-      desc: 'Top {percentile}% des joueurs ! Développement harmonieux des 5 piliers cognitifs.'
+      desc: 'Développement harmonieux des 5 piliers cognitifs.'
     },
     developing: {
       title: '🌱 Entraînement cérébral',

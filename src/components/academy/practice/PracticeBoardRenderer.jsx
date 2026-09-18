@@ -48,7 +48,8 @@ export function PracticeBoardRenderer({
           {renderNoteGrid(
             cell.notes,
             cell.highlightNotes || (isTarget ? cell.notes : []),
-            cell.eliminatedNotes || []
+            cell.eliminatedNotes || [],
+            cell.noteColors || {}
           )}
         </div>
       );
@@ -85,6 +86,14 @@ export function PracticeBoardRenderer({
   if (layoutType === 'grid6x6') {
     return (
       <div className="mini-6x6-compact-board">
+        {cells.map((cell, idx) => renderCell(cell, idx))}
+      </div>
+    );
+  }
+
+  if (layoutType === 'grid9x9') {
+    return (
+      <div className="mini-9x9-full-board">
         {cells.map((cell, idx) => renderCell(cell, idx))}
       </div>
     );

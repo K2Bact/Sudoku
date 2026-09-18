@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { Trophy, Clock, AlertCircle, RotateCcw, Share2, Home, Medal, Globe } from 'lucide-react';
-import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
-import { playGamesService } from '../services/playGamesService';
-import { cloudSyncService } from '../services/cloudSyncService.js';
-import { checkAndUnlockAchievements } from '../utils/achievementManager';
+import { speedrunRankFor } from '../utils/speedrunRank';
 import { shareContent } from '../utils/nativeShare';
 
 export function VictoryModal({
@@ -25,52 +22,19 @@ export function VictoryModal({
   const actualSeconds = timerSeconds ?? timeSeconds ?? 0;
   const handleNext = onNextGame || onRestart;
 
-  const calculateSpeedrunRank = (lvl, secs) => {
-    const thresholds = {
-      1: [60, 90, 150, 240],
-      2: [90, 150, 240, 360],
-      3: [120, 210, 330, 480],
-      4: [180, 300, 480, 660],
-      5: [240, 420, 660, 900]
-    };
-    const tArr = thresholds[lvl] || thresholds[3];
-    if (secs <= tArr[0]) return { rank: 'S+', color: '#f59e0b', bg: '#fef3c7' };
-    if (secs <= tArr[1]) return { rank: 'S', color: '#3b82f6', bg: '#dbeafe' };
-    if (secs <= tArr[2]) return { rank: 'A', color: '#10b981', bg: '#d1fae5' };
-    if (secs <= tArr[3]) return { rank: 'B', color: '#8b5cf6', bg: '#ede9fe' };
-    return { rank: 'C', color: '#6b7280', bg: '#f3f4f6' };
-  };
-
-  const totalLimit = DIFFICULTY_CONFIG[level]?.timeLimitSeconds || 480;
-  const timeTaken = gameMode === 'timeLimit' ? Math.max(1, totalLimit - actualSeconds) : actualSeconds;
-  const rankInfo = calculateSpeedrunRank(level, timeTaken);
+  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds);
 
   useEffect(() => {
-    // Launch celebratory confetti burst
     confetti({
       particleCount: 120,
       spread: 75,
       origin: { y: 0.55 }
     });
-
-    // Auto submit to Google Play Games & Apple Game Center
-    playGamesService.submitScore(gameMode, level, actualSeconds);
-    checkAndUnlockAchievements({
-      level,
-      timerSeconds: actualSeconds,
-      gameMode,
-      mistakes,
-      isFlawless: mistakes === 0,
-      rank: rankInfo.rank
-    });
-    // Automatic Cloud Sync
-    cloudSyncService.saveToCloud();
-    // 의존성 배열은 비어 있어야 한다. 승리는 한 번만 기록돼야 하고, 이 모달은
-    // {isVictory && isGameActive && ...} 로 조건부 렌더되므로 게임마다 언마운트
-    // 되었다가 새 props 로 다시 마운트된다. 린트가 gameMode/level/actualSeconds
-    // 등을 넣으라고 하지만, 넣으면 그 값이 바뀔 때마다 다시 실행돼 같은 승리가
-    // 여러 번 기록된다. 린트 힌트를 따르지 말 것.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Nothing is recorded here any more. Score submission, achievements (the
+    // S+ grade included) and the cloud save all happen in handleGameWinLogic at
+    // the moment of the win. This modal now appears after the post-game
+    // interstitial, and a player who closes the app during that ad must not
+    // lose anything the win earned.
   }, []);
 
   const formatTime = (secs) => {

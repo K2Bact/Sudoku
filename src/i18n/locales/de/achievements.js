@@ -51,8 +51,8 @@ export const achievements = {
 
     // 27 ~ 30. Daily, Battle & Brain IQ
     daily_first: { title: 'Täglicher Entdecker', desc: 'Löse dein erstes tägliches Rätsel' },
-    daily_streak_7: { title: '7-Tage-Wunder', desc: 'Halte eine 7-tägige Serie täglicher Abschlüsse' },
+    daily_streak_7: { title: '7-Tage-Wunder', desc: 'Melde dich 7 Tage in Folge an' },
     battle_first_win: { title: 'Gladiatoren-Sieg', desc: 'Gewinne dein erstes 1v1-Duell oder KI-Match' },
-    iq_150: { title: 'Mensa-Gehirn', desc: 'Erreiche einen Sudoku-IQ-Wert von 150+' }
+    iq_150: { title: 'Genie-Gehirn', desc: 'Erreiche einen Sudoku-IQ-Wert von 150+' }
   }
 };

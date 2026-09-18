@@ -17,9 +17,12 @@ export function BattleLobbyScreen({
   const [internalSearching, setInternalSearching] = useState(false);
   const isSearching = isSearchingProp !== undefined ? isSearchingProp : internalSearching;
 
-  // Calculate current user win rate for MMR matchmaking description
+  // The player's own clear rate across all games. It is not used for matching —
+  // matching pairs players by puzzle level only — so the badge says what it is and
+  // no longer calls itself skill-based. With no games played there is no rate; it
+  // used to show 50% as if that were a record.
   const stats = loadStats();
-  const winRate = stats.gamesPlayed > 0 ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100) : 50;
+  const clearRate = stats.gamesPlayed > 0 ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100) : null;
 
   const handleCancelSearch = () => {
     soundHaptic.playSelectSound();
@@ -103,10 +106,12 @@ export function BattleLobbyScreen({
               <div className="radar-details-box">
                 <h3 className="radar-headline">{t('battleLobby.autoMatchTitle')}</h3>
                 <p className="radar-subtext">{t('battleLobby.autoMatchDesc')}</p>
-                <div className="mmr-info-badge radar-mmr-badge">
-                  <ShieldCheck size={16} className="text-blue flex-shrink-0" />
-                  <span className="mmr-badge-text">{t('battleLobby.mmrBadge', { rate: winRate })}</span>
-                </div>
+                {clearRate !== null && (
+                  <div className="mmr-info-badge radar-mmr-badge">
+                    <ShieldCheck size={16} className="text-blue flex-shrink-0" />
+                    <span className="mmr-badge-text">{t('battleLobby.mmrBadge', { rate: clearRate })}</span>
+                  </div>
+                )}
               </div>
 
               {/* Cancel Button */}
@@ -121,7 +126,7 @@ export function BattleLobbyScreen({
           </div>
         ) : (
           <div className="match-options-mobile-group">
-            {/* Quick Match against Real Users (Win-Rate / MMR Based) */}
+            {/* Quick Match against real users — paired by puzzle level */}
             <div className="battle-mode-card primary-battle-card">
               <div className="card-header">
                 <Users size={26} className="text-blue" />
@@ -131,10 +136,12 @@ export function BattleLobbyScreen({
                 </div>
               </div>
 
-              <div className="mmr-info-badge">
-                <ShieldCheck size={16} className="text-blue flex-shrink-0" />
-                <span className="mmr-badge-text">{t('battleLobby.mmrBadge', { rate: winRate })}</span>
-              </div>
+              {clearRate !== null && (
+                <div className="mmr-info-badge">
+                  <ShieldCheck size={16} className="text-blue flex-shrink-0" />
+                  <span className="mmr-badge-text">{t('battleLobby.mmrBadge', { rate: clearRate })}</span>
+                </div>
+              )}
 
               <button
                 type="button"

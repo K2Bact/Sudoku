@@ -77,23 +77,23 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 Grand Master',
-      desc: 'Top {percentile}% of players! Elite 1% master-level deductive reasoning.'
+      desc: 'Elite 1% master-level deductive reasoning.'
     },
-    mensa: {
-      title: '🧠 Mensa Level',
-      desc: 'Top {percentile}% of players! Superior Mensa-tier logical deduction.'
+    expert: {
+      title: '🧠 Expert Logic',
+      desc: 'Outstanding deductive reasoning in this game.'
     },
     superior: {
       title: '⚡ Superior Logic',
-      desc: 'Top {percentile}% of players! Sharp and exceptional logical reasoning.'
+      desc: 'Sharp and exceptional logical reasoning.'
     },
     aboveAverage: {
       title: '💡 Above Average',
-      desc: 'Top {percentile}% of players! Flexible and robust problem solving.'
+      desc: 'Flexible and robust problem solving.'
     },
     balanced: {
       title: '🎯 Balanced Brain',
-      desc: 'Top {percentile}% of players! Stable and well-balanced reasoning skills.'
+      desc: 'Stable and well-balanced reasoning skills.'
     },
     developing: {
       title: '🌱 Brain Training',

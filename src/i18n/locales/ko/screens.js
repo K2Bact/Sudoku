@@ -11,7 +11,7 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: '보유 힌트',
     brainReportTitle: '두뇌 활성 분석',
-    brainPercentileShort: '상위 {percentile}% · 완주 {won}판',
+    brainPercentileShort: '클리어 {won}판',
     startSelectedLevel: 'Lv.{level} {name} 시작',
     modeTabs: { classic: '클래식', timeAttack: '타임어택', timeLimit: '타임리밋' },
     rivalModes: {
@@ -74,7 +74,8 @@ export const screens = {
     purchaseBtn: '영구 제거하기',
     buySuccess: '구매가 성공적으로 완료되었습니다! 감사합니다.',
     restoreSuccess: '구매 내역이 성공적으로 복원되었습니다.',
-    restoreFail: '복원할 수 있는 이전 구매 내역이 없습니다.'
+    restoreFail: '복원할 수 있는 이전 구매 내역이 없습니다.',
+    buyFail: '구매를 완료하지 못했습니다. 잠시 후 다시 시도해 주세요.'
   },
   tutorialOverlay: {
     exitTooltip: '튜토리얼 나가기',
@@ -117,11 +118,11 @@ export const screens = {
     privacySubtitle: '개인정보 보호',
     privacyModalTitle: '개인정보처리방침',
     privacy: {
-      subtitle: 'Sudoku는 계정 없이 이용할 수 있으며 이름·이메일·연락처를 수집하지 않습니다.',
-      sec1Title: '1. 회원가입 없음', sec1Desc: '본 앱은 회원가입 절차가 없으며 이름·이메일·전화번호·연락처·위치를 수집하지 않습니다. 온라인 기능(1v1 대전, 클라우드 백업) 이용 시에는 무작위로 생성된 ID만 전송됩니다.',
-      sec2Title: '2. 로컬 데이터 보관 및 삭제 권리', sec2Desc: '게임 진행 상황, 힌트 수량, 테마 설정은 사용자의 스마트폰 로컬 저장소(localStorage)에만 안전하게 보관됩니다.',
-      sec3Title: '3. 1v1 배틀 및 두뇌 지수 처리', sec3Desc: '실시간 1v1 대전에는 기기에 저장되어 재사용되는 무작위 생성 ID와 퍼즐 진행률이 전송됩니다. 이 ID는 이름이나 계정과 연결되지 않습니다.',
-      sec4Title: '4. 광고 (Google AdMob)', sec4Desc: '무료 제공을 위해 이 앱은 Google AdMob SDK 를 통해 광고를 표시할 수 있습니다. 광고가 활성화되면 AdMob 이 광고 식별자를 수집할 수 있습니다. 광고는 게임 화면 하단과 보상형 영상으로만 표시됩니다.'
+      subtitle: 'Sudoku는 계정 없이 이용할 수 있습니다. 앱이 실제로 저장하고 보내는 정보는 아래와 같습니다.',
+      sec1Title: '1. 기기 저장과 백업', sec1Desc: '기록·힌트·설정은 기기에 저장됩니다. 안드로이드 자동 백업이 켜져 있으면 Android가 이 데이터를 본인의 Google 드라이브에 복사하고 재설치할 때 복원합니다. 이름·이메일·전화번호·연락처·위치는 수집하지 않습니다.',
+      sec2Title: '2. Google Play 게임즈', sec2Desc: 'Play 게임즈에 로그인되어 있으면 게임에서 이길 때마다 진행 기록(통계·업적·힌트·설정)이 Play 게임즈 저장 데이터로 자동 백업되고, IQ 점수가 Play 게임즈 순위표에 제출됩니다. 이 데이터는 본인의 Google 계정에 보관됩니다.',
+      sec3Title: '3. 1v1 대전', sec3Desc: '실시간 1v1 대전은 Google Firebase를 통해 무작위로 만든 플레이어 ID, 자동 닉네임(SudokuMaster_xxxx), 퍼즐 진행률을 상대에게 보냅니다. ID는 기기에 저장되어 재사용되며 이름이나 계정과 연결되지 않습니다.',
+      sec4Title: '4. 광고와 결제', sec4Desc: '이 앱은 Google AdMob을 통해 배너 광고, 게임 승리 후 전면 광고, 원할 때 보는 보상형 광고를 표시하며, AdMob은 광고 식별자를 처리할 수 있습니다. 광고 제거 구매는 Google Play가 처리하며 개발자는 결제 정보를 받지 않습니다.'
     }
   },
   stats: {
@@ -140,7 +141,7 @@ export const screens = {
     totalPlayed: "총 플레이 수",
     totalWon: "완성한 퍼즐",
     winRate: "승률",
-    shareText: "[Sudoku IQ 리포트]\n나의 스도쿠 IQ: {iq}점 ({percentile})\n등급: {tier}\n지금 함께 두뇌 트레이닝에 도전해 보세요!",
+    shareText: "[Sudoku IQ 리포트]\n나의 스도쿠 IQ: {iq}점\n등급: {tier}\n지금 함께 두뇌 트레이닝에 도전해 보세요!",
     copiedToast: "두뇌 분석 결과가 클립보드에 복사되었습니다.",
     focus: "몰입 집중력",
     durability: "집중 지구력",
@@ -151,19 +152,18 @@ export const screens = {
     overallStats: "📊 종합 누적 데이터",
     attributesTitle: "🧠 5대 핵심 인지 능력",
     title: '두뇌 활성 리포트',
-    percentilePrefix: '상위 ',
     shareTitle: '나의 스도쿠 두뇌 지수 리포트',
     tiers: {
       grandMaster: '👑 그랜드 마스터',
-      grandMasterDesc: '전체 스도쿠 플레이어 중 상위 {percentile}%! 극소수만 도달하는 1% 마스터급 추론력입니다.',
-      mensa: '🧠 멘사급 상위 지능',
-      mensaDesc: '전체 플레이어 중 상위 {percentile}%! 멘사 레벨의 뛰어난 논리적 분석력을 보여주고 있습니다.',
+      grandMasterDesc: '극소수만 도달하는 1% 마스터급 추론력입니다.',
+      expert: '🧠 전문가급 논리력',
+      expertDesc: '이 게임에서 뛰어난 논리적 분석력을 보여주고 있습니다.',
       superior: '⚡ 우수 두뇌',
-      superiorDesc: '전체 플레이어 중 상위 {percentile}%! 날카로운 직관과 우수한 문제 해결 능력을 지녔습니다.',
+      superiorDesc: '날카로운 직관과 우수한 문제 해결 능력을 지녔습니다.',
       aboveAverage: '💡 평균 이상 논리력',
-      aboveAverageDesc: '전체 플레이어 중 상위 {percentile}%! 안정적이고 유연한 사고방식으로 퍼즐을 해결합니다.',
+      aboveAverageDesc: '안정적이고 유연한 사고방식으로 퍼즐을 해결합니다.',
       balanced: '🎯 균형 잡힌 두뇌',
-      balancedDesc: '전체 플레이어 중 상위 {percentile}%! 5대 인지 능력이 고르게 발달한 모범적인 상태입니다.',
+      balancedDesc: '5대 인지 능력이 고르게 발달한 모범적인 상태입니다.',
       developing: '🌱 성장하는 두뇌',
       developingDesc: '두뇌 트레이닝을 막 시작한 단계입니다. 꾸준히 플레이할수록 지수가 급상승합니다!'
     }
@@ -171,10 +171,10 @@ export const screens = {
   battleLobby: {
     title: '1v1 실시간 배틀',
     cancelBtn: '매칭 취소',
-    searching: '비슷한 실력의 상대를 탐색하고 있습니다...',
+    searching: '상대를 찾고 있습니다...',
     autoMatchTitle: '실시간 빠른 대전',
     autoMatchDesc: '전 세계 플레이어와 1:1 스피드 매칭',
-    mmrBadge: '실력 기반 매칭 · 내 승률 {rate}%',
+    mmrBadge: '내 클리어율 {rate}%',
     findOpponentBtn: '상대 찾기',
     noOpponentFound: '상대를 찾지 못했습니다. AI와 대전할까요?',
     playAiInstead: 'AI와 대전'
@@ -222,9 +222,9 @@ export const screens = {
     aiSpeed: '풀이 속도: {speed}',
     level1Desc: '초보자용 봇: 천천히 퍼즐을 풀며 스도쿠 기본기를 다집니다.',
     level2Desc: '일반 봇: 안정적인 속도로 실수를 적게 합니다.',
-    level3Desc: '숙련 봇: 빠른 속도로 중급 테크닉을 구사합니다.',
-    level4Desc: '마스터 봇: 매우 빠른 속도로 고급 전략을 풀어냅니다.',
-    level5Desc: '알파도쿠: 최단 시간 내에 완벽하게 퍼즐을 격파합니다.',
+    level3Desc: '숙련 봇: 빠른 속도, 적은 실수.',
+    level4Desc: '마스터 봇: 매우 빠른 속도, 드문 실수.',
+    level5Desc: '알파도쿠: 가장 빠르고 실수가 가장 적은 봇.',
     startBtn: 'Lv.{level} {name} AI 대전 시작'
   },
   academy: {
@@ -238,7 +238,8 @@ export const screens = {
       success: '정답 [{val}] 입니다! 테크닉을 완벽히 마스터하셨습니다!',
       retry: '다시 도전',
       error: '[{val}]은(는) 정답이 아닙니다. 힌트 숫자를 다시 확인해보세요!',
-      prompt: '👇 아래 숫자 키패드에서 목표 빈칸(?)에 들어갈 숫자를 탭하세요.'
+      prompt: '👇 아래 숫자 키패드에서 목표 빈칸(?)에 들어갈 숫자를 탭하세요.',
+      promptEliminated: '👇 목표 칸에서 지워지는 후보 숫자를 탭하세요.'
     }
   },
   adBanner: {removeBtn: '광고 제거' }

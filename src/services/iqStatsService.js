@@ -116,33 +116,36 @@ class IQStatsService {
     const score = Math.round(Number(iqScore) || 100);
     const topPercentile = this.calculateTopPercentile(score);
 
+    // The tier boundaries are still read off the fixed distribution, but nothing
+    // says "top X% of players" any more: there is no ranking among real players
+    // here, only this score put through a normal curve. The titles below are
+    // fallbacks — every screen reads the translated ones from tiers.*.
     let tierKey = 'developing';
     let tierTitle = '두뇌 트레이닝 (Developing)';
-    let tierDescription = `상위 ${topPercentile}%의 무궁무진한 성장 잠재력을 지닌 트레이닝 단계입니다.`;
+    let tierDescription = '성장 잠재력이 남아 있는 트레이닝 단계입니다.';
 
     if (topPercentile <= 1.0) {
       tierKey = 'grandMaster';
-      tierTitle = '신의 영역 (Grand Master)';
-      tierDescription = `상위 ${topPercentile}%의 신의 영역! 최상위 1% 마스터 논리력입니다.`;
+      tierTitle = '최고 등급 (Grand Master)';
+      tierDescription = '이 게임에서 최상위 수준의 추리력을 보여주고 있습니다.';
     } else if (topPercentile <= 5.0) {
-      tierKey = 'mensa';
-      tierTitle = '멘사급 논리력 (Mensa Level)';
-      tierDescription = `상위 ${topPercentile}%의 멘사급 최상위 논리적 추론 능력입니다!`;
+      tierKey = 'expert';
+      tierTitle = '전문가급 논리력 (Expert)';
+      tierDescription = '이 게임에서 뛰어난 논리적 추론 능력을 보여주고 있습니다.';
     } else if (topPercentile <= 20.0) {
       tierKey = 'superior';
       tierTitle = '우수 수리력 (Superior)';
-      tierDescription = `상위 ${topPercentile}%의 우수하고 날카로운 논리적 추론 능력입니다!`;
+      tierDescription = '날카롭고 우수한 논리적 추론 능력입니다.';
     } else if (topPercentile <= 50.0) {
       tierKey = 'aboveAverage';
       tierTitle = '우수 잠재력 (Above Average)';
-      tierDescription = `상위 ${topPercentile}%의 평균 이상의 안정적이고 유연한 사고력입니다.`;
+      tierDescription = '평균 이상의 안정적이고 유연한 사고력입니다.';
     }
 
     return {
       iqScore: score,
       topPercentile,
       tierKey,
-      percentileText: `상위 ${topPercentile}%`,
       tierTitle,
       tierDescription
     };

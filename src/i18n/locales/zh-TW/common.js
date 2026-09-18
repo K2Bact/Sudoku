@@ -80,23 +80,23 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 宗師級大腦',
-      desc: '超越全體玩家前 {percentile}%！僅極少數人能達到的頂級極速推理力。'
+      desc: '僅極少數人能達到的頂級極速推理力。'
     },
-    mensa: {
-      title: '🧠 門薩級高智商',
-      desc: '超越全體玩家前 {percentile}%！展現門薩級別的卓越邏輯分析力。'
+    expert: {
+      title: '🧠 專家級邏輯',
+      desc: '在本遊戲中展現出色的推理能力。'
     },
     superior: {
       title: '⚡ 卓越思維',
-      desc: '超越全體玩家前 {percentile}%！具備敏銳直覺與優異的問題解決力。'
+      desc: '具備敏銳直覺與優異的問題解決力。'
     },
     aboveAverage: {
       title: '💡 優於常人',
-      desc: '超越全體玩家前 {percentile}%！以穩定靈活的思維破解謎題。'
+      desc: '以穩定靈活的思維破解謎題。'
     },
     balanced: {
       title: '🎯 均衡大腦',
-      desc: '超越全體玩家前 {percentile}%！五大認知能力均衡發展的理想狀態。'
+      desc: '五大認知能力均衡發展的理想狀態。'
     },
     developing: {
       title: '🌱 成長潛力',

@@ -22,6 +22,7 @@
  *   Case 2  the copyright line is a copyright line, carrying no claim at all
  *   Case 3  every language discloses the same four sections — none half-edited
  *   Case 4  the hosted policy names the services the app actually sends to
+ *   Case 4c every flow the code performs is described, in-app and hosted
  *   Case 5  the achievement count on screen equals the count in the code
  *   Case 6  the hosted policy is byte-equal to the local file it is edited from
  *   Case 7  the version in settings is the version build.gradle actually ships
@@ -332,6 +333,17 @@ assert.deepStrictEqual(undisclosed, [],
   'sending to it.');
 console.log(`  ✅ ${MUST_DISCLOSE.length} destinations named in docs/privacy.html`);
 
+// Found on 2026-09-18: the page was reassembled with a second </style>, and the
+// rules after the first one printed as text above the header on the live site.
+// Every text check above still passed — they read words, not the rendered page.
+const styleBlocks = (policy.match(/<style[\s>]/g) || []).length;
+const styleCloses = (policy.match(/<\/style>/g) || []).length;
+const bodyText = (policy.split(/<body[^>]*>/)[1] || '').replace(/<[^>]*>/g, '');
+assert(styleBlocks === styleCloses && !/[.#][\w-]+\s*\{[^}]*:[^}]*\}/.test(bodyText),
+  'docs/privacy.html shows CSS as page text — an unmatched </style> or a rule outside ' +
+  'the <style> block. The live page prints it above the header.');
+console.log('  ✅ no stylesheet text leaks into the page body');
+
 // ── Case 4b: what the policy says about ads matches what ships ────────────
 //
 // The policy names AdMob because that is where ad data will go, and the case
@@ -403,6 +415,104 @@ assert.strictEqual(declaresAdIdPermission, shipsAdSdk,
       'need it to read the advertising ID; without it AdMob falls back and the\n' +
       'Data Safety declaration will not match what the SDK actually does.');
 console.log(`  ✅ the advertising ID permission matches the build (${shipsAdSdk ? 'declared' : 'absent'})`);
+
+// ── Case 4c: each thing the code sends is described where players read ─────
+//
+// Found on 2026-09-18. Case 4 checked that the policy names Play Games, and it
+// did — while saying the backup happened "only when you use it from Settings"
+// (every win uploads it) and that the IQ score "is not transmitted" (it goes to
+// a Play Games leaderboard). The in-app copy was older still: no interstitial,
+// no Play Games, "stored only on the device". Naming a service is not the same
+// as describing what goes to it.
+//
+// So each row starts from the code. If the call is there, the hosted policy
+// must describe it in all three of its languages, and the in-app text in the
+// launch languages (ko, en, ja) must too. Remove the call and the row goes
+// quiet; the text is then free to drop it.
+console.log('▶ 4c. Every flow the code performs is described, in-app and hosted');
+const readSrc = (p) => stripComments(fs.readFileSync(path.join(ROOT, p), 'utf8'));
+const FLOWS = [
+  { what: 'cloud backup runs after every win',
+    inCode: () => /saveToCloud\(\)/.test(readSrc('src/utils/gameCompletion.js')),
+    hosted: ['이길 때마다', 'every time you win', '勝利するたび'],
+    inApp: { ko: '이길 때마다', en: 'every win', ja: '勝利するたび' } },
+  { what: 'the IQ score is submitted to a Play Games leaderboard',
+    inCode: () => /submitScore\(\{\s*leaderboardId:\s*LEADERBOARD_IDS\.BRAIN_IQ/.test(readSrc('src/services/playGamesService.js')),
+    hosted: ['순위표', 'leaderboard', 'リーダーボード'],
+    inApp: { ko: '순위표', en: 'leaderboard', ja: 'リーダーボード' } },
+  { what: 'a full-screen ad is shown after a win',
+    inCode: () => /showPreparedInterstitial\(/.test(readSrc('src/services/adsService.js')),
+    hosted: ['전면 광고', 'full-screen ad', '全画面広告'],
+    inApp: { ko: '전면 광고', en: 'full-screen ad', ja: '全画面広告' } },
+  { what: 'a banner ad is shown',
+    inCode: () => /showBanner\(/.test(readSrc('src/components/AdBanner.jsx')),
+    hosted: ['배너', 'banner', 'バナー'],
+    inApp: { ko: '배너', en: 'banner', ja: 'バナー' } },
+  { what: 'rewarded ads are offered',
+    inCode: () => /showRewarded\(/.test(readSrc('src/services/adsService.js')),
+    hosted: ['보상형', 'rewarded', 'リワード'],
+    inApp: { ko: '보상형', en: 'rewarded', ja: 'リワード' } },
+  { what: '1v1 sends an automatic nickname',
+    inCode: () => /SudokuMaster_/.test(readSrc('src/firebase/battleService.js')),
+    hosted: ['SudokuMaster_'],
+    inApp: { ko: 'SudokuMaster_', en: 'SudokuMaster_', ja: 'SudokuMaster_' } },
+  { what: 'the Remove Ads purchase goes through Google Play Billing',
+    inCode: () => /store\.purchase\(/.test(readSrc('src/billing/playBillingProvider.js')),
+    hosted: ['Google Play 결제', 'Google Play Billing', 'Google Play の決済'],
+    inApp: { ko: 'Google Play', en: 'Google Play', ja: 'Google Play' } }
+];
+const privacyBlock = (loc) => {
+  const text = fs.readFileSync(path.join(LOCALES, loc, 'screens.js'), 'utf8');
+  return (text.match(/privacy: \{[\s\S]*?\n\s*\}/) || [''])[0];
+};
+const undescribed = [];
+let liveFlows = 0;
+for (const flow of FLOWS) {
+  if (!flow.inCode()) continue;
+  liveFlows++;
+  for (const marker of flow.hosted) {
+    if (!policy.includes(marker)) undescribed.push(`docs/privacy.html lacks "${marker}" — ${flow.what}`);
+  }
+  for (const [loc, marker] of Object.entries(flow.inApp)) {
+    if (!privacyBlock(loc).includes(marker)) undescribed.push(`${loc}/screens.js privacy lacks "${marker}" — ${flow.what}`);
+  }
+}
+// Achievements go both ways. Found on 2026-09-19: the policy said achievements
+// are recorded in Play Games while ACHIEVEMENT_IDS was empty and
+// unlockAchievement returned 'not_configured' — none existed in the console.
+// Over-claiming is not a violation, but it is the document describing an app
+// that does not exist. Fill the map and the description becomes required.
+const achievementIds = (readSrc('src/services/playGamesService.js')
+  .match(/ACHIEVEMENT_IDS\s*=\s*\{([^}]*)\}/) || ['', ''])[1];
+const achievementsLive = /['"][^'"]+['"]/.test(achievementIds);
+const ACH_HOSTED = ['업적이 Google Play 게임즈에 기록', 'recorded in Google Play Games', 'Google Play ゲームに記録'];
+const ACH_INAPP = { ko: '업적이 기록', en: 'records achievements', ja: '実績が記録' };
+for (const m of ACH_HOSTED) {
+  if (policy.includes(m) !== achievementsLive) {
+    undescribed.push(`docs/privacy.html ${achievementsLive ? 'lacks' : 'still claims'} "${m}" — ACHIEVEMENT_IDS is ${achievementsLive ? 'populated' : 'empty'}`);
+  }
+}
+for (const [loc, m] of Object.entries(ACH_INAPP)) {
+  if (privacyBlock(loc).includes(m) !== achievementsLive) {
+    undescribed.push(`${loc}/screens.js privacy ${achievementsLive ? 'lacks' : 'still claims'} "${m}" — ACHIEVEMENT_IDS is ${achievementsLive ? 'populated' : 'empty'}`);
+  }
+}
+
+// The two sentences that were false, caught by meaning rather than exact words.
+const CONTRADICTIONS = [
+  [/(IQ|두뇌 지수|Brain).{0,60}(전송되지 않|not transmitted|送信されません)/i, 'says the IQ score is not sent'],
+  [/(직접 사용할 때만|only when you use it from Settings|設定から使用した場合のみ)/, 'says cloud backup happens only on request']
+];
+const plainPolicy = policy.replace(/<[^>]*>/g, '');
+for (const [re, why] of CONTRADICTIONS) {
+  if (re.test(plainPolicy)) undescribed.push(`docs/privacy.html ${why}`);
+  for (const loc of locales) if (re.test(privacyBlock(loc))) undescribed.push(`${loc}/screens.js privacy ${why}`);
+}
+assert.deepStrictEqual(undescribed, [],
+  'The privacy text does not describe what the code does:\n  ' + undescribed.join('\n  ') +
+  '\n\nEach line is a call present in src/. Describe it in the hosted policy (ko, en, ja) and ' +
+  'in the in-app text, or remove the call. Naming the service is not enough — say what goes to it.');
+console.log(`  ✅ ${liveFlows} live flows described in the hosted policy and in-app (ko, en, ja)`);
 
 // ── Case 5: a number on screen matches the number in the code ─────────────
 //

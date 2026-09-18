@@ -11,7 +11,7 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: 'Tipps',
     brainReportTitle: 'Gehirn-Analyse',
-    brainPercentileShort: 'Top {percentile}% · {won} Siege',
+    brainPercentileShort: 'Gelöste Rätsel: {won}',
     startSelectedLevel: 'Lv.{level} {name} starten',
     modeTabs: { classic: 'Klassik', timeAttack: 'Zeitrennen', timeLimit: 'Überleben' },
     rivalModes: {
@@ -74,7 +74,8 @@ export const screens = {
     purchaseBtn: 'Werbung entfernen',
     buySuccess: 'Kauf erfolgreich abgeschlossen! Vielen Dank.',
     restoreSuccess: 'Käufe erfolgreich wiederhergestellt.',
-    restoreFail: 'Keine früheren Käufe zur Wiederherstellung gefunden.'
+    restoreFail: 'Keine früheren Käufe zur Wiederherstellung gefunden.',
+    buyFail: 'Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es später erneut.'
   },
   tutorialOverlay: {
     exitTooltip: 'Tutorial beenden',
@@ -117,11 +118,11 @@ export const screens = {
     privacySubtitle: 'Datenschutz',
     privacyModalTitle: 'Datenschutzerklärung',
     privacy: {
-      subtitle: 'Sudoku benötigt kein Konto und erfasst weder Namen noch E-Mail-Adresse oder Kontaktdaten.',
-      sec1Title: '1. Keine Registrierung erforderlich', sec1Desc: 'Diese App erfordert keine Registrierung und erfasst weder Namen, E-Mail-Adresse, Telefonnummer, Kontakte noch Standort. Bei Online-Funktionen — 1-gegen-1-Duelle und Cloud-Backup — wird ausschließlich eine zufällig erzeugte ID übertragen.',
-      sec2Title: '2. Lokale Speicherung & Löschrechte', sec2Desc: 'Spielfortschritt, Tipps und Einstellungen werden sicher nur lokal gespeichert.',
-      sec3Title: '3. 1v1-Duelle & Gehirn-Index', sec3Desc: 'Beim Echtzeit-1-gegen-1 werden eine zufällig erzeugte Spieler-ID und Abschluss-Datensätze übertragen. Die ID wird auf dem Gerät gespeichert und wiederverwendet; sie ist weder mit deinem Namen noch mit einem Konto verknüpft.',
-      sec4Title: '4. Werbung (Google AdMob)', sec4Desc: 'Damit das Spiel kostenlos bleibt, kann diese App über das Google AdMob SDK Werbung anzeigen. Bei aktiver Werbung kann AdMob eine Werbe-ID erfassen. Werbung erscheint nur als Banner am unteren Rand und als Rewarded-Video.'
+      subtitle: 'Sudoku benötigt kein Konto. Hier steht, was die App tatsächlich speichert und sendet.',
+      sec1Title: '1. Speicherung und Sicherung', sec1Desc: 'Deine Ergebnisse, Tipps und Einstellungen werden auf deinem Gerät gespeichert. Ist die automatische Android-Sicherung aktiv, kopiert Android diese Daten in dein eigenes Google Drive und stellt sie bei einer Neuinstallation wieder her. Name, E-Mail, Telefonnummer, Kontakte und Standort werden nie erfasst.',
+      sec2Title: '2. Google Play Spiele', sec2Desc: 'Solange du bei Play Spiele angemeldet bist, wird nach jedem Sieg dein Fortschritt (Statistiken, Erfolge, Tipps, Einstellungen) automatisch in den gespeicherten Play-Spiele-Daten gesichert und dein IQ-Wert an eine Play-Spiele-Bestenliste übermittelt. Diese Daten liegen in deinem eigenen Google-Konto.',
+      sec3Title: '3. 1v1-Duelle', sec3Desc: 'Echtzeit-1v1-Duelle senden über Google Firebase eine zufällig erzeugte Spieler-ID, einen automatischen Spitznamen (SudokuMaster_xxxx) und deinen Rätselfortschritt an den Gegner. Die ID wird auf deinem Gerät gespeichert und wiederverwendet; sie ist weder mit deinem Namen noch mit einem Konto verknüpft.',
+      sec4Title: '4. Werbung und Käufe', sec4Desc: 'Die App zeigt Werbung über Google AdMob: ein Banner, eine Vollbildanzeige nach einem Sieg und freiwillige Videos mit Belohnung. AdMob kann deine Werbe-ID verarbeiten. Der Kauf „Werbung entfernen“ wird von Google Play abgewickelt; wir erhalten keine Zahlungsdaten.'
     }
   },
   stats: {
@@ -140,7 +141,7 @@ export const screens = {
     totalPlayed: 'Spiele insgesamt',
     totalWon: 'Gelöste Rätsel',
     winRate: 'Gewinnrate',
-    shareText: '[Sudoku IQ-Bericht]\nMein Sudoku-IQ: {iq} ({percentile})\nRang: {tier}\nFordere dein Gehirn heute mit Sudoku heraus!',
+    shareText: '[Sudoku IQ-Bericht]\nMein Sudoku-IQ: {iq}\nRang: {tier}\nFordere dein Gehirn heute mit Sudoku heraus!',
     copiedToast: 'Gehirn-Analysebericht in Zwischenablage kopiert.',
     focus: 'Konzentration',
     durability: 'Ausdauer',
@@ -151,19 +152,18 @@ export const screens = {
     overallStats: '📊 Gesamte kumulierte Statistiken',
     attributesTitle: '🧠 5 Kognitive Kernfähigkeiten',
     title: 'IQ-Bericht',
-    percentilePrefix: 'Top ',
     shareTitle: 'Mein Sudoku-IQ-Bericht',
     tiers: {
       grandMaster: '👑 Großmeister',
-      grandMasterDesc: 'Top {percentile}% aller Spieler! Meisterhafte 1% deduktive Denkweise.',
-      mensa: '🧠 Mensa-Niveau',
-      mensaDesc: 'Top {percentile}% aller Spieler! Herausragende analytische Fähigkeiten.',
+      grandMasterDesc: 'Meisterhafte 1% deduktive Denkweise.',
+      expert: '🧠 Experten-Logik',
+      expertDesc: 'Herausragende analytische Denkfähigkeit in diesem Spiel.',
       superior: '⚡ Überlegener Geist',
-      superiorDesc: 'Top {percentile}% aller Spieler! Scharfe Intuition und exzellente Problemlösung.',
+      superiorDesc: 'Scharfe Intuition und exzellente Problemlösung.',
       aboveAverage: '💡 Überdurchschnittlich',
-      aboveAverageDesc: 'Top {percentile}% aller Spieler! Stabiles und flexibles analytisches Denken.',
+      aboveAverageDesc: 'Stabiles und flexibles analytisches Denken.',
       balanced: '🎯 Ausgeglichener Geist',
-      balancedDesc: 'Top {percentile}% aller Spieler! Harmonische Entwicklung aller 5 Denkbereiche.',
+      balancedDesc: 'Harmonische Entwicklung aller 5 Denkbereiche.',
       developing: '🌱 Wachsender Geist',
       developingDesc: 'Frühes Trainingsstadium. Dein kognitiver Index wird stetig wachsen!'
     }
@@ -171,10 +171,10 @@ export const screens = {
   battleLobby: {
     title: '1v1 Echtzeit-Duell',
     cancelBtn: 'Match abbrechen',
-    searching: 'Suche nach einem würdigen Gegner...',
+    searching: 'Suche nach einem Gegner...',
     autoMatchTitle: 'Schnellduell',
     autoMatchDesc: 'Schnelles Matchmaking mit weltweiten Spielern',
-    mmrBadge: 'Skill-Matchmaking · Siegquote: {rate}%',
+    mmrBadge: 'Deine Lösungsquote: {rate}%',
     findOpponentBtn: 'Gegner suchen',
     noOpponentFound: 'Kein Gegner gefunden. Stattdessen gegen die KI spielen?',
     playAiInstead: 'Gegen die KI'
@@ -222,9 +222,9 @@ export const screens = {
     aiSpeed: 'Geschwindigkeit: {speed}',
     level1Desc: 'Anfänger-Bot: Löst gemächlich, um dir die Grundlagen beizubringen.',
     level2Desc: 'Normal-Bot: Löst zuverlässig mit wenigen Fehlern.',
-    level3Desc: 'Fortgeschritten-Bot: Flottes Tempo mit mittleren Taktiken.',
-    level4Desc: 'Experten-Bot: Sehr schneller Löser mit fortgeschrittenen Strategien.',
-    level5Desc: 'AlphaDoku: Großmeister-KI mit extremer Lösungsgeschwindigkeit.',
+    level3Desc: 'Fortgeschritten-Bot: Flottes Tempo, wenige Fehler.',
+    level4Desc: 'Experten-Bot: Sehr schnell, selten Fehler.',
+    level5Desc: 'AlphaDoku: Der schnellste Bot mit den wenigsten Fehlern.',
     startBtn: 'Duell Lv.{level} vs {name}'
   },
   academy: {
@@ -244,7 +244,8 @@ export const screens = {
       success: 'Richtig [{val}]! Technik perfekt gemeistert!',
       retry: 'Erneut versuchen',
       error: '[{val}] ist nicht korrekt. Überprüfe die vorgegebenen Zahlen!',
-      prompt: '👇 Tippe die gesuchte Zahl (?) auf dem Tastenfeld unten ein.'
+      prompt: '👇 Tippe die gesuchte Zahl (?) auf dem Tastenfeld unten ein.',
+      promptEliminated: '👇 Tippe den Kandidaten an, der aus dem Zielfeld gestrichen wird.'
     }
   },
   adBanner: {removeBtn: 'Werbung entfernen' }

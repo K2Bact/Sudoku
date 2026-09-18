@@ -51,8 +51,8 @@ export const achievements = {
 
     // 27 ~ 30. Giornaliero & Duelli
     daily_first: { title: 'Esploratore Giornaliero', desc: 'Completa la tua prima Sfida Giornaliera' },
-    daily_streak_7: { title: 'Miracolo di 7 Giorni', desc: 'Mantieni una serie giornaliera di 7 giorni consecutivi' },
+    daily_streak_7: { title: 'Miracolo di 7 Giorni', desc: 'Accedi per 7 giorni consecutivi' },
     battle_first_win: { title: 'Vittoria da Gladiatore', desc: 'Vinci il tuo primo duello 1v1 online o contro l’IA' },
-    iq_150: { title: 'Cervello Mensa', desc: 'Raggiungi un punteggio QI Sudoku di 150+' }
+    iq_150: { title: 'Cervello geniale', desc: 'Raggiungi un punteggio QI Sudoku di 150+' }
   }
 };
