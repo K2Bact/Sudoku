@@ -45,7 +45,7 @@ export const achievements = {
     clear_lv2: { title: '簡単マスター', desc: 'Lv.2 初級難易度をクリア' },
     clear_lv3: { title: '中級者の仲間入り', desc: 'Lv.3 中級難易度をクリア' },
     clear_lv4: { title: '上級制覇者', desc: 'Lv.4 上級難易度をクリア' },
-    clear_lv5: { title: 'グランドマスター', desc: 'Lv.5 達人最高難易度をクリア' },
+    clear_lv5: { title: 'グランドマスター', desc: '最高難易度の「Lv.5 達人」をクリア' },
     survival_hero: { title: 'タイムサバイバー', desc: 'タイムリミット(サバイバル)モードをクリア' },
     survival_clutch: { title: '九死に一生', desc: '残り時間5秒以下の危機を乗り越えてクリア' },
 
@@ -53,6 +53,6 @@ export const achievements = {
     daily_first: { title: 'デイリー探検家', desc: '本日のデイリーチャレンジを初クリア' },
     daily_streak_7: { title: '7日間の奇跡', desc: '7日連続でログインする' },
     battle_first_win: { title: '剣闘士の初勝利', desc: '1v1オンライン対戦またはAI対戦で初勝利' },
-    iq_150: { title: '天才級の頭脳', desc: '脳活性指数 Sudoku IQ 150点以上に到達' }
+    iq_150: { title: 'ロジックの達人', desc: 'ロジックスコア150点以上に到達' }
   }
 };

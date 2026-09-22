@@ -90,6 +90,32 @@ assert(/adsService\.canPurchase/.test(codeOf('src/components/screens/AppScreenRo
   'complete — the hidden button is one lock, the route is the second');
 console.log('  ✅ Entry point and route both gated on canPurchase');
 
+// A billing library is not an offer. Remove Ads is not sold in Japan
+// (BACKLOG M-1, 2026-09-19): there the store returns no product, and a button
+// that exists anyway leads to a price-less screen that can only fail. So
+// canPurchase has to wait for the store to name the product for this account.
+// Driven for real against the service, with the provider's two answers swapped
+// in — a regex over the getter would pass a getter that never asks.
+{
+  const { getBillingProvider } = await import('../../../src/billing/index.js');
+  const { adsService } = await import('../../../src/services/adsService.js');
+  const bp = getBillingProvider();
+  Object.defineProperty(bp, 'isAvailable', { get: () => true, configurable: true });
+
+  bp.getProduct = async () => null;
+  assert.strictEqual(adsService.canPurchase, false, 'canPurchase must be false before the store answers');
+  await adsService.checkOffer();
+  assert.strictEqual(adsService.canPurchase, false,
+    'The store offered nothing to this account (e.g. Japan), yet canPurchase is true — ' +
+    'the Remove Ads button would lead to a screen that can only say the purchase failed.');
+
+  bp.getProduct = async () => ({ price: '¥300', currency: 'JPY', owned: false });
+  await adsService.checkOffer();
+  assert.strictEqual(adsService.canPurchase, true,
+    'The store named the product, so the purchase must be offered — a miss must not be cached.');
+  console.log('  ✅ Offered only when the store names the product for this account (not merely when billing exists)');
+}
+
 // ── 5. The price comes from the store ─────────────────────────────────────
 console.log('▶ 5. The price is never assembled here');
 const screen = codeOf('src/components/RemoveAdsScreen.jsx');

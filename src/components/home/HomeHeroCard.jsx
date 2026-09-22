@@ -10,7 +10,7 @@ export function HomeHeroCard({ iqReport, won }) {
     <div className="home-hero-card">
       <div className="hero-left">
         <span className="hero-tag"><Brain size={12} /> {t('home.brainReportTitle')}</span>
-        <h2 className="hero-iq">Sudoku IQ {iqReport.iqScore}</h2>
+        <h2 className="hero-iq">{t('home.scoreLabel')} {iqReport.iqScore}</h2>
         <div className="hero-stats-line">
           <span>{t('home.brainPercentileShort', { won })}</span>
         </div>

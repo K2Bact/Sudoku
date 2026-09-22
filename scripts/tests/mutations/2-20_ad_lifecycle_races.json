@@ -22,18 +22,18 @@
       "expectFailure": "동의 거부는 결론이므로 캐시되어야 한다"
     },
     {
-      "name": "showBanner does not re-check intent after awaiting init",
-      "why": "The race as shipped. The banner is a native overlay pinned to the bottom of the screen, not an element inside the page, so one that arrives late does not sit in a reserved slot — it lands on top of whatever is showing now. A player who left the game screen while consent was still resolving got a banner across the settings list.",
+      "name": "showBanner overwrites a newer hide intent after awaiting init",
+      "why": "There is now a second intent check inside the native queue. Removing only the early check is redundant; restoring an old show intent after consent invalidates both checks and shows an ad over the screen the player left for.",
       "file": "src/ads/admobProvider.js",
       "find": "    // 기다리는 동안 화면이 바뀌었으면 여기서 멈춘다. 이 확인이 없으면\n    // 숨기라고 한 화면 위에 배너가 뜬다.\n    if (!this.bannerWanted) return false;",
-      "replace": "",
-      "expectFailure": "배너를 띄웠다"
+      "replace": "    this.bannerWanted = true;",
+      "expectFailure": "자기가 낡았다는 것을 알고 false"
     },
     {
       "name": "hideBanner records its intent only after awaiting the plugin",
       "why": "The subtler half: the flag has to be set synchronously, before any await, or an in-flight showBanner wakes up and still reads bannerWanted as true. Ordering the assignment after the native call looks equivalent and is not, which is precisely the class of mistake a source-reading gate cannot catch. Recorded as SURVIVED first: the gate awaited hideBanner to completion, so the assignment's position made no difference. A screen transition does not wait for the native hide, so section 5 holds the plugin promise open — which is what the device actually does and what makes this detectable at all.",
       "file": "src/ads/admobProvider.js",
-      "find": "    // 의도를 먼저, 동기적으로. 이 대입이 await 뒤로 밀리면 진행 중인\n    // showBanner 가 자기가 낡았다는 것을 알 방법이 없다.\n    this.bannerWanted = false;\n\n    const admob = plugin();\n    if (!admob) return;\n    try {\n      await admob.hideBanner();",
+      "find": "    // 의도를 먼저, 동기적으로. 이 대입이 await 뒤로 밀리면 진행 중인\n    // showBanner 가 자기가 낡았다는 것을 알 방법이 없다.\n    this.bannerWanted = false;\n\n    const admob = plugin();\n    if (!admob) return;\n    try {\n      await this.queueBanner(() => admob.hideBanner());",
       "replace": "    const admob = plugin();\n    if (!admob) { this.bannerWanted = false; return; }\n    try {\n      await admob.hideBanner();\n      this.bannerWanted = false;",
       "expectFailure": "물러나야 한다"
     },
@@ -188,6 +188,38 @@
       "find": "  await wait(VICTORY_AD_PAUSE_MS);\n  if (isCancelled()) return;\n",
       "replace": "  await wait(VICTORY_AD_PAUSE_MS);\n",
       "expectFailure": "멈춤 사이 화면을 떠났으면"
+    },
+    {
+      "name": "an existing hidden banner is shown with the creation API",
+      "why": "The installed Android SDK keeps the old view GONE and never resolves showBanner on an existing view. Re-entering the game must resume it.",
+      "file": "src/ads/admobProvider.js",
+      "find": "          await admob.resumeBanner();",
+      "replace": "          await admob.showBanner({});",
+      "expectFailure": "재진입한 배너 표시가 끝나지 않는다"
+    },
+    {
+      "name": "native banner operations run concurrently",
+      "why": "Two shows can enter native creation before the first resolves, or a delayed hide can erase the next game banner. Native calls must finish in order.",
+      "file": "src/ads/admobProvider.js",
+      "find": "    const pending = this.bannerQueue.then(operation);",
+      "replace": "    const pending = operation();",
+      "expectFailure": "동시 배너 요청이 중복 생성 경로에서 멈췄다"
+    },
+    {
+      "name": "a failed banner operation poisons the queue",
+      "why": "A transient resume failure must not disable every future banner for the rest of the app process.",
+      "file": "src/ads/admobProvider.js",
+      "find": "    this.bannerQueue = pending.catch(() => {});",
+      "replace": "    this.bannerQueue = pending;",
+      "expectFailure": "실패한 배너 호출 뒤에 재시도할 수 없다"
+    },
+    {
+      "name": "a queued show forgets that the player left again",
+      "why": "A show can become obsolete while waiting for a hide. Do not briefly put that banner over the home screen before cleaning it up.",
+      "file": "src/ads/admobProvider.js",
+      "find": "        if (!this.bannerWanted) return false; // Recheck after waiting for native work.",
+      "replace": "",
+      "expectFailure": "대기 중 낡아진 배너가 홈에서 다시 표시됐다"
     }
   ]
 }

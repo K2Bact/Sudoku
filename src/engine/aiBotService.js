@@ -11,14 +11,14 @@ export class AIBotService {
     this.intervalId = null;
     this.onUpdateCallback = null;
     this.onFinishCallback = null;
-    this.botState = { name: 'AI AlphaDoku', progress: 0, mistakes: 0, status: 'idle' };
+    this.botState = { name: 'AI Grandmaster', progress: 0, mistakes: 0, status: 'idle' };
   }
 
   startMatch(level = 3, onUpdate, onFinish) {
     this.onUpdateCallback = onUpdate;
     this.onFinishCallback = onFinish;
 
-    const botNames = ['AI AlphaDoku', 'AI MindBot', 'AI DeepSudoku', 'AI QuantumBot'];
+    const botNames = ['AI Grandmaster', 'AI Solver', 'AI Logic', 'AI Swift'];
     const randomName = botNames[Math.floor(Math.random() * botNames.length)];
     const profile = AI_LEVEL_PROFILES[level] || AI_LEVEL_PROFILES[3];
 

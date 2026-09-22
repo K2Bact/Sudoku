@@ -23,7 +23,7 @@ export const STAGE1_DIAGRAMS = {
     "caption": {
       "ko": "한 행/열의 9개 칸 중 8개가 확정수로 채워지면, 마지막 빈 칸은 자동으로 남아있는 정답 숫자 [9]가 됩니다.",
       "en": "When 8 of the 9 cells in a row, column, or box are filled, the remaining empty cell is automatically the answer [9].",
-      "ja": "行や列の9マスのうち8マスが数字で埋まると、最後の空きマスは自動的に残りの正解数字 [9] になります。",
+      "ja": "行や列の9マスのうち8マスが数字で埋まると、最後の空きマスに入る数字は、残った [9] に決まります。",
       "zh-TW": "當一行、一列或九宮格的 9 個空格中已填滿 8 個數字時，最後的空格將自動成為剩餘的正解數字 [9]。",
       "zh-CN": "当一行、一列或九宫格的 9 个空格中已填满 8 个数字时，最后的空格将自动成为剩余的正解数字 [9]。",
       "es-ES": "Cuando 8 de las 9 casillas de una fila, columna o bloque están llenas, la casilla restante se convierte automáticamente en la respuesta [9].",
@@ -55,7 +55,7 @@ export const STAGE1_DIAGRAMS = {
     "caption": {
       "ko": "3x3 박스 내부가 1~8 확정수로 채워져 있다면, 마지막 빈 칸은 자동으로 정답 숫자 [9]가 됩니다.",
       "en": "When numbers 1 through 8 are already placed inside a 3x3 box, the remaining empty cell must be 9.",
-      "ja": "3x3ブロック内が1〜8の数字で埋まっている場合、最後の空きマスは自動的に正解数字 [9] になります。",
+      "ja": "3x3ブロック内に1〜8の数字が入っている場合、最後の空きマスに入る数字は [9] に決まります。",
       "zh-TW": "當 3x3 九宮格內已填入 1〜8 的確定數字時，最後的空格將自動成為正解數字 [9]。",
       "zh-CN": "当 3x3 九宫格内已填入 1〜8 的确定数字时，最后的空格将自动成为正解数字 [9]。",
       "es-ES": "Cuando los números del 1 al 8 ya están colocados en un bloque 3x3, la casilla vacía restante debe ser el [9].",

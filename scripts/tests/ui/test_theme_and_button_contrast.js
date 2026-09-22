@@ -50,6 +50,14 @@ for (const file of allSrcFiles) {
   }
 }
 
+// Some variables are measured at runtime and set from JS (text zoom, board fit, banner
+// height), each read with a CSS fallback. They count as defined only if some source file
+// really sets them — a name that nothing sets is still a typo.
+for (const file of allSrcFiles) {
+  const text = readFileSync(file, 'utf8');
+  for (const m of text.matchAll(/setProperty\(\s*['"`](--[a-zA-Z0-9_-]+)['"`]/g)) definedVars.add(m[1]);
+}
+
 const undefinedVars = [];
 for (const [varName, files] of usedVars.entries()) {
   if (!definedVars.has(varName)) {
@@ -235,14 +243,15 @@ async function runVisualContrastTest() {
         await statsNavBtn.click();
         await page.waitForTimeout(200);
 
-        // Click Global Leaderboard Tab
-        const lbTab = page.locator('.stats-tab-bar button:nth-child(3)').first();
+        // Open the Achievements tab — its selected button is a gradient
+        const lbTab = page.locator('.stats-tab-bar button:nth-child(2)').first();
         if (await lbTab.isVisible()) {
           await lbTab.click();
           await page.waitForTimeout(200);
 
-          // Click Lv.3 Button
-          const lv3Btn = page.locator('button:has-text("Lv.3")').first();
+          // The selected tab button (gradient background). The leaderboard tab this used to open
+          // was removed (SudokuDiary ㉖).
+          const lv3Btn = page.locator('.stats-tab-bar .seg-tab-btn.active').first();
           if (await lv3Btn.isVisible()) {
             await lv3Btn.click();
             await page.waitForTimeout(150);
@@ -264,7 +273,7 @@ async function runVisualContrastTest() {
 
             assert(
               dist > 30,
-              `[${themeId}] Lv.3 leaderboard button must have strong contrast with every gradient stop. ` +
+              `[${themeId}] Selected stats tab button must have strong contrast with every gradient stop. ` +
               `(text: ${lv3Styles.color}, bg: ${lv3Styles.backgroundColor}, image: ${lv3Styles.backgroundImage}, 최소거리: ${dist.toFixed(1)})`
             );
           }

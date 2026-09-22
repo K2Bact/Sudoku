@@ -7,10 +7,11 @@ export const screens = {
     }
   },
   home: {
+    scoreLabel: 'Logic Score',
     title: 'Sudoku',
     badge: 'PRO',
     hintTooltip: 'Dicas',
-    brainReportTitle: 'Análise Cerebral',
+    brainReportTitle: 'Análise de jogo',
     brainPercentileShort: 'Puzzles concluídos: {won}',
     startSelectedLevel: 'Iniciar Nv.{level} {name}',
     modeTabs: { classic: 'Clássico', timeAttack: 'Contra o Tempo', timeLimit: 'Sobrevivência' },
@@ -30,7 +31,7 @@ export const screens = {
       academy: { title: 'Academia Sudoku', desc: 'Aprenda 32 técnicas de mestre' },
       practice: { title: 'Treino Livre', desc: 'Erros ilimitados, jogo relaxante' }
     },
-    nav: {brain: 'QI Cerebral', stats: 'Estatísticas', academy: 'Academia', settings: 'Ajustes' }
+    nav: {brain: 'Análise', stats: 'Estatísticas', academy: 'Academia', settings: 'Ajustes' }
   },
   daily: {
     header: 'Desafios Diários ({month})',
@@ -95,11 +96,11 @@ export const screens = {
     themeSection: '🎨 Tema Visual',
     languageSection: '🌐 Idioma',
     languages: {
-      auto: 'Padrão do Sistema'
+      auto: 'Sistema'
     },
     gameplaySection: '🎮 Regras de Jogo',
     limitMistakes: 'Limite de 3 Erros (Corações)',
-    limitMistakesDesc: 'Fim de jogo ao cometer 3 erros',
+    limitMistakesDesc: "Fim de jogo ao cometer 3 erros. Desligado: os melhores tempos não são salvos",
     autoCheck: 'Verificação Automática de Erros',
     autoCheckDesc: 'Destacar números incorretos em vermelho imediatamente',
     soundSection: '🔊 Áudio & Vibração',
@@ -111,7 +112,7 @@ export const screens = {
     adPrivacyDesc: 'Altere a sua escolha sobre anúncios personalizados',
     resetData: 'Redefinir Todos os Dados Locais',
     resetDataDesc: 'Limpar estatísticas e histórico local',
-    resetConfirm: '⚠️ Atenção: Todo o histórico, dicas e estatísticas cerebrais serão permanentemente excluídos. Continuar?',
+    resetConfirm: '⚠️ Atenção: Todo o histórico, dicas e dados da análise de jogo serão permanentemente excluídos. Continuar?',
     resetSuccess: 'Dados redefinidos com sucesso.',
     privacySection: '🛡️ Privacidade & Segurança',
     privacyPolicyBtn: 'Privacidade',
@@ -119,9 +120,9 @@ export const screens = {
     privacyModalTitle: 'Política de Privacidade',
     privacy: {
       subtitle: 'O Sudoku não exige conta. Veja o que o app realmente guarda e envia.',
-      sec1Title: '1. Armazenamento e backup', sec1Desc: 'Seus recordes, dicas e configurações ficam guardados no seu aparelho. Se o backup automático do Android estiver ativado, o Android copia esses dados para o seu próprio Google Drive e os restaura ao reinstalar. Nunca coletamos seu nome, e-mail, telefone, contatos ou localização.',
-      sec2Title: '2. Google Play Games', sec2Desc: 'Enquanto você estiver conectado ao Play Games, cada vitória faz backup automático do seu progresso (estatísticas, conquistas, dicas, configurações) nos dados salvos do Play Games e envia sua pontuação de QI para um placar do Play Games. Esses dados ficam na sua própria conta Google.',
-      sec3Title: '3. Duelos 1v1', sec3Desc: 'Os duelos 1v1 em tempo real usam o Google Firebase para enviar ao adversário um ID de jogador gerado aleatoriamente, um apelido automático (SudokuMaster_xxxx) e seu progresso no sudoku. O ID fica guardado no aparelho e é reutilizado; ele não está ligado ao seu nome nem a nenhuma conta.',
+      sec1Title: '1. Armazenamento e backup', sec1Desc: "Seus recordes, dicas e configurações ficam guardados no seu aparelho. Sem entrar no Play Games, eles ficam só neste aparelho. Nunca coletamos seu nome, e-mail, telefone, contatos ou localização.",
+      sec2Title: '2. Google Play Games', sec2Desc: 'Enquanto você estiver conectado ao Play Games, cada vitória faz backup automático do seu progresso (estatísticas, conquistas, dicas, configurações) nos dados salvos do Play Games e envia seu Logic Score para um placar do Play Games. Esses dados ficam na sua própria conta Google.',
+      sec3Title: '3. Duelos 1v1', sec3Desc: 'Os duelos 1v1 em tempo real usam o Google Firebase para enviar ao adversário um ID de jogador gerado aleatoriamente, um apelido automático (Player_xxxx) e seu progresso no sudoku. O ID fica guardado no aparelho e é reutilizado; ele não está ligado ao seu nome nem a nenhuma conta.',
       sec4Title: '4. Anúncios e compras', sec4Desc: 'O app exibe anúncios pelo Google AdMob: um banner, um anúncio em tela cheia após uma vitória e vídeos premiados opcionais. O AdMob pode processar seu ID de publicidade. A compra Remover anúncios é processada pelo Google Play; nunca recebemos seus dados de pagamento.'
     }
   },
@@ -130,42 +131,43 @@ export const screens = {
     speedrunBest: 'Melhor Contra o Tempo',
     survivalTitle: '⏳ Modo Sobrevivência',
     survivalTotalWins: 'Vitórias em Sobrevivência',
-    survivalWinsUnit: '{count} Vitórias',
-    leaderboardTab: 'Ranking',
+    survivalWinsUnit: '{count} Vitórias',
     summaryTitle: 'Resumo de Desempenho',
+    pvpRating: "Pontuação",
+    pvpRecordLabel: "Histórico",
+    pvpRecord: "{wins}V · {losses}D",
     totalPlayed: 'Total de Jogos',
     totalWon: 'Total de Vitórias',
     winRate: 'Taxa de Vitória'
   },
   brainReport: {
-    totalPlayed: 'Total de Jogos',
-    totalWon: 'Jogos Vencidos',
-    winRate: 'Taxa de Vitória',
-    shareText: '[Relatório de QI Sudoku]\nMeu QI Sudoku: {iq}\nNível: {tier}\nDesafie seu cérebro com o Sudoku hoje!',
-    copiedToast: 'Relatório de análise cerebral copiado.',
-    focus: 'Concentração Profunda',
-    durability: 'Resistência',
-    accuracy: 'Precisão',
-    logic: 'Lógica',
+    scoreLabel: 'Logic Score',
+    scoreHowTitle: "ⓘ Como o Logic Score é calculado?",
+    scoreHowBody: "Ele sobe quando você preenche todo o tabuleiro e vence. O nível mais difícil vencido sem dicas é o que mais conta; o número de vitórias e a taxa de vitórias contam um pouco. Fim de jogo e partidas abandonadas diminuem a taxa de vitórias e podem tirar alguns pontos. O placar usa essa pontuação quando você está conectado ao Play Games.",
+    shareText: '[Análise de jogo Sudoku]\nLogic Score: {iq}\nNível: {tier}\nExperimente o Sudoku hoje!',
+    copiedToast: 'Análise copiada para a área de transferência.',
+    focus: 'Sem erros',
+    durability: 'Dedicação',
+    accuracy: 'Taxa de conclusão',
+    logic: 'Dificuldade',
     speed: 'Velocidade',
-    shareCardBtn: '🔗 Compartilhar',
-    overallStats: '📊 Estatísticas Gerais Acumuladas',
-    attributesTitle: '🧠 5 Pilares Cognitivos',
-    title: 'Relatório de QI Cerebral',
-    shareTitle: 'Meu Relatório de QI Sudoku',
+    shareCardBtn: '🔗 Compartilhar',
+    attributesTitle: '📈 5 métricas de jogo',
+    title: 'Análise de jogo',
+    shareTitle: 'Minha análise de jogo Sudoku',
     tiers: {
       grandMaster: '👑 Grão-Mestre',
-      grandMasterDesc: 'Raciocínio dedutivo de elite no topo de 1%.',
-      expert: '🧠 Lógica especialista',
-      expertDesc: 'Excelente capacidade lógica e analítica neste jogo.',
-      superior: '⚡ Mente Superior',
-      superiorDesc: 'Intuição aguçada e brilhante resolução de problemas.',
-      aboveAverage: '💡 Acima da Média',
-      aboveAverageDesc: 'Pensamento analítico flexível e estável.',
-      balanced: '🎯 Mente Equilibrada',
-      balancedDesc: 'Desenvolvimento harmonioso de todas as 5 áreas cognitivas.',
-      developing: '🌱 Mente em Evolução',
-      developingDesc: 'Fase inicial de treino. Seu índice cognitivo crescerá a cada partida!'
+      grandMasterDesc: 'Você alcançou a classificação mais alta.',
+      expert: '🧠 Especialista',
+      expertDesc: 'Você resolve quebra-cabeças difíceis com consistência.',
+      superior: '⚡ Avançado',
+      superiorDesc: 'Você está pronto para quebra-cabeças avançados.',
+      aboveAverage: '💡 Intermediário',
+      aboveAverageDesc: 'Você está melhorando sempre.',
+      balanced: '🎯 Equilibrado',
+      balancedDesc: 'Suas 5 métricas crescem de forma equilibrada.',
+      developing: '🌱 Iniciante',
+      developingDesc: 'Continue jogando e sua pontuação vai subir.'
     }
   },
   battleLobby: {
@@ -224,7 +226,7 @@ export const screens = {
     level2Desc: 'Robô Normal: Resolução firme com pouquíssimos erros.',
     level3Desc: 'Robô Habilidoso: Ritmo rápido e poucos erros.',
     level4Desc: 'Robô Especialista: Muito rápido e raros erros.',
-    level5Desc: 'AlphaDoku: O robô mais rápido e com menos erros.',
+    level5Desc: 'Robô Grão-Mestre: O robô mais rápido e com menos erros.',
     startBtn: 'Iniciar Duelo IA Nv.{level} {name}'
   },
   academy: {
@@ -237,6 +239,13 @@ export const screens = {
       stage5: 'Etapa 5: Técnicas Mestre (Cadeias AIC, ALS & Exocet)'
     },
     title: 'Academia Sudoku',
+    theoryBoard: {
+      patternTab: 'Padrão',
+      resultTab: 'Resultado',
+      patternCaption: 'As casas coloridas formam o padrão desta técnica. É o mesmo tabuleiro do Exemplo prático 1.',
+      resultCaption: 'Os candidatos marcados em vermelho são removidos por este padrão.',
+      placeCaption: 'Este padrão define o número destacado como resposta daquela casa.'
+    },
     practiceUi: {
       theory: 'Teoria',
       practice1: 'Exercício 1',

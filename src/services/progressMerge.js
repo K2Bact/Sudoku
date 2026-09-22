@@ -19,6 +19,7 @@
  * ── The rules, unchanged from restore ─────────────────────────────────────
  *   counts (played, won, survival wins)   larger
  *   best times, per level                 faster
+ *   levels cleared without a hint         union
  *   other stats fields                    local wins, cloud fills gaps
  *   achievements                          union, cloud wins a shared key
  *   wallet                                hints / streak / ads watched: larger
@@ -51,6 +52,9 @@ export function mergeStats(cloudStats = {}, localStats = {}) {
     });
     if (Object.keys(out).length > 0) merged[table] = out;
   }
+  // Levels cleared without a hint: a level cleared on either device stays cleared.
+  const cleared = { ...(cloudStats.clearedLevels || {}), ...(localStats.clearedLevels || {}) };
+  if (Object.keys(cleared).length > 0) merged.clearedLevels = cleared;
   return merged;
 }
 

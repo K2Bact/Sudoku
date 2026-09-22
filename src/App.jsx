@@ -3,8 +3,6 @@ import { AppScreenRouter } from './components/screens/AppScreenRouter';
 import { GameModalsContainer } from './components/modals/GameModalsContainer';
 import { RematchToastBanner } from './components/battle/RematchToastBanner';
 import { soundHaptic } from './utils/soundHaptic';
-import { getDailyPuzzle } from './utils/dailyChallenge';
-import { getGhostForModeLevel } from './utils/ghostManager';
 import { battleService } from './firebase/battleService';
 import { aiBotService } from './engine/aiBotService';
 import { loadSettings, saveSettings } from './utils/storage';
@@ -14,6 +12,8 @@ import { useThemeManager } from './hooks/useThemeManager';
 import { useAppModals } from './hooks/useAppModals';
 import { useBattleMultiplayer } from './hooks/useBattleMultiplayer';
 import { useGameProps } from './hooks/useGameProps';
+import { useCloudAutoSync } from './hooks/useCloudAutoSync';
+import { useGameStarters } from './hooks/useGameStarters';
 import { useTranslation } from './i18n/i18nContext';
 import './App.css';
 
@@ -60,9 +60,10 @@ export function App() {
     handleCloseBattleResult
   } = useBattleMultiplayer({ showToast, startNewGame: (...args) => game.startNewGame(...args), setActiveScreen, t });
 
+  useCloudAutoSync();
   const game = useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey, showToast);
   const {
-    level, gameMode, mistakes, setMistakes,
+    level, gameMode, mistakes, setMistakes, hintsUsedCount,
     hasRevived, setHasRevived, timerSeconds, setTimerSeconds,
     isGameOver, setIsGameOver, isVictory,
     startNewGame, resumeSavedGame, handleRewardHint
@@ -89,83 +90,14 @@ export function App() {
     showExitToast: (msg) => showToast(msg, 2000), t
   });
 
-  const navigateToScreen = (screenName) => {
-    soundHaptic.playSelectSound();
-    setPreviousScreen(activeScreen);
-    if (screenName !== 'game') cleanupBattleSession();
-    setActiveScreen(screenName);
-  };
-
-  const handleStartSingleGame = (selectedLevel, isResume = false, mode = 'classic', rivalMode = 'standard') => {
-    soundHaptic.playSelectSound();
-    cleanupBattleSession();
-    setHomeSelectedMode(mode);
-    setActiveDailyDateKey(null);
-    setIsGuidedTutorial(false);
-
-    if (isResume && resumeSavedGame(selectedLevel)) {
-      setActiveScreen('game');
-      return;
-    }
-
-    if (rivalMode === 'ghost') {
-      const ghost = getGhostForModeLevel(mode, selectedLevel);
-      if (ghost && (ghost.puzzle || ghost.board)) {
-        startNewGame(selectedLevel, mode, {
-          board: ghost.puzzle || ghost.board,
-          solution: ghost.solution,
-          seed: ghost.seed,
-          rivalMode: 'ghost',
-          ghostRecord: ghost
-        });
-        setActiveScreen('game');
-        return;
-      }
-    }
-
-    const ghost = (rivalMode === 'delta' || rivalMode === 'ghost') ? getGhostForModeLevel(mode, selectedLevel) : null;
-    startNewGame(selectedLevel, mode, ghost ? { rivalMode, ghostRecord: ghost } : null);
-    setActiveScreen('game');
-  };
-
-  const handleStartDailyPuzzle = (dateKey) => {
-    soundHaptic.playSelectSound();
-    cleanupBattleSession();
-    setActiveDailyDateKey(dateKey);
-    setIsGuidedTutorial(false);
-    const dailyData = getDailyPuzzle(dateKey);
-    startNewGame(dailyData.level, 'classic', dailyData);
-    setActiveScreen('game');
-  };
-
-  const handleStartDailyMission = (mission) => {
-    soundHaptic.playSelectSound();
-    cleanupBattleSession();
-    setActiveDailyDateKey(mission.dateKey);
-    setIsGuidedTutorial(false);
-
-    if (mission.actionType === 'open_battle') {
-      setActiveScreen('battleLobby');
-    } else if (mission.actionType === 'play_speedrun') {
-      setHomeSelectedMode('timeAttack');
-      const dailyData = getDailyPuzzle(mission.dateKey);
-      startNewGame(mission.actionLevel || 3, 'timeAttack', dailyData);
-      setActiveScreen('game');
-    } else {
-      const dailyData = getDailyPuzzle(mission.dateKey);
-      startNewGame(mission.actionLevel || mission.minLevel || 3, 'classic', dailyData);
-      setActiveScreen('game');
-    }
-  };
-
-  const startLiveGuidedTutorial = () => {
-    soundHaptic.playSelectSound();
-    cleanupBattleSession();
-    setIsGuidedTutorial(true);
-    setGuidedStep(0);
-    startNewGame(1, 'classic');
-    setActiveScreen('game');
-  };
+  const {
+    confirmAbandon, navigateToScreen, handleStartSingleGame,
+    handleStartDailyPuzzle, handleStartDailyMission, startLiveGuidedTutorial
+  } = useGameStarters({
+    t, activeScreen, setActiveScreen, setPreviousScreen, cleanupBattleSession,
+    setHomeSelectedMode, setActiveDailyDateKey, setIsGuidedTutorial, setGuidedStep,
+    startNewGame, resumeSavedGame
+  });
 
   const handleReturnHome = () => {
     try {
@@ -261,9 +193,10 @@ export function App() {
         isVictory={isVictory}
         timerSeconds={timerSeconds}
         mistakes={mistakes}
+        hintsUsed={hintsUsedCount}
         onNextGame={startNewGame}
         onOpenLeaderboard={() => {
-          setStatsInitialTab('leaderboard');
+          setStatsInitialTab('stats');
           game.setIsVictory(false);
           navigateToScreen('stats');
         }}
@@ -284,7 +217,10 @@ export function App() {
         onConfirmDailyReward={() => setDailyRewardInfo(null)}
         showNewGameModal={showNewGameModal}
         onCloseNewGameModal={() => setShowNewGameModal(false)}
-        onSelectNewGameLevel={(lvl) => { setShowNewGameModal(false); startNewGame(lvl); }}
+        onSelectNewGameLevel={async (lvl) => {
+          setShowNewGameModal(false);
+          if (await confirmAbandon()) startNewGame(lvl);
+        }}
         showStoreReviewModal={showStoreReviewModal}
         onCloseStoreReviewModal={() => setShowStoreReviewModal(false)}
         achievementToast={achievementToast}

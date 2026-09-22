@@ -5,7 +5,7 @@
 작업을 시작하기 전에 두 파일을 읽으십시오.
 
 ```
-../app_common/AGENTS.md    모든 앱에 적용되는 공통 규칙
+../../app_common/AGENTS.md    모든 앱에 적용되는 공통 규칙
 ./AGENTS.md                스도쿠 전용 규칙 (위를 상속)
 ```
 

@@ -245,53 +245,107 @@ console.log('  ✅ 2. cloudSyncService round-trip restores stats, wallet, daily 
   }
 }
 
-// 2. Verify leaderboardService & iqStatsService
-const { leaderboardService, LEADERBOARD_CATEGORIES } = await import('../../../src/services/leaderboardService.js');
+// 2. Backups: only a save that reached Play Games counts, and they catch up by themselves
+//
+// The records screen used to carry a "back up now" button and a leaderboard tab. Both
+// are gone (SudokuDiary ㉖): backups run on their own — after a win, on sign-in, when
+// the connection returns, when the app comes back — and the world ranking lives with
+// the score on the Play Analysis screen. What must hold:
+//   - "last backup" moves only when the save reached Play Games, never for a local copy
+//   - anything changed since then is noticed, and nothing unchanged is re-uploaded
+//   - a fresh phone is offered an earlier record once, and only one that has wins
 const { iqStatsService } = await import('../../../src/services/iqStatsService.js');
-assert(LEADERBOARD_CATEGORIES.SPEEDRUN_CLASSIC, 'SPEEDRUN_CLASSIC category must exist');
-assert(LEADERBOARD_CATEGORIES.SPEEDRUN_TIME_ATTACK, 'SPEEDRUN_TIME_ATTACK category must exist');
-assert(LEADERBOARD_CATEGORIES.BRAIN_IQ, 'BRAIN_IQ category must exist');
-assert(LEADERBOARD_CATEGORIES.PVP_MMR, 'PVP_MMR category must exist');
+{
+  const { cloudSyncService: sync } = await import('../../../src/services/cloudSyncService.js');
+  const { playGamesService: pg } = await import('../../../src/services/playGamesService.js');
+  const real = { load: pg.loadSnapshot, save: pg.saveSnapshot, auth: pg.isAuthenticated, saveToCloud: sync.saveToCloud };
+  let cloud = null, saves = 0, failSave = false, failLoad = false;
+  pg.loadSnapshot = async () => (failLoad ? { success: false, reason: 'error' } : { success: true, snapshot: { data: cloud } });
+  pg.saveSnapshot = async (_n, data) => { if (failSave) return { success: false, reason: 'error' }; cloud = data; saves++; return { success: true }; };
+  const setStats = (st) => localStorage.setItem('suidoku_user_stats_v1', JSON.stringify(st));
+  try {
+    localStorage.clear(); pg.isAuthenticated = true; sync.saveToCloud = real.saveToCloud;
+    setStats({ gamesPlayed: 1, gamesWon: 1, bestTimes: { 1: 100 } });
 
-const classicRanks = await leaderboardService.fetchTopRanks(LEADERBOARD_CATEGORIES.SPEEDRUN_CLASSIC, 'lv3');
-assert(Array.isArray(classicRanks) && classicRanks.length > 0, 'Classic ranks must return array');
-assert(classicRanks[0].rank === 1, 'First rank must have rank=1');
-assert(classicRanks[0].score > 0, 'Speedrun rank item must have positive score');
+    failSave = true;
+    let r = await sync.saveToCloud();
+    assert.strictEqual(r.method, 'local_only');
+    assert.strictEqual(sync.getLastRemoteBackup(), null, 'a save that never reached Play Games must not show as a backup');
+    assert(sync.hasUnsyncedChanges(), 'so the change is still waiting');
 
-const speedrunRanks = await leaderboardService.fetchTopRanks(LEADERBOARD_CATEGORIES.SPEEDRUN_TIME_ATTACK, 'lv1');
-assert(Array.isArray(speedrunRanks) && speedrunRanks.length > 0, 'Speedrun Time Attack ranks must return array');
+    failSave = false;
+    r = await sync.syncIfNeeded();
+    assert.strictEqual(r.method, 'play_games', `pending change must upload (${JSON.stringify(r)})`);
+    assert(sync.getLastRemoteBackup() > 0, 'a save that reached Play Games shows as the last backup');
+    assert(!sync.hasUnsyncedChanges(), 'nothing new after a backup');
+    const before = saves;
+    assert.strictEqual((await sync.syncIfNeeded()).skipped, 'up_to_date');
+    assert.strictEqual(saves, before, 'nothing unchanged is re-uploaded');
 
-const iqRanks = await leaderboardService.fetchTopRanks(LEADERBOARD_CATEGORIES.BRAIN_IQ);
-assert(Array.isArray(iqRanks) && iqRanks.length > 0, 'IQ ranks must return array');
+    setStats({ gamesPlayed: 2, gamesWon: 2, bestTimes: { 1: 90 } });
+    assert(sync.hasUnsyncedChanges(), 'a win played since the last backup is noticed');
+    pg.isAuthenticated = false;
+    assert.strictEqual((await sync.syncIfNeeded()).skipped, 'signed_out');
+    pg.isAuthenticated = true;
+    const nav = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+    Object.defineProperty(globalThis, 'navigator', { value: { onLine: false }, configurable: true });
+    assert.strictEqual((await sync.syncIfNeeded()).skipped, 'offline');
+    if (nav) Object.defineProperty(globalThis, 'navigator', nav); else delete globalThis.navigator;
+    assert.strictEqual((await sync.syncIfNeeded()).method, 'play_games', 'back online: the backlog goes up');
 
-const myIqRank = leaderboardService.getMyRank(LEADERBOARD_CATEGORIES.BRAIN_IQ);
-assert(myIqRank.score >= 100 && myIqRank.score <= 150, 'My IQ rank score must be bounded realistically (100-150)');
+    // Restore offer on a fresh phone
+    localStorage.clear();
+    cloud = JSON.stringify({ stats: { gamesPlayed: 7, gamesWon: 5 } });
+    failLoad = true;
+    assert.strictEqual(await sync.findRestoreOffer(), null, 'unreadable cloud: no offer');
+    failLoad = false;
+    const offer = await sync.findRestoreOffer();
+    assert.deepStrictEqual(offer, { gamesWon: 5 }, 'fresh phone + cloud wins → offered once (an unreadable read did not use up the offer)');
+    assert.strictEqual(await sync.findRestoreOffer(), null, 'asked once per player on this phone');
+    localStorage.clear();
+    cloud = JSON.stringify({ stats: { gamesPlayed: 0, gamesWon: 0 } });
+    assert.strictEqual(await sync.findRestoreOffer(), null, 'a backup with no wins is not worth asking about');
+    localStorage.clear();
+    cloud = JSON.stringify({ stats: { gamesPlayed: 7, gamesWon: 5 } });
+    setStats({ gamesPlayed: 1, gamesWon: 0 });
+    assert.strictEqual(await sync.findRestoreOffer(), null, 'a phone that has played is not fresh — restore stays a Settings choice');
+  } finally {
+    pg.loadSnapshot = real.load; pg.saveSnapshot = real.save; pg.isAuthenticated = real.auth; sync.saveToCloud = real.saveToCloud;
+    localStorage.clear();
+  }
+}
+
+// The invented percentile table must not come back anywhere in the app.
+{
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() ? walk(path.join(d, e.name)) : /\.(js|jsx)$/.test(e.name) && !d.includes('locales') ? [path.join(d, e.name)] : []);
+  for (const file of walk(path.join(rootDir, 'src'))) {
+    const code = fs.readFileSync(file, 'utf8').replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '');
+    assert(!/['"`]TOP\s*\d|isBenchmark|getMockRanks/i.test(code), `${path.relative(rootDir, file)}: invented ranking thresholds are back`);
+  }
+}
 
 // Test Realistic Single-Clear IQ Calculation (1 game on Lv1 should not exceed 106)
 const singleClearStats = { gamesPlayed: 1, gamesWon: 1, bestTimes: { 1: 59 } };
 const singleClearIQ = iqStatsService.calculateBrainIQ(singleClearStats);
 assert(singleClearIQ >= 101 && singleClearIQ <= 106, `1 game Lv1 clear IQ must be realistically ~103 (got: ${singleClearIQ})`);
 
-// Test Dynamic Tie Ranking (59s for Lv1 Speedrun should tie with 3rd place 59s -> rank 3)
-const lv1Ranks = await leaderboardService.fetchTopRanks(LEADERBOARD_CATEGORIES.SPEEDRUN_CLASSIC, 'lv1');
-assert(Array.isArray(lv1Ranks) && lv1Ranks.length >= 10, 'Lv1 ranks must return top 10 array');
-console.log('  ✅ 3. leaderboardService 4-category dynamic rank, isolation & realistic IQ tests passed');
+console.log('  ✅ 3. backups: only Play Games saves count, changes catch up, a fresh phone is offered its record once');
 
 // 3. Verify i18n translation completeness across all 13 languages
 const languages = LOCALES; // 목록을 여기 적지 않는다 — scripts/tests/lib/locales.js 가 앱에서 읽어온다
-const requiredLeaderboardKeys = [
-  'classicTab', 'speedrunTab', 'iqTab', 'pvpTab', 'myStanding',
-  'unranked', 'record', 'topSolvers'
-];
+const requiredLeaderboardKeys = ['pvpTab', 'openPlayGames'];
 const requiredCloudSyncKeys = [
-  'sectionTitle', 'autoSyncNotice', 'backupTitle', 'backupDesc', 'backupSuccess',
+  'sectionTitle', 'autoSyncNotice', 'lastBackup', 'notBackedUp', 'restorePrompt',
   'restoreTitle', 'restoreDesc', 'restoreConfirm', 'noData'
 ];
 
 for (const lang of languages) {
   const screensPath = path.join(rootDir, 'src', 'i18n', 'locales', lang, 'screens.js');
   const screensContent = fs.readFileSync(screensPath, 'utf8');
-  assert(screensContent.includes('leaderboardTab:'), `Language [${lang}] missing stats.leaderboardTab`);
+  for (const key of ['pvpRating', 'pvpRecordLabel', 'pvpRecord']) {
+    assert(screensContent.includes(`${key}:`), `Language [${lang}] missing stats.${key}`);
+  }
 
   const lbPath = path.join(rootDir, 'src', 'i18n', 'locales', lang, 'leaderboard.js');
   const lbContent = fs.readFileSync(lbPath, 'utf8');
@@ -307,15 +361,21 @@ for (const lang of languages) {
   }
   assert(lbContent.includes('sectionTitle: \'☁️'), `Language [${lang}] cloudSync.sectionTitle must include ☁️ icon`);
 }
-console.log('  ✅ 4. i18n 5-Language completeness & ☁️ icon verified for Leaderboard & Cloud Sync (KO, EN, JA, ZH-TW, ES-ES)');
+console.log('  ✅ 4. i18n completeness & ☁️ icon verified for records, Play Games and cloud backup (13 languages)');
 
 // 4. Verify Component Integrations & Clean Line Architecture
-const globalLeaderboardView = fs.readFileSync(path.join(rootDir, 'src', 'components', 'GlobalLeaderboardView.jsx'), 'utf8');
-assert(globalLeaderboardView.includes('leaderboardService'), 'GlobalLeaderboardView must bind to leaderboardService');
-assert(globalLeaderboardView.includes('classicTab'), 'GlobalLeaderboardView must render classicTab');
-assert(globalLeaderboardView.includes('speedrunTab'), 'GlobalLeaderboardView must render speedrunTab');
-assert(globalLeaderboardView.includes('pvpTab'), 'GlobalLeaderboardView must render pvpTab');
-assert(globalLeaderboardView.includes('iqTab'), 'GlobalLeaderboardView must render iqTab');
+const statsScreen = fs.readFileSync(path.join(rootDir, 'src', 'components', 'StatsScreen.jsx'), 'utf8');
+assert(!/activeTab === 'leaderboard'|GlobalLeaderboardView/.test(statsScreen), 'the records screen has two tabs — the leaderboard tab repeated its best times');
+assert(statsScreen.includes('loadBattleProfile'), 'the records screen shows the 1v1 rating and record');
+const brainScreen = fs.readFileSync(path.join(rootDir, 'src', 'components', 'BrainReportScreen.jsx'), 'utf8');
+assert(brainScreen.includes('showLeaderboards') && brainScreen.includes('connectPlayGames'),
+  'the world ranking (Play Games) sits with the Logic Score, with a sign-in button when signed out');
+assert(!brainScreen.includes('overallStats'), 'the play analysis screen does not repeat the totals from the records screen');
+const accountSectionNow = fs.readFileSync(path.join(rootDir, 'src', 'components', 'settings', 'AccountSection.jsx'), 'utf8');
+assert(!accountSectionNow.includes('saveToCloud') && accountSectionNow.includes('getLastRemoteBackup'),
+  'Settings shows when the last backup reached Play Games instead of a manual backup button');
+const appCode = fs.readFileSync(path.join(rootDir, 'src', 'App.jsx'), 'utf8');
+assert(appCode.includes('useCloudAutoSync()'), 'the app runs the automatic backup and the restore offer');
 
 const keypadCode = fs.readFileSync(path.join(rootDir, 'src', 'components', 'Keypad.jsx'), 'utf8');
 assert(keypadCode.includes('isSpeedrun'), 'Keypad must accept isSpeedrun prop');
@@ -329,9 +389,6 @@ assert(keypadCss.includes('min-width: 0'), 'keypad.css must enforce min-width: 0
 const storageCode = fs.readFileSync(path.join(rootDir, 'src', 'utils', 'storage.js'), 'utf8');
 assert(storageCode.includes('stats.timeLimitBestTimes'), 'storage.js must record timeLimitBestTimes per difficulty level');
 
-const statsScreen = fs.readFileSync(path.join(rootDir, 'src', 'components', 'StatsScreen.jsx'), 'utf8');
-assert(statsScreen.includes('GlobalLeaderboardView'), 'StatsScreen must import and render GlobalLeaderboardView');
-assert(statsScreen.includes("activeTab === 'leaderboard'"), 'StatsScreen must support 3rd leaderboard tab');
 assert(statsScreen.includes('timeLimitBests'), 'StatsScreen must render 5 difficulty levels for Time Limit Survival');
 
 const victoryModalCode = fs.readFileSync(path.join(rootDir, 'src', 'components', 'VictoryModal.jsx'), 'utf8');
@@ -371,13 +428,12 @@ const settingsScreen = fs.readFileSync(path.join(rootDir, 'src', 'components', '
 const accountSection = fs.readFileSync(path.join(rootDir, 'src', 'components', 'settings', 'AccountSection.jsx'), 'utf8');
 assert(settingsScreen.includes('<AccountSection'), 'SettingsScreen must render the account/cloud section');
 assert(accountSection.includes('cloudSyncService'), 'AccountSection must integrate cloudSyncService');
-assert(accountSection.includes('saveToCloud') && accountSection.includes('restoreFromCloud'),
-  'AccountSection must offer both backup and restore');
-assert(/res\.method === 'play_games'/.test(accountSection),
-  'Backup must report success only when the data actually reached Play Games — saveToCloud returns success:true even for a device-local write');
-assert(/signIn\(\s*true\s*\)/.test(accountSection),
+assert(accountSection.includes('restoreFromCloud'), 'AccountSection must still offer restore from Settings');
+// The interactive sign-in moved to playGamesBridge.connectPlayGames so Settings and
+// the Play Analysis screen share it.
+const bridgeCode = fs.readFileSync(path.join(rootDir, 'src', 'utils', 'playGamesBridge.js'), 'utf8');
+assert(accountSection.includes('connectPlayGames') && /signIn\(\s*true\s*\)/.test(bridgeCode),
   'AccountSection must offer an INTERACTIVE Play Games sign-in; silent-only leaves new installs permanently locked out of leaderboards and cloud backup');
-assert(accountSection.includes('handleCloudBackup'), 'AccountSection must provide handleCloudBackup');
 assert(accountSection.includes('handleCloudRestore'), 'AccountSection must provide handleCloudRestore');
 assert(accountSection.includes('cloudSync.autoSyncNotice'), 'AccountSection must display autoSyncNotice');
 

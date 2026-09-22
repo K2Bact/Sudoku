@@ -1,7 +1,7 @@
 {
   "gate": "1",
   "name": "Global L10N Master 9-Gate & Profile Audit",
-  "command": "node ../app_common/l10n_engine/validator.mjs --app suidoku",
+  "command": "node ../../app_common/l10n_engine/validator.mjs --app suidoku",
   "greenMarker": "VALIDATOR PASSED",
   "note": "This validator once required the false privacy claim: the shared spec pinned the lie in place rather than catching it. It also spent a long time requiring screens.stats.tabs.stats and .achievements — the names the stats screen carried before it was rewritten — which is the only reason those two keys survived in thirteen languages. A profile can be as stale as the code it checks, so it gets mutated like anything else.",
   "mutations": [
@@ -30,12 +30,12 @@
       "expectFailure": "tab label too long"
     },
     {
-      "name": "the leaderboard tab label grows past the segmented button",
-      "why": "The third tab of a check named \"Stats 3-Tab\" had its value computed into ldrTab and then never used. It had no length limit at all.",
-      "file": "src/i18n/locales/ko/screens.js",
-      "find": "leaderboardTab:",
-      "replace": "leaderboardTab: '전세계순위표전체보기화면입니다', unusedLeaderboardTab:",
-      "expectFailure": "Leaderboard tab label too long"
+      "name": "Japanese noun and verb clauses are joined with ya",
+      "why": "J-01 must fail for the grammar regression, without prescribing one exact acceptable rewrite.",
+      "file": "src/i18n/locales/ja/screens.js",
+      "find": "ゲームオーバーになったり、途中でやめたりすると、",
+      "replace": "ゲームオーバーや途中でやめると",
+      "expectFailure": "JA parallel clauses mix a noun and a verb (J-01)"
     }
   ]
 }

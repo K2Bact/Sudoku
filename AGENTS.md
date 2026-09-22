@@ -1,6 +1,6 @@
 # Suidoku — 앱 전용 규칙
 
-> **먼저 `../app_common/AGENTS.md` 를 읽으십시오.** 이 파일은 그것을 상속하며,
+> **먼저 `../../app_common/AGENTS.md` 를 읽으십시오.** 이 파일은 그것을 상속하며,
 > 스도쿠에서만 참인 것만 담습니다. 공통 규칙(빌드 금지·커밋 승인·비밀 관리·파일
 > 책임 분리·측정한 숫자만 보고·변형 감사·검사 범위)은 저쪽에 있습니다.
 >
@@ -36,7 +36,7 @@ ar  de  en  es-ES  fr  hi  it  ja  ko  pt  ru  zh-CN  zh-TW
    붙였습니다.
 
 > UI 레이아웃 규칙(외톨이 글자·줄바꿈·오버플로우)은
-> `../app_common/l10n_engine/GLOBAL_L10N_STANDARDS.md` 에 있습니다.
+> `../../app_common/l10n_engine/GLOBAL_L10N_STANDARDS.md` 에 있습니다.
 
 ---
 

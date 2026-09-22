@@ -48,6 +48,10 @@ const INTENTIONALLY_ENGLISH = new Set([
   'rematchToast.countdown',           // "{seconds}s"
   'brainReport.percentilePrefix',     // "Top " — followed by a number
   'common.confirm',                   // OK
+  // One score name in every language, the same as the Play Games leaderboard, so the
+  // developer has one name to keep track of (user decision 2026-09-19). ja writes it in katakana.
+  'home.scoreLabel',                  // Logic Score
+  'brainReport.scoreLabel',           // Logic Score
 ]);
 
 /** Keys whose value is one or two letters — day initials and the like. */
@@ -59,6 +63,7 @@ const INITIALS = /^calendar\.days\./;
  */
 const COINCIDENTAL = new Set([
   'de|common.pause',                  // Pause ist deutsch
+  'de|settings.languages.auto',       // System ist deutsch
   'fr|common.pause',                  // pause est français
   'de|achievements.win_5.title',      // "High Five" is the loanword in German
   'fr|achievements.win_5.title',      // idem
@@ -110,6 +115,11 @@ const LATIN_ONLY = /^[\x20-\x7E\s]+$/;
 // search for the Latin word alone found six of the thirteen.
 const TRADEMARKS = /mensa(?![a-z])|멘사|メンサ|门萨|門薩|менс[аы]|مينسا|मेंसा/i;
 
+// Marks that are someone else's in one market only. 「数独／SUDOKU」 is Nikoli's
+// registered mark in Japan, classes 9/16/28/41 (J-PlatPat, 2026-09-19) — software
+// included. Elsewhere "sudoku" is used generically, so this is per locale.
+const MARKS_BY_LOCALE = { ja: /数独|sudoku/i };
+
 const problems = { hangul: [], empty: [], sameAsEn: [], trademark: [] };
 
 for (const loc of LOCALES) {
@@ -120,6 +130,7 @@ for (const loc of LOCALES) {
     if (!v.trim()) { problems.empty.push(`[${loc}] ${k}`); continue; }
 
     if (TRADEMARKS.test(v)) problems.trademark.push(`[${loc}] ${k} = "${v.slice(0, 50)}"`);
+    if (MARKS_BY_LOCALE[loc]?.test(v)) problems.trademark.push(`[${loc}] ${k} = "${v.slice(0, 50)}" (local mark)`);
 
     // The source language of this project is Korean. Hangul anywhere else means
     // a string was copied before it was translated.
@@ -135,6 +146,15 @@ for (const loc of LOCALES) {
     if (COINCIDENTAL.has(`${loc}|${k}`)) continue;
     problems.sameAsEn.push(`[${loc}] ${k} = "${v.slice(0, 50)}"`);
   }
+}
+
+// The launcher label is not in the JS locales — Android reads it from res/values-<lang>.
+// Without values-ja the Japanese home screen falls back to values/ and shows "Sudoku".
+const jaStrings = path.join(path.dirname(LOCALES_DIR), '../../android/app/src/main/res/values-ja/strings.xml');
+if (!fs.existsSync(jaStrings)) problems.trademark.push('[ja] android res/values-ja/strings.xml missing — launcher falls back to "Sudoku"');
+else {
+  const label = (fs.readFileSync(jaStrings, 'utf8').match(/name="app_name">([^<]*)</) || [])[1] || '';
+  if (!label || MARKS_BY_LOCALE.ja.test(label)) problems.trademark.push(`[ja] launcher app_name = "${label}" (local mark or empty)`);
 }
 
 let failed = 0;

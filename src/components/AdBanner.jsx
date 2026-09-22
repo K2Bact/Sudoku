@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { adsService } from '../services/adsService';
 import { useTranslation } from '../i18n/i18nContext';
@@ -27,6 +27,14 @@ export function AdBanner({ onOpenRemoveAdsModal, refreshTrigger }) {
 
   const removed = adsService.isAdsRemoved();
   const shouldShow = !removed && adsService.isReal;
+  // canPurchase turns true only after the store names the product for this
+  // account (not at all in Japan). Re-render once it answers.
+  const [, setOfferChecked] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    adsService.checkOffer().then(() => { if (alive) setOfferChecked(true); });
+    return () => { alive = false; };
+  }, [refreshTrigger]);
 
   // The banner is a native overlay, not part of this subtree, so it does not
   // disappear when this component unmounts. Leaving the game screen would

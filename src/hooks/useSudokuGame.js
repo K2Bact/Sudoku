@@ -11,6 +11,7 @@ import {
   clearGameState,
   recordGameLoss
 } from '../utils/storage.js';
+import { recordAbandonedGame } from '../utils/abandonedGame';
 import { loadWallet, addHints, subscribeToWallet } from '../utils/wallet.js';
 import { useTranslation } from '../i18n/i18nContext.jsx';
 import { useGameTimer } from './useGameTimer.js';
@@ -75,6 +76,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
       soundHaptic.playErrorSound();
       setIsGameOver(true);
       recordGameLoss();
+      clearGameState();   // same reason as gameMistakeHandler: a lost game is not resumable
     }
   });
 
@@ -142,8 +144,9 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     clearGameState();
   };
 
-  // Start fresh new game
+  // Start fresh new game. A game in progress that this throws away counts as a loss.
   const startNewGame = (newLevel = level, mode = 'classic', customData = null) => {
+    recordAbandonedGame();
     const hasCustomBoard = customData && (customData.board || customData.puzzle);
     const puzzle = hasCustomBoard ? customData : generatePuzzle(newLevel);
     const boardGrid = puzzle.board || puzzle.puzzle;
@@ -168,6 +171,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
   };
 
   const restartCurrentGame = () => {
+    recordAbandonedGame();
     setBoard(cloneGrid(initialBoard));
     setNotes(Array(9).fill(null).map(() => Array(9).fill([])));
     resetGameState();

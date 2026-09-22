@@ -22,20 +22,31 @@
 .logo-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  /* When the row is short (「ナンプレ」 + a larger system font), the brand gives
+     way — never the buttons on the right. On a Flip5 the settings icon was
+     pushed half off the screen by 9px. */
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .brand-icon {
-  font-size: 28px;
+  font-size: 24px;
+  flex: none;
 }
 
 .brand-text {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  min-width: 0;
 }
 
 .brand-text h1 {
+  /* One line. 「ナンプレ」 (ja, 2026-09-19) broke into 「ナンプ / レ」 — the header was
+     sized around "Sudoku" and the flex row squeezed the title first. */
+  white-space: nowrap;
   font-size: 24px;
   font-weight: 900;
   letter-spacing: -0.5px;
@@ -46,6 +57,7 @@
 }
 
 .badge-pro {
+  white-space: nowrap;
   font-size: 10px;
   font-weight: 800;
   background: linear-gradient(135deg, #3b82f6, #2563eb);
@@ -58,6 +70,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: none;
 }
 
 .home-top-actions .icon-btn {

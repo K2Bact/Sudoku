@@ -64,17 +64,20 @@ const GRAPHICS_CONFIG = {
     dir: 'ltr',
     badge: '☀ SUDOKU',
     title1: 'Sudoku',
-    title2: 'Classic Logic Puzzle',
-    tagline: 'Classic · 32 Academy Techniques · Brain IQ & 1v1 Battle',
+    title2: 'Logic Puzzle Academy',
+    tagline: '5 Levels · 32 Techniques · 1v1 & AI Battles',
     font: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
   },
   'ja-JP': {
     lang: 'ja',
     dir: 'ltr',
-    badge: '☀ SUDOKU',
-    title1: 'ナンプレ Sudoku',
-    title2: '正統派ロジックパズル',
-    tagline: 'クラシック・32の解法アカデミー・脳IQレポート',
+    // 「数独／SUDOKU」 is Nikoli's registered mark in Japan (classes 9/16/28/41);
+    // the Japanese listing uses the generic ナンプレ only (BACKLOG M-1).
+    badge: '☀ ナンプレ',
+    title1: 'ナンプレ',
+    title2: '解法が学べるロジックパズル',
+    title2Size: 38,
+    tagline: 'クラシック・32の解法アカデミー・1v1対戦',
     font: '"Meiryo", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif'
   },
   'de-DE': {
@@ -129,6 +132,10 @@ async function generateAllGraphics() {
   const browser = await chromium.launch({ headless: true });
 
   for (const [folder, cfg] of Object.entries(GRAPHICS_CONFIG)) {
+
+    // node generate_all_feature_graphics.mjs ja-JP  → only that locale
+
+    if (process.argv[2] && folder !== process.argv[2]) continue;
     const targetDir = join(outBaseDir, folder);
     if (!existsSync(targetDir)) {
       mkdirSync(targetDir, { recursive: true });
@@ -196,6 +203,9 @@ async function generateAllGraphics() {
         }
         h1 span {
           color: #60a5fa;
+          /* one line, always (AGENTS §4.4) — a long second title is shrunk per locale instead */
+          white-space: nowrap;
+          ${cfg.title2Size ? `font-size: ${cfg.title2Size}px;` : ''}
         }
         .tagline {
           font-size: 22px;
@@ -300,9 +310,8 @@ async function generateAllGraphics() {
     const prefixedPath = join(targetDir, prefixedName);
     await page.screenshot({ path: prefixedPath, type: 'png' });
 
-    // 2. Standard filename (feature_graphic_1024x500.png)
-    const standardPath = join(targetDir, 'feature_graphic_1024x500.png');
-    await page.screenshot({ path: standardPath, type: 'png' });
+    // One file per locale. A second, unprefixed copy used to be written too — the
+    // same image under two names, which only made people ask which one to upload.
 
     await page.close();
     console.log(`  ✅ [${folder}] Generated: ${prefixedName}`);

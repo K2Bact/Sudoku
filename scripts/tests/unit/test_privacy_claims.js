@@ -216,7 +216,10 @@ for (const loc of locales) {
   const text = fs.readFileSync(file, 'utf8');
   if (!text.includes('privacy: {')) { incomplete.push(`${loc}: no privacy block`); continue; }
   for (const key of REQUIRED) {
-    const hit = text.match(new RegExp(`${key}:\\s*'([^']*)'`));
+    // Either quote style: a value written with double quotes (it holds an apostrophe,
+    // or a tool wrote it) used to read as "missing" (2026-09-19).
+    const m = text.match(new RegExp(`${key}:\\s*(['"])((?:\\\\.|(?!\\1).)*)\\1`));
+    const hit = m && [m[0], m[2]];
     // Presence and non-emptiness only. A minimum length was tried and had to go:
     // zh-CN's `1. 无需注册` is seven characters and complete, because a character
     // is a word there. Any length rule tuned for alphabetic text accuses CJK, and
@@ -291,20 +294,28 @@ console.log('  ✅ No device-exclusive storage claim survives');
 // move together.
 const manifestPath = path.join(ROOT, 'android/app/src/main/AndroidManifest.xml');
 const manifest = fs.readFileSync(manifestPath, 'utf8');
+// Since 1.2.7 the flag is off (Play Games is the only off-device copy), and the
+// policy says so in all three languages. Mentioning Auto Backup is therefore not
+// the signal: saying it is NOT used is. Both directions are checked.
 const backupOn = /android:allowBackup\s*=\s*"true"/.test(manifest);
-const policyMentionsBackup =
-  /안드로이드 자동 백업|Android Auto Backup/.test(policyText);
-assert.strictEqual(backupOn, policyMentionsBackup,
-  backupOn
-    ? 'AndroidManifest.xml sets android:allowBackup="true", so Android copies the\n' +
-      'app data directory — WebView localStorage, and with it the hint wallet and\n' +
-      'the stored player id — to the Google Drive of the account on the device,\n' +
-      'and restores it when the app is installed again from Play. A player who\n' +
-      'deletes the app and installs it again keeps their old hint balance, and\n' +
-      'docs/privacy.html says nothing about why, or how to stop it.'
-    : 'docs/privacy.html describes Android Auto Backup, but AndroidManifest.xml no\n' +
-      'longer enables it. The policy now overstates what leaves the device. Remove\n' +
-      'that section, or put the flag back.');
+const NOT_USED = [
+  /안드로이드 자동 백업\(Google 드라이브\)은 사용하지 않습니다/,
+  /Android Auto Backup \(Google Drive\) is not used/,
+  /Android の自動バックアップ（Google ドライブ）は使用しません/,
+];
+const saysNotUsed = NOT_USED.map((re) => re.test(policyText));
+if (backupOn) {
+  assert(saysNotUsed.every((x) => !x),
+    'AndroidManifest.xml sets android:allowBackup="true", so Android copies the\n' +
+    'app data directory — WebView localStorage, and with it the hint wallet and\n' +
+    'the stored player id — to the Google Drive of the account on the device and\n' +
+    'restores it on reinstall. docs/privacy.html says Auto Backup is not used.');
+} else {
+  assert(saysNotUsed.every(Boolean),
+    'AndroidManifest.xml turns Android Auto Backup off, but docs/privacy.html does\n' +
+    `not say so in every language (ko, en, ja: ${saysNotUsed.join(', ')}). A player\n` +
+    'who is not signed in to Play Games has no off-device copy — the policy must tell them.');
+}
 console.log(`  ${String.fromCharCode(9989)} manifest backup flag and the policy agree (backup ${backupOn ? 'on' : 'off'})`);
 
 // ── Case 4: the hosted policy names where the data actually goes ───────────
@@ -431,6 +442,8 @@ console.log(`  ✅ the advertising ID permission matches the build (${shipsAdSdk
 // quiet; the text is then free to drop it.
 console.log('▶ 4c. Every flow the code performs is described, in-app and hosted');
 const readSrc = (p) => stripComments(fs.readFileSync(path.join(ROOT, p), 'utf8'));
+const nicknamePrefix = (readSrc('src/firebase/battleService.js')
+  .match(/initPlayerName\(\)\s*\{\s*return `([A-Za-z]+_)\$\{/) || [])[1] || '';
 const FLOWS = [
   { what: 'cloud backup runs after every win',
     inCode: () => /saveToCloud\(\)/.test(readSrc('src/utils/gameCompletion.js')),
@@ -452,10 +465,13 @@ const FLOWS = [
     inCode: () => /showRewarded\(/.test(readSrc('src/services/adsService.js')),
     hosted: ['보상형', 'rewarded', 'リワード'],
     inApp: { ko: '보상형', en: 'rewarded', ja: 'リワード' } },
+  // The prefix is read from the code, not written here: it changed from
+  // SudokuMaster_ to Player_ on 2026-09-19 (「SUDOKU」 is a registered mark in
+  // Japan), and a hard-coded marker would have kept demanding the old name.
   { what: '1v1 sends an automatic nickname',
-    inCode: () => /SudokuMaster_/.test(readSrc('src/firebase/battleService.js')),
-    hosted: ['SudokuMaster_'],
-    inApp: { ko: 'SudokuMaster_', en: 'SudokuMaster_', ja: 'SudokuMaster_' } },
+    inCode: () => Boolean(nicknamePrefix),
+    hosted: [nicknamePrefix],
+    inApp: { ko: nicknamePrefix, en: nicknamePrefix, ja: nicknamePrefix } },
   { what: 'the Remove Ads purchase goes through Google Play Billing',
     inCode: () => /store\.purchase\(/.test(readSrc('src/billing/playBillingProvider.js')),
     hosted: ['Google Play 결제', 'Google Play Billing', 'Google Play の決済'],

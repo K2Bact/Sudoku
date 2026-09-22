@@ -31,6 +31,7 @@ export function GameModalsContainer({
   gameMode = 'classic',
   timerSeconds,
   mistakes,
+  hintsUsed = 0,
   onNextGame,
   onOpenLeaderboard,
 
@@ -93,6 +94,7 @@ export function GameModalsContainer({
           timerSeconds={timerSeconds}
           gameMode={gameMode}
           mistakes={mistakes}
+          hintsUsed={hintsUsed}
           level={level}
           onNextGame={() => onNextGame(level)}
           onReturnHome={onReturnHome}

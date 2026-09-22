@@ -53,6 +53,6 @@ export const achievements = {
     daily_first: { title: 'Explorateur quotidien', desc: 'Terminez votre premier défi quotidien' },
     daily_streak_7: { title: 'Miracle de 7 jours', desc: 'Connectez-vous 7 jours d’affilée' },
     battle_first_win: { title: 'Victoire de gladiateur', desc: 'Remportez votre premier duel 1v1 ou contre l’IA' },
-    iq_150: { title: 'Cerveau de génie', desc: 'Atteignez un QI Sudoku de 150 ou plus' }
+    iq_150: { title: 'Maître de la logique', desc: 'Atteignez un Logic Score de 150 ou plus' }
   }
 };

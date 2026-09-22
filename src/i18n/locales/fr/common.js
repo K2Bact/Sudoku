@@ -6,7 +6,8 @@ export const common = {
     confirm: 'OK',
     cancel: 'Annuler',
     restart: 'Recommencer',
-    restartConfirm: 'Recommencer cette grille ?',
+    restartConfirm: "Recommencer cette grille ? La partie en cours comptera comme une défaite.",
+    abandonConfirm: "Une partie est en cours. En commencer une nouvelle la comptera comme une défaite. Commencer quand même ?",
     newGame: 'Nouvelle partie',
     home: 'Accueil',
     pause: 'Pause',
@@ -76,28 +77,28 @@ export const common = {
   },
   tiers: {
     grandMaster: {
-      title: '👑 Grand Maître',
-      desc: 'Déduction magistrale digne du top 1% de l’élite.'
+      title: '👑 Grand maître',
+      desc: 'Vous avez atteint le rang le plus élevé.'
     },
     expert: {
-      title: '🧠 Logique experte',
-      desc: 'Raisonnement déductif remarquable dans ce jeu.'
+      title: '🧠 Expert',
+      desc: 'Vous résolvez régulièrement des grilles difficiles.'
     },
     superior: {
-      title: '⚡ Logique supérieure',
-      desc: 'Intuition affûtée et brillante résolution de problèmes.'
+      title: '⚡ Avancé',
+      desc: 'Vous êtes prêt pour des grilles avancées.'
     },
     aboveAverage: {
-      title: '💡 Au-dessus de la moyenne',
-      desc: 'Esprit analytique souple et robuste.'
+      title: '💡 Intermédiaire',
+      desc: 'Vous progressez régulièrement.'
     },
     balanced: {
-      title: '🎯 Esprit équilibré',
-      desc: 'Développement harmonieux des 5 piliers cognitifs.'
+      title: '🎯 Équilibré',
+      desc: 'Vos 5 indicateurs progressent de façon équilibrée.'
     },
     developing: {
-      title: '🌱 Entraînement cérébral',
-      desc: 'Développement des fondations logiques au potentiel infini.'
+      title: '🌱 Débutant',
+      desc: 'Continuez à jouer et votre score montera.'
     }
   }
 };

@@ -30,7 +30,7 @@ V01~V13(검사 결함 13개), D01~D04(명세·문구 근거 부족 4개) 가 있
 
 **하나씩 재현해서 확인하고, 확인된 것만 고쳐라.**
 
-먼저 읽을 것: `AGENTS.md` → `../app_common/AGENTS.md`, `docs/BACKLOG.md` 의
+먼저 읽을 것: `AGENTS.md` → `../../app_common/AGENTS.md`, `docs/BACKLOG.md` 의
 「검사 시스템 현황」, `docs/RELEASE_STATE.md`.
 
 ## 저장소를 읽어도 알 수 없는 것들

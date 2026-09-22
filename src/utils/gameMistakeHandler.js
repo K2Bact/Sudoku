@@ -1,5 +1,5 @@
 import { soundHaptic } from './soundHaptic.js';
-import { recordGameLoss } from './storage.js';
+import { recordGameLoss, clearGameState } from './storage.js';
 import { detectSudokuConflict } from '../engine/conflictDetector.js';
 
 export function handleMistakeLogic({
@@ -35,5 +35,9 @@ export function handleMistakeLogic({
     soundHaptic.playGameOverSound();
     setIsGameOver(true);
     recordGameLoss();
+    // The loss is recorded; the last save (taken at 2 mistakes) must not survive it,
+    // or Home offers to resume a lost game — a free revive — and quitting it later
+    // would count the same loss twice (abandonedGame.js).
+    clearGameState();
   }
 }

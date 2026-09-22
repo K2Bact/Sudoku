@@ -715,6 +715,106 @@ console.log('▶ 9. 승리 순서는 멈춤 → 광고 → 승리 화면이고, 
   console.log('  ✅ 준비 안 됨 → 곧장 · 준비됨 → 멈춤 → 광고 → 화면 · 던져도 화면 · 떠났으면 광고 없음');
 }
 
+// Model the installed Android SDK, not an idealised show/hide toggle:
+// hide keeps the view GONE; show on an existing view reloads it, stays hidden,
+// and never resolves its PluginCall. Only resume makes that view visible again.
+function nativeBannerStub() {
+  const ctl = { exists: false, visible: false, creates: 0, resumes: 0, hold: null, waiting: [], failResume: false };
+  const finish = (kind, action) => {
+    if (ctl.hold !== kind) { action(); return Promise.resolve(); }
+    return new Promise(resolve => ctl.waiting.push(() => { action(); resolve(); }));
+  };
+  return {
+    ctl,
+    stub: {
+      requestConsentInfo: () => Promise.resolve({ status: 'OBTAINED', canRequestAds: true }),
+      initialize: () => Promise.resolve(),
+      showBanner() {
+        if (ctl.exists) return new Promise(() => {});
+        ctl.exists = true;
+        ctl.creates++;
+        return finish('show', () => { ctl.visible = true; });
+      },
+      hideBanner: () => finish('hide', () => { ctl.visible = false; }),
+      resumeBanner() {
+        ctl.resumes++;
+        if (ctl.failResume) return Promise.reject(new Error('resume failed'));
+        return finish('resume', () => { if (ctl.exists) ctl.visible = true; });
+      },
+    },
+    release() { ctl.hold = null; ctl.waiting.shift()?.(); },
+  };
+}
+async function waitForBannerCall(b) {
+  for (let i = 0; i < 50 && !b.ctl.waiting.length; i++) await tick();
+  assert(b.ctl.waiting.length, '보류할 네이티브 배너 호출까지 도달해야 한다');
+}
+console.log('▶ 배너: 네이티브 뷰 재사용·재진입·빠른 화면 전환');
+{
+  const b = nativeBannerStub();
+  const p = await newProvider(b.stub);
+  assert.strictEqual(await p.showBanner(), true);
+  assert(b.ctl.visible, '첫 배너가 실제로 보여야 한다');
+  for (let i = 0; i < 3; i++) {
+    await p.hideBanner();
+    assert(!b.ctl.visible, '홈에서는 배너가 숨겨져야 한다');
+    const result = await within(p.showBanner(), SETTLE_MS);
+    assert(result.settled, '재진입한 배너 표시가 끝나지 않는다');
+    assert(result.value && b.ctl.visible, '재진입한 배너가 다시 보이지 않는다');
+  }
+  assert.strictEqual(b.ctl.creates, 1, '기존 네이티브 배너를 재사용해야 한다');
+  b.ctl.failResume = true;
+  assert.strictEqual(await p.showBanner(), false);
+  b.ctl.failResume = false;
+  const retry = await within(p.showBanner(), SETTLE_MS);
+  assert(retry.settled && retry.value, '실패한 배너 호출 뒤에 재시도할 수 없다');
+  console.log('  ✅ 세 번 재진입해도 다시 보이고, 실패 뒤 재시도 가능');
+}
+{
+  const b = nativeBannerStub();
+  b.ctl.hold = 'show';
+  const p = await newProvider(b.stub);
+  const first = p.showBanner();
+  const second = p.showBanner();
+  await waitForBannerCall(b);
+  b.release();
+  const result = await within(Promise.all([first, second]), SETTLE_MS);
+  assert(result.settled && result.value.every(Boolean), '동시 배너 요청이 중복 생성 경로에서 멈췄다');
+  assert(b.ctl.visible && b.ctl.creates === 1);
+  console.log('  ✅ 첫 표시가 진행 중이어도 중복 생성하지 않는다');
+}
+for (const leaveAgain of [false, true]) {
+  const b = nativeBannerStub();
+  const p = await newProvider(b.stub);
+  await p.showBanner();
+  b.ctl.hold = 'hide';
+  const hiding = p.hideBanner();
+  await waitForBannerCall(b);
+  const showing = p.showBanner();
+  await tick();
+  assert.strictEqual(b.ctl.resumes, 0, '숨김이 끝나기 전에 배너를 재표시했다');
+  const lastHide = leaveAgain ? p.hideBanner() : Promise.resolve();
+  b.release();
+  const result = await within(Promise.all([hiding, showing, lastHide]), SETTLE_MS);
+  assert(result.settled, '빠른 화면 전환 중 배너 처리가 멈췄다');
+  assert.strictEqual(b.ctl.visible, !leaveAgain, '늦은 숨김이 마지막 화면의 배너 상태를 뒤집었다');
+  if (leaveAgain) assert.strictEqual(b.ctl.resumes, 0, '대기 중 낡아진 배너가 홈에서 다시 표시됐다');
+}
+for (const kind of ['show', 'resume']) {
+  const b = nativeBannerStub();
+  const p = await newProvider(b.stub);
+  if (kind === 'resume') { await p.showBanner(); await p.hideBanner(); }
+  b.ctl.hold = kind;
+  const showing = p.showBanner();
+  await waitForBannerCall(b);
+  const hiding = p.hideBanner();
+  b.release();
+  const result = await within(Promise.all([showing, hiding]), SETTLE_MS);
+  assert(result.settled && result.value[0] === false && !b.ctl.visible,
+    '진행 중인 네이티브 표시 뒤에 홈으로 나갔는데 배너가 남았다');
+}
+console.log('  ✅ 표시·숨김이 엇갈려도 마지막 화면의 의도를 따른다');
+
 console.log('\n======================================================');
 console.log('🎉 광고 수명주기 경합 게이트 통과');
 console.log('======================================================');

@@ -13,6 +13,10 @@
   box-shadow: var(--shadow-sm);
   margin-top: 10px;
   box-sizing: border-box;
+  /* No fixed height: each card is as tall as its own tallest tab, measured in
+     InteractivePracticeSection (.practice-panel-slot). A single floor for all 32
+     cards, sized for a 9x9 board with keypad, left small techniques floating in
+     empty space (user, 2026-09-19). */
 }
 
 /* 3-Way Sub Tabs: Theory / Practice 1 / Practice 2 */

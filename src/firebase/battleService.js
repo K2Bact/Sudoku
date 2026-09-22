@@ -47,7 +47,7 @@ class BattleService {
   }
 
   initPlayerName() {
-    return `SudokuMaster_${this.myPlayerId.slice(-4)}`;
+    return `Player_${this.myPlayerId.slice(-4)}`;
   }
 
   /**

@@ -1,28 +1,21 @@
 export const leaderboard = {
   leaderboard: {
-    classicTab: 'クラシック順位',
-    speedrunTab: 'タイムアタック順位',
     pvpTab: '1v1 対戦',
-    iqTab: 'ブレインIQ',
-    myStanding: '現在の順位',
-    unranked: 'ランク外',
-    record: '自己ベスト',
-    topSolvers: '実力の目安',
-    openPlayGames: 'Play ゲームで全体順位を見る'
+    openPlayGames: "自分のロジックスコア順位を見る"
   },
   cloudSync: {
     sectionTitle: '☁️ クラウド保存＆アカウント同期',
-    autoSyncNotice: '💡 パズルクリア時に自動バックアップされます。端末変更時は[データ復元]で読み込めます。',
+    autoSyncNotice: "💡 Play ゲームにログインしていると、進行状況は自動でバックアップされます。新しい端末では読み込むかどうか確認します。",
     playGamesConnect: 'Play ゲームに接続',
     playGamesConnectDesc: 'リーダーボードとクラウドバックアップに必要です',
     playGamesConnected: '{name} として接続中',
     playGamesFailed: '接続できませんでした。しばらくしてからもう一度お試しください。',
-    backupTitle: '今すぐクラウドにバックアップ',
-    backupDesc: '現在の進捗、統計、実績を安全にクラウドへ保存します。',
-    backupSuccess: 'クラウドバックアップが完了しました！ ✅',
     restoreTitle: 'クラウドからデータを復元',
     restoreDesc: '保存されたクラウドデータを読み込み復元します。',
     restoreConfirm: 'クラウドデータを復元しますか？ローカルの記録と統合されます。',
+    lastBackup: "最終バックアップ: {time}",
+    notBackedUp: "まだバックアップされていません",
+    restorePrompt: "Play ゲームに保存された記録があります（{won}勝）。この端末に読み込みますか？",
     noData: 'このアカウントのクラウドバックアップデータが見つかりません。'
   }
 };

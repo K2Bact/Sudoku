@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Android Auto Backup is off: the only off-device copy is the Play Games saved game
+         (cloudSyncService). Two backup paths restored different snapshots on reinstall and
+         had to be explained twice in the privacy policy (SudokuDiary ㉖). -->
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="${appName}"
         android:roundIcon="@mipmap/ic_launcher_round"

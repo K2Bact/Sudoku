@@ -57,6 +57,20 @@ export async function attemptSilentSignIn() {
   }
 }
 
+/**
+ * Interactive sign-in from a real tap: Google's sign-in UI, then the same silent path
+ * so the profile is stored and 'playGamesSignedIn' fires. Returns true when signed in.
+ * Settings and the Play Analysis screen both offer it.
+ */
+export async function connectPlayGames() {
+  const res = await playGamesService.signIn(true);
+  if (!res.success) return false;
+  // 직접 켰으니 자동 로그인 차단을 푼다. 다음 실행부터 세션이 조용히 복원된다.
+  allowAutoSignIn();
+  await attemptSilentSignIn();
+  return true;
+}
+
 export function initPlayGamesListener() {
   if (typeof window === 'undefined') return;
 

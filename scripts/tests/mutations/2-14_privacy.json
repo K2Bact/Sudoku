@@ -38,12 +38,12 @@
       "expectFailure": "says the data stays on the device"
     },
     {
-      "name": "backup is turned off in the manifest while the policy still describes it",
-      "why": "The policy now asserts something specific about Android Auto Backup, and the only reason that is true is this flag. Turning it off makes the policy wrong in the other direction.",
+      "name": "backup is turned back on in the manifest while the policy says it is not used",
+      "why": "Since 1.2.7 the policy tells players Auto Backup is not used and Play Games is the only off-device copy. Turning the flag back on makes that false.",
       "file": "android/app/src/main/AndroidManifest.xml",
-      "find": "android:allowBackup=\"true\"",
-      "replace": "android:allowBackup=\"false\"",
-      "expectFailure": "longer enables it"
+      "find": "android:allowBackup=\"false\"",
+      "replace": "android:allowBackup=\"true\"",
+      "expectFailure": "says Auto Backup is not used"
     },
     {
       "name": "the reward text names a fixed amount again",

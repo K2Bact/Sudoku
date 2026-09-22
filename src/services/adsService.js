@@ -71,9 +71,41 @@ class AdsService {
     }
   }
 
-  /** Whether a purchase can actually be made. The UI must ask before offering. */
+  /**
+   * Whether a purchase can actually be made. The UI must ask before offering.
+   *
+   * A billing library being present is not enough. Remove Ads is not sold in
+   * Japan (a paid item there needs a 特定商取引法 notice; decided 2026-09-19,
+   * BACKLOG M-1), and for an account the product is not offered to the store
+   * returns nothing. Offering the button anyway leads to a price-less screen
+   * whose only outcome is "purchase failed". So this stays false until the
+   * store has actually named the product for this account — checkOffer().
+   */
   get canPurchase() {
-    return getBillingProvider().isAvailable;
+    return getBillingProvider().isAvailable && this.offered === true;
+  }
+
+  /**
+   * Ask the store once whether Remove Ads is on sale to this account. A miss
+   * is not cached: a network failure must not hide the button for the rest of
+   * the session, so the next caller asks again.
+   */
+  checkOffer() {
+    if (!getBillingProvider().isAvailable) return Promise.resolve(false);
+    if (this.offered === true) return Promise.resolve(true);
+    if (!this.offerPromise) {
+      this.offerPromise = getBillingProvider().getProduct()
+        .then((p) => {
+          this.offered = Boolean(p);
+          if (!this.offered) this.offerPromise = null;
+          return this.offered;
+        })
+        .catch(() => {
+          this.offerPromise = null;
+          return false;
+        });
+    }
+    return this.offerPromise;
   }
 
   /** The store's own localised price string, or null when nothing can be sold. */

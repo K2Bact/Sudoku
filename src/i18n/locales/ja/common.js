@@ -6,7 +6,8 @@ export const common = {
     confirm: '決定',
     cancel: 'キャンセル',
     restart: 'やり直す',
-    restartConfirm: 'このパズルを最初からやり直しますか？',
+    restartConfirm: "このパズルをやり直しますか？今のゲームは負けとして記録されます。",
+    abandonConfirm: "進行中のゲームがあります。新しく始めると、今のゲームは負けとして記録されます。始めますか？",
     newGame: '新しいゲーム',
     home: 'ホーム',
     pause: '一時停止',
@@ -77,27 +78,27 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 グランドマスター',
-      desc: 'ごく少数だけが到達する1%マスター級の論理力です。'
+      desc: '最高ランクに到達しました。'
     },
     expert: {
-      title: '🧠 達人級の論理力',
-      desc: 'このゲームで際立った推理力を発揮しています。'
+      title: '🧠 達人',
+      desc: '高難度のパズルを安定して解いています。'
     },
     superior: {
-      title: '⚡ 優秀な頭脳',
-      desc: '鋭い直感と優れた問題解決能力を持っています。'
+      title: '⚡ 上級者',
+      desc: '上級のパズルにも挑める実力です。'
     },
     aboveAverage: {
-      title: '💡 平均以上の論理力',
-      desc: '安定した柔軟な思考でパズルを解いています。'
+      title: '💡 中級者',
+      desc: '着実に腕を上げています。'
     },
     balanced: {
-      title: '🎯 バランスの良い頭脳',
-      desc: '5つの認知能力が均等に発達した理想的な状態です。'
+      title: '🎯 バランス型',
+      desc: '5つのプレイ指標がバランスよく伸びています。'
     },
     developing: {
-      title: '🌱 成長中の頭脳',
-      desc: '脳トレを始めたばかりの段階です。続けるほど指数が急上昇します！'
+      title: '🌱 ビギナー',
+      desc: 'プレイを続けるほどスコアが上がります。'
     }
   }
 };

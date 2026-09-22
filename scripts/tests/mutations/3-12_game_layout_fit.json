@@ -1,0 +1,34 @@
+{
+  "gate": "3-12",
+  "name": "The Game Screen Fits the Phone",
+  "command": "node scripts/tests/ui/test_game_layout_fit.js",
+  "greenMarker": "The game screen fits every size and font scale checked",
+  "note": "BACKLOG U-1: a Galaxy S25 Ultra at a larger system font had the banner over the keypad. Each mutation puts back one of the three causes.",
+  "mutations": [
+    {
+      "name": "the keypad may shrink again",
+      "why": "A squeezed keypad cut its own digit row on a 360x640 screen while the page still fit.",
+      "file": "src/styles/gameHeader.css",
+      "find": ".game-main > * {\n  flex-shrink: 0;\n}",
+      "replace": ".game-main > * {\n  flex-shrink: 1;\n}",
+      "expectFailure": "keypad buttons cut off"
+    },
+    {
+      "name": "the board goes back to full width",
+      "why": "The original bug: a full-width square board pushed the keypad under the bottom banner (the page itself does not scroll — the screen is one screen tall — so the overlap is the symptom).",
+      "file": "src/styles/gameHeader.css",
+      "find": "  width: min(100cqw, 100cqh - var(--board-rest, 0px));",
+      "replace": "  width: 100cqw;",
+      "expectFailure": "under the banner"
+    },
+    {
+      "name": "the keypad sits against the banner",
+      "why": "Space below the keypad is what keeps a digit tap from landing on an ad.",
+      "file": "src/styles/gameHeader.css",
+      "find": "  padding-bottom: 16px;\n  box-sizing: border-box;\n}",
+      "replace": "  padding-bottom: 0px;\n  box-sizing: border-box;\n}",
+      "expectFailure": "accidental ad taps"
+    }
+  ],
+  "rebuild": true
+}

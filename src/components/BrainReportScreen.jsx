@@ -1,15 +1,46 @@
-import React, { useState } from 'react';
-import { Brain, Share2, Zap, Target, Shield, Eye, Award } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Brain, Share2, Zap, Target, Shield, Eye, Award, Trophy, Gamepad2 } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
 import { loadStats } from '../utils/storage';
 import { soundHaptic } from '../utils/soundHaptic';
 import { iqStatsService } from '../services/iqStatsService';
 import { useTranslation } from '../i18n/i18nContext';
 import { shareContent } from '../utils/nativeShare';
+import { playGamesService } from '../services/playGamesService';
+import { connectPlayGames } from '../utils/playGamesBridge';
 
 export function BrainReportScreen({ onBack }) {
   const { t } = useTranslation();
   const [shareToast, setShareToast] = useState(null);
+  // The world ranking is the Logic Score ranking, so it sits next to the score.
+  // Play Games owns it; this screen can only open Google's own view of it.
+  const [signedIn, setSignedIn] = useState(() => playGamesService.isNative() && playGamesService.isAuthenticated);
+  const [connecting, setConnecting] = useState(false);
+  useEffect(() => {
+    const onSignedIn = () => setSignedIn(playGamesService.isNative() && playGamesService.isAuthenticated);
+    window.addEventListener('playGamesSignedIn', onSignedIn);
+    return () => window.removeEventListener('playGamesSignedIn', onSignedIn);
+  }, []);
+
+  const handleOpenRanking = async () => {
+    soundHaptic.playSelectSound();
+    const res = await playGamesService.showLeaderboards();
+    if (!res.success) setSignedIn(false);
+  };
+
+  const handleConnect = async () => {
+    if (connecting) return;
+    soundHaptic.playSelectSound();
+    setConnecting(true);
+    const ok = await connectPlayGames();
+    setConnecting(false);
+    if (ok) setSignedIn(true);
+    else {
+      setShareToast(t('cloudSync.playGamesFailed'));
+      setTimeout(() => setShareToast(null), 2500);
+    }
+  };
+
   const stats = loadStats();
   const played = stats.gamesPlayed || 0;
   const won = stats.gamesWon || 0;
@@ -74,7 +105,7 @@ export function BrainReportScreen({ onBack }) {
         {/* IQ Hero Ring */}
         <div className="brain-iq-hero text-center">
           <div className="iq-circle mx-auto">
-            <span className="iq-label">Sudoku IQ</span>
+            <span className="iq-label">{t('brainReport.scoreLabel')}</span>
             <span className="iq-number">{report.iqScore}</span>
           </div>
           <div className="tier-badge-pill mt-3">
@@ -82,6 +113,16 @@ export function BrainReportScreen({ onBack }) {
             <span className="tier-title fw-bold">{tierTitle}</span>
           </div>
           <p className="iq-desc text-muted mt-2">{tierDesc}</p>
+          {/* What moves the score — the ranking uses it, so the player should be able to
+              find out without guessing (user, 2026-09-19). */}
+          <details className="score-how" style={{ marginTop: '10px', textAlign: 'left' }}>
+            <summary style={{ cursor: 'pointer', fontSize: '12.5px', fontWeight: 700, color: 'var(--text-muted)', textAlign: 'center' }}>
+              {t('brainReport.scoreHowTitle')}
+            </summary>
+            <p style={{ margin: '8px 0 0', fontSize: '12.5px', lineHeight: 1.55, color: 'var(--text-muted)' }}>
+              {t('brainReport.scoreHowBody')}
+            </p>
+          </details>
         </div>
 
         {/* Attributes Breakdown List */}
@@ -100,23 +141,24 @@ export function BrainReportScreen({ onBack }) {
           </div>
         </div>
 
-        {/* Stats Summary Bar */}
-        <div className="stats-card">
-          <h4 className="fw-bold mb-3">{t('brainReport.overallStats')}</h4>
-          <div className="stats-summary-bar">
-            <div>
-              <span className="lbl">{t('brainReport.totalPlayed')}</span>
-              <span className="val fw-bold">{played}</span>
-            </div>
-            <div>
-              <span className="lbl">{t('brainReport.totalWon')}</span>
-              <span className="val fw-bold">{won}</span>
-            </div>
-            <div>
-              <span className="lbl">{t('brainReport.winRate')}</span>
-              <span className="val fw-bold">{winRate}%</span>
-            </div>
-          </div>
+        {/* World ranking — Play Games only (the totals live on the Stats screen) */}
+        <div className="stats-card world-ranking-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {signedIn ? (
+            <button type="button" className="btn-modern btn-block" onClick={handleOpenRanking}>
+              <Trophy size={16} />
+              <span>{t('leaderboard.openPlayGames')}</span>
+            </button>
+          ) : (
+            <>
+              <button type="button" className="btn-modern btn-block" onClick={handleConnect} disabled={connecting}>
+                <Gamepad2 size={16} />
+                <span>{t('cloudSync.playGamesConnect')}</span>
+              </button>
+              <p className="text-muted" style={{ margin: '8px 0 0', fontSize: '12px', textAlign: 'center' }}>
+                {t('cloudSync.playGamesConnectDesc')}
+              </p>
+            </>
+          )}
         </div>
 
         {/* Bottom Action Button */}

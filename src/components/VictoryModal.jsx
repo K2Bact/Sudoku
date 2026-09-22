@@ -5,6 +5,8 @@ import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
 import { speedrunRankFor } from '../utils/speedrunRank';
 import { shareContent } from '../utils/nativeShare';
+import { recordEligibility } from '../utils/recordEligibility';
+import { loadSettings } from '../utils/storage';
 
 export function VictoryModal({
   level = 3,
@@ -12,6 +14,7 @@ export function VictoryModal({
   timerSeconds,
   timeSeconds,
   mistakes = 0,
+  hintsUsed = 0,
   onNextGame,
   onRestart,
   onReturnHome,
@@ -23,6 +26,11 @@ export function VictoryModal({
   const handleNext = onNextGame || onRestart;
 
   const rankInfo = speedrunRankFor(level, gameMode, actualSeconds);
+  // Same rule the win was recorded under (gameCompletion.js), so the player learns
+  // why a fast time did not become their best instead of taking it for a bug.
+  const eligibility = recordEligibility({
+    gameMode, hintsUsed, mistakes, limitMistakes: loadSettings().limitMistakes ?? true
+  });
 
   useEffect(() => {
     confetti({
@@ -122,6 +130,13 @@ export function VictoryModal({
             <span className="stat-val">{t('modals.victory.mistakesCount', { count: mistakes })}</span>
           </div>
         </div>
+
+        {!eligibility.counts && (
+          <p className="victory-not-recorded" data-reason={eligibility.reason}
+            style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center' }}>
+            {t(eligibility.reason === 'hint_used' ? 'modals.victory.notRecordedHint' : 'modals.victory.notRecordedNoLimit')}
+          </p>
+        )}
 
         <div className="modal-actions-vertical w-100">
           {/* In-App Global Leaderboard Quick View Button */}

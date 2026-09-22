@@ -7,10 +7,11 @@ export const screens = {
     }
   },
   home: {
+    scoreLabel: 'Logic Score',
     title: 'Sudoku',
     badge: 'PRO',
     hintTooltip: 'संकेत',
-    brainReportTitle: 'मस्तिष्क विश्लेषण',
+    brainReportTitle: 'खेल विश्लेषण',
     brainPercentileShort: 'हल किए गए पज़ल: {won}',
     startSelectedLevel: 'स्तर {level} {name} शुरू करें',
     modeTabs: { classic: 'क्लासिक', timeAttack: 'स्पीडरन', timeLimit: 'सर्वाइवल' },
@@ -30,7 +31,7 @@ export const screens = {
       academy: { title: 'सुडोकू अकादमी', desc: 'मास्टर्स की 32 रणनीतियां सीखें' },
       practice: { title: 'मुक्त अभ्यास मोड', desc: 'बिना गलती सीमा के आरामदायक खेल' }
     },
-    nav: {brain: 'IQ रिपोर्ट', stats: 'आंकड़े', academy: 'अकादमी', settings: 'सेटिंग्स' }
+    nav: {brain: 'विश्लेषण', stats: 'आंकड़े', academy: 'अकादमी', settings: 'सेटिंग्स' }
   },
   daily: {
     header: 'दैनिक चुनौतियां ({month})',
@@ -95,11 +96,11 @@ export const screens = {
     themeSection: '🎨 विजुअल थीम',
     languageSection: '🌐 भाषा',
     languages: {
-      auto: 'सिस्टम डिफ़ॉल्ट'
+      auto: 'सिस्टम'
     },
     gameplaySection: '🎮 खेल के नियम',
     limitMistakes: '3 गलतियों की सीमा (❤️)',
-    limitMistakesDesc: '3 गलतियां करने पर खेल समाप्त',
+    limitMistakesDesc: "3 गलतियां करने पर खेल समाप्त। बंद होने पर सबसे अच्छा समय सेव नहीं होता",
     autoCheck: 'स्वचालित गलती जांच',
     autoCheckDesc: 'गलत नंबर को तुरंत लाल रंग में दिखाना',
     soundSection: '🔊 ध्वनि और कंपन',
@@ -111,7 +112,7 @@ export const screens = {
     adPrivacyDesc: 'वैयक्तिकृत विज्ञापन सहमति बदलें',
     resetData: 'सभी स्थानीय डेटा रीसेट करें',
     resetDataDesc: 'स्थानीय आंकड़े और खेल इतिहास हटाएं',
-    resetConfirm: '⚠️ चेतावनी: सभी आंकड़े, संकेत और मस्तिष्क स्कोर हमेशा के लिए हटा दिए जाएंगे। जारी रखें?',
+    resetConfirm: '⚠️ चेतावनी: सभी आंकड़े, संकेत और खेल विश्लेषण का डेटा हमेशा के लिए हटा दिया जाएगा। जारी रखें?',
     resetSuccess: 'डेटा सफलतापूर्वक रीसेट हो गया।',
     privacySection: '🛡️ गोपनीयता नीति',
     privacyPolicyBtn: 'गोपनीयता नीति देखें',
@@ -119,9 +120,9 @@ export const screens = {
     privacyModalTitle: 'गोपनीयता नीति',
     privacy: {
       subtitle: 'Sudoku के लिए किसी खाते की ज़रूरत नहीं है। ऐप वास्तव में क्या सहेजता और भेजता है, वह नीचे दिया गया है।',
-      sec1Title: '1. डिवाइस पर स्टोरेज और बैकअप', sec1Desc: 'आपके रिकॉर्ड, संकेत और सेटिंग्स आपके डिवाइस पर सहेजे जाते हैं। अगर Android ऑटो बैकअप चालू है, तो Android यह डेटा आपकी अपनी Google ड्राइव में कॉपी करता है और ऐप दोबारा इंस्टॉल करने पर वापस लाता है। हम आपका नाम, ईमेल, फ़ोन नंबर, संपर्क या स्थान कभी एकत्र नहीं करते।',
-      sec2Title: '2. Google Play Games', sec2Desc: 'जब तक आप Play Games में साइन इन हैं, हर जीत पर आपकी प्रगति (आँकड़े, उपलब्धियाँ, संकेत, सेटिंग्स) अपने आप Play Games के सेव डेटा में बैकअप होती है और आपका IQ स्कोर Play Games लीडरबोर्ड पर भेजा जाता है। यह डेटा आपके अपने Google खाते में रहता है।',
-      sec3Title: '3. 1v1 मुकाबले', sec3Desc: 'रीयल-टाइम 1v1 मुकाबले Google Firebase के ज़रिए आपके प्रतिद्वंद्वी को एक बेतरतीब ढंग से बनाई गई प्लेयर ID, एक स्वचालित उपनाम (SudokuMaster_xxxx) और आपकी पहेली की प्रगति भेजते हैं। ID आपके डिवाइस पर सहेजी जाती है और दोबारा इस्तेमाल होती है; यह आपके नाम या किसी खाते से जुड़ी नहीं है।',
+      sec1Title: '1. डिवाइस पर स्टोरेज और बैकअप', sec1Desc: "आपके रिकॉर्ड, संकेत और सेटिंग्स आपके डिवाइस पर सहेजे जाते हैं। Play Games में साइन इन किए बिना ये सिर्फ़ इसी डिवाइस पर रहते हैं। हम आपका नाम, ईमेल, फ़ोन नंबर, संपर्क या स्थान कभी इकट्ठा नहीं करते।",
+      sec2Title: '2. Google Play Games', sec2Desc: 'जब तक आप Play Games में साइन इन हैं, हर जीत पर आपकी प्रगति (आँकड़े, उपलब्धियाँ, संकेत, सेटिंग्स) अपने आप Play Games के सेव डेटा में बैकअप होती है और आपका Logic Score Play Games लीडरबोर्ड पर भेजा जाता है। यह डेटा आपके अपने Google खाते में रहता है।',
+      sec3Title: '3. 1v1 मुकाबले', sec3Desc: 'रीयल-टाइम 1v1 मुकाबले Google Firebase के ज़रिए आपके प्रतिद्वंद्वी को एक बेतरतीब ढंग से बनाई गई प्लेयर ID, एक स्वचालित उपनाम (Player_xxxx) और आपकी पहेली की प्रगति भेजते हैं। ID आपके डिवाइस पर सहेजी जाती है और दोबारा इस्तेमाल होती है; यह आपके नाम या किसी खाते से जुड़ी नहीं है।',
       sec4Title: '4. विज्ञापन और खरीदारी', sec4Desc: 'ऐप Google AdMob के ज़रिए विज्ञापन दिखाता है: एक बैनर, जीत के बाद एक फ़ुल-स्क्रीन विज्ञापन और वैकल्पिक इनाम वाले वीडियो। AdMob आपकी विज्ञापन ID प्रोसेस कर सकता है। विज्ञापन हटाने की खरीद Google Play संभालता है; हमें आपकी भुगतान जानकारी कभी नहीं मिलती।'
     }
   },
@@ -130,42 +131,43 @@ export const screens = {
     speedrunBest: 'स्पीडरन सर्वश्रेष्ठ',
     survivalTitle: '⏳ सर्वाइवल मोड',
     survivalTotalWins: 'सर्वाइवल में जीत',
-    survivalWinsUnit: '{count} जीतें',
-    leaderboardTab: 'रैंकिंग',
+    survivalWinsUnit: '{count} जीतें',
     summaryTitle: 'प्रदर्शन सारांश',
+    pvpRating: "रेटिंग",
+    pvpRecordLabel: "रिकॉर्ड",
+    pvpRecord: "{wins} जीत · {losses} हार",
     totalPlayed: 'कुल खेल',
     totalWon: 'कुल जीत',
     winRate: 'जीत प्रतिशत'
   },
   brainReport: {
-    totalPlayed: 'कुल खेल',
-    totalWon: 'जीते गए खेल',
-    winRate: 'जीत प्रतिशत',
-    shareText: '[Sudoku IQ रिपोर्ट]\nमेरा सुडोकू IQ: {iq}\nस्तर: {tier}\nआज ही Sudoku में अपनी बुद्धि परखें!',
-    copiedToast: 'मस्तिष्क विश्लेषण रिपोर्ट कॉपी हो गई।',
-    focus: 'गहन एकाग्रता',
-    durability: 'ध्यान की स्थिरता',
-    accuracy: 'सटीकता',
-    logic: 'तार्किक निगमन',
-    speed: 'प्रसंस्करण गति',
-    shareCardBtn: '🔗 आईक्यू कार्ड साझा करें',
-    overallStats: '📊 संचयी कुल आंकड़े',
-    attributesTitle: '🧠 5 संज्ञानात्मक स्तंभ',
-    title: 'मस्तिष्क IQ रिपोर्ट',
-    shareTitle: 'मेरी सुडोकू IQ रिपोर्ट',
+    scoreLabel: 'Logic Score',
+    scoreHowTitle: "ⓘ Logic Score कैसे तय होता है?",
+    scoreHowBody: "पूरा बोर्ड भरकर जीतने पर यह बढ़ता है। बिना संकेत के पार किया गया सबसे कठिन स्तर सबसे ज़्यादा गिना जाता है; जीत की संख्या और जीत दर थोड़ा गिने जाते हैं। गेम ओवर होने या बीच में छोड़ने से जीत दर घटती है और कुछ अंक कम हो सकते हैं। Play Games में साइन इन होने पर रैंकिंग इसी स्कोर से तय होती है।",
+    shareText: '[Sudoku खेल विश्लेषण]\nLogic Score: {iq}\nस्तर: {tier}\nआज ही Sudoku आज़माएं!',
+    copiedToast: 'खेल विश्लेषण क्लिपबोर्ड पर कॉपी हो गया।',
+    focus: 'बिना गलती',
+    durability: 'लगन',
+    accuracy: 'पूरा करने की दर',
+    logic: 'कठिनाई',
+    speed: 'गति',
+    shareCardBtn: '🔗 विश्लेषण साझा करें',
+    attributesTitle: '📈 5 खेल संकेतक',
+    title: 'खेल विश्लेषण',
+    shareTitle: 'मेरा Sudoku खेल विश्लेषण',
     tiers: {
-      grandMaster: '👑 ग्रैंडमास्टर',
-      grandMasterDesc: 'शीर्ष 1% की अद्वितीय तार्किक क्षमता।',
-      expert: '🧠 विशेषज्ञ तर्क',
-      expertDesc: 'इस खेल में उत्कृष्ट तार्किक विश्लेषण क्षमता।',
-      superior: '⚡ उच्च बुद्धि',
-      superiorDesc: 'तेज अंतर्ज्ञान और समस्या सुलझाने की क्षमता।',
-      aboveAverage: '💡 औसत से ऊपर',
-      aboveAverageDesc: 'लचीली और स्थिर तार्किक सोच।',
-      balanced: '🎯 संतुलित मस्तिष्क',
-      balancedDesc: 'सभी 5 संज्ञानात्मक क्षेत्रों का संतुलित विकास।',
-      developing: '🌱 विकसित होता मस्तिष्क',
-      developingDesc: 'प्रारंभिक अभ्यास चरण। प्रत्येक खेल के साथ आपका सूचकांक बढ़ेगा!'
+      grandMaster: '👑 ग्रैंड मास्टर',
+      grandMasterDesc: 'आप सबसे ऊंची रैंक पर पहुंच गए हैं।',
+      expert: '🧠 विशेषज्ञ',
+      expertDesc: 'आप कठिन पहेलियां लगातार हल करते हैं।',
+      superior: '⚡ उन्नत',
+      superiorDesc: 'आप उन्नत पहेलियों के लिए तैयार हैं।',
+      aboveAverage: '💡 मध्यम',
+      aboveAverageDesc: 'आप लगातार बेहतर हो रहे हैं।',
+      balanced: '🎯 संतुलित',
+      balancedDesc: 'आपके 5 संकेतक बराबर बढ़ रहे हैं।',
+      developing: '🌱 शुरुआती',
+      developingDesc: 'खेलते रहें, आपका स्कोर बढ़ेगा।'
     }
   },
   battleLobby: {
@@ -237,6 +239,13 @@ export const screens = {
       stage5: 'चरण 5: मास्टर तकनीकें (AIC, ALS और Exocet चेन्स)'
     },
     title: 'सुडोकू अकादमी',
+    theoryBoard: {
+      patternTab: 'पैटर्न',
+      resultTab: 'परिणाम',
+      patternCaption: 'रंगीन सेल इस तकनीक का पैटर्न बनाती हैं। यह व्यावहारिक उदाहरण 1 वाला ही बोर्ड है।',
+      resultCaption: 'लाल रंग में दिखाए गए उम्मीदवार इस पैटर्न से हटते हैं।',
+      placeCaption: 'यह पैटर्न हाइलाइट किए गए अंक को उस सेल का उत्तर तय करता है।'
+    },
     practiceUi: {
       theory: 'सिद्धांत',
       practice1: 'अभ्यास 1',

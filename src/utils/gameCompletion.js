@@ -1,4 +1,5 @@
-import { recordGameWin, loadStats } from './storage.js';
+import { recordGameWin, loadStats, loadSettings } from './storage.js';
+import { recordEligibility } from './recordEligibility.js';
 import { recordDailyCompletion, getDailyMission, getTodayDateKey, loadDailyRecords } from './dailyChallenge.js';
 import { loadWallet, addHints } from './wallet.js';
 import { recordGhostRun } from './ghostManager.js';
@@ -29,15 +30,24 @@ export function handleGameWinLogic({
 }) {
   setIsVictory(true);
   clearGameState();
+  const eligibility = recordEligibility({
+    gameMode,
+    hintsUsed,
+    limitMistakes: loadSettings().limitMistakes ?? true,
+    mistakes
+  });
   recordGameWin(level, timerSeconds, gameMode, {
     isFlawless: mistakes === 0,
-    comboCount
+    comboCount,
+    hintsUsed,
+    countsAsRecord: eligibility.counts
   });
 
-  // Record Ghost & Delta Time PB (strictly requires 0 hints used)
+  // Ghost & Delta Time PB — the same rule as the best times above
   recordGhostRun(gameMode, level, {
     timeSeconds: timerSeconds,
     hintsUsed,
+    countsAsRecord: eligibility.counts,
     puzzle: initialBoard,
     solution: solutionBoard,
     totalEmptyCells,

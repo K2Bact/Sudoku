@@ -11,7 +11,7 @@
 import { generatePuzzle } from '../engine/SudokuEngine.js';
 import { aiBotService } from '../engine/aiBotService.js';
 
-const BOT_NAMES = ['AI AlphaDoku', 'AI MindBot', 'AI DeepSudoku', 'AI QuantumBot'];
+const BOT_NAMES = ['AI Grandmaster', 'AI Solver', 'AI Logic', 'AI Swift'];
 
 export function createAIRoom(level = 3) {
   const puzzle = generatePuzzle(level);

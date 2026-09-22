@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
-import { BarChart3, Clock, Zap, Hourglass, Globe, Trophy } from 'lucide-react';
+import { BarChart3, Clock, Zap, Hourglass, Swords, Trophy } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
 import { loadStats } from '../utils/storage';
 import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine';
 import { useTranslation } from '../i18n/i18nContext';
 import { AchievementsView } from './AchievementsView';
-import { GlobalLeaderboardView } from './GlobalLeaderboardView';
+import { loadBattleProfile } from '../utils/battleRating';
 import { soundHaptic } from '../utils/soundHaptic';
 
+/**
+ * My records: everything here is this phone's own play. The world ranking lives with
+ * the score it ranks, on the Play Analysis screen. A third "ranking" tab used to repeat
+ * these best times next to an invented table of percentile thresholds (SudokuDiary ㉔, ㉖).
+ */
 export function StatsScreen({ onBack, initialTab = 'stats' }) {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState(initialTab); // 'stats' | 'achievements' | 'leaderboard'
+  const [activeTab, setActiveTab] = useState(initialTab === 'achievements' ? 'achievements' : 'stats');
   const stats = loadStats();
+  const battle = loadBattleProfile();
+  const battled = (battle.wins || 0) + (battle.losses || 0) > 0;
   const played = stats.gamesPlayed || 0;
   const won = stats.gamesWon || 0;
   const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
@@ -32,17 +39,8 @@ export function StatsScreen({ onBack, initialTab = 'stats' }) {
     setActiveTab(tab);
   };
 
-  const getScreenTitle = () => {
-    if (activeTab === 'achievements') return t('achievements.tabTitle');
-    if (activeTab === 'leaderboard') return t('stats.leaderboardTab');
-    return t('home.nav.stats');
-  };
-
-  const getScreenIcon = () => {
-    if (activeTab === 'achievements') return Trophy;
-    if (activeTab === 'leaderboard') return Globe;
-    return BarChart3;
-  };
+  const getScreenTitle = () => (activeTab === 'achievements' ? t('achievements.tabTitle') : t('home.nav.stats'));
+  const getScreenIcon = () => (activeTab === 'achievements' ? Trophy : BarChart3);
 
   return (
     <div className="stats-screen-container">
@@ -54,8 +52,8 @@ export function StatsScreen({ onBack, initialTab = 'stats' }) {
         onBack={onBack}
       />
 
-      {/* Segmented 3-Tab Navigation: [통계 지표] vs [업적 컬렉션] vs [글로벌 랭킹] */}
-      <div className="stats-tab-bar" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px', padding: '10px 14px', background: 'var(--bg-surface)', borderBottom: '1px solid var(--board-grid-line)' }}>
+      {/* Two tabs: [records] and [achievements] */}
+      <div className="stats-tab-bar" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', padding: '10px 14px', background: 'var(--bg-surface)', borderBottom: '1px solid var(--board-grid-line)' }}>
         <button type="button"
           className={`seg-tab-btn ${activeTab === 'stats' ? 'active' : ''}`}
           onClick={() => handleTabClick('stats')}
@@ -104,37 +102,12 @@ export function StatsScreen({ onBack, initialTab = 'stats' }) {
           <span>{t('achievements.tabTitle')}</span>
         </button>
 
-        <button type="button"
-          className={`seg-tab-btn ${activeTab === 'leaderboard' ? 'active' : ''}`}
-          onClick={() => handleTabClick('leaderboard')}
-          style={{
-            padding: '8px 4px',
-            fontSize: '11.5px',
-            fontWeight: '800',
-            borderRadius: '8px',
-            border: '1px solid var(--board-grid-line)',
-            background: activeTab === 'leaderboard' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : 'var(--btn-bg)',
-            color: activeTab === 'leaderboard' ? '#ffffff' : 'var(--text-muted)',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '4px',
-            whiteSpace: 'nowrap',
-            transition: 'all 0.15s ease'
-          }}
-        >
-          <Globe size={14} />
-          <span>{t('stats.leaderboardTab')}</span>
-        </button>
       </div>
 
       {/* Main Full-Screen Scrollable Content Area */}
       <div className="screen-scroll-content">
         {activeTab === 'achievements' ? (
           <AchievementsView />
-        ) : activeTab === 'leaderboard' ? (
-          <GlobalLeaderboardView />
         ) : (
           <>
             {/* Global Summary Stats Card */}
@@ -226,6 +199,25 @@ export function StatsScreen({ onBack, initialTab = 'stats' }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', paddingTop: '8px', borderTop: '1px solid var(--board-grid-line)' }}>
                 <span className="text-muted" style={{ fontSize: '12.5px' }}>{t('stats.survivalTotalWins')}</span>
                 <span className="fw-bold" style={{ fontSize: '15px', color: '#ef4444' }}>{t('stats.survivalWinsUnit', { count: survivalWins })}</span>
+              </div>
+            </div>
+
+            {/* 4. 1v1 battles — rating and record, kept on this phone only */}
+            <div className="stats-card stats-pvp-card">
+              <h4 className="fw-bold mb-3">
+                <Swords size={18} className="text-red inline-icon" /> {t('leaderboard.pvpTab')}
+              </h4>
+              <div className="best-times-list">
+                <div className="best-time-row">
+                  <span className="lvl-name">{t('stats.pvpRating')}</span>
+                  <span className="best-time-val fw-bold">{battled ? `${battle.mmr} RP` : '--'}</span>
+                </div>
+                <div className="best-time-row">
+                  <span className="lvl-name">{t('stats.pvpRecordLabel')}</span>
+                  <span className="best-time-val fw-bold">
+                    {battled ? t('stats.pvpRecord', { wins: battle.wins || 0, losses: battle.losses || 0 }) : '--'}
+                  </span>
+                </div>
               </div>
             </div>
           </>

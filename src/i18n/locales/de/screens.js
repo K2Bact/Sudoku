@@ -7,10 +7,11 @@ export const screens = {
     }
   },
   home: {
+    scoreLabel: 'Logic Score',
     title: 'Sudoku',
     badge: 'PRO',
     hintTooltip: 'Tipps',
-    brainReportTitle: 'Gehirn-Analyse',
+    brainReportTitle: 'Spielanalyse',
     brainPercentileShort: 'Gelöste Rätsel: {won}',
     startSelectedLevel: 'Lv.{level} {name} starten',
     modeTabs: { classic: 'Klassik', timeAttack: 'Zeitrennen', timeLimit: 'Überleben' },
@@ -30,7 +31,7 @@ export const screens = {
       academy: { title: 'Sudoku-Akademie', desc: '32 Meistertechniken Schritt für Schritt lernen' },
       practice: { title: 'Freies Training', desc: 'Unbegrenzte Fehler, entspanntes Spielen' }
     },
-    nav: {brain: 'Gehirn-IQ', stats: 'Statistik', academy: 'Akademie', settings: 'Einstellungen' }
+    nav: {brain: 'Analyse', stats: 'Statistik', academy: 'Akademie', settings: 'Einstellungen' }
   },
   daily: {
     header: 'Tägliche Herausforderungen ({month})',
@@ -95,11 +96,11 @@ export const screens = {
     themeSection: '🎨 Erscheinungsbild',
     languageSection: '🌐 Sprache',
     languages: {
-      auto: 'Systemstandard'
+      auto: 'System'
     },
     gameplaySection: '🎮 Spielregeln',
     limitMistakes: 'Fehlerlimit (3 Herzen)',
-    limitMistakesDesc: 'Spiel vorbei bei 3 Fehlern',
+    limitMistakesDesc: "Spiel vorbei bei 3 Fehlern. Aus: Bestzeiten werden nicht gespeichert",
     autoCheck: 'Fehler automatisch prüfen',
     autoCheckDesc: 'Falsche Zahlen sofort rot hervorheben',
     soundSection: '🔊 Audio & Feedback',
@@ -111,7 +112,7 @@ export const screens = {
     adPrivacyDesc: 'Einwilligung zu personalisierter Werbung ändern',
     resetData: 'Alle lokalen Daten zurücksetzen',
     resetDataDesc: 'Alle Spielstatistiken und lokalen Verlauf löschen',
-    resetConfirm: '⚠️ Warnung: Alle Spielhistorien, Tipps und Gehirnstatistiken werden unwiderruflich gelöscht. Fortfahren?',
+    resetConfirm: '⚠️ Warnung: Alle Spielhistorien, Tipps und Daten der Spielanalyse werden unwiderruflich gelöscht. Fortfahren?',
     resetSuccess: 'Daten wurden erfolgreich zurückgesetzt.',
     privacySection: '🛡️ Datenschutz & Sicherheit',
     privacyPolicyBtn: 'Datenschutz',
@@ -119,9 +120,9 @@ export const screens = {
     privacyModalTitle: 'Datenschutzerklärung',
     privacy: {
       subtitle: 'Sudoku benötigt kein Konto. Hier steht, was die App tatsächlich speichert und sendet.',
-      sec1Title: '1. Speicherung und Sicherung', sec1Desc: 'Deine Ergebnisse, Tipps und Einstellungen werden auf deinem Gerät gespeichert. Ist die automatische Android-Sicherung aktiv, kopiert Android diese Daten in dein eigenes Google Drive und stellt sie bei einer Neuinstallation wieder her. Name, E-Mail, Telefonnummer, Kontakte und Standort werden nie erfasst.',
-      sec2Title: '2. Google Play Spiele', sec2Desc: 'Solange du bei Play Spiele angemeldet bist, wird nach jedem Sieg dein Fortschritt (Statistiken, Erfolge, Tipps, Einstellungen) automatisch in den gespeicherten Play-Spiele-Daten gesichert und dein IQ-Wert an eine Play-Spiele-Bestenliste übermittelt. Diese Daten liegen in deinem eigenen Google-Konto.',
-      sec3Title: '3. 1v1-Duelle', sec3Desc: 'Echtzeit-1v1-Duelle senden über Google Firebase eine zufällig erzeugte Spieler-ID, einen automatischen Spitznamen (SudokuMaster_xxxx) und deinen Rätselfortschritt an den Gegner. Die ID wird auf deinem Gerät gespeichert und wiederverwendet; sie ist weder mit deinem Namen noch mit einem Konto verknüpft.',
+      sec1Title: '1. Speicherung und Sicherung', sec1Desc: "Deine Ergebnisse, Tipps und Einstellungen werden auf deinem Gerät gespeichert. Ohne Anmeldung bei Play Spiele bleiben sie nur auf diesem Gerät. Name, E-Mail, Telefonnummer, Kontakte und Standort werden nie erfasst.",
+      sec2Title: '2. Google Play Spiele', sec2Desc: 'Solange du bei Play Spiele angemeldet bist, wird nach jedem Sieg dein Fortschritt (Statistiken, Erfolge, Tipps, Einstellungen) automatisch in den gespeicherten Play-Spiele-Daten gesichert und dein Logic Score an eine Play-Spiele-Bestenliste übermittelt. Diese Daten liegen in deinem eigenen Google-Konto.',
+      sec3Title: '3. 1v1-Duelle', sec3Desc: 'Echtzeit-1v1-Duelle senden über Google Firebase eine zufällig erzeugte Spieler-ID, einen automatischen Spitznamen (Player_xxxx) und deinen Rätselfortschritt an den Gegner. Die ID wird auf deinem Gerät gespeichert und wiederverwendet; sie ist weder mit deinem Namen noch mit einem Konto verknüpft.',
       sec4Title: '4. Werbung und Käufe', sec4Desc: 'Die App zeigt Werbung über Google AdMob: ein Banner, eine Vollbildanzeige nach einem Sieg und freiwillige Videos mit Belohnung. AdMob kann deine Werbe-ID verarbeiten. Der Kauf „Werbung entfernen“ wird von Google Play abgewickelt; wir erhalten keine Zahlungsdaten.'
     }
   },
@@ -130,42 +131,43 @@ export const screens = {
     speedrunBest: 'Zeitrennen-Bestzeit',
     survivalTitle: '⏳ Überleben (Zeitlimit)',
     survivalTotalWins: 'Überlebens-Erfolge',
-    survivalWinsUnit: '{count} geschafft',
-    leaderboardTab: 'Rangliste',
+    survivalWinsUnit: '{count} geschafft',
     summaryTitle: 'Leistungsübersicht',
+    pvpRating: "Wertung",
+    pvpRecordLabel: "Bilanz",
+    pvpRecord: "{wins}S · {losses}N",
     totalPlayed: 'Gespielte Spiele',
     totalWon: 'Gewonnene Spiele',
     winRate: 'Gewinnrate'
   },
   brainReport: {
-    totalPlayed: 'Spiele insgesamt',
-    totalWon: 'Gelöste Rätsel',
-    winRate: 'Gewinnrate',
-    shareText: '[Sudoku IQ-Bericht]\nMein Sudoku-IQ: {iq}\nRang: {tier}\nFordere dein Gehirn heute mit Sudoku heraus!',
-    copiedToast: 'Gehirn-Analysebericht in Zwischenablage kopiert.',
-    focus: 'Konzentration',
+    scoreLabel: 'Logic Score',
+    scoreHowTitle: "ⓘ Wie wird der Logic Score bestimmt?",
+    scoreHowBody: "Er steigt, wenn du das ganze Brett füllst und gewinnst. Am meisten zählt die schwierigste Stufe, die du ohne Tipps geschafft hast; Anzahl der Siege und Siegquote zählen ein wenig. Game Over und abgebrochene Spiele senken die Siegquote und können ein paar Punkte kosten. Die Rangliste nutzt diesen Wert, wenn du bei Play Spiele angemeldet bist.",
+    shareText: '[Sudoku-Spielanalyse]\nLogic Score: {iq}\nRang: {tier}\nProbier Sudoku jetzt aus!',
+    copiedToast: 'Spielanalyse in die Zwischenablage kopiert.',
+    focus: 'Fehlerfrei',
     durability: 'Ausdauer',
-    accuracy: 'Präzision',
-    logic: 'Logik',
+    accuracy: 'Lösungsquote',
+    logic: 'Schwierigkeit',
     speed: 'Tempo',
-    shareCardBtn: '🔗 Bericht teilen',
-    overallStats: '📊 Gesamte kumulierte Statistiken',
-    attributesTitle: '🧠 5 Kognitive Kernfähigkeiten',
-    title: 'IQ-Bericht',
-    shareTitle: 'Mein Sudoku-IQ-Bericht',
+    shareCardBtn: '🔗 Bericht teilen',
+    attributesTitle: '📈 5 Spielwerte',
+    title: 'Spielanalyse',
+    shareTitle: 'Meine Sudoku-Spielanalyse',
     tiers: {
       grandMaster: '👑 Großmeister',
-      grandMasterDesc: 'Meisterhafte 1% deduktive Denkweise.',
-      expert: '🧠 Experten-Logik',
-      expertDesc: 'Herausragende analytische Denkfähigkeit in diesem Spiel.',
-      superior: '⚡ Überlegener Geist',
-      superiorDesc: 'Scharfe Intuition und exzellente Problemlösung.',
-      aboveAverage: '💡 Überdurchschnittlich',
-      aboveAverageDesc: 'Stabiles und flexibles analytisches Denken.',
-      balanced: '🎯 Ausgeglichener Geist',
-      balancedDesc: 'Harmonische Entwicklung aller 5 Denkbereiche.',
-      developing: '🌱 Wachsender Geist',
-      developingDesc: 'Frühes Trainingsstadium. Dein kognitiver Index wird stetig wachsen!'
+      grandMasterDesc: 'Du hast den höchsten Rang erreicht.',
+      expert: '🧠 Experte',
+      expertDesc: 'Du löst schwere Rätsel zuverlässig.',
+      superior: '⚡ Fortgeschritten',
+      superiorDesc: 'Du bist bereit für fortgeschrittene Rätsel.',
+      aboveAverage: '💡 Mittelstufe',
+      aboveAverageDesc: 'Du wirst stetig besser.',
+      balanced: '🎯 Ausgewogen',
+      balancedDesc: 'Deine 5 Spielwerte wachsen gleichmäßig.',
+      developing: '🌱 Einsteiger',
+      developingDesc: 'Spiel weiter, dann steigt dein Wert.'
     }
   },
   battleLobby: {
@@ -224,7 +226,7 @@ export const screens = {
     level2Desc: 'Normal-Bot: Löst zuverlässig mit wenigen Fehlern.',
     level3Desc: 'Fortgeschritten-Bot: Flottes Tempo, wenige Fehler.',
     level4Desc: 'Experten-Bot: Sehr schnell, selten Fehler.',
-    level5Desc: 'AlphaDoku: Der schnellste Bot mit den wenigsten Fehlern.',
+    level5Desc: 'Großmeister-Bot: Der schnellste Bot mit den wenigsten Fehlern.',
     startBtn: 'Duell Lv.{level} vs {name}'
   },
   academy: {
@@ -237,6 +239,13 @@ export const screens = {
       stage5: 'Stufe 5: Meister-Techniken (AIC, ALS & Exocet-Ketten)'
     },
     title: 'Sudoku-Akademie',
+    theoryBoard: {
+      patternTab: 'Muster',
+      resultTab: 'Ergebnis',
+      patternCaption: 'Die farbigen Felder bilden das Muster dieser Technik. Es ist dasselbe Gitter wie im Praxisbeispiel 1.',
+      resultCaption: 'Die rot markierten Kandidaten streicht dieses Muster.',
+      placeCaption: 'Dieses Muster legt die hervorgehobene Ziffer als Lösung des Feldes fest.'
+    },
     practiceUi: {
       theory: 'Theorie',
       practice1: 'Übung 1',

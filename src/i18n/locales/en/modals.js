@@ -2,18 +2,20 @@ export const modals = {
   modals: {
     victory: {
       title: 'Puzzle Solved!',
-      desc: 'Congratulations!\nYou successfully solved the puzzle.',
+      desc: 'Congratulations!\nYou solved the puzzle.',
       rankLabel: 'Clear Rank: {title}',
       difficultyLabel: 'Difficulty',
-      timeLabel: 'Time Elapsed',
+      timeLabel: 'Time',
       timeRemainingLabel: 'Time Remaining',
       mistakesLabel: 'Mistakes',
-      mistakesCount: '{count} Mistakes',
+      mistakesCount: '{count}',
+      notRecordedHint: "Hints were used, so this time isn't saved as a best record.",
+      notRecordedNoLimit: "Played without the 3-mistake limit, so this time isn't saved as a best record.",
       nextGame: 'Next Puzzle',
-      leaderboardBtn: '🏆 Leaderboard',
+      leaderboardBtn: "📊 My Records",
       shareBtn: 'Share',
       copiedToast: '🎉 Clear record copied to clipboard!',
-      shareText: '🧩 Sudoku {mode} Lv.{level} {name} cleared in [{time}]! Rank: {rank} ({mistakes} mistakes). Test your brain IQ!',
+      shareText: '🧩 Sudoku {mode} Lv.{level} {name} cleared in [{time}]! Rank: {rank} ({mistakes} mistakes). Can you beat it?',
       ranks: {
         'S+': '👑 S+ (Godspeed)',
         'S': '⭐️ S (Master)',
@@ -24,25 +26,25 @@ export const modals = {
     },
     gameOver: {
       title: 'Game Over',
-      desc: 'You have used all 3 mistakes.\nWatch an ad to revive and continue!',
-      descNoRevive: 'You have used all mistakes.\n(Revive chance already used)',
+      desc: 'You\'ve made 3 mistakes.\nWatch an ad to get another life and keep going!',
+      descNoRevive: 'You\'re out of mistakes.\n(You\'ve already used your revive.)',
       reviveBtn: 'Revive (+1 life)',
       restartBtn: 'Restart'
     },
     newGame: {
       title: 'Select Difficulty',
-      desc: 'Choose your challenge level\nfor the new puzzle.'
+      desc: 'Choose a difficulty\nfor your new puzzle.'
     },
     storeReview: {
       title: 'Enjoying Sudoku?',
-      desc: 'Your honest rating and feedback mean\nthe world in helping us improve the game! 💙',
+      desc: 'Your rating and feedback\nhelp us make the game better! 💙',
       submitBtn: 'Leave a Review',
       laterBtn: 'Maybe Later'
     },
     dailyReward: {
-      title: 'Daily Attendance Reward!',
-      streakBadge: 'Day {days} Streak',
-      desc: 'Day {days} streak achieved!\n+{count} Free Hints added.',
+      title: 'Daily Check-in Reward!',
+      streakBadge: '{days}-Day Streak',
+      desc: '{days}-day streak!\nFree hints +{count}',
       confirm: 'Claim Reward'
     },
     adReward: {
@@ -50,13 +52,13 @@ export const modals = {
       unavailable: 'No ad is available right now.\nPlease try again in a moment.'
     },
     hintReward: {
-      title: 'Free Hint Recharge',
-      desc: 'Watch a short ad to\nreceive +1 Free Hint immediately.',
+      title: 'Get a Free Hint',
+      desc: 'Watch a short ad to\nget 1 free hint right away.',
       watchAd: 'Watch Ad (+1 Hint)',
       adWatching: '📺 Playing ad…',
       adPlaceholder: '📺 Ad placeholder (no ad served)',
       chancesLeft: 'Refills left this game: {remaining}/{max}',
-      maxReached: 'Hint refills via ads are limited to 2 per game.',
+      maxReached: 'You can get up to 2 hints from ads per game.',
       later: 'Later'
     }
   }

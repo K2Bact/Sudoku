@@ -9,7 +9,8 @@ export const common = {
     confirm: 'Aceptar',
     cancel: 'Cancelar',
     restart: 'Reiniciar',
-    restartConfirm: '¿Reiniciar este puzle?',
+    restartConfirm: "¿Reiniciar este sudoku? La partida actual contará como derrota.",
+    abandonConfirm: "Hay una partida en curso. Si empiezas otra, contará como derrota. ¿Empezar igualmente?",
     newGame: 'Nueva partida',
     home: 'Inicio',
     pause: 'Pausa',
@@ -80,27 +81,27 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 Gran Maestro',
-      desc: 'Razonamiento deductivo de élite insuperable.'
+      desc: 'Has alcanzado el rango más alto.'
     },
     expert: {
-      title: '🧠 Lógica experta',
-      desc: 'Razonamiento deductivo sobresaliente en este juego.'
+      title: '🧠 Experto',
+      desc: 'Resuelves puzles difíciles con constancia.'
     },
     superior: {
-      title: '⚡ Mente Brillante',
-      desc: 'Gran agilidad y resolución lógica.'
+      title: '⚡ Avanzado',
+      desc: 'Estás listo para puzles avanzados.'
     },
     aboveAverage: {
-      title: '💡 Superior a la Media',
-      desc: 'Pensamiento flexible y deductivo sólido.'
+      title: '💡 Intermedio',
+      desc: 'Mejoras paso a paso.'
     },
     balanced: {
-      title: '🎯 Mente Equilibrada',
-      desc: 'Desarrollo óptimo de las 5 capacidades cognitivas.'
+      title: '🎯 Equilibrado',
+      desc: 'Tus 5 métricas crecen de forma equilibrada.'
     },
     developing: {
-      title: '🌱 En Entrenamiento',
-      desc: 'Iniciando el entrenamiento cerebral con potencial de crecimiento ilimitado.'
+      title: '🌱 Principiante',
+      desc: 'Sigue jugando y tu puntuación subirá.'
     }
   }
 };

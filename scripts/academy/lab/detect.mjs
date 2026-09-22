@@ -371,3 +371,105 @@ export function cellForcing(s) {
   }
   return out;
 }
+
+// ── XY-Chain (bi-value cells only) ──
+// start ≠ x ⇒ start = y ⇒ each next cell (sees the last, holds its value) is forced
+// to its other digit ⇒ … ⇒ end = x. So x sits in start or end: any cell seeing both
+// loses x. Three cells is an XY-Wing and a single repeated pair is a Remote Pair —
+// both have their own lessons — so a chain here is ≥4 cells over mixed pairs.
+export function xyChain(s, maxLen = 7) {
+  const out = [];
+  const bi = [...Array(81).keys()].filter((i) => pop(s.cand[i]) === 2);
+  const seen = new Set();
+  for (const start of bi) {
+    for (const x of digits(s.cand[start])) {
+      const path = [start];
+      const dfs = (cur, v) => {
+        if (path.length >= maxLen) return;
+        for (const n of bi) {
+          if (path.includes(n) || !sees(cur, n) || !has(s, n, v)) continue;
+          const w = digits(s.cand[n] & ~bit(v))[0];
+          path.push(n);
+          if (w === x && path.length >= 4 && !path.every((p) => s.cand[p] === s.cand[start])) {
+            const dels = [];
+            for (let i = 0; i < 81; i++) if (!path.includes(i) && has(s, i, x) && sees(i, start) && sees(i, n)) dels.push([i, x]);
+            const key = `${[start, n].sort((a, b) => a - b).join('-')}:${x}:${dels.map(([i]) => i).join(',')}`;
+            if (dels.length && !seen.has(key)) {
+              seen.add(key);
+              out.push({ tech: 'XY-Chain', digit: x, pattern: path.slice(), dels });
+            }
+          }
+          dfs(n, w);
+          path.pop();
+        }
+      };
+      dfs(start, digits(s.cand[start] & ~bit(x))[0]);
+    }
+  }
+  return out;
+}
+
+// ── AIC (alternating inference chain, type 1: both ends the same digit) ──
+// Nodes are (cell, digit). A strong link is a bi-value cell (i,a)=(i,b) or a digit
+// with exactly two places in a unit (i,d)=(j,d); a weak link is two nodes that
+// cannot both be true (same cell, or same digit in peers). Chain: S W S … S from
+// (i1,x) to (i2,x). If (i1,x) is false the chain forces (i2,x) true, so x is in i1
+// or i2 and every cell seeing both loses x. To be an AIC and not an X-Chain or
+// XY-Chain it must use BOTH kinds of strong link.
+export function aic(s, maxStrong = 4) {
+  const out = [];
+  const node = (i, d) => i * 10 + d;
+  const strong = new Map();
+  const addS = (a, b, kind) => {
+    for (const [p, q] of [[a, b], [b, a]]) (strong.get(p) || strong.set(p, []).get(p)).push({ to: q, kind });
+  };
+  for (let i = 0; i < 81; i++) if (pop(s.cand[i]) === 2) { const [a, b] = digits(s.cand[i]); addS(node(i, a), node(i, b), 'cell'); }
+  for (const u of UNITS) for (let d = 1; d <= 9; d++) {
+    const w = u.cells.filter((i) => has(s, i, d));
+    if (w.length === 2) addS(node(w[0], d), node(w[1], d), 'unit');
+  }
+  const weak = (n) => {
+    const i = Math.floor(n / 10), d = n % 10, res = [];
+    for (const e of digits(s.cand[i])) if (e !== d) res.push(node(i, e));
+    for (const p of PEERS[i]) if (has(s, p, d)) res.push(node(p, d));
+    return res;
+  };
+  const seen = new Set();
+  for (const startNode of strong.keys()) {
+    const x = startNode % 10, i1 = Math.floor(startNode / 10);
+    const path = [startNode];
+    const kinds = [];
+    // at a node reached by a strong link (so it is "true" under the assumption)
+    const fromTrue = (n, nStrong) => {
+      const i2 = Math.floor(n / 10);
+      if (nStrong >= 2 && n % 10 === x && i2 !== i1 && kinds.includes('cell') && kinds.includes('unit')) {
+        const dels = [];
+        const inPath = new Set(path.map((p) => Math.floor(p / 10)));
+        for (let i = 0; i < 81; i++) if (!inPath.has(i) && has(s, i, x) && sees(i, i1) && sees(i, i2)) dels.push([i, x]);
+        const key = `${[i1, i2].sort((a, b) => a - b).join('-')}:${x}:${dels.map(([i]) => i).join(',')}`;
+        if (dels.length && !seen.has(key)) {
+          seen.add(key);
+          out.push({ tech: 'AIC', digit: x, nodes: path.slice(), pattern: [...new Set(path.map((p) => Math.floor(p / 10)))], dels });
+        }
+      }
+      if (nStrong >= maxStrong) return;
+      for (const w of weak(n)) {
+        if (path.includes(w)) continue;
+        path.push(w);
+        for (const { to, kind } of strong.get(w) || []) {
+          if (path.includes(to)) continue;
+          path.push(to); kinds.push(kind);
+          fromTrue(to, nStrong + 1);
+          path.pop(); kinds.pop();
+        }
+        path.pop();
+      }
+    };
+    for (const { to, kind } of strong.get(startNode)) {
+      path.push(to); kinds.push(kind);
+      fromTrue(to, 1);
+      path.pop(); kinds.pop();
+    }
+  }
+  return out;
+}

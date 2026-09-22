@@ -9,11 +9,13 @@ export const modals = {
       timeRemainingLabel: '残り時間',
       mistakesLabel: 'ミス回数',
       mistakesCount: 'ミス {count}回',
+      notRecordedHint: "ヒントを使ったため、今回の記録はベスト記録に反映されません。",
+      notRecordedNoLimit: "ミス3回制限なしでプレイしたため、今回の記録はベスト記録に反映されません。",
       nextGame: '次のパズルに挑戦',
-      leaderboardBtn: '🏆 ランキングを見る',
+      leaderboardBtn: "📊 自分の記録",
       shareBtn: '記録を共有',
       copiedToast: '🎉 クリア記録がクリップボードにコピーされました！',
-      shareText: '🧩 Sudoku {mode} Lv.{level} {name}を[{time}]でクリア！ ランク: {rank} (ミス {mistakes}回)。あなたの脳力に挑戦してみよう！',
+      shareText: '🧩 ナンプレ {mode} Lv.{level} {name}を[{time}]でクリア！ ランク: {rank} (ミス {mistakes}回)。あなたも挑戦してみよう！',
       ranks: {
         'S+': '👑 S+ (神速の境地)',
         'S': '⭐️ S (マスター)',
@@ -34,7 +36,7 @@ export const modals = {
       desc: '挑戦するナンプレの難易度を\n選択してください。'
     },
     storeReview: {
-      title: 'Sudokuはお楽しみいただけていますか？',
+      title: 'ナンプレはお楽しみいただけていますか？',
       desc: '率直な評価とレビューを残していただけると、\n今後の改善とアップデートの大きな励みになります！ 💙',
       submitBtn: 'ストアでレビューを書く',
       laterBtn: '後で'

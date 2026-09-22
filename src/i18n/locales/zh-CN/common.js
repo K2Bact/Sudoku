@@ -9,7 +9,8 @@ export const common = {
     confirm: '确认',
     cancel: '取消',
     restart: '重新开始',
-    restartConfirm: '要重新开始这个谜题吗？',
+    restartConfirm: "要重新开始这个谜题吗？当前这局将记为失败。",
+    abandonConfirm: "有正在进行的游戏。开始新游戏后，当前这局将记为失败。要开始吗？",
     newGame: '新游戏',
     home: '主页',
     pause: '暂停',
@@ -79,28 +80,28 @@ export const common = {
   },
   tiers: {
     grandMaster: {
-      title: '👑 宗师级大脑',
-      desc: '仅极少数人能达到的顶级极速推理力。'
+      title: '👑 宗师',
+      desc: '已达到最高等级。'
     },
     expert: {
-      title: '🧠 专家级逻辑',
-      desc: '在本游戏中展现出色的推理能力。'
+      title: '🧠 达人',
+      desc: '能稳定解开高难度谜题。'
     },
     superior: {
-      title: '⚡ 卓越思维',
-      desc: '具备敏锐直觉与优异的问题解决力。'
+      title: '⚡ 高手',
+      desc: '已具备挑战高级谜题的实力。'
     },
     aboveAverage: {
-      title: '💡 优于常人',
-      desc: '以稳定灵活的思维破解谜题。'
+      title: '💡 进阶',
+      desc: '实力正在稳步提升。'
     },
     balanced: {
-      title: '🎯 均衡大脑',
-      desc: '五大认知能力均衡发展的理想状态。'
+      title: '🎯 均衡型',
+      desc: '5 项游戏指标均衡提升。'
     },
     developing: {
-      title: '🌱 成长潜力',
-      desc: '刚展开大脑训练，持续挑战将大幅提升逻辑指数！'
+      title: '🌱 新手',
+      desc: '玩得越多，分数越高。'
     }
   }
 };

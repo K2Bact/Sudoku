@@ -1,7 +1,7 @@
 # [SUIDOKU_TECHNICAL_SPEC] 스도쿠(Suidoku) 애플리케이션 상세 기술 명세서
 
 > **문서 버전**: 2.0.0 (Release v1.2.0 Architecture)  
-> **상위 공통 명세서**: [`COMMON_APP_TECHNICAL_SPEC.md`](file:///D:/PowerNeJa/PythonWorkspace/Project_Dev/app_common/docs/COMMON_APP_TECHNICAL_SPEC.md) (전역 공통 표준 상속)  
+> **상위 공통 명세서**: [`COMMON_APP_TECHNICAL_SPEC.md`](file:///D:/PowerNeJa/PythonWorkspace/app_common/docs/COMMON_APP_TECHNICAL_SPEC.md) (전역 공통 표준 상속)  
 > **타깃 런타임**: Android SDK 35 (Android 15), React 19, Vite 8, Capacitor 8  
 
 ---
@@ -10,7 +10,7 @@
 
 본 애플리케이션은 `Project_Dev` 공통 코어 아키텍처를 기반으로 구축되었으며, 아래와 같이 공통 기능을 상속받고 스도쿠 특화 서브시스템을 확장하여 운영합니다.
 
-| 아키텍처 영역 | 공통 기술 명세 ([`COMMON_APP_TECHNICAL_SPEC.md`](file:///D:/PowerNeJa/PythonWorkspace/Project_Dev/app_common/docs/COMMON_APP_TECHNICAL_SPEC.md)) | 스도쿠 특화 구현 (Suidoku Customization) |
+| 아키텍처 영역 | 공통 기술 명세 ([`COMMON_APP_TECHNICAL_SPEC.md`](file:///D:/PowerNeJa/PythonWorkspace/app_common/docs/COMMON_APP_TECHNICAL_SPEC.md)) | 스도쿠 특화 구현 (Suidoku Customization) |
 | :--- | :--- | :--- |
 | **다국어 QA** | 1단계: Universal Core 8-Gate 검증 엔진 상속 | 2단계: `app_common/l10n_engine/profiles/suidoku.mjs` (아카데미 5단계, 3분할 탭 제약, 브랜드명 Sudoku 검증) |
 | **보안 / 데이터** | Zero-PII 원칙, 무손실 클라우드 병합 프로토콜 | 스도쿠 판 상태(9x9 그리드, 메모 배열, 히스토리 스택), 365일 캘린더 출석 데이터 |

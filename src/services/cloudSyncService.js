@@ -30,6 +30,25 @@ const readJson = (key) => {
 };
 
 const LAST_SYNC_KEY = 'suidoku_last_cloud_sync_v1';
+// The last save that actually reached Play Games: { at, fp }. LAST_SYNC_KEY above is
+// also written by a local-only save, so it cannot say whether anything left the phone.
+const REMOTE_SYNC_KEY = 'suidoku_cloud_remote_sync_v1';
+// Players already asked "load your earlier record?" on this device, by user id.
+const RESTORE_OFFERED_KEY = 'suidoku_cloud_restore_offered_v1';
+
+// What a backup carries, without the fields that change on every call (time, id),
+// reduced to a short hash (FNV-1a, 32-bit) — storing the whole payload again as the
+// marker doubled ~15KB of local storage for a comparison. Equal hashes mean nothing
+// new to back up; a collision would only delay one backup to the next change.
+const fingerprint = (p) => {
+  const text = JSON.stringify([p.stats, p.settings, p.achievements, p.wallet, p.daily, p.ghost]);
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    h ^= text.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return `${text.length}:${h.toString(16)}`;
+};
 // Play Games saved-game slot. Stable: changing it orphans every existing backup.
 const SNAPSHOT_NAME = 'suidoku_progress_v1';
 
@@ -148,6 +167,11 @@ class CloudSyncService {
           serialized,
           `Suidoku • ${upload.stats?.gamesWon || 0} wins`
         );
+    if (remoteSave.success) {
+      try {
+        localStorage.setItem(REMOTE_SYNC_KEY, JSON.stringify({ at: now, fp: fingerprint(local) }));
+      } catch { /* the backup happened; only the marker is lost, so the next check re-uploads */ }
+    }
 
     return {
       success: true,
@@ -235,9 +259,67 @@ class CloudSyncService {
     }
   }
 
+  /** When a backup last reached Play Games, or null. Shown in Settings. */
+  getLastRemoteBackup() {
+    const mark = readJson(REMOTE_SYNC_KEY);
+    return mark && mark.at ? Number(mark.at) : null;
+  }
+
+  /** Has anything changed on this phone since the last backup that reached Play Games? */
+  hasUnsyncedChanges() {
+    const mark = readJson(REMOTE_SYNC_KEY);
+    return !mark || mark.fp !== fingerprint(this.compileBackupPayload());
+  }
+
   /**
-   * Throttled auto sync triggered on game wins or milestone achievements
+   * Back up if there is something new and a way to send it. Called on sign-in, when
+   * the connection comes back and when the app returns to the foreground — a win is
+   * no longer the only moment a backup is tried, so wins played offline catch up
+   * without waiting for the next win. One at a time.
    */
+  async syncIfNeeded() {
+    if (this._syncing) return { skipped: 'in_flight' };
+    if (!playGamesService.isAuthenticated) return { skipped: 'signed_out' };
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return { skipped: 'offline' };
+    if (!this.hasUnsyncedChanges()) return { skipped: 'up_to_date' };
+    this._syncing = true;
+    try {
+      return await this.saveToCloud();
+    } finally {
+      this._syncing = false;
+    }
+  }
+
+  /**
+   * A cloud record worth offering to a phone that has none: only when this phone is
+   * fresh (no game played, no achievement), the player has not been asked before on
+   * this phone, and the backup holds at least one win. Returns { gamesWon } or null.
+   * The question itself is the caller's — restoring silently would pull in another
+   * phone's record without the player knowing where it came from.
+   */
+  async findRestoreOffer() {
+    if (!playGamesService.isAuthenticated) return null;
+    const stats = loadStats();
+    const fresh = !(stats.gamesPlayed > 0) && Object.keys(loadUnlockedAchievements() || {}).length === 0;
+    if (!fresh) return null;
+    const userId = this.getEffectiveUserId();
+    const offered = readJson(RESTORE_OFFERED_KEY) || {};
+    if (offered[userId]) return null;
+    const remote = await playGamesService.loadSnapshot(SNAPSHOT_NAME);
+    if (!remote.success) return null;            // could not read: ask another time
+    let won = 0;
+    try { won = Number(JSON.parse(remote.snapshot?.data || '{}')?.stats?.gamesWon) || 0; } catch { won = 0; }
+    this.markRestoreOffered();                     // read fine: this answer holds for this phone
+    return won > 0 ? { gamesWon: won } : null;
+  }
+
+  markRestoreOffered() {
+    try {
+      const offered = readJson(RESTORE_OFFERED_KEY) || {};
+      offered[this.getEffectiveUserId()] = Date.now();
+      localStorage.setItem(RESTORE_OFFERED_KEY, JSON.stringify(offered));
+    } catch { /* worst case the player is asked again */ }
+  }
 }
 
 export const cloudSyncService = new CloudSyncService();

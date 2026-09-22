@@ -56,6 +56,6 @@ export const achievements = {
     daily_first: { title: '每日探索者', desc: '首次完成今日的每日挑戰' },
     daily_streak_7: { title: '七日奇蹟', desc: '連續 7 天簽到' },
     battle_first_win: { title: '競技場首勝', desc: '在 1v1 線上或 AI 對決中取得首勝' },
-    iq_150: { title: '天才級大腦', desc: '大腦活性指數 Sudoku IQ 達到 150 以上' }
+    iq_150: { title: '邏輯達人', desc: 'Logic Score 達到 150 以上' }
   }
 };

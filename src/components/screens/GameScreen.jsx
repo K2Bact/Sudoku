@@ -7,6 +7,7 @@ import { GhostRivalBanner } from '../battle/GhostRivalBanner';
 import { GuidedTutorialOverlay } from '../GuidedTutorialOverlay';
 import { AdBanner } from '../AdBanner';
 import { loadSettings } from '../../utils/storage';
+import { useBoardFit } from '../../hooks/useBoardFit';
 
 export function GameScreen({
   activeBattleRoom,
@@ -60,6 +61,7 @@ export function GameScreen({
   userFilledCount,
   totalEmptyCount
 }) {
+  const boardFitRef = useBoardFit();
   return (
     <div className="game-screen-wrapper">
       {activeBattleRoom ? (
@@ -100,7 +102,7 @@ export function GameScreen({
         />
       )}
 
-      <main className="game-main">
+      <main className="game-main" ref={boardFitRef}>
         {rivalMode && (rivalMode === 'ghost' || rivalMode === 'delta') && ghostRecord && (
           <GhostRivalBanner
             rivalMode={rivalMode}
@@ -111,6 +113,10 @@ export function GameScreen({
           />
         )}
 
+        {/* The board takes whatever height the header and keypad leave. Without
+            this zone it was a full-width square, and on a short screen or a large
+            system font the keypad was pushed under the ad (BACKLOG U-1). */}
+        <div className="board-zone">
         <SudokuBoard
           board={board}
           initialBoard={initialBoard}
@@ -124,6 +130,7 @@ export function GameScreen({
           conflictInfo={conflictInfo}
           flashCell={flashCell}
         />
+        </div>
 
         <Keypad
           remainingCounts={remainingCounts}

@@ -6,7 +6,8 @@ export const common = {
     confirm: 'OK',
     cancel: 'Abbrechen',
     restart: 'Neustart',
-    restartConfirm: 'Dieses Rätsel neu starten?',
+    restartConfirm: "Dieses Rätsel neu starten? Das laufende Spiel zählt als Niederlage.",
+    abandonConfirm: "Ein Spiel läuft noch. Wenn du ein neues startest, zählt es als Niederlage. Trotzdem starten?",
     newGame: 'Neues Spiel',
     home: 'Startseite',
     pause: 'Pause',
@@ -77,27 +78,27 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 Großmeister',
-      desc: 'Meisterhafte logische Deduktion der besten 1%.'
+      desc: 'Du hast den höchsten Rang erreicht.'
     },
     expert: {
-      title: '🧠 Experten-Logik',
-      desc: 'Herausragende logische Deduktion in diesem Spiel.'
+      title: '🧠 Experte',
+      desc: 'Du löst schwere Rätsel zuverlässig.'
     },
     superior: {
-      title: '⚡ Überlegene Logik',
-      desc: 'Scharfe Intuition und außergewöhnliche Kombinationsgabe.'
+      title: '⚡ Fortgeschritten',
+      desc: 'Du bist bereit für fortgeschrittene Rätsel.'
     },
     aboveAverage: {
-      title: '💡 Überdurchschnittlich',
-      desc: 'Flexible und robuste Problemlösungsfähigkeiten.'
+      title: '💡 Mittelstufe',
+      desc: 'Du wirst stetig besser.'
     },
     balanced: {
-      title: '🎯 Ausgeglichener Geist',
-      desc: 'Ausgewogene Entwicklung aller Denkfähigkeiten.'
+      title: '🎯 Ausgewogen',
+      desc: 'Deine 5 Spielwerte wachsen gleichmäßig.'
     },
     developing: {
-      title: '🌱 Gehirntraining',
-      desc: 'Logische Grundlagen im Aufbau mit unbegrenztem Wachstumspotenzial.'
+      title: '🌱 Einsteiger',
+      desc: 'Spiel weiter, dann steigt dein Wert.'
     }
   }
 };

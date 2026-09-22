@@ -36,6 +36,14 @@
       "find": "<span>{product?.price",
       "replace": "<span>{'₩' + (product?.amountMicros || 0)",
       "expectFailure": "store's own localised price string"
+    },
+    {
+      "name": "the purchase is offered wherever a billing library exists",
+      "why": "Remove Ads is not sold in Japan (BACKLOG M-1). With the plugin present but no product for the account, the button led to a price-less screen that could only fail.",
+      "file": "src/services/adsService.js",
+      "find": "return getBillingProvider().isAvailable && this.offered === true;",
+      "replace": "return getBillingProvider().isAvailable;",
+      "expectFailure": "canPurchase must be false before the store answers"
     }
   ]
 }

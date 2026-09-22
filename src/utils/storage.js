@@ -110,9 +110,20 @@ export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}
     stats.maxCombo = Math.max(stats.maxCombo || 0, extra.comboCount);
   }
 
-  let isNewRecord = false;
+  // Levels cleared without a hint — the Logic Score difficulty metric. Kept apart
+  // from the best times so a player who plays without the mistake limit still gets
+  // credit for the levels they can solve (recordEligibility.js).
+  if (extra.hintsUsed === 0 || extra.hintsUsed === undefined) {
+    stats.clearedLevels = { ...(stats.clearedLevels || {}), [level]: true };
+  }
 
-  if (mode === 'timeAttack') {
+  let isNewRecord = false;
+  // Best times move only when the win counts as a record (recordEligibility.js).
+  const countsAsRecord = extra.countsAsRecord !== false;
+
+  if (!countsAsRecord) {
+    if (mode === 'timeLimit') stats.timeLimitSurvivalWins = (stats.timeLimitSurvivalWins || 0) + 1;
+  } else if (mode === 'timeAttack') {
     if (!stats.timeAttackBestTimes) stats.timeAttackBestTimes = {};
     const currentBest = stats.timeAttackBestTimes[level];
     if (!currentBest || timeInSeconds < currentBest) {

@@ -20,6 +20,22 @@
       "find": "      \"zh-TW\": \"📍 最後空格: 3x3 九宮格內的最後空格\",\n",
       "replace": "",
       "expectFailure": "Gate 1"
+    },
+    {
+      "name": "Japanese elimination target uses the wrong particle",
+      "why": "J-04 must be detected in the academy corpus by the shared Gate 7.",
+      "file": "src/data/academy/diagrams/stage2PairsDiagrams.js",
+      "find": "同じ行の他のマスにある 3 と 8 が消去対象になります。",
+      "replace": "同じ行の他マスから 3 と 8 が消去対象になります。",
+      "expectFailure": "JA elimination target needs a location, not から (J-04)"
+    },
+    {
+      "name": "Japanese caption turns a cell itself into a digit",
+      "why": "J-06 distinguishes the cell from the digit placed in it.",
+      "file": "src/data/academy/diagrams/stage1Diagrams.js",
+      "find": "最後の空きマスに入る数字は、残った [9] に決まります。",
+      "replace": "最後の空きマスは自動的に残りの正解数字 [9] になります。",
+      "expectFailure": "JA cell is confused with the digit placed in it (J-06)"
     }
   ]
 }

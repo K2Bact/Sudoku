@@ -71,6 +71,7 @@ export function recordGhostRun(mode = 'classic', level = 3, runData = {}) {
   const {
     timeSeconds,
     hintsUsed = 0,
+    countsAsRecord = true,
     seed = null,
     puzzle = null,
     solution = null,
@@ -85,6 +86,9 @@ export function recordGhostRun(mode = 'classic', level = 3, runData = {}) {
   // Pure logic policy: 0 hints required for PB record
   if (hintsUsed > 0) {
     return { isNewRecord: false, reason: 'hint_used' };
+  }
+  if (!countsAsRecord) {
+    return { isNewRecord: false, reason: 'not_eligible' };
   }
 
   const records = loadGhostRecords();

@@ -4,12 +4,19 @@ import { Stage2MiniGrids } from './academy/Stage2MiniGrids';
 import { Stage3MiniGrids } from './academy/Stage3MiniGrids';
 import { Stage4MiniGrids } from './academy/Stage4MiniGrids';
 import { Stage5MiniGrids } from './academy/Stage5MiniGrids';
+import { TheoryBoardDiagram, BOARD_THEORY } from './academy/TheoryBoardDiagram';
 
 /**
  * TutorialMiniGrid
  * Clean Stage Router Component (Modular Academy Architecture)
  */
 export function TutorialMiniGrid({ type, lang = 'ko' }) {
+  // Techniques whose hand-drawn diagram was wrong draw a verified 9x9 board instead
+  // (BACKLOG A-1). Checked first so the old drawings below are never reached for them.
+  if (BOARD_THEORY.has(type)) {
+    return <TheoryBoardDiagram type={type} />;
+  }
+
   // Stage 1 (기초 5종)
   const stage1Types = ['full-house', 'last-free-cell', 'cross-hatching', 'naked-single', 'hidden-single'];
   if (stage1Types.includes(type)) {

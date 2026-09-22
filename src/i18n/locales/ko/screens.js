@@ -7,10 +7,11 @@ export const screens = {
     },
   },
   home: {
+    scoreLabel: 'Logic Score',
     title: 'Sudoku',
     badge: 'PRO',
     hintTooltip: '보유 힌트',
-    brainReportTitle: '두뇌 활성 분석',
+    brainReportTitle: '플레이 분석',
     brainPercentileShort: '클리어 {won}판',
     startSelectedLevel: 'Lv.{level} {name} 시작',
     modeTabs: { classic: '클래식', timeAttack: '타임어택', timeLimit: '타임리밋' },
@@ -30,11 +31,11 @@ export const screens = {
       academy: { title: '스도쿠 아카데미', desc: '공식 기술 배우기 (Naked Single 등)' },
       practice: { title: '자유 연습 모드', desc: '실수 무제한으로 편안하게 즐기기' }
     },
-    nav: {brain: '두뇌 지수', stats: '나의 통계', academy: '아카데미', settings: '설정' }
+    nav: {brain: '분석', stats: '나의 통계', academy: '아카데미', settings: '설정' }
   },
   daily: {
-    header: '일일 도전 과제 ({month}월)',
-    badgeTitle: '{month}월 스도쿠 마스터 배지',
+    header: '일일 도전 과제 ({month})',
+    badgeTitle: '{month} 스도쿠 마스터 배지',
     badgeDesc: '{completed} / {target}개 완료 (목표: 15개 이상)',
     unlockingAd: '📺 광고 시청 중... 지나간 퍼즐 해금',
     calendarTitle: '📅 365일 일일 달력',
@@ -95,11 +96,11 @@ export const screens = {
     themeSection: '🎨 비주얼 테마',
     languageSection: '🌐 언어 설정',
     languages: {
-      auto: '시스템 기본값'
+      auto: '시스템'
     },
     gameplaySection: '🎮 게임플레이 규칙',
     limitMistakes: '오답 3회 제한',
-    limitMistakesDesc: '3번 틀리면 게임 오버 (클래식 룰)',
+    limitMistakesDesc: "3번 틀리면 게임 오버. 끄면 최고 기록이 저장되지 않아요",
     autoCheck: '실시간 오답 자동 검사',
     autoCheckDesc: '잘못된 숫자 입력 시 즉시 붉은색 표시',
     soundSection: '🔊 사운드 및 진동',
@@ -111,7 +112,7 @@ export const screens = {
     adPrivacyDesc: '맞춤 광고 동의를 다시 선택합니다',
     resetData: '모든 로컬 데이터 초기화',
     resetDataDesc: '모든 로컬 게임 통계 및 기록 초기화',
-    resetConfirm: '⚠️ 경고: 모든 플레이 기록, 보유 힌트, 두뇌 지수 통계가 영구 삭제됩니다. 진행하시겠습니까?',
+    resetConfirm: '⚠️ 경고: 모든 플레이 기록, 보유 힌트, 플레이 분석 기록이 영구 삭제됩니다. 진행하시겠습니까?',
     resetSuccess: '데이터가 성공적으로 초기화되었습니다.',
     privacySection: '🛡️ 개인정보 보호',
     privacyPolicyBtn: '개인정보처리방침 전문 보기',
@@ -119,9 +120,9 @@ export const screens = {
     privacyModalTitle: '개인정보처리방침',
     privacy: {
       subtitle: 'Sudoku는 계정 없이 이용할 수 있습니다. 앱이 실제로 저장하고 보내는 정보는 아래와 같습니다.',
-      sec1Title: '1. 기기 저장과 백업', sec1Desc: '기록·힌트·설정은 기기에 저장됩니다. 안드로이드 자동 백업이 켜져 있으면 Android가 이 데이터를 본인의 Google 드라이브에 복사하고 재설치할 때 복원합니다. 이름·이메일·전화번호·연락처·위치는 수집하지 않습니다.',
-      sec2Title: '2. Google Play 게임즈', sec2Desc: 'Play 게임즈에 로그인되어 있으면 게임에서 이길 때마다 진행 기록(통계·업적·힌트·설정)이 Play 게임즈 저장 데이터로 자동 백업되고, IQ 점수가 Play 게임즈 순위표에 제출됩니다. 이 데이터는 본인의 Google 계정에 보관됩니다.',
-      sec3Title: '3. 1v1 대전', sec3Desc: '실시간 1v1 대전은 Google Firebase를 통해 무작위로 만든 플레이어 ID, 자동 닉네임(SudokuMaster_xxxx), 퍼즐 진행률을 상대에게 보냅니다. ID는 기기에 저장되어 재사용되며 이름이나 계정과 연결되지 않습니다.',
+      sec1Title: '1. 기기 저장과 백업', sec1Desc: "기록·힌트·설정은 기기에 저장됩니다. Play 게임즈에 로그인하지 않으면 이 기기에만 남습니다. 이름·이메일·전화번호·연락처·위치는 수집하지 않습니다.",
+      sec2Title: '2. Google Play 게임즈', sec2Desc: 'Play 게임즈에 로그인되어 있으면 게임에서 이길 때마다 진행 기록(통계·업적·힌트·설정)이 Play 게임즈 저장 데이터로 자동 백업되고, Logic Score가 Play 게임즈 순위표에 제출됩니다. 이 데이터는 본인의 Google 계정에 보관됩니다.',
+      sec3Title: '3. 1v1 대전', sec3Desc: '실시간 1v1 대전은 Google Firebase를 통해 무작위로 만든 플레이어 ID, 자동 닉네임(Player_xxxx), 퍼즐 진행률을 상대에게 보냅니다. ID는 기기에 저장되어 재사용되며 이름이나 계정과 연결되지 않습니다.',
       sec4Title: '4. 광고와 결제', sec4Desc: '이 앱은 Google AdMob을 통해 배너 광고, 게임 승리 후 전면 광고, 원할 때 보는 보상형 광고를 표시하며, AdMob은 광고 식별자를 처리할 수 있습니다. 광고 제거 구매는 Google Play가 처리하며 개발자는 결제 정보를 받지 않습니다.'
     }
   },
@@ -130,42 +131,43 @@ export const screens = {
     speedrunBest: "스피드런 최고 기록",
     survivalTitle: "⏳ 타임리밋 (서바이벌)",
     survivalTotalWins: "서바이벌 생존 성공",
-    survivalWinsUnit: "{count}회 성공",
-    leaderboardTab: '랭킹',
+    survivalWinsUnit: "{count}회 성공",
     summaryTitle: '종합 성적 요약',
+    pvpRating: "레이팅",
+    pvpRecordLabel: "전적",
+    pvpRecord: "{wins}승 · {losses}패",
     totalPlayed: '총 플레이',
     totalWon: '총 완주',
     winRate: '승률'
   },
   brainReport: {
-    totalPlayed: "총 플레이 수",
-    totalWon: "완성한 퍼즐",
-    winRate: "승률",
-    shareText: "[Sudoku IQ 리포트]\n나의 스도쿠 IQ: {iq}점\n등급: {tier}\n지금 함께 두뇌 트레이닝에 도전해 보세요!",
-    copiedToast: "두뇌 분석 결과가 클립보드에 복사되었습니다.",
-    focus: "몰입 집중력",
-    durability: "집중 지구력",
-    accuracy: "정확도",
-    logic: "논리 추론",
-    speed: "처리 속도",
-    shareCardBtn: "🔗 두뇌 분석 리포트 공유",
-    overallStats: "📊 종합 누적 데이터",
-    attributesTitle: "🧠 5대 핵심 인지 능력",
-    title: '두뇌 활성 리포트',
-    shareTitle: '나의 스도쿠 두뇌 지수 리포트',
+    scoreLabel: 'Logic Score',
+    scoreHowTitle: "ⓘ Logic Score는 어떻게 정해지나요?",
+    scoreHowBody: "판을 끝까지 채워 이길 때 올라가요. 힌트 없이 깬 가장 어려운 레벨이 가장 크게 반영되고, 이긴 판 수와 승률도 조금씩 반영돼요. 게임 오버가 되거나 중간에 그만두면 승률이 내려가 점수가 조금 깎일 수 있어요. 순위표는 Play 게임즈에 로그인했을 때 이 점수로 매겨져요.",
+    shareText: "[Sudoku 플레이 분석]\nLogic Score: {iq}점\n등급: {tier}\n지금 Sudoku에 도전해 보세요!",
+    copiedToast: "플레이 분석이 클립보드에 복사되었습니다.",
+    focus: "무실수",
+    durability: "꾸준함",
+    accuracy: "클리어율",
+    logic: "난이도",
+    speed: "속도",
+    shareCardBtn: "🔗 플레이 분석 공유",
+    attributesTitle: "📈 5가지 플레이 지표",
+    title: '플레이 분석',
+    shareTitle: '나의 Sudoku 플레이 분석',
     tiers: {
       grandMaster: '👑 그랜드 마스터',
-      grandMasterDesc: '극소수만 도달하는 1% 마스터급 추론력입니다.',
-      expert: '🧠 전문가급 논리력',
-      expertDesc: '이 게임에서 뛰어난 논리적 분석력을 보여주고 있습니다.',
-      superior: '⚡ 우수 두뇌',
-      superiorDesc: '날카로운 직관과 우수한 문제 해결 능력을 지녔습니다.',
-      aboveAverage: '💡 평균 이상 논리력',
-      aboveAverageDesc: '안정적이고 유연한 사고방식으로 퍼즐을 해결합니다.',
-      balanced: '🎯 균형 잡힌 두뇌',
-      balancedDesc: '5대 인지 능력이 고르게 발달한 모범적인 상태입니다.',
-      developing: '🌱 성장하는 두뇌',
-      developingDesc: '두뇌 트레이닝을 막 시작한 단계입니다. 꾸준히 플레이할수록 지수가 급상승합니다!'
+      grandMasterDesc: '최고 등급에 도달했습니다.',
+      expert: '🧠 달인',
+      expertDesc: '어려운 퍼즐을 꾸준히 풀고 있습니다.',
+      superior: '⚡ 상급',
+      superiorDesc: '상급 퍼즐에도 도전할 실력입니다.',
+      aboveAverage: '💡 중급',
+      aboveAverageDesc: '꾸준히 실력이 늘고 있습니다.',
+      balanced: '🎯 균형형',
+      balancedDesc: '5가지 플레이 지표가 고르게 오르고 있습니다.',
+      developing: '🌱 초보',
+      developingDesc: '플레이할수록 점수가 오릅니다.'
     }
   },
   battleLobby: {
@@ -224,13 +226,20 @@ export const screens = {
     level2Desc: '일반 봇: 안정적인 속도로 실수를 적게 합니다.',
     level3Desc: '숙련 봇: 빠른 속도, 적은 실수.',
     level4Desc: '마스터 봇: 매우 빠른 속도, 드문 실수.',
-    level5Desc: '알파도쿠: 가장 빠르고 실수가 가장 적은 봇.',
+    level5Desc: '그랜드마스터 봇: 가장 빠르고 실수가 가장 적은 봇.',
     startBtn: 'Lv.{level} {name} AI 대전 시작'
   },
   academy: {
     tabs: { stage1: '1단계', stage2: '2단계', stage3: '3단계', stage4: '4단계', stage5: '5단계' },
     stageTitles: {"stage1":"1단계: 기본 테크닉 (기초 싱글 & 라인)","stage2":"2단계: 중급 테크닉 (블록 페어 & 인터섹션)","stage3":"3단계: 고급 테크닉 (윙 시리즈 & 피쉬 기법)","stage4":"4단계: 전문가 테크닉 (컬러링 & 3D 메두사)","stage5":"5단계: 마스터 테크닉 (UR, AIC & ALS 체인)"},
     title: '스도쿠 아카데미',
+    theoryBoard: {
+      patternTab: '패턴',
+      resultTab: '결과',
+      patternCaption: '색이 칠해진 칸들이 이 기법의 패턴입니다. 실전 예시 1과 같은 판입니다.',
+      resultCaption: '빨갛게 표시된 후보가 이 패턴으로 지워집니다.',
+      placeCaption: '이 패턴으로 강조된 숫자가 그 칸의 답으로 정해집니다.'
+    },
     practiceUi: {
       theory: '이론 설명',
       practice1: '실전 연습 1',

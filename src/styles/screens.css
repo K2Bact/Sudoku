@@ -159,7 +159,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  min-height: 52px;
+  /* The real banner height once the SDK reports it; until then the anchored
+     adaptive banner's own rule of thumb — about 15.5% of the width, 50 to 90. */
+  min-height: var(--ad-banner-h, clamp(50px, 15.5vw, 90px));
+  flex: none;
   background: transparent;
   border: 0;
 }

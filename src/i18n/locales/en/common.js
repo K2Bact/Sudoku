@@ -6,13 +6,14 @@ export const common = {
     confirm: 'OK',
     cancel: 'Cancel',
     restart: 'Restart',
-    restartConfirm: 'Restart this puzzle?',
+    restartConfirm: "Restart this puzzle? The current game will count as a loss.",
+    abandonConfirm: "A game is in progress. Starting a new one counts it as a loss. Start anyway?",
     newGame: 'New Game',
     home: 'Home',
     pause: 'Pause',
     resume: 'Resume',
     exitAppPrompt: 'Press back again to exit the app.',
-    confirmLeaveGame: 'Are you sure you want to pause and return to Home?',
+    confirmLeaveGame: 'Pause and go back to Home?',
     shareUnavailable: "Sharing isn't available on this device."
   },
   calendar: {
@@ -51,18 +52,18 @@ export const common = {
     notes: 'Notes',
     hint: 'Hint',
     rewardHint: '+1 Hint',
-    fastEntry: 'Fast Mode'
+    fastEntry: 'Fast Entry'
   },
   board: {
-    pausedTitle: 'Game is Paused',
-    tapToResume: 'Tap screen to resume ▶️',
+    pausedTitle: 'Paused',
+    tapToResume: 'Tap to resume ▶️',
     resumeTooltip: 'Tap to Resume'
   },
   themes: {
-    clay: '🏺 Warm Ceramic & Clay',
-    matteDark: '🌌 Soft Matte Resin Dark',
-    pureCeramic: '🧊 Pure Claymorphism',
-    editorial: '📰 Classic Pure Paper'
+    clay: '🏺 Warm Clay',
+    matteDark: '🌌 Matte Dark',
+    pureCeramic: '🧊 Pure Ceramic',
+    editorial: '📰 Classic Paper'
   },
   conflicts: {
     boxDuplicate: '⚠️ Number {num} already exists in [{box} 3x3 box]! {suffix}',
@@ -70,34 +71,34 @@ export const common = {
     colDuplicate: '⚠️ Number {num} already exists in column {col}! {suffix}',
     multipleDuplicates: '⚠️ Number {num} already exists in the same 3x3 box / row / column! {suffix}',
     notSolution: '⚠️ Number {num} is not the solution for this cell! {suffix}',
-    boardFullHasMistakes: '⚠️ The board is full, but some cells have errors. Please review!',
+    boardFullHasMistakes: '⚠️ The board is full, but some numbers are wrong. Take another look!',
     timeAttackSuffix: '(Mistake {count} | +10s penalty)',
     classicSuffix: '(Mistakes {count}/3)'
   },
   tiers: {
     grandMaster: {
       title: '👑 Grand Master',
-      desc: 'Elite 1% master-level deductive reasoning.'
+      desc: "You've reached the top rank."
     },
     expert: {
-      title: '🧠 Expert Logic',
-      desc: 'Outstanding deductive reasoning in this game.'
+      title: '🧠 Expert',
+      desc: 'You solve hard puzzles consistently.'
     },
     superior: {
-      title: '⚡ Superior Logic',
-      desc: 'Sharp and exceptional logical reasoning.'
+      title: '⚡ Advanced',
+      desc: "You're ready for advanced puzzles."
     },
     aboveAverage: {
-      title: '💡 Above Average',
-      desc: 'Flexible and robust problem solving.'
+      title: '💡 Intermediate',
+      desc: "You're improving steadily."
     },
     balanced: {
-      title: '🎯 Balanced Brain',
-      desc: 'Stable and well-balanced reasoning skills.'
+      title: '🎯 Balanced',
+      desc: 'Your 5 play metrics are growing evenly.'
     },
     developing: {
-      title: '🌱 Brain Training',
-      desc: 'Developing logic foundation with infinite growth potential.'
+      title: '🌱 Beginner',
+      desc: 'Keep playing and your score will go up.'
     }
   }
 };

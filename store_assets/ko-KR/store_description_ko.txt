@@ -1,37 +1,41 @@
+[앱 이름 (최대 30자)]
+스도쿠 - 해법을 배우는 논리 퍼즐
+
 [간단한 설명 (Short Description - 최대 80자)]
-클래식 스도쿠, 27종 정석 아카데미, 실시간 1v1 배틀 & 30종 업적
+5단계 난이도와 32가지 해법 아카데미. 1v1 대전과 AI 대전도 즐길 수 있는 스도쿠입니다.
 
 [자세한 설명 (Full Description)]
-스도쿠 마스터(Sudoku)는 입문자부터 프로 마스터까지 모두를 위해 정교하게 설계된 차세대 프리미엄 정통 두뇌 논리 퍼즐 게임입니다.
+처음 해보는 분부터 오래 즐겨온 분까지 함께 즐기는 스도쿠입니다.
+5단계 난이도, 32가지 해법을 그림 설명과 연습 문제로 배우는 아카데미, 온라인 1v1 대전과 AI 대전을 담았습니다.
 
-지적인 즐거움과 묵직한 3D 세라믹 키캡의 타건감, 27가지 스도쿠 정석 해법을 알려주는 실전 아카데미까지 스도쿠의 모든 것을 경험해 보세요.
+■ 5단계 난이도
+• 입문 · 쉬움 · 보통 · 어려움 · 전문가
+• 모든 문제는 답이 하나뿐이 되도록 자동 생성합니다
+• 클래식 · 스피드런 · 서바이벌 모드
+• 눈이 편한 테마 4가지
 
-━━━━━━━━━━━━━━━━━━━━━
-🌟 SUIDOKU만의 핵심 매력
-━━━━━━━━━━━━━━━━━━━━━
+■ 32가지 해법 아카데미
+• 해법마다 그림 설명과 실제 판을 쓴 연습 문제가 2개씩 있습니다
+• 초급: Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
+• 중급: Pointing, Claiming, Naked/Hidden Pair · Triple · Quad
+• 고급: X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
+• 마스터: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
+• 그랜드마스터: Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
 
-🧩 1. 완벽한 5단계 정통 클래식 모드
-- 매우 쉬움(Very Easy)부터 전문가(Expert)까지 5단계 난이도 완비
-- 100% 유일한 해가 보장되는 고품격 백트래킹 퍼즐 알고리즘
-- 편안한 눈을 위한 4가지 프리미엄 감성 테마 (클레이, 다크 레진, 세라믹, 에디토리얼)
+■ 1v1 대전과 AI 대전
+• 온라인 플레이어와 같은 판에서 속도를 겨루는 실시간 대전
+• 5단계 강도 중에서 고르는 AI 대전
 
-🎓 2. 국내 유일! 27종 스도쿠 정석 아카데미
-- 눈으로 보며 체득하는 단계별 정석 테크닉 코칭
-- 입문: Full House, Last Free Cell, Cross-Hatching
-- 중급: Naked/Hidden Pair, Triples, Quads, Pointing/Claiming Box
-- 고급: X-Wing, Swordfish, Jellyfish, XY-Wing, XYZ-Wing, W-Wing
-- 초고수: Simple Colouring, 3D Medusa, Unique Rectangle, Sue de Coq, Exocet, AIC
+■ 업적과 플레이 분석
+• 업적 30가지
+• 클리어 시간, 무실수 클리어 등으로 내 플레이를 5가지 지표로 보여줍니다
 
-⚔️ 3. 심장이 뛰는 실시간 1v1 스피드 배틀
-- 상대방과 100% 동일한 보드로 겨루는 공정한 스피드 대결
-- 상대의 실시간 풀이 진행률을 보며 역전의 쾌감을 느껴보세요!
+■ 데일리 챌린지
+• 매일 새로운 미션, 달력에 기록
+• 매달 배지에 도전
 
-🏆 4. 30종 풍부한 글로벌 업적 & 순위표
-- 스피드런, 콤보, 무결점 클리어, 멘사 IQ 달성 등 30가지 다채로운 도전과제
-- 인게임 축하 토스트 팝업 및 Google Play Games 글로벌 순위표 연동
+■ Google Play 게임즈
+• 로그인하면 이길 때마다 진행 기록이 클라우드에 자동 백업됩니다
+• Logic Score 순위표에 참여할 수 있습니다
 
-📅 5. 데일리 챌린지 & 출석 스탬프
-- 매일 새로운 맞춤형 퍼즐과 일일 미션
-- 과거에 놓친 날짜도 간편하게 해금하여 매달 월간 골드 트로피 획득 가능!
-
-지금 바로 스도쿠 마스터를 다운로드하고, 당신의 두뇌를 한 단계 더 명석하게 깨워보세요!
+천천히 생각하며 푸는 즐거움, 스도쿠로 즐겨보세요.

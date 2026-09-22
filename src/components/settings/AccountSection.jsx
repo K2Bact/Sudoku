@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CloudUpload, CloudDownload, ChevronRight, Gamepad2, Check } from 'lucide-react';
 import { soundHaptic } from '../../utils/soundHaptic';
 import { cloudSyncService } from '../../services/cloudSyncService';
-import { playGamesService } from '../../services/playGamesService';
-import { attemptSilentSignIn, allowAutoSignIn } from '../../utils/playGamesBridge';
+import { connectPlayGames } from '../../utils/playGamesBridge';
 import { getPlayGamesUser } from '../../utils/storage';
 import { useTranslation } from '../../i18n/i18nContext';
 import { useConfirm } from '../common/ConfirmProvider';
@@ -13,6 +12,11 @@ import { useConfirm } from '../common/ConfirmProvider';
  * screen keeps to one job (rendering settings rows) and this one owns the
  * account lifecycle.
  *
+ * There is no "back up now" row: backups run by themselves (after a win, on
+ * sign-in, when the connection returns, when the app comes back to the foreground —
+ * useCloudAutoSync). The row shows when the last one actually reached Play Games,
+ * so a backup that keeps failing is visible instead of silently promised.
+ *
  * The connect row exists because the app could only ever attempt a SILENT
  * sign-in, which succeeds only for a player who has already authorised this game
  * on this device. A new install, or anyone who declined once, had no way back in
@@ -20,11 +24,26 @@ import { useConfirm } from '../common/ConfirmProvider';
  * features were permanently unreachable for them with no visible reason.
  */
 export function AccountSection() {
-  const { t } = useTranslation();
+  const { t, activeLanguage } = useTranslation();
   const confirm = useConfirm();
   const [syncStatus, setSyncStatus] = useState(null);
   const [player, setPlayer] = useState(() => getPlayGamesUser());
   const [connecting, setConnecting] = useState(false);
+  const [lastBackup, setLastBackup] = useState(() => cloudSyncService.getLastRemoteBackup());
+
+  // A backup started on sign-in may finish while this screen is open.
+  useEffect(() => {
+    const id = setInterval(() => setLastBackup(cloudSyncService.getLastRemoteBackup()), 2000);
+    return () => clearInterval(id);
+  }, []);
+
+  const formatWhen = (ts) => {
+    try {
+      return new Date(ts).toLocaleString(activeLanguage || undefined, { dateStyle: 'medium', timeStyle: 'short' });
+    } catch {
+      return new Date(ts).toLocaleString();
+    }
+  };
 
   // Silent sign-in runs shortly after launch; pick up its result if it lands
   // while this screen is open.
@@ -40,27 +59,13 @@ export function AccountSection() {
     setConnecting(true);
     setSyncStatus(null);
     // Interactive: shows Google's sign-in UI. Only ever from a real tap.
-    const res = await playGamesService.signIn(true);
-    if (res.success) {
-      // 직접 켰으니 자동 로그인 차단을 푼다. 다음 실행부터 세션이 조용히 복원된다.
-      allowAutoSignIn();
-      await attemptSilentSignIn();       // re-emits the event so the bridge stores the profile
+    if (await connectPlayGames()) {
       setPlayer(getPlayGamesUser());
     } else {
       setSyncStatus('playGamesFailed');
       setTimeout(() => setSyncStatus(null), 3500);
     }
     setConnecting(false);
-  };
-
-  const handleCloudBackup = async () => {
-    soundHaptic.playSelectSound();
-    setSyncStatus('backingUp');
-    const res = await cloudSyncService.saveToCloud();
-    // `success` is true even for a device-local write, so `method` is the honest
-    // signal — only 'play_games' actually left the device.
-    setSyncStatus(res.success && res.method === 'play_games' ? 'backupSuccess' : 'backupFail');
-    setTimeout(() => setSyncStatus(null), 3500);
   };
 
   const handleCloudRestore = async () => {
@@ -102,19 +107,17 @@ export function AccountSection() {
           {!player && <ChevronRight size={18} className="text-muted" />}
         </div>
 
-        <div className="settings-row clickable" onClick={handleCloudBackup}>
+        <div className="settings-row cloud-last-backup">
           <div className="settings-row-left">
             <div className="settings-icon-badge blue">
               <CloudUpload size={18} />
             </div>
             <div className="settings-text-col">
-              <span className="settings-title">{t('cloudSync.backupTitle')}</span>
-              <p className="settings-subtitle">
-                {syncStatus === 'backupSuccess' ? t('cloudSync.backupSuccess') : t('cloudSync.backupDesc')}
-              </p>
+              <span className="settings-title">
+                {lastBackup ? t('cloudSync.lastBackup', { time: formatWhen(lastBackup) }) : t('cloudSync.notBackedUp')}
+              </span>
             </div>
           </div>
-          <ChevronRight size={18} className="text-muted" />
         </div>
 
         <div className="settings-row clickable" onClick={handleCloudRestore}>

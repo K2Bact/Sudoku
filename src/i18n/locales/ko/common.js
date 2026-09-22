@@ -6,7 +6,8 @@ export const common = {
     confirm: '확인',
     cancel: '취소',
     restart: '다시시작',
-    restartConfirm: '이 퍼즐을 다시 시작할까요?',
+    restartConfirm: "이 퍼즐을 다시 시작할까요? 지금 게임은 진 판으로 기록돼요.",
+    abandonConfirm: "진행 중인 게임이 있어요. 새로 시작하면 지금 게임은 진 판으로 기록돼요. 시작할까요?",
     newGame: '새 게임',
     home: '메인 홈',
     pause: '일시정지',
@@ -77,27 +78,27 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 그랜드 마스터',
-      desc: '극소수만 도달하는 1% 마스터급 추론력입니다.'
+      desc: '최고 등급에 도달했습니다.'
     },
     expert: {
-      title: '🧠 전문가급 논리력',
-      desc: '이 게임에서 뛰어난 추리력을 보여주고 있습니다.'
+      title: '🧠 달인',
+      desc: '어려운 퍼즐을 꾸준히 풀고 있습니다.'
     },
     superior: {
-      title: '⚡ 우수 두뇌',
-      desc: '날카로운 직관과 우수한 문제 해결 능력을 지녔습니다.'
+      title: '⚡ 상급',
+      desc: '상급 퍼즐에도 도전할 실력입니다.'
     },
     aboveAverage: {
-      title: '💡 평균 이상 논리력',
-      desc: '안정적이고 유연한 사고방식으로 퍼즐을 해결합니다.'
+      title: '💡 중급',
+      desc: '꾸준히 실력이 늘고 있습니다.'
     },
     balanced: {
-      title: '🎯 균형 잡힌 두뇌',
-      desc: '5대 인지 능력이 고르게 발달한 모범적인 상태입니다.'
+      title: '🎯 균형형',
+      desc: '5가지 플레이 지표가 고르게 오르고 있습니다.'
     },
     developing: {
-      title: '🌱 성장하는 두뇌',
-      desc: '두뇌 트레이닝을 막 시작한 단계입니다. 꾸준히 플레이할수록 지수가 급상승합니다!'
+      title: '🌱 초보',
+      desc: '플레이할수록 점수가 오릅니다.'
     }
   }
 };

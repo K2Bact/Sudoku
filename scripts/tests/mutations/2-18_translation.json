@@ -20,6 +20,30 @@
       "find": "hapticFx: 'Retour haptique',",
       "replace": "hapticFx: 'Haptic Feedback (Vibration)',",
       "expectFailure": "영어를 그대로 둔 자리가 없다"
+    },
+    {
+      "name": "Mensa comes back, transliterated",
+      "why": "Found 2026-09-19 in the 1.2.6 AAB: the iq_150 title said Mensa in 13 scripts after the tier names had been cleaned.",
+      "file": "src/i18n/locales/ja/achievements.js",
+      "find": "'ロジックの達人'",
+      "replace": "'メンサ級の頭脳'",
+      "expectFailure": "남의 상표 이름이 없다"
+    },
+    {
+      "name": "Sudoku reappears in the Japanese UI",
+      "why": "「数独／SUDOKU」 is Nikoli's registered mark in Japan in class 9 (software).",
+      "file": "src/i18n/locales/ja/modals.js",
+      "find": "ナンプレはお楽しみいただけていますか？",
+      "replace": "Sudokuはお楽しみいただけていますか？",
+      "expectFailure": "(local mark)"
+    },
+    {
+      "name": "the Japanese launcher label falls back to Sudoku",
+      "why": "Android reads the icon label from res/values-ja; the JS locales never reach it.",
+      "file": "android/app/src/main/res/values-ja/strings.xml",
+      "find": "<string name=\"app_name\">ナンプレ</string>",
+      "replace": "<string name=\"app_name\">Sudoku</string>",
+      "expectFailure": "launcher app_name"
     }
   ]
 }

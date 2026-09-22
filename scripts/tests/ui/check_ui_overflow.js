@@ -92,13 +92,17 @@ async function runScanner() {
 
       // Comprehensive screens to test across all 13 languages
       const testScreens = [
-        { name: 'Home Screen', path: 'home', trigger: null },
-        { name: 'Settings Screen', path: 'settings', trigger: 'button[title*="설정"], button[title*="設定"], button[title*="Settings"], button[title*="Configuración"], button[title*="Einstellungen"]' },
-        { name: 'Stats Screen', path: 'stats', trigger: '.home-bottom-nav button:nth-child(1)' },
-        { name: 'Brain IQ Screen', path: 'brain', trigger: '.home-bottom-nav button:nth-child(2)' },
-        { name: 'Academy Screen', path: 'academy', trigger: '.home-bottom-nav button:nth-child(3)' },
-        { name: 'AI Battle Screen', path: 'aiBattle', trigger: '.ai-battle-card, .home-mode-card:has-text("AI"), .home-mode-card:has-text("IA")' },
-        { name: 'Daily Challenge Screen', path: 'daily', trigger: '.daily-challenge-card, .home-mode-card:has-text("Daily"), .home-mode-card:has-text("Tages"), .home-mode-card:has-text("Diario")' }
+        // `expect` is a class only that screen has. Until 2026-09-19 three triggers named
+        // elements that did not exist (Daily, AI Battle) or only matched five languages'
+        // tooltips (Settings); the click failed silently and the home screen was checked
+        // again under the other screen's name.
+        { name: 'Home Screen', path: 'home', trigger: null, expect: '.home-screen-container' },
+        { name: 'Settings Screen', path: 'settings', trigger: 'button.icon-btn:has(.lucide-settings)', expect: '.settings-screen-container' },
+        { name: 'Stats Screen', path: 'stats', trigger: '.home-bottom-nav button:nth-child(1)', expect: '.stats-screen-container' },
+        { name: 'Play Analysis Screen', path: 'brain', trigger: '.home-bottom-nav button:nth-child(2)', expect: '.brain-screen-container' },
+        { name: 'Academy Screen', path: 'academy', trigger: '.home-bottom-nav button:nth-child(3)', expect: '.academy-tab-bar' },
+        { name: 'AI Battle Screen', path: 'aiBattle', trigger: '.ai-card-banner', expect: '.battle-lobby-container' },
+        { name: 'Daily Challenge Screen', path: 'daily', trigger: '.daily-card-banner', expect: '.daily-screen-container' }
       ];
 
       for (const scr of testScreens) {
@@ -106,9 +110,14 @@ async function runScanner() {
           try {
             await page.click(scr.trigger, { timeout: 2000 });
             await page.waitForTimeout(400);
-          } catch {
-            // fallback if selector not matched
-          }
+          } catch { /* judged below by whether the screen opened */ }
+        }
+        if (!(await page.$(scr.expect))) {
+          totalErrors++;
+          errorLog.push({ lang, screen: scr.name, type: 'SCREEN_NOT_OPENED', text: `${scr.trigger} did not open it (${scr.expect} missing)`, className: '' });
+          await page.goto(PREVIEW_URL);
+          await page.waitForTimeout(300);
+          continue;
         }
 
         // Run in-page DOM inspection

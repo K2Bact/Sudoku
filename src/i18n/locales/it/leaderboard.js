@@ -1,28 +1,21 @@
 export const leaderboard = {
   leaderboard: {
-    classicTab: 'Classifica Classico',
-    speedrunTab: 'Classifica Cronometro',
     pvpTab: 'Duello 1v1',
-    iqTab: 'QI',
-    myStanding: 'Mia Posizione Attuale',
-    unranked: 'Non Classificato',
-    record: 'Mio Record',
-    topSolvers: 'Livelli di riferimento',
-    openPlayGames: 'Vedi la classifica completa su Play Giochi'
+    openPlayGames: "Vedi la mia posizione Logic Score"
   },
   cloudSync: {
     sectionTitle: '☁️ Salvataggio Cloud & Sincronizzazione',
-    autoSyncNotice: '💡 I tuoi progressi vengono salvati automaticamente ad ogni vittoria. Usa [Ripristina Dati] sui nuovi dispositivi.',
+    autoSyncNotice: "💡 Se hai eseguito l’accesso a Play Giochi, i tuoi progressi vengono salvati automaticamente. Su un nuovo dispositivo ti chiederemo se vuoi caricarli.",
     playGamesConnect: 'Connetti Play Giochi',
     playGamesConnectDesc: 'Necessario per classifiche e backup nel cloud',
     playGamesConnected: 'Connesso come {name}',
     playGamesFailed: 'Impossibile connettersi. Riprova più tardi.',
-    backupTitle: 'Salva nel Cloud Ora',
-    backupDesc: 'Salva i tuoi progressi, statistiche e obiettivi in modo sicuro nel cloud.',
-    backupSuccess: 'Salvataggio nel cloud completato con successo! ✅',
     restoreTitle: 'Ripristina dal Cloud',
     restoreDesc: 'Scarica i tuoi dati salvati nel cloud e ripristina i progressi.',
     restoreConfirm: 'Vuoi ripristinare i dati dal cloud? Le statistiche locali verranno unite.',
+    lastBackup: "Ultimo backup: {time}",
+    notBackedUp: "Nessun backup ancora",
+    restorePrompt: "Play Giochi ha dei progressi salvati ({won} vittorie). Caricarli su questo dispositivo?",
     noData: 'Nessun dato di salvataggio cloud trovato per questo account.'
   }
 };

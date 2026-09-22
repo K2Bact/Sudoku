@@ -6,7 +6,8 @@ export const common = {
     confirm: 'OK',
     cancel: 'Annulla',
     restart: 'Ricomincia',
-    restartConfirm: 'Ricominciare questo schema?',
+    restartConfirm: "Ricominciare questo puzzle? La partita in corso conterà come sconfitta.",
+    abandonConfirm: "C’è una partita in corso. Iniziandone una nuova, conterà come sconfitta. Iniziare comunque?",
     newGame: 'Nuova Partita',
     home: 'Home',
     pause: 'Pausa',
@@ -77,27 +78,27 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 Gran Maestro',
-      desc: 'Deduzione logica magistrale degna dell’élite top 1%.'
+      desc: 'Hai raggiunto il grado più alto.'
     },
     expert: {
-      title: '🧠 Logica esperta',
-      desc: 'Ragionamento deduttivo eccellente in questo gioco.'
+      title: '🧠 Esperto',
+      desc: 'Risolvi con costanza puzzle difficili.'
     },
     superior: {
-      title: '⚡ Logica Superiore',
-      desc: 'Intuito acuto e brillante risoluzione dei problemi.'
+      title: '⚡ Avanzato',
+      desc: 'Sei pronto per puzzle avanzati.'
     },
     aboveAverage: {
-      title: '💡 Sopra la Media',
-      desc: 'Pensiero analitico flessibile e affidabile.'
+      title: '💡 Intermedio',
+      desc: 'Stai migliorando costantemente.'
     },
     balanced: {
-      title: '🎯 Mente Equilibrata',
-      desc: 'Sviluppo armonioso di tutte le aree cognitive.'
+      title: '🎯 Equilibrato',
+      desc: 'I tuoi 5 indicatori crescono in modo equilibrato.'
     },
     developing: {
-      title: '🌱 Allenamento Mentale',
-      desc: 'Fase iniziale di sviluppo logico con potenziale illimitato.'
+      title: '🌱 Principiante',
+      desc: 'Continua a giocare e il punteggio salirà.'
     }
   }
 };

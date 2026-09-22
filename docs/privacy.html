@@ -73,24 +73,99 @@
       color: var(--text-muted);
       margin-top: 40px;
     }
-    .lang-nav { text-align: center; margin-top: 12px; font-size: 13px; }
-    .lang-nav a { color: #60a5fa; margin: 0 8px; }
     a { color: #60a5fa; }
+    .app-line { font-size: 13px; color: #94a3b8; margin-top: 6px; }
+    .lang-nav { display: flex; justify-content: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .lang-btn { color: #cbd5e1; text-decoration: none; font-size: 13px; font-weight: 700; padding: 6px 14px;
+      border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); }
+    .lang-btn[aria-current="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+    /* Without JavaScript every language stays visible, as before. With it, one at a time. */
+    .js .lang-divider { display: none; }
+    .js [data-lang-only][hidden], .js .lang-section[hidden] { display: none; }
+    html:not(.js) [data-lang-only] + [data-lang-only] { border-top: 1px solid var(--border); margin-top: 12px; padding-top: 12px; }
   </style>
+  <script>
+    // One language at a time, on one page and one URL (the store and the Data safety
+    // form link here). The first choice follows the browser; #ko / #en / #ja pick one;
+    // #delete jumps to the deletion section of the language shown (#delete-en / #delete-ja
+    // name one directly). Buttons change the language without reloading.
+    (function () {
+      var LANGS = ['ko', 'en', 'ja'];
+      document.documentElement.className += ' js';
+      function browserLang() {
+        var n = (navigator.language || 'en').toLowerCase();
+        return n.indexOf('ko') === 0 ? 'ko' : n.indexOf('ja') === 0 ? 'ja' : 'en';
+      }
+      function show(lang, anchor) {
+        var i, els = document.querySelectorAll('.lang-section');
+        for (i = 0; i < els.length; i++) els[i].hidden = els[i].getAttribute('data-lang') !== lang;
+        els = document.querySelectorAll('[data-lang-only]');
+        for (i = 0; i < els.length; i++) els[i].hidden = els[i].getAttribute('data-lang-only') !== lang;
+        els = document.querySelectorAll('.lang-btn');
+        for (i = 0; i < els.length; i++) els[i].setAttribute('aria-current', String(els[i].getAttribute('data-lang') === lang));
+        document.documentElement.lang = lang;
+        if (anchor) { var t = document.getElementById(anchor); if (t) t.scrollIntoView(); } else { window.scrollTo(0, 0); }
+      }
+      function fromHash() {
+        var h = location.hash.replace('#', '');
+        if (LANGS.indexOf(h) >= 0) return [h, null];
+        if (h === 'delete-en') return ['en', h];
+        if (h === 'delete-ja') return ['ja', h];
+        if (h === 'delete') { var l = browserLang(); return [l, l === 'ko' ? 'delete' : 'delete-' + l]; }
+        return [browserLang(), null];
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        var pick = fromHash();
+        show(pick[0], pick[1]);
+        var btns = document.querySelectorAll('.lang-btn');
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].addEventListener('click', function (e) {
+            e.preventDefault();
+            var l = this.getAttribute('data-lang');
+            if (history.replaceState) history.replaceState(null, '', '#' + l);
+            show(l, null);
+          });
+        }
+      });
+      window.addEventListener('hashchange', function () { var pick = fromHash(); show(pick[0], pick[1]); });
+      // #ko/#en/#ja land on the dividers, which are hidden when this script runs, so the
+      // browser does not jump past the title and the buttons; without JavaScript they
+      // are visible and the links work as plain anchors.
+    })();
+  </script>
 </head>
 <body>
   <div class="container">
     <!-- Header -->
     <div class="header">
       <span class="badge">Privacy Policy</span>
-      <h1>Sudoku 개인정보처리방침</h1>
-      <p class="updated-date">시행 일자: 2026년 9월 18일 (Effective Date: September 18, 2026 / 施行日: 2026年9月18日)</p>
-      <p style="font-size: 13px; color: #94a3b8; margin-top: 6px;">Application: Sudoku (Package: com.powerneja.suidoku)</p>
-      <p class="lang-nav"><a href="#ko">한국어</a> · <a href="#en">English</a> · <a href="#ja">日本語</a></p>
+      <div data-lang-only="ko">
+        <h1>Sudoku 개인정보처리방침</h1>
+        <p class="updated-date">시행 일자: 2026년 9월 19일</p>
+        <p class="app-line">앱: Sudoku (패키지: com.powerneja.suidoku)</p>
+      </div>
+      <div data-lang-only="en">
+        <h1>Sudoku Privacy Policy</h1>
+        <p class="updated-date">Effective date: September 19, 2026</p>
+        <p class="app-line">App: Sudoku (package: com.powerneja.suidoku)</p>
+      </div>
+      <div data-lang-only="ja">
+        <h1>ナンプレ<br>プライバシーポリシー</h1>
+        <p class="updated-date">施行日：2026年9月19日</p>
+        <p class="app-line">アプリ：ナンプレ（パッケージ：com.powerneja.suidoku）</p>
+      </div>
+      <nav class="lang-nav" aria-label="Language">
+        <a class="lang-btn" href="#ko" data-lang="ko">한국어</a>
+        <a class="lang-btn" href="#en" data-lang="en">English</a>
+        <a class="lang-btn" href="#ja" data-lang="ja">日本語</a>
+      </nav>
     </div>
 
+    <section class="lang-section" lang="ko" data-lang="ko">
+    <div id="ko" class="lang-divider">🇰🇷 한국어</div>
+
     <!-- Korean Section -->
-    <div id="ko" class="card">
+    <div class="card">
       <h2>🛡️ 1. 개요</h2>
       <p><strong>Sudoku</strong>(이하 '본 앱')는 회원가입 없이 이용할 수 있습니다. 이 문서는 본 앱이 실제로 저장하고 보내는 정보를 모두 적습니다.</p>
       <ul>
@@ -100,10 +175,10 @@
     </div>
 
     <div class="card">
-      <h2>💾 2. 기기 저장과 안드로이드 자동 백업</h2>
-      <p>클리어 기록, 승률, IQ 점수, 업적, 보유 힌트 수량, 테마 등 설정은 기기의 로컬 저장소(localStorage)에 저장됩니다.</p>
+      <h2>💾 2. 기기 저장</h2>
+      <p>클리어 기록, 승률, Logic Score, 업적, 보유 힌트 수량, 테마 등 설정은 기기의 로컬 저장소(localStorage)에 저장됩니다.</p>
       <ul>
-        <li><strong>안드로이드 자동 백업</strong>: 기기의 [설정] &gt; [Google] &gt; [백업]이 켜져 있으면, 안드로이드 운영체제가 이 앱의 데이터를 이용자 본인의 Google 드라이브에 자동으로 복사합니다. 앱을 삭제한 뒤 다시 설치하면 이 사본이 복원되므로, 이전 기록(보유 힌트 수량 등)이 그대로 남아 있을 수 있습니다. 이 기능은 기기 설정에서 끌 수 있습니다.</li>
+        <li><strong>안드로이드 자동 백업(Google 드라이브)은 사용하지 않습니다</strong>(1.2.7부터). 기기 밖에 남는 사본은 3절의 Google Play 게임즈 백업뿐이며, Play 게임즈에 로그인하지 않으면 기록은 이 기기에만 남습니다. 일부 제조사의 기기 간 데이터 이전 기능은 운영체제가 앱 설정과 관계없이 데이터를 옮길 수 있습니다.</li>
       </ul>
     </div>
 
@@ -111,8 +186,8 @@
       <h2>🎮 3. Google Play 게임즈</h2>
       <p>기기에 Google Play 게임즈 프로필이 있으면 앱을 시작할 때 자동으로 로그인되며, [설정]에서 직접 로그인할 수도 있습니다. 로그인되어 있는 동안 다음이 이루어집니다.</p>
       <ul>
-        <li><strong>자동 클라우드 백업</strong>: 게임에서 이길 때마다, 그리고 [설정]의 [클라우드에 지금 백업]을 누를 때 진행 기록(통계, 업적, 보유 힌트, 설정, 일일 도전 기록, 이전 기록 재생용 데이터, 이 백업을 구분하는 Google Play 게임즈 플레이어 ID)이 <strong>Google Play 게임즈 저장 데이터</strong>로 저장됩니다.</li>
-        <li><strong>순위표</strong>: IQ 점수가 Google Play 게임즈 순위표에 제출됩니다. 순위표는 Play 게임즈 프로필 공개 설정에 따라 다른 이용자에게 보일 수 있습니다.</li>
+        <li><strong>자동 클라우드 백업</strong>: 게임에서 이길 때마다, 그리고 앱을 켜거나 인터넷이 다시 연결될 때(마지막 백업 이후 바뀐 기록이 있으면) 진행 기록(통계, 업적, 보유 힌트, 설정, 일일 도전 기록, 이전 기록 재생용 데이터, 이 백업을 구분하는 Google Play 게임즈 플레이어 ID)이 <strong>Google Play 게임즈 저장 데이터</strong>로 저장됩니다. 기록이 없는 새 기기에서 로그인하면, 저장된 기록을 불러올지 한 번 묻습니다.</li>
+        <li><strong>순위표</strong>: Logic Score가 Google Play 게임즈 순위표에 제출됩니다. 순위표는 Play 게임즈 프로필 공개 설정에 따라 다른 이용자에게 보일 수 있습니다.</li>
       </ul>
       <p>이 데이터는 이용자 본인의 Google 계정에 보관되며 Google의 <a href="https://policies.google.com/privacy" target="_blank">개인정보처리방침</a>이 적용됩니다. 로그인하지 않으면 위 전송은 일어나지 않습니다.</p>
     </div>
@@ -122,7 +197,7 @@
       <p>실시간 1v1 대전을 이용하면 매칭과 대전 진행을 위해 <strong>Google Firebase</strong>(익명 인증, Realtime Database)를 통해 다음이 전송됩니다.</p>
       <ul>
         <li>기기에서 무작위로 생성해 저장해 두고 다음 대전에도 재사용하는 플레이어 ID</li>
-        <li>그 ID로 만든 자동 닉네임(SudokuMaster_xxxx)</li>
+        <li>그 ID로 만든 자동 닉네임(Player_xxxx)</li>
         <li>퍼즐 진행률 등 대전 상태</li>
         <li>Firebase 익명 인증이 발급하는 무작위 식별자</li>
       </ul>
@@ -150,8 +225,8 @@
       <p>Sudoku(개발자: K2Bact)의 데이터는 아래 방법으로 삭제할 수 있습니다.</p>
       <ul>
         <li><strong>기기에 저장된 데이터</strong>: 앱의 [설정] &gt; [개인정보 보호] &gt; [모든 로컬 데이터 초기화]를 누르거나 앱을 삭제하면 즉시 삭제됩니다.</li>
-        <li><strong>Google Play 게임즈 데이터</strong>(클라우드 백업, IQ 점수 순위표 기록): 이용자가 삭제할 때까지 보관됩니다. 앱 안의 초기화로는 지워지지 않으며, Google Play 게임즈 앱의 설정에서 이 게임의 데이터를 삭제할 수 있습니다.</li>
-        <li><strong>안드로이드 자동 백업 사본</strong>: 이용자가 삭제하거나 Google의 백업 정책에 따라 만료될 때까지 이용자의 Google 드라이브에 보관됩니다. Google 드라이브의 백업 관리에서 삭제할 수 있습니다.</li>
+        <li><strong>Google Play 게임즈 데이터</strong>(클라우드 백업, Logic Score 순위표 기록): 이용자가 삭제할 때까지 보관됩니다. 앱 안의 초기화로는 지워지지 않습니다. Google Play 스토어 앱의 [프로필 아이콘] &gt; [설정] &gt; [일반] &gt; [Play 게임즈 프로필] &gt; [개인 정보 보호 및 설정] &gt; [내 데이터]의 [프로필 및 게임 데이터 삭제]에서, 또는 웹의 <a href="https://play.google.com/games/profile" target="_blank">play.google.com/games/profile</a> &gt; [내 데이터] &gt; [Play 게임즈 계정 및 데이터 삭제]에서 이 게임의 데이터를 삭제할 수 있습니다.</li>
+        <li><strong>이전 버전(1.2.6 이하)이 만든 안드로이드 자동 백업 사본</strong>: 1.2.7부터는 복원되지 않으며, Google의 백업 정책에 따라 만료될 때까지 이용자의 Google 드라이브에 남아 있습니다. Google 드라이브의 백업 관리에서 바로 삭제할 수도 있습니다.</li>
         <li><strong>1v1 대전 데이터</strong>: 따로 삭제할 필요가 없습니다. 매칭 대기 기록은 연결이 끊기면, 대전 메시지는 약 1분 뒤 또는 연결이 끊길 때 서버에서 자동으로 삭제됩니다. Firebase 익명 인증 식별자는 다른 정보와 연결되지 않습니다.</li>
       </ul>
       <p>그 밖의 삭제 요청은 아래 문의처로 보내 주세요.</p>
@@ -168,7 +243,9 @@
       <p>• 개발자: K2Bact<br>• 문의: <span class="highlight">k2bact.dev@gmail.com</span></p>
       <p>이 방침이 바뀌면 이 페이지를 갱신하고 시행 일자를 고칩니다.</p>
     </div>
+    </section>
 
+    <section class="lang-section" lang="en" data-lang="en">
     <!-- English Section -->
     <div id="en" class="lang-divider">🇬🇧 English</div>
 
@@ -182,10 +259,10 @@
     </div>
 
     <div class="card">
-      <h2>💾 2. On-Device Storage and Android Auto Backup</h2>
-      <p>Clear records, win rate, IQ score, achievements, hint balance and settings such as your theme are kept in the device's local storage (localStorage).</p>
+      <h2>💾 2. On-Device Storage</h2>
+      <p>Clear records, win rate, Logic Score, achievements, hint balance and settings such as your theme are kept in the device's local storage (localStorage).</p>
       <ul>
-        <li><strong>Android Auto Backup</strong>: if backup is on in your device's Settings &gt; Google &gt; Backup, the Android operating system copies this app's data to your own Google Drive and restores it when you reinstall. Records from before an uninstall (your hint balance, for example) can therefore still be there after a fresh install. You can turn this off in your device settings.</li>
+        <li><strong>Android Auto Backup (Google Drive) is not used</strong> (from version 1.2.7). The only copy kept off the device is the Google Play Games backup in section 3; if you are not signed in to Play Games, your records stay only on this device. Some manufacturers' device-to-device transfer tools may still copy data between phones regardless of this app setting.</li>
       </ul>
     </div>
 
@@ -193,8 +270,8 @@
       <h2>🎮 3. Google Play Games</h2>
       <p>If your device has a Google Play Games profile, the app signs you in automatically at launch; you can also sign in from Settings. While you are signed in:</p>
       <ul>
-        <li><strong>Automatic cloud backup</strong>: every time you win a game, and whenever you tap Backup to Cloud Now in Settings, your progress (stats, achievements, hint balance, settings, daily challenge records, replay data for past games and your Google Play Games player ID, which identifies the backup) is written to <strong>Google Play Games saved data</strong>.</li>
-        <li><strong>Leaderboard</strong>: your IQ score is submitted to a Google Play Games leaderboard, which other players may see depending on your Play Games profile visibility.</li>
+        <li><strong>Automatic cloud backup</strong>: every time you win a game, and when the app opens or the connection comes back if anything has changed since the last backup, your progress (stats, achievements, hint balance, settings, daily challenge records, replay data for past games and your Google Play Games player ID, which identifies the backup) is written to <strong>Google Play Games saved data</strong>. When you sign in on a new device with no records, you are asked once whether to load it.</li>
+        <li><strong>Leaderboard</strong>: your Logic Score is submitted to a Google Play Games leaderboard, which other players may see depending on your Play Games profile visibility.</li>
       </ul>
       <p>This data is kept in your own Google account under Google's <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a>. If you are not signed in, none of this is sent.</p>
     </div>
@@ -204,7 +281,7 @@
       <p>When you play a real-time 1v1 battle, the app sends the following through <strong>Google Firebase</strong> (Anonymous Authentication and Realtime Database) to run matchmaking and the match:</p>
       <ul>
         <li>a player ID generated at random on your device, stored there and reused for later matches</li>
-        <li>an automatic nickname derived from it (SudokuMaster_xxxx)</li>
+        <li>an automatic nickname derived from it (Player_xxxx)</li>
         <li>match state such as your puzzle progress</li>
         <li>a random identifier issued by Firebase Anonymous Authentication</li>
       </ul>
@@ -232,8 +309,8 @@
       <p>Data from Sudoku (developer: K2Bact) can be deleted as follows.</p>
       <ul>
         <li><strong>Data on your device</strong>: deleted immediately when you tap Settings &gt; Privacy &amp; Security &gt; Reset All Local Data in the app, or when you uninstall the app.</li>
-        <li><strong>Google Play Games data</strong> (cloud backup, IQ score leaderboard entry): kept until you delete it. The in-app reset does not remove it; delete this game's data from the settings of the Google Play Games app.</li>
-        <li><strong>Android Auto Backup copy</strong>: kept in your Google Drive until you delete it or it expires under Google's backup policy. Delete it from the backups section of your Google Drive.</li>
+        <li><strong>Google Play Games data</strong> (cloud backup, Logic Score leaderboard entry): kept until you delete it. The in-app reset does not remove it. Delete this game's data in the Google Play Store app under your profile icon &gt; Settings &gt; General &gt; Play Games Profile &gt; Privacy &amp; Settings &gt; Your Data &gt; Delete profile &amp; game data, or on the web at <a href="https://play.google.com/games/profile" target="_blank">play.google.com/games/profile</a> &gt; Your Data &gt; Delete Play Games Account &amp; Data.</li>
+        <li><strong>Android Auto Backup copy made by earlier versions (1.2.6 and below)</strong>: no longer restored from 1.2.7; it stays in your Google Drive until it expires under Google's backup policy. You can also delete it now from the backups section of your Google Drive.</li>
         <li><strong>1v1 battle data</strong>: nothing to delete. Matchmaking tickets are removed from the server when you disconnect, and battle messages about one minute after they are sent or when you disconnect. The Firebase Anonymous Authentication identifier is not linked to any other information.</li>
       </ul>
       <p>For any other deletion request, contact us at the address below.</p>
@@ -250,13 +327,15 @@
       <p>• Developer: K2Bact<br>• Email: <span class="highlight">k2bact.dev@gmail.com</span></p>
       <p>If this policy changes, we will update this page and its effective date.</p>
     </div>
+    </section>
 
+    <section class="lang-section" lang="ja" data-lang="ja">
     <!-- Japanese Section -->
     <div id="ja" class="lang-divider">🇯🇵 日本語</div>
 
     <div class="card">
       <h2>🛡️ 1. 概要</h2>
-      <p><strong>Sudoku</strong>（以下「本アプリ」）はアカウント登録なしで利用できます。本ポリシーには、本アプリが実際に保存・送信する情報をすべて記載しています。</p>
+      <p><strong>ナンプレ</strong>（以下「本アプリ」）はアカウント登録なしで利用できます。本ポリシーには、本アプリが実際に保存・送信する情報をすべて記載しています。</p>
       <ul>
         <li>氏名、メールアドレス、電話番号、連絡先、写真、ファイル、マイク、カメラ、位置情報は収集しません。</li>
         <li>開発者が運営する独自のサーバーはありません。データは以下に記載する Google のサービス（Google Play ゲーム、Firebase、AdMob、Google Play の決済）にのみ送信されます。</li>
@@ -264,10 +343,10 @@
     </div>
 
     <div class="card">
-      <h2>💾 2. 端末への保存と Android の自動バックアップ</h2>
-      <p>クリア記録、勝率、IQスコア、実績、所持ヒント数、テーマなどの設定は、端末のローカルストレージ（localStorage）に保存されます。</p>
+      <h2>💾 2. 端末への保存</h2>
+      <p>クリア記録、勝率、ロジックスコア、実績、所持ヒント数、テーマなどの設定は、端末のローカルストレージ（localStorage）に保存されます。</p>
       <ul>
-        <li><strong>Android の自動バックアップ</strong>：端末の［設定］＞［Google］＞［バックアップ］がオンの場合、Android がこのアプリのデータをご自身の Google ドライブに自動でコピーし、再インストール時に復元します。そのため、アンインストール前の記録（所持ヒント数など）が再インストール後も残っていることがあります。この機能は端末の設定でオフにできます。</li>
+        <li><strong>Android の自動バックアップ（Google ドライブ）は使用しません</strong>（1.2.7 以降）。端末の外に残るコピーは第3節に記載する Google Play ゲームのバックアップのみで、Play ゲームにログインしていない場合、記録はこの端末にのみ残ります。一部のメーカーの端末間データ移行機能は、このアプリの設定に関係なくデータを移すことがあります。</li>
       </ul>
     </div>
 
@@ -275,8 +354,8 @@
       <h2>🎮 3. Google Play ゲーム</h2>
       <p>端末に Google Play ゲームのプロフィールがある場合、アプリ起動時に自動でログインします。［設定］から手動でログインすることもできます。ログイン中は次の処理が行われます。</p>
       <ul>
-        <li><strong>自動クラウドバックアップ</strong>：ゲームに勝利するたび、および［設定］の［今すぐクラウドにバックアップ］を押したときに、進行状況（成績、実績、所持ヒント、設定、デイリーチャレンジの記録、過去の対局の再生用データ、バックアップを識別するための Google Play ゲームのプレイヤーID）が <strong>Google Play ゲームのセーブデータ</strong>に保存されます。</li>
-        <li><strong>リーダーボード</strong>：IQスコアが Google Play ゲームのリーダーボードに送信されます。Play ゲームのプロフィールの公開設定によっては、他のプレイヤーに表示されることがあります。</li>
+        <li><strong>自動クラウドバックアップ</strong>：ゲームに勝利するたび、およびアプリを開いたときや通信が回復したとき（前回のバックアップ以降に変更がある場合）に、進行状況（成績、実績、所持ヒント、設定、デイリーチャレンジの記録、過去の対局の再生用データ、バックアップを識別するための Google Play ゲームのプレイヤーID）が <strong>Google Play ゲームのセーブデータ</strong>に保存されます。記録のない新しい端末でログインすると、保存された記録を読み込むかどうか一度だけ確認します。</li>
+        <li><strong>リーダーボード</strong>：ロジックスコアが Google Play ゲームのリーダーボードに送信されます。Play ゲームのプロフィールの公開設定によっては、他のプレイヤーに表示されることがあります。</li>
       </ul>
       <p>これらのデータはご自身の Google アカウントに保管され、Google の<a href="https://policies.google.com/privacy?hl=ja" target="_blank">プライバシーポリシー</a>が適用されます。ログインしていない場合、これらは送信されません。</p>
     </div>
@@ -286,7 +365,7 @@
       <p>リアルタイムの1v1対戦を利用すると、マッチングと対戦の進行のために、<strong>Google Firebase</strong>（匿名認証・Realtime Database）を通じて次の情報が送信されます。</p>
       <ul>
         <li>端末でランダムに生成・保存され、次回以降の対戦でも使われるプレイヤーID</li>
-        <li>そのIDから作られる自動ニックネーム（SudokuMaster_xxxx）</li>
+        <li>そのIDから作られる自動ニックネーム（Player_xxxx）</li>
         <li>パズルの進行状況などの対戦状態</li>
         <li>Firebase 匿名認証が発行するランダムな識別子</li>
       </ul>
@@ -311,11 +390,11 @@
 
     <div id="delete-ja" class="card">
       <h2>🗑️ 7. データの削除と保存期間</h2>
-      <p>Sudoku（開発者：K2Bact）のデータは、次の方法で削除できます。</p>
+      <p>ナンプレ（開発者：K2Bact）のデータは、次の方法で削除できます。</p>
       <ul>
         <li><strong>端末に保存されたデータ</strong>：アプリの［設定］＞［プライバシー保護］＞［すべてのローカルデータを初期化］を押すか、アプリをアンインストールすると、すぐに削除されます。</li>
-        <li><strong>Google Play ゲームのデータ</strong>（クラウドバックアップ、IQスコアのリーダーボード記録）：ご自身で削除するまで保存されます。アプリ内の初期化では削除されません。Google Play ゲームアプリの設定から、このゲームのデータを削除できます。</li>
-        <li><strong>Android の自動バックアップのコピー</strong>：ご自身で削除するか、Google のバックアップポリシーにより期限切れになるまで、Google ドライブに保存されます。Google ドライブのバックアップ管理から削除できます。</li>
+        <li><strong>Google Play ゲームのデータ</strong>（クラウドバックアップ、ロジックスコアのリーダーボード記録）：ご自身で削除するまで保存されます。アプリ内の初期化では削除されません。Google Play ストアアプリの［プロフィールアイコン］＞［設定］＞［全般］＞［Play Games プロフィール］＞［プライバシーと設定］＞［データ］の［プロフィールとゲームデータを削除］、またはウェブの <a href="https://play.google.com/games/profile" target="_blank">play.google.com/games/profile</a> ＞［データ］＞［Play Games のアカウントとデータを削除］から、このゲームのデータを削除できます。</li>
+        <li><strong>以前のバージョン（1.2.6 以前）が作成した Android の自動バックアップのコピー</strong>：1.2.7 以降は復元されず、Google のバックアップポリシーにより期限切れになるまで Google ドライブに残ります。Google ドライブのバックアップ管理から今すぐ削除することもできます。</li>
         <li><strong>1v1対戦のデータ</strong>：削除の操作は必要ありません。マッチング待ちの記録は接続が切れたとき、対戦メッセージは送信から約1分後または接続が切れたときに、サーバーから自動で削除されます。Firebase 匿名認証の識別子は、ほかの情報とは結び付きません。</li>
       </ul>
       <p>その他の削除のご依頼は、下記のお問い合わせ先までご連絡ください。</p>
@@ -332,6 +411,7 @@
       <p>• 開発者：K2Bact<br>• メール：<span class="highlight">k2bact.dev@gmail.com</span></p>
       <p>本ポリシーを変更した場合は、このページと施行日を更新します。</p>
     </div>
+    </section>
 
     <div class="footer">
       <p>© 2026 K2Bact. All rights reserved.</p>

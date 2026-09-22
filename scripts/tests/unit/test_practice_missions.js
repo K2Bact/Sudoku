@@ -274,6 +274,22 @@ for (const missions of Object.values(ALL_PRACTICE_MISSIONS)) {
         if (d === sol[i]) errors.push(`[${m.id}] r${Math.floor(i / 9) + 1}c${(i % 9) + 1} 에서 해 ${d} 를 지운다고 표시했다`);
       }
     });
+    // The step's own record of what it removes or places. The theory tab draws its
+    // second frame from these (BACKLOG A-1: the hand-drawn theory diagrams got 17 of
+    // 32 wrong), so they are held to the same solution as everything else here.
+    for (const [i, ds] of m.eliminations || []) {
+      const cand = [...(m.cells[i]?.notes || []), ...(m.cells[i]?.eliminatedNotes || [])];
+      for (const d of ds) {
+        if (!cand.includes(d)) errors.push(`[${m.id}] eliminations: r${Math.floor(i / 9) + 1}c${(i % 9) + 1} 에 후보 ${d} 가 없는데 지운다고 적었다`);
+        if (d === sol[i]) errors.push(`[${m.id}] eliminations: r${Math.floor(i / 9) + 1}c${(i % 9) + 1} 의 해 ${d} 를 지운다고 적었다`);
+      }
+    }
+    for (const [i, d] of m.placements || []) {
+      if (d !== sol[i]) errors.push(`[${m.id}] placements: r${Math.floor(i / 9) + 1}c${(i % 9) + 1} 에 ${d} 를 놓는다고 적었는데 해는 ${sol[i]} 이다`);
+    }
+    if (!(m.eliminations || m.placements)) {
+      errors.push(`[${m.id}] 9x9 예제에 eliminations/placements 가 없다 — 이론 도식이 그릴 제거 단계가 없다`);
+    }
     const t = m.targetIndex;
     if (m.asks === 'eliminated') {
       const cand = m.cells[t].notes || [];
@@ -286,6 +302,38 @@ for (const missions of Object.values(ALL_PRACTICE_MISSIONS)) {
   }
 }
 console.log(`▶ 9x9 예제 ${fullChecked}개를 판에 적힌 대로 다시 풀어 해답과 대조`);
+
+// ── 이론 탭 도식: 검사 밖에 둔 것이 없는가 ──────────────────────────────────
+//
+// 2026-09-19 (BACKLOG A-1): 연습 64개는 이 파일이 검증했지만 이론 탭의 손그림
+// 도식은 아무 검사도 받지 않았고, 32개 중 17개가 규칙상 틀려 있었다. 그 17개는
+// 이제 예제 1 의 9x9 판을 그대로 그린다(TheoryBoardDiagram) — 위에서 해답과
+// 대조한 그 판과 eliminations/placements 다. 나머지 15개는 사람이 하나씩 규칙으로
+// 확인한 손그림이다. 새 전략이 어느 쪽에도 없으면 실패한다: 검사 밖에 도식을
+// 두는 일이 다시 생기지 않게.
+{
+  const fs = await import('fs');
+  const src = fs.readFileSync(new URL('../../../src/components/academy/TheoryBoardDiagram.jsx', import.meta.url), 'utf8');
+  const boardTheory = new Set([...(src.match(/BOARD_THEORY = new Set\(\[([\s\S]*?)\]\)/) || ['', ''])[1].matchAll(/'([^']+)'/g)].map((x) => x[1]));
+  // Hand-drawn, checked by the rules one by one on 2026-09-19 (theory dump).
+  const HAND_VERIFIED = new Set([
+    'full-house', 'last-free-cell', 'cross-hatching', 'naked-single', 'hidden-single', 'claiming',
+    'naked-pair', 'hidden-pair', 'naked-triple', 'hidden-triple', 'naked-quad', 'hidden-quad',
+    'y-wing', 'xyz-wing', 'forcing-chains',
+  ]);
+  let covered = 0;
+  for (const stage of ACADEMY_STAGES) for (const strat of stage.strategies) {
+    const id = strat.id;
+    if (boardTheory.has(id)) {
+      const m = ALL_PRACTICE_MISSIONS[id]?.[0];
+      if (!m || m.layoutType !== 'grid9x9' || !(m.eliminations || m.placements)) {
+        errors.push(`[theory:${id}] 이론 도식이 예제 1 을 그리는데, 예제 1 이 9x9 가 아니거나 제거/배치 데이터가 없다`);
+      } else covered++;
+    } else if (HAND_VERIFIED.has(id)) covered++;
+    else errors.push(`[theory:${id}] 이론 도식이 검증되지 않았다 — BOARD_THEORY 에 넣거나, 규칙으로 확인한 뒤 HAND_VERIFIED 에 적을 것`);
+  }
+  console.log(`▶ 이론 도식 ${covered}개: 9x9 판 ${boardTheory.size}개 + 손그림 확인 ${HAND_VERIFIED.size}개`);
+}
 
 
 // ── 6x6 입문 그림(크로스해칭): 박스 안에서 그 숫자가 갈 곳이 목표 칸뿐인가 ──

@@ -9,7 +9,8 @@ export const common = {
     confirm: '確認',
     cancel: '取消',
     restart: '重新開始',
-    restartConfirm: '要重新開始這個謎題嗎？',
+    restartConfirm: "要重新開始這個謎題嗎？目前這局會記為失敗。",
+    abandonConfirm: "有正在進行的遊戲。開始新遊戲後，目前這局會記為失敗。要開始嗎？",
     newGame: '新遊戲',
     home: '主畫面',
     pause: '暫停',
@@ -79,28 +80,28 @@ export const common = {
   },
   tiers: {
     grandMaster: {
-      title: '👑 宗師級大腦',
-      desc: '僅極少數人能達到的頂級極速推理力。'
+      title: '👑 宗師',
+      desc: '已達到最高等級。'
     },
     expert: {
-      title: '🧠 專家級邏輯',
-      desc: '在本遊戲中展現出色的推理能力。'
+      title: '🧠 達人',
+      desc: '能穩定解開高難度謎題。'
     },
     superior: {
-      title: '⚡ 卓越思維',
-      desc: '具備敏銳直覺與優異的問題解決力。'
+      title: '⚡ 高手',
+      desc: '已具備挑戰高級謎題的實力。'
     },
     aboveAverage: {
-      title: '💡 優於常人',
-      desc: '以穩定靈活的思維破解謎題。'
+      title: '💡 進階',
+      desc: '實力正在穩步提升。'
     },
     balanced: {
-      title: '🎯 均衡大腦',
-      desc: '五大認知能力均衡發展的理想狀態。'
+      title: '🎯 均衡型',
+      desc: '5 項遊戲指標均衡提升。'
     },
     developing: {
-      title: '🌱 成長潛力',
-      desc: '剛展開大腦訓練，持續挑戰將大幅提升邏輯指數！'
+      title: '🌱 新手',
+      desc: '玩得越多，分數越高。'
     }
   }
 };

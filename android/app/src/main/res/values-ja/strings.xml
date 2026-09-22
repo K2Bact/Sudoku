@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Japanese launcher label. 「数独／SUDOKU」 is Nikoli's registered mark in Japan
+     (classes 9/16/28/41), so the name Japanese devices show under the icon is the
+     generic 「ナンプレ」. See docs/BACKLOG.md M-1. -->
+<resources>
+    <string name="app_name">ナンプレ</string>
+    <string name="title_activity_main">ナンプレ</string>
+</resources>

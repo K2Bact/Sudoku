@@ -7,10 +7,11 @@ export const screens = {
     }
   },
   home: {
+    scoreLabel: 'Logic Score',
     title: 'Sudoku',
     badge: 'PRO',
     hintTooltip: '剩余提示',
-    brainReportTitle: '大脑活性分析',
+    brainReportTitle: '游戏分析',
     brainPercentileShort: '已通关 {won} 局',
     startSelectedLevel: '开始 Lv.{level} {name}',
     modeTabs: { classic: '经典', timeAttack: '计时竞速', timeLimit: '极限生存' },
@@ -30,11 +31,11 @@ export const screens = {
       academy: { title: '数独学院', desc: '学习 32 种实战解题策略' },
       practice: { title: '自由练习模式', desc: '无失误限制，轻松畅玩' }
     },
-    nav: {brain: '大脑指数', stats: '个人统计', academy: '数独学院', settings: '设置' }
+    nav: {brain: '分析', stats: '个人统计', academy: '数独学院', settings: '设置' }
   },
   daily: {
-    header: '每日挑战目标 ({month}月)',
-    badgeTitle: '{month}月数独大师徽章',
+    header: '每日挑战目标 ({month})',
+    badgeTitle: '{month}数独大师徽章',
     badgeDesc: '{completed}/{target} 局 · 目标 15',
     unlockingAd: '📺 正在观看广告... 解锁过往谜题',
     calendarTitle: '📅 365 日历',
@@ -95,11 +96,11 @@ export const screens = {
     themeSection: '🎨 视觉主题',
     languageSection: '🌐 语言设置',
     languages: {
-      auto: '系统默认'
+      auto: '系统'
     },
     gameplaySection: '🎮 游戏规则',
     limitMistakes: '失误 3 次限制 (❤️)',
-    limitMistakesDesc: '犯错 3 次则游戏结束',
+    limitMistakesDesc: "犯错 3 次则游戏结束。关闭后不记录最佳成绩",
     autoCheck: '即时自动检查错误',
     autoCheckDesc: '输入错误数字时立即以红色警示',
     soundSection: '🔊 声音与震动',
@@ -111,7 +112,7 @@ export const screens = {
     adPrivacyDesc: '重新选择个性化广告同意',
     resetData: '重置所有本地数据',
     resetDataDesc: '重置所有本地游戏统计与记录',
-    resetConfirm: '⚠️ 警告：所有游玩记录、持有提示、大脑指数统计将被永久删除。是否确定重置？',
+    resetConfirm: '⚠️ 警告：所有游玩记录、持有提示、游戏分析记录将被永久删除。是否确定重置？',
     resetSuccess: '数据已成功重置。',
     privacySection: '🛡️ 隐私保护',
     privacyPolicyBtn: '查看完整隐私政策',
@@ -119,9 +120,9 @@ export const screens = {
     privacyModalTitle: '隐私政策',
     privacy: {
       subtitle: 'Sudoku 无需账号。以下是本应用实际保存和发送的信息。',
-      sec1Title: '1. 本机存储与备份', sec1Desc: '您的记录、提示和设置保存在本机。如果开启了 Android 自动备份，Android 会把这些数据复制到您自己的 Google 云端硬盘，并在重新安装时恢复。我们从不收集您的姓名、邮箱、电话号码、通讯录或位置。',
-      sec2Title: '2. Google Play 游戏', sec2Desc: '登录 Play 游戏后，每次获胜都会把您的进度（统计、成就、提示、设置）自动备份到 Play 游戏存档，并把您的 IQ 分数提交到 Play 游戏排行榜。这些数据保存在您自己的 Google 账号中。',
-      sec3Title: '3. 1v1 对战', sec3Desc: '实时 1v1 对战通过 Google Firebase 向对手发送随机生成的玩家 ID、自动昵称（SudokuMaster_xxxx）和您的解题进度。该 ID 保存在本机并重复使用，不与您的姓名或任何账号关联。',
+      sec1Title: '1. 本机存储与备份', sec1Desc: "您的记录、提示和设置保存在本机。未登录 Play 游戏时，这些数据只保留在本机。我们从不收集您的姓名、邮箱、电话号码、通讯录或位置。",
+      sec2Title: '2. Google Play 游戏', sec2Desc: '登录 Play 游戏后，每次获胜都会把您的进度（统计、成就、提示、设置）自动备份到 Play 游戏存档，并把您的 Logic Score提交到 Play 游戏排行榜。这些数据保存在您自己的 Google 账号中。',
+      sec3Title: '3. 1v1 对战', sec3Desc: '实时 1v1 对战通过 Google Firebase 向对手发送随机生成的玩家 ID、自动昵称（Player_xxxx）和您的解题进度。该 ID 保存在本机并重复使用，不与您的姓名或任何账号关联。',
       sec4Title: '4. 广告与购买', sec4Desc: '本应用通过 Google AdMob 展示广告：横幅广告、获胜后的全屏广告以及自愿观看的激励视频。AdMob 可能会处理您的广告 ID。“移除广告”的购买由 Google Play 处理，我们不会收到您的支付信息。'
     }
   },
@@ -130,42 +131,43 @@ export const screens = {
     speedrunBest: '竞速最高纪录',
     survivalTitle: '⏳ 极限生存模式',
     survivalTotalWins: '极限生存成功',
-    survivalWinsUnit: '{count}次 成功',
-    leaderboardTab: '排行',
+    survivalWinsUnit: '{count}次 成功',
     summaryTitle: '总体战绩摘要',
+    pvpRating: "积分",
+    pvpRecordLabel: "战绩",
+    pvpRecord: "{wins}胜 · {losses}负",
     totalPlayed: '总游玩局数',
     totalWon: '总通关局数',
     winRate: '胜率'
   },
   brainReport: {
-    totalPlayed: '总局数',
-    totalWon: '获胜局数',
-    winRate: '胜率',
-    shareText: '[Sudoku IQ 报告]\n我的数独 IQ: {iq}分\n等级: {tier}\n立即一起挑战极速逻辑推理！',
-    copiedToast: '大脑分析结果已复制至剪贴板。',
-    focus: '专注力',
-    durability: '专注耐力',
-    accuracy: '精准度',
-    logic: '逻辑推理',
-    speed: '处理速度',
-    shareCardBtn: '🔗 分享大脑分析卡片',
-    overallStats: '📊 综合累计数据',
-    attributesTitle: '🧠 五大核心认知能力',
-    title: '大脑活性分析报告',
-    shareTitle: '我的数独大脑指数报告',
+    scoreLabel: 'Logic Score',
+    scoreHowTitle: "ⓘ Logic Score 是怎么决定的？",
+    scoreHowBody: "填满整个棋盘获胜时会上升。不用提示通关的最高难度影响最大，获胜局数和胜率也有少量影响。游戏结束或中途放弃会降低胜率，分数可能略微下降。登录 Play 游戏后，排行榜按这个分数排名。",
+    shareText: '[Sudoku 游戏分析]\nLogic Score: {iq}分\n等级: {tier}\n快来挑战 Sudoku 吧！',
+    copiedToast: '游戏分析已复制到剪贴板。',
+    focus: '零失误',
+    durability: '投入度',
+    accuracy: '通关率',
+    logic: '难度',
+    speed: '速度',
+    shareCardBtn: '🔗 分享游戏分析',
+    attributesTitle: '📈 5 项游戏指标',
+    title: '游戏分析',
+    shareTitle: '我的 Sudoku 游戏分析',
     tiers: {
-      grandMaster: '👑 宗师级大脑',
-      grandMasterDesc: '极少数玩家能达到的顶级大师推理力。',
-      expert: '🧠 专家级逻辑',
-      expertDesc: '在本游戏中展现出色的逻辑分析能力。',
-      superior: '⚡ 敏锐思维',
-      superiorDesc: '具备敏锐直觉与出色的问题解决力。',
-      aboveAverage: '💡 优异逻辑力',
-      aboveAverageDesc: '具备稳定且灵活的思考模式。',
-      balanced: '🎯 全方位平衡大脑',
-      balancedDesc: '五大认知领域均衡发展的典范状态。',
-      developing: '🌱 成长潜力',
-      developingDesc: '刚开启大脑锻炼阶段。持续解题将让大脑指数迅速攀升！'
+      grandMaster: '👑 宗师',
+      grandMasterDesc: '已达到最高等级。',
+      expert: '🧠 达人',
+      expertDesc: '能稳定解开高难度谜题。',
+      superior: '⚡ 高手',
+      superiorDesc: '已具备挑战高级谜题的实力。',
+      aboveAverage: '💡 进阶',
+      aboveAverageDesc: '实力正在稳步提升。',
+      balanced: '🎯 均衡型',
+      balancedDesc: '5 项游戏指标均衡提升。',
+      developing: '🌱 新手',
+      developingDesc: '玩得越多，分数越高。'
     }
   },
   battleLobby: {
@@ -237,6 +239,13 @@ export const screens = {
       stage5: '第5阶段: 大师技巧 (AIC、ALS 与 Exocet 链)'
     },
     title: '数独学院',
+    theoryBoard: {
+      patternTab: '模式',
+      resultTab: '结果',
+      patternCaption: '着色的格组成该技巧的模式。这是与实战范例 1 相同的盘面。',
+      resultCaption: '标成红色的候选数会因这个模式被排除。',
+      placeCaption: '这个模式把高亮的数字确定为该格的答案。'
+    },
     practiceUi: {
       theory: '理论讲解',
       practice1: '实战练习 1',

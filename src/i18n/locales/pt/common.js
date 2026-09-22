@@ -6,7 +6,8 @@ export const common = {
     confirm: 'OK',
     cancel: 'Cancelar',
     restart: 'Reiniciar',
-    restartConfirm: 'Reiniciar este desafio?',
+    restartConfirm: "Reiniciar este quebra-cabeça? O jogo atual contará como derrota.",
+    abandonConfirm: "Há um jogo em andamento. Começar outro fará com que ele conte como derrota. Começar mesmo assim?",
     newGame: 'Novo Jogo',
     home: 'Início',
     pause: 'Pausar',
@@ -77,27 +78,27 @@ export const common = {
   tiers: {
     grandMaster: {
       title: '👑 Grão-Mestre',
-      desc: 'Raciocínio dedutivo de elite no topo de 1%.'
+      desc: 'Você alcançou a classificação mais alta.'
     },
     expert: {
-      title: '🧠 Lógica especialista',
-      desc: 'Raciocínio dedutivo excelente neste jogo.'
+      title: '🧠 Especialista',
+      desc: 'Você resolve quebra-cabeças difíceis com consistência.'
     },
     superior: {
-      title: '⚡ Lógica Superior',
-      desc: 'Intuição aguçada e brilhante resolução de problemas.'
+      title: '⚡ Avançado',
+      desc: 'Você está pronto para quebra-cabeças avançados.'
     },
     aboveAverage: {
-      title: '💡 Acima da Média',
-      desc: 'Pensamento analítico flexível e estável.'
+      title: '💡 Intermediário',
+      desc: 'Você está melhorando sempre.'
     },
     balanced: {
-      title: '🎯 Mente Equilibrada',
-      desc: 'Desenvolvimento harmonioso de todas as áreas cognitivas.'
+      title: '🎯 Equilibrado',
+      desc: 'Suas 5 métricas crescem de forma equilibrada.'
     },
     developing: {
-      title: '🌱 Treino Cerebral',
-      desc: 'Fase inicial de treinamento com potencial infinito de crescimento.'
+      title: '🌱 Iniciante',
+      desc: 'Continue jogando e sua pontuação vai subir.'
     }
   }
 };

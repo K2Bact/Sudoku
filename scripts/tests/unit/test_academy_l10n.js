@@ -33,12 +33,12 @@
 import { academyCorpus } from '../fixtures/academy_corpus.js';
 import { LOCALES } from '../../lib/locales.js';
 
-import { auditGate1Completeness } from '../../../../app_common/l10n_engine/core/gate1_completeness.mjs';
-import { auditGate2Tokens } from '../../../../app_common/l10n_engine/core/gate2_tokens.mjs';
-import { auditGate3EnglishLeakage } from '../../../../app_common/l10n_engine/core/gate3_english_leakage.mjs';
-import { auditGate4CjkIsolation } from '../../../../app_common/l10n_engine/core/gate4_cjk_isolation.mjs';
-import { auditGate6TypoBlacklist } from '../../../../app_common/l10n_engine/core/gate6_typo_blacklist.mjs';
-import { auditGate7SentenceIntegrity } from '../../../../app_common/l10n_engine/core/gate7_sentence_integrity.mjs';
+import { auditGate1Completeness } from '../../../../../app_common/l10n_engine/core/gate1_completeness.mjs';
+import { auditGate2Tokens } from '../../../../../app_common/l10n_engine/core/gate2_tokens.mjs';
+import { auditGate3EnglishLeakage } from '../../../../../app_common/l10n_engine/core/gate3_english_leakage.mjs';
+import { auditGate4CjkIsolation } from '../../../../../app_common/l10n_engine/core/gate4_cjk_isolation.mjs';
+import { auditGate6TypoBlacklist } from '../../../../../app_common/l10n_engine/core/gate6_typo_blacklist.mjs';
+import { auditGate7SentenceIntegrity } from '../../../../../app_common/l10n_engine/core/gate7_sentence_integrity.mjs';
 
 console.log('======================================================');
 console.log('🧪 QA Gate: Academy content under the l10n engine');

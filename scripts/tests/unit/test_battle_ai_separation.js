@@ -138,7 +138,7 @@ const battleCssContent = readFileSync('src/styles/battle.css', 'utf8');
 // rules the validator enforces already live. The assertion follows the content, not
 // the old path: what matters is that the pattern is documented somewhere every agent
 // reads, and that the document actually describes THIS pattern.
-const LAYOUT_STANDARD = '../app_common/l10n_engine/GLOBAL_L10N_STANDARDS.md';
+const LAYOUT_STANDARD = '../../app_common/l10n_engine/GLOBAL_L10N_STANDARDS.md';
 const layoutDoc = existsSync(LAYOUT_STANDARD) ? readFileSync(LAYOUT_STANDARD, 'utf8') : '';
 
 assert(aiBattleContent.includes('ai-level-spec-card'), 'AIBattleScreen renders dedicated ai-level-spec-card');

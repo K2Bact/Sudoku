@@ -74,10 +74,11 @@ class IQStatsService {
     const volumeBonus = Math.min(6, Math.log2(won + 1) * 1.5);
     iq += volumeBonus;
 
-    // 2. Highest Cleared Difficulty Mastery
+    // 2. Highest level cleared without a hint (older saves: best times)
+    const clearedLevels = stats.clearedLevels || {};
     let maxLevelCleared = 1;
     for (let lv = 5; lv >= 1; lv--) {
-      if (bestTimes[lv] && bestTimes[lv] > 0) {
+      if (clearedLevels[lv] || (bestTimes[lv] && bestTimes[lv] > 0)) {
         maxLevelCleared = lv;
         break;
       }
@@ -178,11 +179,13 @@ class IQStatsService {
     const avgRatio = ratios.length ? ratios.reduce((a, b) => a + b, 0) / ratios.length : null;
     const speed = avgRatio === null ? 15 : clamp(100 - avgRatio * 55);
 
-    // LOGIC — hardest level cleared, plus how much of the ladder is covered
+    // LOGIC — hardest level cleared without a hint, plus how much of the ladder is
+    // covered. Saves from before clearedLevels existed only have best times.
+    const clearedLevels = stats.clearedLevels || {};
     let maxLevel = 0;
     let levelsCleared = 0;
     for (let lv = 1; lv <= 5; lv++) {
-      if (bestTimes[lv] > 0) {
+      if (clearedLevels[lv] || bestTimes[lv] > 0) {
         levelsCleared++;
         maxLevel = lv;
       }

@@ -10,6 +10,13 @@
   padding-top: max(8px, env(safe-area-inset-top, 0px));
   padding-bottom: max(14px, env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
+  /* Exactly one screen tall (BACKLOG U-1, 2026-09-19). The screen used to be a
+     plain column with a full-width square board, so its height was whatever the
+     parts added up to. A Galaxy S25 Ultra (412x891, larger system font) came out
+     taller than the screen and the native banner, pinned to the bottom, covered
+     the keypad digits. Now the header, keypad and ad slot take their own height
+     and the board gets the rest. */
+  height: 100dvh;
 }
 
 .game-main {
@@ -17,6 +24,42 @@
   flex-direction: column;
   gap: 14px;
   width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  /* The board reads this box's size (100cqw × 100cqh) minus what its neighbours
+     take (--board-rest, measured by useBoardFit). */
+  container-type: size;
+  /* With the wrapper's 12px gap, at least 28px between the keypad and the banner
+     even when the board fills everything (short phones, tablets). cqh is the
+     content box, so the board already leaves this room. */
+  padding-bottom: 16px;
+  box-sizing: border-box;
+}
+
+/* The native banner is drawn at the very bottom of the WebView, so its slot
+   must sit there too — not above the wrapper's bottom padding. */
+.game-screen-wrapper > .ad-slot-container {
+  margin-bottom: calc(-1 * max(14px, env(safe-area-inset-bottom, 0px)));
+}
+
+/* Only the board gives way when space runs short. A flex child shrinks by
+   default, and the keypad has overflow:hidden — squeezed, it cut its own digit
+   row in half on a 360x640 screen while the page still "fit". */
+.game-main > * {
+  flex-shrink: 0;
+}
+
+/* The largest square that fits. Header, board and keypad stay together at the
+   top; whatever is left falls between the keypad and the banner, so the keypad
+   is never pressed up against an ad (accidental-click risk). */
+.board-zone {
+  flex: none;
+  display: flex;
+  justify-content: center;
+}
+
+.board-zone .sudoku-board-container {
+  width: min(100cqw, 100cqh - var(--board-rest, 0px));
 }
 
 .game-header {

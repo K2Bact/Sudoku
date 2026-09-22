@@ -65,8 +65,8 @@
       "name": "a generated example asks for a digit that is not the solution",
       "why": "The shipped class of defect: a stored answer the board does not produce. Here the answer is set to the candidate the Swordfish removes, which the old academy did in several places.",
       "file": "src/data/academy/practice/stage3WingsPractice.js",
-      "find": "      correctVal: 1,\n      cells: [{\"val\":7},{\"val\":4},{\"val\":3},{\"val\":2},{\"val\":8}",
-      "replace": "      correctVal: 3,\n      cells: [{\"val\":7},{\"val\":4},{\"val\":3},{\"val\":2},{\"val\":8}",
+      "find": "      correctVal: 1,\n      eliminations: [[70, [3]]],\n      cells: [{\"val\":7},{\"val\":4},{\"val\":3},{\"val\":2},{\"val\":8}",
+      "replace": "      correctVal: 3,\n      eliminations: [[70, [3]]],\n      cells: [{\"val\":7},{\"val\":4},{\"val\":3},{\"val\":2},{\"val\":8}",
       "expectFailure": "목표 칸의 해"
     },
     {
@@ -92,6 +92,22 @@
       "find": "      targetIndex: 17,\n      correctVal: 5,",
       "replace": "      targetIndex: 17,\n      correctVal: 1,",
       "expectFailure": "목표 박스에 이미 1"
+    },
+    {
+      "name": "a strategy's theory diagram falls outside every check",
+      "why": "BACKLOG A-1 (2026-09-19): the hand-drawn theory diagrams were never checked and 17 of 32 were wrong by the rules.",
+      "file": "src/components/academy/TheoryBoardDiagram.jsx",
+      "find": "  'finned-xwing', 'aic', 'als', 'exocet',",
+      "replace": "  'finned-xwing', 'aic', 'als',",
+      "expectFailure": "이론 도식이 검증되지 않았다"
+    },
+    {
+      "name": "the theory board strikes a candidate the cell never had",
+      "why": "The theory tab's second frame is drawn from eliminations; a wrong entry would teach a deletion that is not there.",
+      "file": "src/data/academy/practice/stage4FishPractice.js",
+      "find": "eliminations: [[12, [4]], [39, [4]]],",
+      "replace": "eliminations: [[12, [5]], [39, [4]]],",
+      "expectFailure": "후보 5 가 없는데"
     }
   ]
 }

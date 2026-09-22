@@ -9,7 +9,7 @@ import { useNotify } from './common/ConfirmProvider';
 import { adRewardMessage, watchRewardedAd } from './common/adRewardMessage';
 
 export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyMission }) {
-  const { t } = useTranslation();
+  const { t, activeLanguage } = useTranslation();
   const notify = useNotify();
   const records = loadDailyRecords();
   const todayKey = getTodayDateKey();
@@ -19,6 +19,12 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth() + 1;
+  // The month as each language names it — "September", "9月", "9월", "septiembre".
+  // The bare number read as "Daily Challenges (9)" and "9 Master" in English.
+  const monthName = (() => {
+    try { return new Intl.DateTimeFormat(activeLanguage || undefined, { month: 'long' }).format(now); }
+    catch { return String(currentMonth); }
+  })();
   const todayDateNum = now.getDate();
 
   const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
@@ -93,7 +99,7 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
 
   return (
     <div className="daily-screen-container">
-      <ScreenHeader title={t('daily.header', { month: currentMonth })} icon={CalendarIcon} iconColorClass="text-blue" onBack={onBack} />
+      <ScreenHeader title={t('daily.header', { month: monthName })} icon={CalendarIcon} iconColorClass="text-blue" onBack={onBack} />
 
       <div className="screen-scroll-content">
         {/* 1. Daily Mission Card */}
@@ -130,7 +136,7 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
         <div className="badge-progress-card">
           <div className="badge-icon-box"><Award size={36} className={badgeProgress.isUnlocked ? 'unlocked' : 'locked'} /></div>
           <div className="badge-info">
-            <h4>{t('daily.badgeTitle', { month: currentMonth })}</h4>
+            <h4>{t('daily.badgeTitle', { month: monthName })}</h4>
             <p>{t('daily.badgeDesc', { completed: badgeProgress.completedCount, target: badgeProgress.targetCount })}</p>
             <div className="progress-track">
               <div className="progress-fill" style={{ width: `${Math.min(100, (badgeProgress.completedCount / badgeProgress.targetCount) * 100)}%` }} />

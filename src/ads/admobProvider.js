@@ -22,6 +22,28 @@
 import { watchRewarded, withTimeout } from './rewardedWatch.js';
 import { InterstitialSlot } from './interstitialWatch.js';
 
+/**
+ * Cancel the navigation-bar inset the AdMob plugin adds on Android 15+.
+ *
+ * The plugin assumes an edge-to-edge window and pushes the banner up by the
+ * navigation bar's height. MainActivity already keeps the WebView above the
+ * navigation bar, so the push was applied twice: the banner floated about 50dp
+ * above the bottom, over the space the layout had not reserved for it, with a
+ * dark band beneath (BACKLOG U-1; measured on a Flip5, Android 16, 2026-09-19).
+ * `margin` is applied to the bottom as margin·density + inset, so −inset
+ * brings the banner back to the bottom of the WebView.
+ */
+async function bannerMargin() {
+  try {
+    const info = window.Capacitor?.Plugins?.NativeInfo;
+    if (!info) return 0;
+    const { navInsetDp = 0, sdkInt = 0 } = await info.get();
+    return sdkInt >= 35 && navInsetDp > 0 ? -navInsetDp : 0;
+  } catch {
+    return 0;
+  }
+}
+
 function plugin() {
   if (typeof window === 'undefined') return null;
   const plugins = window.Capacitor && window.Capacitor.Plugins;
@@ -155,6 +177,10 @@ export class AdMobProvider {
      * await 에서 깨어난 쪽이 자기가 낡았는지 알 수 있다.
      */
     this.bannerWanted = false;
+    // The native view survives hideBanner; calling showBanner again neither
+    // reveals it nor resolves its PluginCall in the installed Android SDK.
+    this.bannerCreated = false;
+    this.bannerQueue = Promise.resolve();
     /** The rewarded flow in progress, so a second tap joins it instead of loading another ad. */
     this.rewardedInFlight = null;
     /**
@@ -367,21 +393,39 @@ export class AdMobProvider {
     // 숨기라고 한 화면 위에 배너가 뜬다.
     if (!this.bannerWanted) return false;
     if (!this.canRequestAds) return false;
-    try {
-      await admob.showBanner({
-        adId: ids.banner,
-        adSize: 'ADAPTIVE_BANNER',
-        position: 'BOTTOM_CENTER',
-        margin: 0,
-        isTesting: isTestingAds()
+    // The slot AdBanner reserves has to be as tall as the banner the SDK draws.
+    // A fixed 52px was shorter than the adaptive banner on wide phones (about 64
+    // at 412dp), so the overlay covered the top of the keypad (BACKLOG U-1).
+    // The SDK reports the real size in dp, which is CSS px in the WebView.
+    if (!this.sizeListener && typeof admob.addListener === 'function') {
+      this.sizeListener = admob.addListener('bannerAdSizeChanged', (info) => {
+        const h = Number(info?.height) || 0;
+        if (h > 0) document.documentElement.style.setProperty('--ad-banner-h', `${h}px`);
       });
-      // 네이티브 호출이 도는 동안에도 화면은 바뀔 수 있다. 그때는 이미 떠버린
-      // 배너를 되돌린다 — 의도가 '숨김' 인데 화면에 남아 있게 두지 않는다.
-      if (!this.bannerWanted) {
-        await this.hideBanner();
-        return false;
-      }
-      return true;
+    }
+    try {
+      return await this.queueBanner(async () => {
+        // A previous native operation may have kept this request waiting.
+        if (!this.bannerWanted) return false; // Recheck after waiting for native work.
+        if (this.bannerCreated) {
+          await admob.resumeBanner();
+        } else {
+          await admob.showBanner({
+            adId: ids.banner,
+            adSize: 'ADAPTIVE_BANNER',
+            position: 'BOTTOM_CENTER',
+            margin: await bannerMargin(),
+            isTesting: isTestingAds()
+          });
+          this.bannerCreated = true;
+        }
+        // Do not enqueue this cleanup behind the operation that is awaiting it.
+        if (!this.bannerWanted) {
+          await admob.hideBanner();
+          return false;
+        }
+        return true;
+      });
     } catch (e) {
       // A banner that fails to load must not take the screen with it. The
       // reserved space stays empty and the game keeps working.
@@ -398,10 +442,17 @@ export class AdMobProvider {
     const admob = plugin();
     if (!admob) return;
     try {
-      await admob.hideBanner();
+      await this.queueBanner(() => admob.hideBanner());
     } catch (e) {
       console.warn('[ads] hideBanner failed:', e?.message || e);
     }
+  }
+
+  queueBanner(operation) {
+    const pending = this.bannerQueue.then(operation);
+    // A rejected native call must not poison later show/hide requests.
+    this.bannerQueue = pending.catch(() => {});
+    return pending;
   }
 
   isInterstitialReady(now = Date.now()) {

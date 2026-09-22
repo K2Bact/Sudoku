@@ -101,11 +101,11 @@ async function dismissAnyModal(page) {
  * claimed today (otherwise the daily-reward modal covers the home screen and
  * swallows every click), and the store-review prompt suppressed.
  */
-async function primeStorage(page, gameState = null) {
+async function primeStorage(page, gameState = null, settings = {}) {
   await page.goto(PREVIEW_URL);
-  await page.evaluate((s) => {
+  await page.evaluate(({ s, extra }) => {
     localStorage.clear();
-    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en', theme: 'matte-dark' }));
+    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en', theme: 'matte-dark', ...extra }));
 
     // Same local-time day key the app derives in src/utils/dateKey.js
     const d = new Date();
@@ -117,7 +117,7 @@ async function primeStorage(page, gameState = null) {
     localStorage.setItem('suidoku_review_prompted', '1');
 
     if (s) localStorage.setItem('suidoku_game_state_v1', JSON.stringify(s));
-  }, gameState);
+  }, { s: gameState, extra: settings });
   await page.reload();
   await page.waitForTimeout(700);
   await dismissAnyModal(page);
@@ -129,8 +129,8 @@ async function enterGame(page, triggerSelector) {
   await page.waitForTimeout(300);
 }
 
-async function seedAndResume(page, state) {
-  await primeStorage(page, state);
+async function seedAndResume(page, state, settings) {
+  await primeStorage(page, state, settings);
   await enterGame(page, '.btn-resume');
 }
 
@@ -317,6 +317,9 @@ async function run() {
       try {
         await victory.waitFor({ state: 'visible', timeout: 4000 });
         console.log('  ✅ Victory modal appeared after the final correct entry');
+        if (await page.locator('.victory-not-recorded').count()) {
+          failures.push('Case 4: a clean win with the mistake limit on says the time was not recorded');
+        }
 
         // The victory modal's buttons call back into the game hook. A handler that
         // reaches for something the hook does not return throws mid-click, and the
@@ -336,18 +339,47 @@ async function run() {
         const navErrors = runtimeErrors.slice(errorsBeforeNav);
 
         if (navErrors.length) {
-          failures.push(`Case 4: the leaderboard button threw:\n     ${navErrors.join('\n     ')}`);
+          failures.push(`Case 4: the My Records button threw:\n     ${navErrors.join('\n     ')}`);
         } else if (nav.victoryStillUp || !nav.onStatsScreen) {
           failures.push('Case 4: the victory modal\'s leaderboard button did nothing — no navigation happened');
-        } else if (!/leaderboard|랭킹|ランキング|排行|Clasificación/i.test(nav.activeTab || '')) {
-          failures.push(`Case 4: navigated to stats but landed on the "${nav.activeTab}" tab, not the leaderboard`);
+        } else if (!/^Stats$/i.test(nav.activeTab || '')) {
+          // The button reads "My Records" and opens the records tab. The ranking tab it
+          // used to open was removed (SudokuDiary ㉖).
+          failures.push(`Case 4: navigated to stats but landed on the "${nav.activeTab}" tab, not the records tab`);
         } else {
-          console.log(`  ✅ Leaderboard button navigated to the stats screen, tab "${nav.activeTab}"`);
+          console.log(`  ✅ My Records button navigated to the stats screen, tab "${nav.activeTab}"`);
         }
       } catch {
         failures.push('Case 4: victory modal never appeared after completing the board');
       }
     }
+    // ---------------------------------------------------------------------
+    console.log('▶ Case 4b: a win without the mistake limit says why the time was not recorded');
+    // ---------------------------------------------------------------------
+    // Without this line the player sees a fast time that never becomes their best and
+    // takes it for a bug (BACKLOG R-1, gate 2-21 covers the stats themselves).
+    {
+      const { state: s4b, remaining: r4b } = buildSavedState({ level: 1, leaveEmpty: 1 });
+      await seedAndResume(page, s4b, { limitMistakes: false });
+      const idx = await firstBlankCellIndex(page);
+      await page.locator('.sudoku-cell').nth(idx).click();
+      await page.waitForTimeout(150);
+      await page.locator(`.number-pad .num-btn:nth-child(${r4b[0].value})`).click();
+      try {
+        await page.locator('.victory-card').waitFor({ state: 'visible', timeout: 4000 });
+        const note = page.locator('.victory-not-recorded');
+        const reason = (await note.count()) ? await note.getAttribute('data-reason') : null;
+        const text = (await note.count()) ? (await note.innerText()).trim() : '';
+        if (reason !== 'no_mistake_limit' || !/3-mistake limit/.test(text)) {
+          failures.push(`Case 4b: expected the no-limit notice, got reason=${reason} text="${text}"`);
+        } else {
+          console.log(`  ✅ Notice shown: "${text}"`);
+        }
+      } catch {
+        failures.push('Case 4b: victory modal never appeared');
+      }
+    }
+
     // ---------------------------------------------------------------------
     console.log('▶ Case 5: progress is saved on a move, and flushed on backgrounding');
     // ---------------------------------------------------------------------

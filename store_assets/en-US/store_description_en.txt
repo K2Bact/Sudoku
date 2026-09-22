@@ -1,37 +1,49 @@
-[Short Description (Max 80 chars)]
-Classic Sudoku, 27 Master Techniques Academy, 1v1 Battles & 30 Achievements.
+[App name (max 30 chars)]
+Sudoku: Logic Puzzle Academy
+
+[Short Description (max 80 chars)]
+5 difficulty levels, 32 solving techniques to learn, and 1v1 and AI battles.
 
 [Full Description]
-Sudoku Master is the next-generation premium classic logic puzzle game meticulously crafted for everyone from curious beginners to seasoned grandmasters.
+Sudoku for everyone, from first-timers to seasoned solvers.
 
-Experience pure intellectual satisfaction, tactile 3D ceramic keycaps, and a comprehensive 27-technique strategy academy.
+Play at 5 difficulty levels, learn 32 solving techniques with diagrams and practice puzzles, and race other players in online 1v1 battles or take on the AI.
 
 ━━━━━━━━━━━━━━━━━━━━━
 🌟 KEY HIGHLIGHTS
 ━━━━━━━━━━━━━━━━━━━━━
 
-🧩 1. 5 Balanced Difficulty Levels
-- From Very Easy to Expert (Mensa Level).
-- 100% mathematically proven unique solution guarantee.
-- 4 eye-soothing premium visual themes (Clay, Matte Dark, Pure Ceramic, Editorial).
+🧩 1. 5 Difficulty Levels
+- Intro, Easy, Medium, Hard and Expert.
+- Every puzzle is generated to have exactly one solution.
+- Classic, Speedrun and Survival modes.
+- 4 easy-on-the-eyes themes (Warm Clay, Matte Dark, Pure Ceramic, Classic Paper).
 
-🎓 2. Step-by-Step 27 Strategy Academy
-- Interactive coaching with visual diagrams:
-- Beginner: Full House, Last Free Cell, Cross-Hatching
-- Intermediate: Naked/Hidden Pairs, Triples, Quads, Pointing/Claiming Box
-- Advanced: X-Wing, Swordfish, Jellyfish, XY-Wing, XYZ-Wing, W-Wing
-- Master: Simple Colouring, 3D Medusa, Unique Rectangle, Sue de Coq, Exocet, AIC
+🎓 2. Academy: 32 Solving Techniques
+- Each technique comes with an illustrated explanation and 2 practice puzzles on real boards.
+- Beginner: Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
+- Intermediate: Pointing, Claiming, Naked/Hidden Pairs, Triples and Quads
+- Advanced: X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
+- Master: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
+- Grandmaster: Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
 
-⚔️ 3. Thrilling 1v1 Real-Time Speed Battle
-- 100% fair competitive speedruns on identical boards.
-- Watch real-time opponent progress bars and claim dramatic comeback victories!
+⚔️ 3. 1v1 and AI Battles
+- Real-time online battles: race another player on the same board.
+- Watch your opponent's progress as you play.
+- AI battles with 5 difficulty levels.
 
-🏆 4. 30 Tiered Global Achievements
-- Speed Demon, Flawless Master, Pure Logic, Streak Conqueror & Mensa IQ 150.
-- Real-time celebratory in-game toasts & Google Play Games global leaderboards.
+🏆 4. Achievements and Play Analysis
+- 30 achievements to unlock.
+- See your play broken down into 5 metrics, such as speed and mistake-free clears.
+- Compete on the Logic Score leaderboard on Google Play Games.
 
-📅 5. Daily Challenge & Attendance Calendar
-- Unique daily puzzle missions every single day.
-- Unlock missed past dates to complete monthly gold trophies!
+📅 5. Daily Challenge
+- A new mission every day, tracked on a calendar.
+- Missed a day? Unlock past puzzles by watching a short ad.
+- Earn a monthly badge.
 
-Download Sudoku Master today and elevate your cognitive power!
+☁️ 6. Cloud Backup
+- When signed in to Google Play Games, your progress is backed up automatically.
+- On a new device, you can load it back.
+
+Take your time, think it through, and enjoy the puzzle.

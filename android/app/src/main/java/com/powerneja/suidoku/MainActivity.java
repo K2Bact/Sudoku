@@ -16,7 +16,27 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Local plugins must be registered before the bridge starts.
+        registerPlugin(NativeInfoPlugin.class);
         super.onCreate(savedInstanceState);
+
+        // System font size: honoured, up to 130% (BACKLOG U-1, 2026-09-19).
+        // The WebView otherwise follows the phone's setting without limit, and at
+        // the largest sizes the game screen's header and keypad grow until the
+        // board has no room. Past 130% the gain in legibility is small and the
+        // layout cost is not; the board's own digits cancel this factor anyway
+        // (src/utils/textZoom.js), so the cap only bounds the chrome around it.
+        // A font-size change recreates this activity (fontScale is not in
+        // configChanges), so reading it here is enough.
+        try {
+            float fontScale = getResources().getConfiguration().fontScale;
+            int zoom = Math.round(Math.min(Math.max(fontScale, 0.85f), 1.3f) * 100);
+            if (getBridge() != null && getBridge().getWebView() != null) {
+                getBridge().getWebView().getSettings().setTextZoom(zoom);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Could not cap the WebView text zoom", e);
+        }
 
         // Restrict content view strictly within system window insets (Status Bar bottom to Navigation Bar top)
         android.view.View contentView = findViewById(android.R.id.content);
