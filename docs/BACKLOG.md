@@ -65,6 +65,9 @@ R-2  ⏸ 보류(사용자 2026-09-19) — AI 풀이(스샷→AI→옮겨 적기)
      다시 꺼낼 조건: 시간으로 줄 세우는 리더보드를 만들 때 — 그때 입력 기록을 쌓고 실측으로 "사람이 못 내는 속도" 기준.
      1v1 은 상대가 AI 도움을 받으면 막을 수단 없음(레이팅은 로컬 전용, 순위표로 안 감).
 V22  22 빌드 묶음 (사용자 2026-09-19, 콘솔 "권장 조치" 에서)
+     ⓪ 근거(2026-09-23 실측, Diary ㉛): 안드로이드 15 에서는 배너 아래 빈 띠(제스처 24dp·3버튼 48dp, 흰색) — 창이 이미 내비 바 위에서
+        끝나는데 MainActivity 가 인셋만큼 한 번 더 패딩. 15·3버튼은 키패드↔배너 38dp(첫 몇 초는 22dp, 28dp 기준 미달). 16 은 깨끗.
+        → ① 로 15·16 을 같은 넓은 화면 경로로 통일하면 사라질 것. 고친 뒤 같은 에뮬레이터(s25like_api35/36)로 다시 잴 것.
      ① 넓은 화면(edge-to-edge): styles.xml 의 windowOptOutEdgeToEdgeEnforcement=true 는 targetSdk 36(안드로이드 16)에서 무시된다 —
         플립5 가 이미 넓은 화면이라 NativeInfo 로 내비 바 인셋을 보정 중. 옵션을 빼고 정식으로(safe-area 인셋) 정리.
      ② LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES 경고는 우리 코드 아님(com.google.android.gms.ads…, play.core…HsdpShimActivity) —
