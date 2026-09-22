@@ -3,6 +3,8 @@
  * LocalStorage manager for auto-saving game progress, user settings, and stats.
  */
 
+import { isResumableGame } from './savedGame.js';
+
 const GAME_STATE_KEY = 'suidoku_game_state_v1';
 export const USER_STATS_KEY = 'suidoku_user_stats_v1';
 const SETTINGS_KEY = 'suidoku_settings_v1';
@@ -21,8 +23,7 @@ export function hasSavedGameState() {
   try {
     const data = localStorage.getItem(GAME_STATE_KEY);
     if (!data) return false;
-    const parsed = JSON.parse(data);
-    return parsed && parsed.board && !parsed.isGameOver && (parsed.mistakes || 0) < 3;
+    return isResumableGame(JSON.parse(data));
   } catch (e) {
     return false;
   }

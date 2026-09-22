@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { isResumableGame } from '../utils/savedGame';
 import { Play, BarChart3, Brain, BookOpen, ChevronRight, Zap, RefreshCw, Hourglass, Lock, X } from 'lucide-react';
 import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine';
 import { loadStats, loadGameState } from '../utils/storage';
@@ -65,7 +66,7 @@ export function HomeScreen({
   };
   
   const savedGame = loadGameState();
-  const hasSavedGame = savedGame && savedGame.board && !savedGame.isGameOver && (savedGame.mistakes || 0) < 3;
+  const hasSavedGame = isResumableGame(savedGame);
   const isCurrentTabSaved = hasSavedGame && (savedGame.gameMode || 'classic') === currentSelectedMode;
 
   const stats = loadStats();

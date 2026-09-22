@@ -12,6 +12,7 @@ import {
   recordGameLoss
 } from '../utils/storage.js';
 import { recordAbandonedGame } from '../utils/abandonedGame';
+import { isResumableGame } from '../utils/savedGame';
 import { loadWallet, addHints, subscribeToWallet } from '../utils/wallet.js';
 import { useTranslation } from '../i18n/i18nContext.jsx';
 import { useGameTimer } from './useGameTimer.js';
@@ -180,7 +181,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
 
   const resumeSavedGame = (requestedLevel) => {
     const saved = loadGameState();
-    if (saved && saved.board && !saved.isGameOver && (saved.mistakes || 0) < 3) {
+    if (isResumableGame(saved)) {
       const safeSolution = ensureValidSolution(saved.initialBoard || saved.board, saved.solutionBoard);
       setBoard(saved.board);
       setInitialBoard(saved.initialBoard);

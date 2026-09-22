@@ -381,6 +381,51 @@ async function run() {
     }
 
     // ---------------------------------------------------------------------
+    console.log('▶ Case 4c: a game still being played past 3 mistakes can be resumed (RT-1)');
+    // ---------------------------------------------------------------------
+    // With the limit off, or in Speedrun, 3 mistakes do not end the game — but Home
+    // used to hide Resume for any save with 3 mistakes (ChatGPT red team F12).
+    for (const { mode, settings, label } of [
+      { mode: 'classic', settings: { limitMistakes: false }, label: 'classic, limit off' },
+      { mode: 'timeAttack', settings: {}, label: 'Speedrun' },
+    ]) {
+      const { state } = buildSavedState({ level: 1, leaveEmpty: 20 });
+      state.mistakes = 3;
+      state.gameMode = mode;
+      await primeStorage(page, state, settings);
+      await page.waitForSelector('.home-screen-container', { timeout: 5000 });
+      if (mode === 'timeAttack') {
+        await page.locator('.home-screen-container .mode-tab-btn').nth(1).click();
+        await page.waitForTimeout(200);
+      }
+      try {
+        await enterGame(page, '.btn-resume');
+        console.log(`  ✅ ${label}: Resume offered and the game reopened with 3 mistakes`);
+      } catch {
+        failures.push(`Case 4c (${label}): no Resume for a game still being played with 3 mistakes`);
+      }
+    }
+
+    // ---------------------------------------------------------------------
+    console.log('▶ Case 4d: a broken save does not blank the app (RT-6)');
+    // ---------------------------------------------------------------------
+    {
+      const { state } = buildSavedState({ level: 1, leaveEmpty: 20 });
+      state.board = 'broken';
+      const before = runtimeErrors.length;
+      await primeStorage(page, state);
+      await page.waitForTimeout(800);
+      const home = await page.$('.home-screen-container');
+      const resume = await page.$('.btn-resume');
+      const errs = runtimeErrors.slice(before);
+      if (!home || resume || errs.length) {
+        failures.push(`Case 4d: broken save — home=${!!home} resume=${!!resume} errors=${errs.join(' | ')}`);
+      } else {
+        console.log('  ✅ Home renders, the broken save is simply not offered');
+      }
+    }
+
+    // ---------------------------------------------------------------------
     console.log('▶ Case 5: progress is saved on a move, and flushed on backgrounding');
     // ---------------------------------------------------------------------
     // Auto-save is change-driven, not clock-driven (see useGameLifecycle). This
