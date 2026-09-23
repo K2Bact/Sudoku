@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import confetti from 'canvas-confetti';
+import { celebrate } from '../utils/celebrate';
 import { Trophy, Clock, AlertCircle, RotateCcw, Share2, Home, Medal, Globe } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
@@ -33,11 +33,7 @@ export function VictoryModal({
   });
 
   useEffect(() => {
-    confetti({
-      particleCount: 120,
-      spread: 75,
-      origin: { y: 0.55 }
-    });
+    celebrate();
     // Nothing is recorded here any more. Score submission, achievements (the
     // S+ grade included) and the cloud save all happen in handleGameWinLogic at
     // the moment of the win. This modal now appears after the post-game

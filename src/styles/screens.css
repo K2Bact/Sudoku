@@ -167,6 +167,14 @@
   border: 0;
 }
 
+/* Do not try to colour this slot to soften the banner's refresh gap. It was
+   tried on 2026-09-23 and measured on a Flip6: for the ~80ms AdMob takes to swap
+   one creative for the next, the gap is drawn by AdMob's own view — black, with
+   its "test ad" label still on it — not by this slot, which stays covered the
+   whole time. The gap's colour is not ours to choose; only its frequency is, and
+   that dial is the ad unit's refresh interval in the AdMob console
+   (SudokuDiary ㉝). */
+
 .ad-slot-container .banner-content {
   display: flex;
   align-items: center;

@@ -5,14 +5,23 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
+  /* A darker plain scrim, and deliberately no backdrop-filter.
+     blur() on a full-screen element makes the compositor snapshot the whole
+     viewport into its own surface — 384x857 on a Flip5/Flip6. The win screen
+     appears right after the post-game interstitial, whose video creative is
+     still holding GPU memory, and that allocation then fails over and over:
+     measured on a Flip6 (store build 1.2.7), 103 failures of exactly 384x857,
+     one every 0.55s for 57 seconds, stopping by itself the moment the ad's
+     buffers were released. Every failed frame leaves part of the dialog
+     unpainted — the repeated flashing a player reported (SudokuDiary ㉜/㉝).
+     The scrim is raised from .75 to .82 so the board behind stays as hidden as
+     the blur made it. */
+  background: rgba(0, 0, 0, 0.82);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
   z-index: 1000;
-  will-change: transform;
   animation: fadeIn 0.2s ease;
   box-sizing: border-box;
 }

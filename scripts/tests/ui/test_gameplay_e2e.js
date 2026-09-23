@@ -320,6 +320,13 @@ async function run() {
         if (await page.locator('.victory-not-recorded').count()) {
           failures.push('Case 4: a clean win with the mistake limit on says the time was not recorded');
         }
+        // The celebration draws on one small canvas. A viewport-sized one failed to
+        // allocate on the phone and left tiles of the card unpainted (SudokuDiary ㉜).
+        const canvases = await page.evaluate(() => [...document.querySelectorAll('canvas')]
+          .map((c) => ({ cls: c.className, w: c.width, h: c.height, vw: window.innerWidth })));
+        const big = canvases.filter((c) => c.w >= c.vw);
+        if (big.length) failures.push(`Case 4: a full-viewport canvas is on the win screen (${JSON.stringify(big)})`);
+        else if (canvases.length) console.log(`  ✅ celebration canvas ${canvases[0].w}x${canvases[0].h} (viewport ${canvases[0].vw})`);
 
         // The victory modal's buttons call back into the game hook. A handler that
         // reaches for something the hook does not return throws mid-click, and the

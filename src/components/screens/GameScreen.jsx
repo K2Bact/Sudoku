@@ -19,6 +19,7 @@ export function GameScreen({
   comboCount,
   timeFloatingText,
   isPaused,
+  isFinished,
   onTogglePause,
   onRestart,
   onOpenNewGame,
@@ -83,6 +84,7 @@ export function GameScreen({
           comboCount={comboCount}
           timeFloatingText={timeFloatingText}
           isPaused={isPaused}
+          isFinished={isFinished}
           onTogglePause={onTogglePause}
           onRestart={onRestart}
           onOpenNewGame={onOpenNewGame}

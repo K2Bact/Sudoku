@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import confetti from 'canvas-confetti';
+import { celebrate } from '../utils/celebrate';
 import { Trophy, Skull, Swords, Flame, Home, Bot } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
@@ -49,7 +49,7 @@ export function BattleResultModal({
 
   useEffect(() => {
     if (isIWon) {
-      confetti({ particleCount: 120, spread: 80, origin: { y: 0.5 } });
+      celebrate({ spread: 80, origin: { y: 0.5 } });
     }
     try {
       const todayKey = getTodayDateKey();

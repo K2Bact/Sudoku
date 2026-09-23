@@ -11,6 +11,7 @@ export function Header({
   comboCount = 0,
   timeFloatingText,
   isPaused,
+  isFinished = false,
   onTogglePause,
   mistakes,
   maxMistakes = 3,
@@ -52,7 +53,10 @@ export function Header({
     }
   };
 
-  const isDangerTime = gameMode === 'timeLimit' && timerSeconds < 60 && !isPaused;
+  // The last-minute heartbeat keeps running after the game ends otherwise: it beat on
+  // behind the blurred win screen for as long as the card was open, one more moving
+  // layer while the confetti canvas was failing to allocate (SudokuDiary ㉜).
+  const isDangerTime = gameMode === 'timeLimit' && timerSeconds < 60 && !isPaused && !isFinished;
 
   return (
     <header className="game-header">

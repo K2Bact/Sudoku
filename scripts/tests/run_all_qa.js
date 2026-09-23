@@ -59,6 +59,7 @@ runStep('2-19. CJK Script Purity (no Simplified in ja or zh-TW)', 'node scripts/
 runStep('2-20. Ad Lifecycle Races (init cache, banner show/hide)', 'node scripts/tests/unit/test_ad_lifecycle_races.js');
 runStep('2-21. A Best Time Is A Record Only When It Was Played For One', 'node scripts/tests/unit/test_record_eligibility.js');
 runStep('2-22. A Game Still Being Played Can Be Resumed', 'node scripts/tests/unit/test_saved_game_resume.js');
+runStep('2-23. The Win Screen Does Not Ask For A Full-Screen Canvas', 'node scripts/tests/unit/test_victory_effects.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests
