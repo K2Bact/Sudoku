@@ -23,6 +23,11 @@ export class LocalTransport {
     return false;
   }
 
+  /** Same question as the Firebase transport answers; here there is no account to ask. */
+  async whoAmI() {
+    return this.playerId;
+  }
+
   constructor(playerId, onMessage) {
     this.playerId = playerId;
     this.onMessage = onMessage;

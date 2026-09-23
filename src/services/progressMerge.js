@@ -17,7 +17,8 @@
  * what a restore puts back. So both call this.
  *
  * ── The rules, unchanged from restore ─────────────────────────────────────
- *   counts (played, won, survival wins)   larger
+ *   games played / won                    together, never a rate neither phone had
+ *   survival wins                         larger
  *   best times, per level                 faster
  *   levels cleared without a hint         union
  *   other stats fields                    local wins, cloud fills gaps
@@ -32,14 +33,49 @@
 
 const BEST_TIME_TABLES = ['bestTimes', 'timeAttackBestTimes', 'timeLimitBestTimes'];
 
+/**
+ * Games played and games won, which cannot be merged one at a time.
+ *
+ * Both used to take the larger value separately. Phone A with 10 played / 10 won
+ * and phone B with 10 played / 0 won merged to 10 played / 10 won — a perfect
+ * record built out of a phone that had never won (MG-1). The win rate is part of
+ * the Logic Score that goes to the leaderboard, so the inflation is visible to
+ * everyone.
+ *
+ * The honest merge needs a per-device ledger, which this file's header already
+ * records as missing for hints; the same is true here. What can be done without
+ * one is to stop the total from contradicting itself. Losses are known per side
+ * (played − won), and however the two histories overlap, the merged history must
+ * contain at least the wins of the better side AND at least the losses of the
+ * side that lost most. So:
+ *
+ *   won    = the larger of the two
+ *   played = at least the larger of the two, and at least won + the larger loss count
+ *
+ * A(10/10) + B(10/0) now gives 20 played / 10 won — 50%, which is what actually
+ * happened. Merging a device with its own older backup changes nothing, and
+ * merging the result again gives the same answer, so repeated saves do not drift.
+ */
+function mergeGameCounts(cloudStats = {}, localStats = {}) {
+  const played = (s) => Math.max(0, Number(s.gamesPlayed) || 0);
+  const won = (s) => Math.max(0, Number(s.gamesWon) || 0);
+  const lost = (s) => Math.max(0, played(s) - won(s));
+
+  const gamesWon = Math.max(won(localStats), won(cloudStats));
+  const gamesPlayed = Math.max(
+    played(localStats), played(cloudStats),
+    gamesWon + Math.max(lost(localStats), lost(cloudStats))
+  );
+  return { gamesPlayed, gamesWon };
+}
+
 export function mergeStats(cloudStats = {}, localStats = {}) {
   // Spread both sides first so any field this does not know about survives —
   // rebuilding from a fixed list used to delete timeLimitBestTimes on restore.
   const merged = {
     ...cloudStats,
     ...localStats,
-    gamesPlayed: Math.max(localStats.gamesPlayed || 0, cloudStats.gamesPlayed || 0),
-    gamesWon: Math.max(localStats.gamesWon || 0, cloudStats.gamesWon || 0),
+    ...mergeGameCounts(cloudStats, localStats),
     timeLimitSurvivalWins: Math.max(localStats.timeLimitSurvivalWins || 0, cloudStats.timeLimitSurvivalWins || 0),
   };
   for (const table of BEST_TIME_TABLES) {

@@ -39,10 +39,22 @@ async function run() {
     await waitForServer(PREVIEW_URL);
     console.log('🌐 Connected to preview server');
 
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    /*
+     * A context each, not two tabs in one.
+     *
+     * Two tabs share storage, and since 2026-09-23 the id a player is known by
+     * is the Firebase anonymous account's uid (RT-2): the database can vouch for
+     * that and for nothing else. Shared storage means one account, so both tabs
+     * became the same player — each filtered the other's ticket out as its own
+     * and no match could ever be made. That is not a fault in the app; it is two
+     * players being one. A separate context is a separate account, which is what
+     * two phones are.
+     */
+    const contextA = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const contextB = await browser.newContext({ viewport: { width: 390, height: 844 } });
 
     // Tab 1: Player A
-    const pageA = await context.newPage();
+    const pageA = await contextA.newPage();
     await pageA.goto(PREVIEW_URL);
     await pageA.evaluate(() => {
       localStorage.setItem('suidoku_player_id', 'player_alpha_99');
@@ -52,7 +64,7 @@ async function run() {
     await pageA.waitForSelector('.battle-card-banner');
 
     // Tab 2: Player B
-    const pageB = await context.newPage();
+    const pageB = await contextB.newPage();
     await pageB.goto(PREVIEW_URL);
     await pageB.evaluate(() => {
       localStorage.setItem('suidoku_player_id', 'player_beta_88');

@@ -72,13 +72,22 @@ export function getDatabase() {
       // in the console yet, 1v1 keeps working exactly as it does now against
       // the current permissive rules; tightening them is the step that makes
       // this mandatory, and it has to come second.
+      //
+      // The uid it returns is carried out of here deliberately. It is the only
+      // id the database can vouch for: rules can compare a written value against
+      // auth.uid, and against nothing else. Everything the app generates itself
+      // — including the player id in localStorage — is a string a peer can type.
+      // That is what let a client send a message as somebody else (RT-2).
+      let uid = null;
       try {
-        await auth.signInAnonymously(auth.getAuth(app));
+        const cred = await auth.signInAnonymously(auth.getAuth(app));
+        uid = cred?.user?.uid || auth.getAuth(app)?.currentUser?.uid || null;
       } catch (e) {
         console.warn('[Firebase] anonymous sign-in unavailable:', e?.code || e?.message || e);
       }
 
       return {
+        uid,
         db: rtdb.getDatabase(app),
         ref: rtdb.ref,
         onValue: rtdb.onValue,

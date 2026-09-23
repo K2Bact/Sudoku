@@ -72,18 +72,26 @@ export function loadWallet() {
 }
 
 /**
- * Save wallet to localStorage
+ * Save the wallet. Returns whether it actually reached storage.
+ *
+ * It used to swallow the failure and say nothing, so consumeHint returned true
+ * after a write that never happened: the hint was handed out and the balance was
+ * back at its old value on the next load — a free hint every time storage is
+ * full, and a screen disagreeing with the game (RT-7 / F11).
  */
 export function saveWallet(wallet) {
+  let saved = true;
   try {
     localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify(wallet));
   } catch (e) {
+    saved = false;
     console.error('Failed to save wallet:', e);
   }
   // Announce even if the write threw: the in-memory balance the caller just
   // computed is what the rest of this session will act on, and a screen showing
   // a different number than the game is using is the failure being fixed here.
   announceBalance(wallet.hints);
+  return saved;
 }
 
 /**
@@ -95,13 +103,20 @@ export function consumeHint() {
   if (wallet.hints <= 0) {
     return false;
   }
+  const before = wallet.hints;
   wallet.hints -= 1;
   wallet.history.push({
     type: 'consume',
     amount: -1,
     date: new Date().toISOString()
   });
-  saveWallet(wallet);
+  if (!saveWallet(wallet)) {
+    // The spend did not persist, so it did not happen. Put the balance the
+    // screen is showing back where the stored one really is and say no —
+    // otherwise the hint is given away and the balance returns on the next load.
+    announceBalance(before);
+    return false;
+  }
   return true;
 }
 
@@ -121,7 +136,14 @@ export function addHints(amount, reason = 'reward') {
     amount,
     date: new Date().toISOString()
   });
-  saveWallet(wallet);
+  if (!saveWallet(wallet)) {
+    // Same rule in the other direction: a reward that did not persist is not a
+    // reward. The caller is told the balance that is really stored, so it cannot
+    // congratulate the player on hints they will not have in a minute.
+    const stored = loadWallet().hints;
+    announceBalance(stored);
+    return stored;
+  }
   return wallet.hints;
 }
 

@@ -26,7 +26,32 @@
     "alongside it, which is what the entries below do.",
     "",
     "Do NOT relax these to \".read\": true, \".write\": true — that is an open",
-    "database anyone on the internet can wipe or fill."
+    "database anyone on the internet can wipe or fill.",
+    "",
+    "2026-09-23 (RT-2): ids are now tied to the account that wrote them.",
+    "auth != null only proved that SOME client asked. senderId and the queue key",
+    "were strings the client chose, so any signed-in client could write a message",
+    "as somebody else, and the receiving app believed it — battleValidation's",
+    "isFromOpponent compares senderId with the opponent's id, and a peer could",
+    "simply repeat that id. Now senderId must equal auth.uid and a ticket must be",
+    "written under the writer's own uid, so those strings cannot be borrowed.",
+    "",
+    "Deleting is deliberately asymmetric. A queue ticket must be removable by the",
+    "OTHER player, because that is how claiming works (transport/index.js): the",
+    "claimer atomically removes the peer's ticket, and exactly one claimer wins.",
+    "A bus message is the opposite — its sender owns its cleanup, so only the",
+    "sender may remove it, or anyone could delete a match's traffic mid-game.",
+    "",
+    "The app must be shipped before these are published: a client that still",
+    "signs with its local id would have every write denied. In the other order",
+    "nothing breaks — the new client sends auth.uid either way.",
+    "",
+    "Watch the LENGTHS when an id changes shape. roomId is capped at 64, and the",
+    "room id used to be built as room_{peerUid}_{myUid}_{now}. With 28-character",
+    "uids that is about 76, so every match_created came back PERMISSION_DENIED:",
+    "the host sat in a room the other player never heard of, and that player kept",
+    "searching. The id is now short and random (battleMatchmaking.newRoomId).",
+    "A refused write shows up as a feature that half works, not as an error."
   ],
   "rules": {
     ".read": false,
@@ -34,10 +59,10 @@
     "queue": {
       ".read": "auth != null",
       "$playerId": {
-        ".write": "auth != null",
+        ".write": "auth != null && (!newData.exists() || $playerId === auth.uid)",
         ".validate": "newData.hasChildren(['playerId','playerName','level','timestamp'])",
         "playerId": {
-          ".validate": "newData.isString() && newData.val() === $playerId && newData.val().length <= 64"
+          ".validate": "newData.isString() && newData.val() === $playerId && newData.val() === auth.uid && newData.val().length <= 64"
         },
         "playerName": {
           ".validate": "newData.isString() && newData.val().length <= 64"
@@ -56,13 +81,13 @@
     "bus": {
       ".read": "auth != null",
       "$messageId": {
-        ".write": "auth != null && (!data.exists() || !newData.exists())",
+        ".write": "auth != null && (newData.exists() ? (!data.exists() && newData.child('senderId').val() === auth.uid) : data.child('senderId').val() === auth.uid)",
         ".validate": "newData.hasChildren(['type','senderId','_ts'])",
         "type": {
           ".validate": "newData.isString() && newData.val().length <= 32"
         },
         "senderId": {
-          ".validate": "newData.isString() && newData.val().length <= 64"
+          ".validate": "newData.isString() && newData.val() === auth.uid && newData.val().length <= 64"
         },
         "_ts": {
           ".validate": "newData.isNumber()"

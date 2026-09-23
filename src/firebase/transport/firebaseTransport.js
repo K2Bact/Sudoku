@@ -34,6 +34,18 @@ export class FirebaseTransport {
 
   constructor(playerId, onMessage) {
     this.playerId = playerId;
+    /**
+     * Who this transport signs as: the anonymous account's uid once sign-in has
+     * finished, and the id we were handed until then (and if sign-in failed).
+     *
+     * The published rules require a message's senderId to equal auth.uid, so a
+     * peer can no longer claim to be the opponent — before, senderId was a
+     * locally generated string and battleValidation.isFromOpponent compared it
+     * to another string a peer could simply repeat (RT-2). Callers ask for it
+     * with whoAmI() and must use it as their ticket's playerId, or the ticket is
+     * rejected by those same rules.
+     */
+    this.identity = playerId;
     this.onMessage = onMessage;
     this.closed = false;
     this.unsubscribers = [];
@@ -46,13 +58,14 @@ export class FirebaseTransport {
     const api = await getDatabase();
     if (this.closed || !api.db) return null;
     this.api = api;
+    if (api.uid) this.identity = api.uid;
 
     // Listen for new bus entries only. onChildAdded replays existing children
     // once on attach, which the timestamp guard below filters out.
     const busRef = api.ref(api.db, BUS_PATH);
     const unsub = api.onChildAdded(busRef, (snap) => {
       const payload = snap.val();
-      if (!payload || payload.senderId === this.playerId) return;
+      if (!payload || payload.senderId === this.identity) return;
       // Drop anything from before this session, and anything stale.
       const ts = Number(payload._ts) || 0;
       if (ts < this.startedAt || Date.now() - ts > MESSAGE_TTL_MS) return;
@@ -62,10 +75,16 @@ export class FirebaseTransport {
     return api;
   }
 
+  /** The id this transport signs with — the one the database can vouch for. */
+  async whoAmI() {
+    await this.ready;
+    return this.identity;
+  }
+
   async send(message) {
     const api = this.api || (await this.ready);
     if (!api || !api.db) return;
-    const payload = { ...message, senderId: this.playerId, _ts: Date.now() };
+    const payload = { ...message, senderId: this.identity, _ts: Date.now() };
     try {
       const entryRef = api.push(api.ref(api.db, BUS_PATH));
       await api.set(entryRef, payload);

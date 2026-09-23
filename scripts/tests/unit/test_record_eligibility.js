@@ -98,6 +98,35 @@ const m = mergeStats({ clearedLevels: { 4: true } }, { clearedLevels: { 2: true 
 assert.ok(m.clearedLevels?.[4] && m.clearedLevels?.[2], 'a cloud restore keeps levels cleared on either device');
 console.log('  ✅ 3. old saves keep their credit; cloud merge keeps cleared levels');
 
+// 3b. A duel leaves no time in the Classic record table (BT-1)
+//
+// Everything that was not Speedrun or Survival fell into bestTimes, and 1v1 and
+// the AI match came through the same win path. A duel is played against someone
+// you can watch — you rush when they are ahead, the board can end under you —
+// so those seconds are not comparable with a Classic run, and they were landing
+// in the table the player reads as their personal record.
+{
+  const { recordGameWin } = await import('../../../src/utils/storage.js');
+  localStorage.clear();
+  recordGameWin(3, 200, 'classic', { hintsUsed: 0, countsAsRecord: true });
+  const classic = loadStats().bestTimes[3];
+  assert.strictEqual(classic, 200, 'a Classic win sets the Classic record');
+
+  const duel = recordGameWin(3, 30, 'battle', { hintsUsed: 0, countsAsRecord: true });
+  assert.strictEqual(loadStats().bestTimes[3], 200,
+    'a 1v1 win must not become the Classic best time, however fast it was (BT-1)');
+  assert.strictEqual(duel.isNewRecord, false, 'and it is not announced as a record');
+
+  recordGameWin(3, 25, 'aiBattle', { hintsUsed: 0, countsAsRecord: true });
+  assert.strictEqual(loadStats().bestTimes[3], 200, 'the AI match is a duel too');
+
+  const after = loadStats();
+  assert.strictEqual(after.gamesWon, 3, 'the duels are still wins — only the clock is dropped');
+  assert.strictEqual(after.gamesPlayed, 3, 'and still games played');
+  localStorage.clear();
+  console.log('  ✅ 3b. duel times stay out of the Classic record table, but the wins still count');
+}
+
 // 4. Quitting counts as losing (abandonedGame.js)
 {
   const { recordAbandonedGame, gameInProgress } = await import('../../../src/utils/abandonedGame.js');

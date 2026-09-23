@@ -3,7 +3,11 @@ import { loadStats } from './storage.js';
 import { loadWallet } from './wallet.js';
 import { playGamesService } from '../services/playGamesService.js';
 
-const STORAGE_KEY = 'sudoku_achievements_v1';
+// Exported so code that has to put this key back after a failed write (the
+// restore rollback in cloudSyncService) names it the way every other owned key
+// is named, instead of re-typing the string — gate 2-7 section 6.
+export const ACHIEVEMENTS_STORAGE_KEY = 'sudoku_achievements_v1';
+const STORAGE_KEY = ACHIEVEMENTS_STORAGE_KEY;
 
 export function loadUnlockedAchievements() {
   try {

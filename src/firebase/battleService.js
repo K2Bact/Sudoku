@@ -9,8 +9,11 @@ import { aiBotService } from '../engine/aiBotService.js';
 import { createAIRoom, runAIBattle } from './aiBattleSession.js';
 import { createTransport } from './transport/index.js';
 import {
-  isValidBoardPayload, isValidProgress, isForRoom, isFromOpponent, isValidTicket
+  isValidBoardPayload, isValidProgress, isForRoom, isFromOpponent, isForThisMatch
 } from './battleValidation.js';
+import {
+  startQuickMatch, claimBothTickets, handleMatchTicket, handleMatchCreated
+} from './battleMatchmaking.js';
 
 class BattleService {
   constructor() {
@@ -35,6 +38,35 @@ class BattleService {
       }
     }
     return id;
+  }
+
+  /**
+   * Take the id the transport can actually prove, before anything goes on the wire.
+   *
+   * The id above is generated here and stored here, so it says only what this
+   * phone decided to call itself. Over Firebase the transport signs with the
+   * anonymous account's uid instead, and the published rules reject a message or
+   * a ticket carrying anybody else's (RT-2) — so a ticket built from the local id
+   * would be refused, and, worse, a peer could previously put the opponent's id
+   * on a message and battleValidation.isFromOpponent would wave it through.
+   *
+   * Called at the start of every path that puts an id on the wire rather than in
+   * the constructor, because the uid arrives over the network: the constructor
+   * cannot wait, and a search happens long after startup. It is idempotent.
+   */
+  async adoptProvenIdentity() {
+    if (!this.channel || typeof this.channel.whoAmI !== 'function') return this.myPlayerId;
+    try {
+      const proven = await this.channel.whoAmI();
+      if (proven && proven !== this.myPlayerId) {
+        const namedAfterOldId = this.myPlayerName === `Player_${this.myPlayerId.slice(-4)}`;
+        this.myPlayerId = proven;
+        if (namedAfterOldId) this.myPlayerName = this.initPlayerName();
+      }
+    } catch (e) {
+      console.warn('[Battle] could not read the proven identity:', e?.message || e);
+    }
+    return this.myPlayerId;
   }
 
   /**
@@ -71,10 +103,20 @@ class BattleService {
 
     const room = this.currentRoom;
     if (!isForRoom(data, room) || !isFromOpponent(data, room)) return;
+    if (!isForThisMatch(data, room)) return;
 
     if (data.type === 'player_progress') this.handlePlayerProgress(data);
-    else if (data.type === 'rematch_request') this.rematchListeners.forEach(cb => cb(data));
-    else if (data.type === 'rematch_accepted') this.resetForNewMatch(data);
+    else if (data.type === 'rematch_request') {
+      // Remember that they asked. Without this the acceptance below has nothing
+      // to check itself against.
+      room.rematchAsked = true;
+      this.rematchListeners.forEach(cb => cb(data));
+    } else if (data.type === 'rematch_accepted') {
+      // An acceptance answers a question. Nobody asked one, so this is either a
+      // replay or a peer trying to wipe a live board back to zero (RT-3 / F05).
+      if (room.rematchStatus !== 'waiting' && !room.rematchAsked) return;
+      this.resetForNewMatch(data);
+    }
     else if (data.type === 'rematch_declined') {
       room.rematchStatus = 'declined';
       room.rematchSeq = (room.rematchSeq || 0) + 1;
@@ -85,171 +127,16 @@ class BattleService {
   }
 
   /**
-   * Async because a network transport answers listQueue over the wire. The local
-   * transport resolves immediately, so both behave the same to callers — which
-   * fire-and-forget and wait for the onMatched callback.
+   * Finding an opponent lives in battleMatchmaking.js — see the header there.
+   * These four keep their names so callers and tests do not have to know.
    */
-  async startQuickMatch(level = 3, onMatched) {
-    this.onMatchSuccess = onMatched;
-    this.searchingLevel = level;
+  startQuickMatch(level = 3, onMatched) { return startQuickMatch(this, level, onMatched); }
 
-    const queue = await this.channel.listQueue();
-    // A ticket may have been claimed while we were waiting for that round trip.
-    if (this.searchingLevel !== level) return;
-    const candidate = queue.find(t => t.playerId !== this.myPlayerId && t.level === level && Date.now() - t.timestamp < 30000);
+  claimBothTickets(peerId) { return claimBothTickets(this, peerId); }
 
-    /*
-     * 큐에서 보이는 것과 가져가는 것은 다르다.
-     *
-     * 예전에는 `listQueue()` 로 보고 곧바로 `dequeue(peer)` 로 지운 뒤 방을
-     * 만들었다. 두 검색자가 같은 티켓을 보면 둘 다 지우고 둘 다 방을 만든다.
-     * 대기자는 먼저 온 match_created 하나만 받고 나머지를 버리므로 무사하지만,
-     * 늦은 호스트는 오지 않는 상대와 마주 앉는다 — 이름은 뜨고 상대 진행률은
-     * 0 에서 멈춘 유령 상대다. 원자적으로 가져가면 한 명만 호스트가 된다.
-     *
-     * 못 가져갔으면 대기자가 된다. 아래 else 로 떨어져 자기 티켓을 올리고,
-     * 상대의 다음 티켓 방송에서 아이디 비교로 정상적으로 짝이 맺어진다.
-     */
-    const peer = candidate ? await this.channel.claimTicket(candidate.playerId) : null;
-    if (this.searchingLevel !== level) return;
+  handleMatchTicket(data) { return handleMatchTicket(this, data); }
 
-    if (peer) {
-      const puzzle = generatePuzzle(level);
-      const initialEmptyCount = puzzle.puzzle.flat().filter(v => v === 0).length;
-      const roomId = `room_${peer.playerId}_${this.myPlayerId}_${Date.now()}`;
-      const payload = {
-        roomId, level, puzzle: puzzle.puzzle, solution: puzzle.solution, initialEmptyCount,
-        player1: { id: peer.playerId, name: peer.playerName },
-        player2: { id: this.myPlayerId, name: this.myPlayerName }
-      };
-
-      this.searchingLevel = null;
-      this.channel.send({ type: 'match_created', ...payload });
-      this.setupRoom({
-        code: roomId.slice(-5), level, puzzle: puzzle.puzzle, solution: puzzle.solution,
-        initialEmptyCount, opponentId: peer.playerId, opponentName: peer.playerName
-      });
-      if (onMatched) onMatched(this.currentRoom);
-    } else {
-      const timestamp = Date.now();
-      this.channel.enqueue({ playerId: this.myPlayerId, playerName: this.myPlayerName, level, timestamp });
-      // The broadcast must carry the same fields the queue entry does: the
-      // receiver runs it through isValidTicket, which rejects a ticket with no
-      // timestamp. Omitting it here made every match_ticket unusable.
-      this.channel.send({ type: 'match_ticket', playerId: this.myPlayerId, playerName: this.myPlayerName, level, timestamp });
-    }
-  }
-
-  /**
-   * Two players can press quick match close enough together that each sees an
-   * empty queue, so both enqueue and both broadcast a ticket. Without a rule for
-   * who hosts, both would build a room and then adopt the other's match_created,
-   * ending up on different puzzles with mismatched room codes. Comparing ids
-   * picks one host with no extra round trip: the smaller id stands down and
-   * waits for match_created, which handleMatchCreated already knows how to take.
-   */
-  /**
-   * 호스트가 되려면 티켓 두 장을 가져와야 한다 — 상대의 것과 내 것.
-   *
-   * ── 상대 것만 가져오면 왜 부족한가 ──────────────────────────────────
-   * 셋이 동시에 검색하면 셋 다 빈 큐를 보고 셋 다 티켓을 올린다. A < B < C 에서
-   * B 는 A 의 티켓을 가져와 호스트가 되고, 같은 순간 C 는 B 의 티켓을 가져온다.
-   * C 의 선점은 부정하지 않다 — B 의 티켓이 그때까지 큐에 있었기 때문이다.
-   * B 는 이미 방이 있어 C 의 match_created 를 버리고, C 만 유령과 남는다.
-   *
-   * 내 티켓은 "나는 아직 짝을 구한다" 는 공개된 약속이다. 호스트가 되는 순간
-   * 그 약속을 원자적으로 거둬야 한다. 못 거뒀다면 누군가 이미 나를 데려간 것이고,
-   * 그때는 호스트가 되지 않고 그 사람의 match_created 를 기다리는 것이 옳다.
-   *
-   * 순서가 중요하다. 내 것을 먼저 거둔다 — 남을 데려가기 전에 내가 더 이상
-   * 후보가 아님을 확정해야, 두 사람이 서로를 데려가는 교차가 생기지 않는다.
-   * 내 것을 거둔 뒤 상대 것을 놓치면 티켓을 다시 올려 검색을 계속한다.
-   * 올리지 않으면 큐에서 사라진 채 아무도 나를 찾을 수 없다.
-   */
-  async claimBothTickets(peerId) {
-    const mine = await this.channel.claimTicket(this.myPlayerId);
-    if (!mine) return false;                 // 누가 이미 나를 데려갔다
-
-    const theirs = await this.channel.claimTicket(peerId);
-    if (theirs) return true;
-
-    // 상대를 놓쳤다. 내 티켓을 되돌려 놓고 계속 기다린다.
-    if (this.searchingLevel && !this.currentRoom) {
-      await this.channel.enqueue(mine);
-      this.channel.send({ type: 'match_ticket', ...mine });
-    }
-    return false;
-  }
-
-  async handleMatchTicket(data) {
-    if (!this.searchingLevel || this.currentRoom) return;
-    if (!isValidTicket(data, this.searchingLevel)) return;
-    if (this.myPlayerId < data.playerId) return;
-
-    /*
-     * 아이디 비교는 "누가 호스트가 되는가" 만 정하고, "이 상대가 아직
-     * 남아 있는가" 는 모른다. 검색자가 셋이면 그 차이가 드러난다.
-     *
-     * A < B < C 가 동시에 누르면 A 는 B·C 둘 다에게 양보한다. B 는 A 의
-     * 티켓을 받아 A 를 상대로 정하고, C 도 A 의 티켓을 받아 A 를 상대로
-     * 정한다. A 는 먼저 도착한 match_created 하나만 받아들이므로 무사하지만,
-     * 늦은 쪽은 절대 응답하지 않는 상대와 마주 앉는다. 그래서 방을 만들기
-     * 전에 상대 티켓을 원자적으로 가져가고, 못 가져가면 계속 검색한다.
-     *
-     * inFlight 는 동기적으로 세운다. 티켓 두 장이 잇달아 도착하면 두
-     * 호출이 각각 다른 상대를 선점해 둘 다 성공할 수 있고, 그러면 방이
-     * 두 개 생긴다 — 고치려는 버그를 비동기로 바꾸면서 새로 만드는 셈이다.
-     * await 앞에 세우는 것이 요점이다.
-     */
-    if (this.claimInFlight) return;
-    this.claimInFlight = true;
-    let ok = false;
-    try {
-      ok = await this.claimBothTickets(data.playerId);
-    } finally {
-      this.claimInFlight = false;
-    }
-    // 기다리는 동안 대기를 그만뒀거나 다른 경로로 방이 생겼을 수 있다.
-    if (!ok || !this.searchingLevel || this.currentRoom) return;
-
-    this.searchingLevel = null;
-
-    const puzzle = generatePuzzle(data.level);
-    const initialEmptyCount = puzzle.puzzle.flat().filter(v => v === 0).length;
-    const roomId = `room_${this.myPlayerId}_${data.playerId}_${Date.now()}`;
-    const payload = {
-      roomId, level: data.level, puzzle: puzzle.puzzle, solution: puzzle.solution, initialEmptyCount,
-      player1: { id: this.myPlayerId, name: this.myPlayerName },
-      player2: { id: data.playerId, name: data.playerName }
-    };
-
-    this.channel.send({ type: 'match_created', ...payload });
-    this.setupRoom({
-      code: roomId.slice(-5), level: data.level, puzzle: puzzle.puzzle, solution: puzzle.solution,
-      initialEmptyCount, opponentId: data.playerId, opponentName: data.playerName
-    });
-    if (this.onMatchSuccess) this.onMatchSuccess(this.currentRoom);
-  }
-
-  handleMatchCreated(data) {
-    if (!this.searchingLevel) return;
-    const isForMe = data.player1?.id === this.myPlayerId || data.player2?.id === this.myPlayerId;
-    if (!isForMe) return;
-
-    // Never adopt a board a peer sent without checking it is a real puzzle whose
-    // givens agree with its solution.
-    if (!isValidBoardPayload(data)) return;
-
-    this.searchingLevel = null;
-    this.channel.dequeue(this.myPlayerId);
-    const opponent = data.player1.id === this.myPlayerId ? data.player2 : data.player1;
-
-    this.setupRoom({
-      code: data.roomId.slice(-5), level: data.level, puzzle: data.puzzle, solution: data.solution,
-      initialEmptyCount: data.initialEmptyCount, opponentId: opponent.id, opponentName: opponent.name
-    });
-    if (this.onMatchSuccess) this.onMatchSuccess(this.currentRoom);
-  }
+  handleMatchCreated(data) { return handleMatchCreated(this, data); }
 
   setupRoom(cfg) {
     this.currentRoom = {
@@ -257,6 +144,13 @@ class BattleService {
       initialEmptyCount: cfg.initialEmptyCount, status: 'playing', myProgress: 0, myMistakes: 0,
       opponentProgress: 0, opponentMistakes: 0, opponentId: cfg.opponentId, opponentName: cfg.opponentName,
       winner: null, rematchStatus: 'idle',
+      // Which match this room is on, counted from 0 and raised by every rematch.
+      // Every in-match message carries it, so a message from the match before
+      // cannot land in this one (RT-3 / F06).
+      matchSeq: 0,
+      // Whether a rematch handshake is actually open. An acceptance is only
+      // meaningful if somebody asked — see handleMessage (RT-3 / F05).
+      rematchAsked: false,
       // 동시 완성 결승에 쓴다. 두 기기의 방은 match_created 왕복 시간 안에서
       // 시작하므로, 각자 잰 경과 시간은 누가 실제로 빨리 풀었는지를 뜻한다.
       // 벽시계를 맞출 필요가 없다 — 비교하는 것은 두 소요 시간이지 두 시각이 아니다.
@@ -290,7 +184,8 @@ class BattleService {
     }
 
     this.channel.send({
-      type: 'player_progress', roomId: this.currentRoom.code, progressPct, mistakes,
+      type: 'player_progress', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq,
+      progressPct, mistakes,
       status: this.currentRoom.status, winner: this.currentRoom.winner,
       elapsedMs: this.currentRoom.myElapsedMs
     });
@@ -357,8 +252,9 @@ class BattleService {
   requestRematch() {
     if (!this.currentRoom) return;
     this.currentRoom.rematchStatus = 'waiting';
+    this.currentRoom.rematchAsked = false;
     this.channel.send({
-      type: 'rematch_request', roomId: this.currentRoom.code,
+      type: 'rematch_request', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq,
       requesterId: this.myPlayerId, requesterName: this.myPlayerName
     });
     this.notifyListeners();
@@ -371,7 +267,9 @@ class BattleService {
       level: this.currentRoom.level || 3, puzzle: newPuzzle.puzzle, solution: newPuzzle.solution,
       initialEmptyCount: newPuzzle.puzzle.flat().filter(v => v === 0).length
     };
-    this.channel.send({ type: 'rematch_accepted', roomId: this.currentRoom.code, ...payload });
+    this.channel.send({
+      type: 'rematch_accepted', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq, ...payload
+    });
     this.resetForNewMatch(payload);
   }
 
@@ -385,19 +283,29 @@ class BattleService {
    * match it described is how a fresh board ends up explaining an old defeat.
    */
   resetForNewMatch(data) {
-    if (!this.currentRoom || !isValidBoardPayload(data)) return;
+    // The level is this room's, not the one in the message: a rematch cannot
+    // quietly change the difficulty both players agreed to.
+    if (!this.currentRoom || !isValidBoardPayload(data, this.currentRoom.level)) return;
     Object.assign(this.currentRoom, {
       puzzle: data.puzzle, solution: data.solution, initialEmptyCount: data.initialEmptyCount,
       status: 'playing', myProgress: 0, myMistakes: 0, opponentProgress: 0, opponentMistakes: 0,
       winner: null, winnerReason: null,
-      rematchStatus: 'accepted', rematchSeq: (this.currentRoom.rematchSeq || 0) + 1
+      rematchStatus: 'accepted', rematchSeq: (this.currentRoom.rematchSeq || 0) + 1,
+      // A new match, so a new number: everything still in the air from the last
+      // one is now addressed to a match that is over (RT-3 / F06).
+      matchSeq: (this.currentRoom.matchSeq || 0) + 1,
+      rematchAsked: false,
+      // And a new clock. These decide the photo finish when both players fill the
+      // last cell at once; carried over from the previous match they would hand
+      // the win to whoever won last time (RT-3 / F07).
+      startedAt: Date.now(), myElapsedMs: null, opponentElapsedMs: null
     });
     this.notifyListeners();
   }
 
   declineRematch() {
     if (!this.currentRoom) return;
-    this.channel.send({ type: 'rematch_declined', roomId: this.currentRoom.code });
+    this.channel.send({ type: 'rematch_declined', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq });
   }
 
   subscribeRoom(cb) { this.listeners.push(cb); return () => { this.listeners = this.listeners.filter(fn => fn !== cb); }; }
@@ -423,7 +331,7 @@ class BattleService {
     }
     if (this.currentRoom) {
       if (!this.currentRoom.isAiMatch) {
-        this.channel.send({ type: 'player_left', roomId: this.currentRoom.code });
+        this.channel.send({ type: 'player_left', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq });
       }
       this.currentRoom = null;
     }

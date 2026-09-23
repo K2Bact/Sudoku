@@ -201,6 +201,78 @@ console.log('  ✅ 2. cloudSyncService round-trip restores stats, wallet, daily 
   }
 }
 
+// ── 2b-E. Two saves at once must not send the cloud backwards (RT-4) ──────
+//
+// A save is read-merge-write against one snapshot slot. Every win calls
+// saveToCloud, and useCloudAutoSync calls syncIfNeeded on foreground, on
+// reconnect and on sign-in — so two can be in the air together. Interleaved, the
+// second reads the slot before the first writes, merges against the stale copy,
+// and writes last: the cloud drops back to one win while the phone has two.
+//
+// The timing is forced here rather than hoped for: the first save is held inside
+// its read until the second has been asked for. If the saves run one at a time,
+// the second cannot start reading until the first has finished writing, and the
+// last thing uploaded is the newer one.
+{
+  const { playGamesService } = await import('../../../src/services/playGamesService.js');
+  const { USER_STATS_KEY: STATS_KEY } = await import('../../../src/utils/storage.js');
+  const realLoad = playGamesService.loadSnapshot;
+  const realSave = playGamesService.saveSnapshot;
+  localStorage.clear();
+
+  let slot = JSON.stringify({ userId: 'pg_race', version: '1.1.2', stats: { gamesPlayed: 1, gamesWon: 1 } });
+  const order = [];
+  let releaseFirstRead = null;
+  let reads = 0;
+
+  playGamesService.loadSnapshot = async () => {
+    reads++;
+    order.push(`read${reads}`);
+    if (reads === 1) await new Promise((r) => { releaseFirstRead = r; });
+    return { success: true, snapshot: { data: slot } };
+  };
+  playGamesService.saveSnapshot = async (_name, data) => {
+    order.push(`write(${JSON.parse(data).stats.gamesWon})`);
+    slot = data;
+    return { success: true };
+  };
+
+  try {
+    // the win that is being backed up: two wins on this phone
+    localStorage.setItem(STATS_KEY, JSON.stringify({ gamesPlayed: 2, gamesWon: 2 }));
+    const first = cloudSyncService.saveToCloud();
+    await new Promise((r) => setTimeout(r, 0));
+    assert.strictEqual(reads, 1, 'the first save should be waiting inside its read');
+
+    // meanwhile the app comes back to the foreground and asks for a backup too
+    const second = cloudSyncService.saveToCloud();
+    await new Promise((r) => setTimeout(r, 0));
+    assert.strictEqual(reads, 1,
+      'a second save started reading while the first was still in flight — interleaved, it will '
+      + 'merge against the copy the first one is about to replace and then overwrite it (RT-4)');
+
+    releaseFirstRead();
+    await Promise.all([first, second]);
+
+    assert.deepStrictEqual(order, ['read1', 'write(2)', 'read2', 'write(2)'],
+      `saves must not interleave: read, write, read, write (got ${order.join(' ')})`);
+    assert.strictEqual(JSON.parse(slot).stats.gamesWon, 2,
+      `the cloud ended with ${JSON.parse(slot).stats.gamesWon} wins after a 2-win save — it went backwards`);
+    console.log('  ✅ 2b-E. two overlapping saves run one at a time; the cloud never goes backwards');
+
+    // And the one that runs second has nothing new to send, so it says so
+    // instead of uploading the same bytes again.
+    const skipped = await cloudSyncService.saveToCloud({ onlyIfChanged: true });
+    assert.strictEqual(skipped.skipped, 'up_to_date',
+      'a queued save with nothing new must skip rather than re-upload');
+    console.log('  ✅ 2b-F. a queued save with nothing new skips the upload');
+  } finally {
+    playGamesService.loadSnapshot = realLoad;
+    playGamesService.saveSnapshot = realSave;
+    localStorage.clear();
+  }
+}
+
 // 2c. Everything a win earns is recorded at the win, not when the victory screen mounts.
 //
 // The post-game interstitial now sits between the win and the victory screen. The
@@ -293,6 +365,46 @@ const { iqStatsService } = await import('../../../src/services/iqStatsService.js
     if (nav) Object.defineProperty(globalThis, 'navigator', nav); else delete globalThis.navigator;
     assert.strictEqual((await sync.syncIfNeeded()).method, 'play_games', 'back online: the backlog goes up');
 
+    // RT-5: the mark belongs to an account, not to the phone.
+    //
+    // The snapshot slot is per account. With one mark for the phone, signing in
+    // as a second player and backing up was skipped as "up to date" — the local
+    // data had not changed since the FIRST player's backup — so the second
+    // player's slot stayed empty while the app showed a backup time.
+    const realUid = sync.getEffectiveUserId;
+    try {
+      localStorage.clear();
+      setStats({ gamesPlayed: 4, gamesWon: 3, bestTimes: { 1: 80 } });
+      sync.getEffectiveUserId = () => 'pg_playerA';
+      assert.strictEqual((await sync.syncIfNeeded()).method, 'play_games', 'A backs up');
+      assert(!sync.hasUnsyncedChanges(), 'A is up to date');
+      const aBackedUpAt = sync.getLastRemoteBackup();
+      assert(aBackedUpAt > 0, 'A has a backup time');
+
+      sync.getEffectiveUserId = () => 'pg_playerB';
+      assert(sync.hasUnsyncedChanges(),
+        "B has never been backed up, but the phone's single mark said otherwise — B's slot stays empty (RT-5)");
+      assert.strictEqual(sync.getLastRemoteBackup(), null, "and B must not be shown A's backup time");
+      const beforeB = saves;
+      assert.strictEqual((await sync.syncIfNeeded()).method, 'play_games', 'B backs up too');
+      assert.strictEqual(saves, beforeB + 1, "B's backup really went out");
+
+      sync.getEffectiveUserId = () => 'pg_playerA';
+      assert(!sync.hasUnsyncedChanges(), "A's mark survived B's backup");
+      assert.strictEqual(sync.getLastRemoteBackup(), aBackedUpAt, "and still shows A's own time");
+
+      // An install updated from before this change holds the old single mark.
+      // It belongs to nobody, so the next backup is made rather than skipped.
+      localStorage.setItem('suidoku_cloud_remote_sync_v1',
+        JSON.stringify({ at: Date.now(), fp: 'whatever-it-was' }));
+      assert(sync.hasUnsyncedChanges(), "an old phone-wide mark must not be read as this account's backup");
+      assert.strictEqual(sync.getLastRemoteBackup(), null, 'nor shown as a backup time');
+      console.log('  ✅ 3b. the backup mark is per account; switching players backs up again (RT-5)');
+    } finally {
+      sync.getEffectiveUserId = realUid;
+      localStorage.clear();
+    }
+
     // Restore offer on a fresh phone
     localStorage.clear();
     cloud = JSON.stringify({ stats: { gamesPlayed: 7, gamesWon: 5 } });
@@ -311,6 +423,126 @@ const { iqStatsService } = await import('../../../src/services/iqStatsService.js
     assert.strictEqual(await sync.findRestoreOffer(), null, 'a phone that has played is not fresh — restore stays a Settings choice');
   } finally {
     pg.loadSnapshot = real.load; pg.saveSnapshot = real.save; pg.isAuthenticated = real.auth; sync.saveToCloud = real.saveToCloud;
+    localStorage.clear();
+  }
+}
+
+// ── Two phones cannot merge into a record neither of them had (MG-1) ─────
+//
+// Played and won used to take the larger value one at a time. A phone with
+// 10 played / 10 won merged with one that had 10 played / 0 won produced
+// 10 played / 10 won: a perfect record assembled from a phone that had never
+// won. The win rate feeds the Logic Score that goes to the leaderboard.
+{
+  const { mergeStats: merge } = await import('../../../src/services/progressMerge.js');
+  const rate = (m) => (m.gamesPlayed ? m.gamesWon / m.gamesPlayed : 0);
+
+  const inflated = merge({ gamesPlayed: 10, gamesWon: 10 }, { gamesPlayed: 10, gamesWon: 0 });
+  assert.strictEqual(inflated.gamesWon, 10, 'the wins that really happened are kept');
+  assert.strictEqual(inflated.gamesPlayed, 20,
+    `a phone that won 10 of 10 and one that lost 10 of 10 played 20 games, not ${inflated.gamesPlayed} (MG-1)`);
+  assert.strictEqual(rate(inflated), 0.5, 'so the rate is 50%, not 100%');
+
+  // merging a phone with its own older backup must not move anything
+  const sameDevice = merge({ gamesPlayed: 18, gamesWon: 9 }, { gamesPlayed: 20, gamesWon: 10 });
+  assert.deepStrictEqual([sameDevice.gamesPlayed, sameDevice.gamesWon], [20, 10],
+    'a device merging with its own older copy must come out unchanged');
+
+  // and saving repeatedly must not drift: every save merges cloud with local
+  const again = merge(inflated, { gamesPlayed: 10, gamesWon: 10 });
+  assert.deepStrictEqual([again.gamesPlayed, again.gamesWon], [20, 10],
+    'merging the result again must give the same answer, or every save inflates a little more');
+
+  // never a rate better than the better phone actually had
+  for (const [a, b] of [[{ gamesPlayed: 30, gamesWon: 5 }, { gamesPlayed: 10, gamesWon: 10 }],
+                        [{ gamesPlayed: 7, gamesWon: 3 }, { gamesPlayed: 100, gamesWon: 40 }],
+                        [{ gamesPlayed: 0, gamesWon: 0 }, { gamesPlayed: 5, gamesWon: 5 }]]) {
+    const m = merge(a, b);
+    assert(rate(m) <= Math.max(rate(a), rate(b)) + 1e-9,
+      `merged rate ${rate(m)} beats both phones (${rate(a)}, ${rate(b)})`);
+    assert(m.gamesWon >= Math.max(a.gamesWon, b.gamesWon), 'and no win may be lost');
+  }
+  console.log('  ✅ 6b. merging two phones never invents a win rate neither of them had (MG-1)');
+}
+
+// ── A restore either happens or it does not (RT-7 / F04) ─────────────────
+//
+// The restore is five separate writes and storage can refuse partway through —
+// a full quota is the ordinary way. It used to write what it could and then
+// report failure, leaving the player told "restore failed" while their stats had
+// already been replaced by the cloud copy and the wallet, achievements, daily
+// records and ghost times were still the local ones: a mixture neither device
+// ever had. The failure is injected here rather than hoped for.
+{
+  const { cloudSyncService: sync } = await import('../../../src/services/cloudSyncService.js');
+  const { playGamesService: pg } = await import('../../../src/services/playGamesService.js');
+  const { WALLET_STORAGE_KEY } = await import('../../../src/utils/wallet.js');
+  const { USER_STATS_KEY: STATS } = await import('../../../src/utils/storage.js');
+  const realLoad = pg.loadSnapshot;
+  const realSet = localStorage.setItem.bind(localStorage);
+  localStorage.clear();
+
+  // what this phone has before the restore
+  const localStats = { gamesPlayed: 2, gamesWon: 1, bestTimes: { 1: 300 } };
+  localStorage.setItem(STATS, JSON.stringify(localStats));
+  localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify({ hints: 2, history: [] }));
+
+  pg.loadSnapshot = async () => ({ success: true, snapshot: { data: JSON.stringify({
+    userId: 'pg_restore', version: '1.1.2',
+    stats: { gamesPlayed: 90, gamesWon: 70, bestTimes: { 1: 80 } },
+    wallet: { hints: 40, history: [] },
+    achievements: { first_win: 1700000000000 }
+  }) } });
+
+  try {
+    // storage refuses the wallet write — the second one, so the stats write has
+    // already gone in when it throws
+    localStorage.setItem = (k, v) => {
+      if (k === WALLET_STORAGE_KEY) throw new Error('QuotaExceededError');
+      return realSet(k, v);
+    };
+    const failed = await sync.restoreFromCloud();
+    localStorage.setItem = realSet;
+
+    assert.strictEqual(failed.success, false, 'a restore that could not finish must report failure');
+    assert.deepStrictEqual(JSON.parse(localStorage.getItem(STATS)), localStats,
+      'the restore failed, so the stats must be exactly what they were — not the cloud copy (RT-7 / F04)');
+    assert.strictEqual(JSON.parse(localStorage.getItem(WALLET_STORAGE_KEY)).hints, 2,
+      'and the wallet must be untouched');
+
+    // and with storage working, the same restore goes through
+    const ok = await sync.restoreFromCloud();
+    assert.strictEqual(ok.success, true, 'the same restore must succeed once storage works');
+    assert.strictEqual(JSON.parse(localStorage.getItem(STATS)).gamesWon, 70, 'and really restore');
+    console.log('  ✅ 7. a restore that cannot finish changes nothing at all (RT-7 / F04)');
+  } finally {
+    localStorage.setItem = realSet;
+    pg.loadSnapshot = realLoad;
+    localStorage.clear();
+  }
+}
+
+// ── A hint that did not persist was not spent (RT-7 / F11) ───────────────
+{
+  const wallet = await import('../../../src/utils/wallet.js');
+  const realSet = localStorage.setItem.bind(localStorage);
+  localStorage.clear();
+  wallet.addHints(3, 'reward');
+  const before = wallet.loadWallet().hints;
+  try {
+    localStorage.setItem = (k) => { if (k === wallet.WALLET_STORAGE_KEY) throw new Error('QuotaExceededError'); };
+    assert.strictEqual(wallet.consumeHint(), false,
+      'a hint whose spend never reached storage must not be reported as spent: the player gets the hint '
+      + 'and the balance is back on the next load (RT-7 / F11)');
+    assert.strictEqual(wallet.addHints(5, 'ad_reward'), before,
+      'and a reward that did not persist must report the balance that really is stored');
+    localStorage.setItem = realSet;
+    assert.strictEqual(wallet.loadWallet().hints, before, 'storage still holds what it held');
+    assert.strictEqual(wallet.consumeHint(), true, 'with storage working the spend goes through');
+    assert.strictEqual(wallet.loadWallet().hints, before - 1, 'and it really is one fewer');
+    console.log('  ✅ 8. a hint that could not be saved is not spent, and an unsaved reward is not promised (RT-7 / F11)');
+  } finally {
+    localStorage.setItem = realSet;
     localStorage.clear();
   }
 }

@@ -98,6 +98,9 @@ export function loadStats() {
 }
 
 // Record completed game stats
+// Modes played against an opponent. Their times never reach a best-time table.
+const BATTLE_MODES = new Set(['battle', 'aiBattle']);
+
 export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}) {
   const stats = loadStats();
   stats.gamesPlayed = (stats.gamesPlayed || 0) + 1;
@@ -139,6 +142,21 @@ export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}
       stats.timeLimitBestTimes[level] = timeInSeconds;
       isNewRecord = true;
     }
+  } else if (BATTLE_MODES.has(mode)) {
+    /*
+     * A duel is not a time trial, so it leaves no time behind.
+     *
+     * Everything that is not Speedrun or Survival used to fall into the Classic
+     * best-time table, and 1v1 and the AI match came through here too (BT-1).
+     * A duel is played against someone you can watch: you rush when they are
+     * ahead, you stop mattering when they finish, and the board can end under
+     * you. Those seconds are not comparable with a Classic run, and they were
+     * landing in the same table the player reads as their personal record.
+     *
+     * The win itself still counts — it is a real game played and won. Only the
+     * clock is dropped. Whether a duel should count toward the win RATE, which
+     * is part of the Logic Score, is a separate question left in BACKLOG BT-1.
+     */
   } else {
     if (!stats.bestTimes) stats.bestTimes = {};
     const currentBest = stats.bestTimes[level];

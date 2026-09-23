@@ -11,6 +11,10 @@
  *   dequeue(playerId)    remove a ticket
  *   claimTicket(id)      take a ticket atomically; the ticket to the winner,
  *                        null to everyone else. See below — this is not dequeue.
+ *   whoAmI()             the id this transport signs messages with. Over
+ *                        Firebase it is the anonymous account's uid, which is
+ *                        the only id the rules can verify; callers must adopt it
+ *                        before putting a ticket or a room id on the wire.
  *   close()              release listeners/sockets
  *
  * The constructor takes (playerId, onMessage) and delivers every peer message

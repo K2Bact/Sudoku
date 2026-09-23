@@ -17,8 +17,8 @@
       "name": "achievements are read by a hand-written key",
       "why": "That key is 'sudoku_achievements_v1' — no 'i' — unlike every other key in the app. Anyone re-typing it from memory gets it wrong and reads nothing.",
       "file": "src/services/cloudSyncService.js",
-      "find": "import { loadUnlockedAchievements, saveUnlockedAchievements } from '../utils/achievementManager.js';",
-      "replace": "import { saveUnlockedAchievements } from '../utils/achievementManager.js';\nconst loadUnlockedAchievements = () => JSON.parse(localStorage.getItem('suidoku_achievements_v1') || '{}');",
+      "find": "import { loadUnlockedAchievements, saveUnlockedAchievements, ACHIEVEMENTS_STORAGE_KEY } from '../utils/achievementManager.js';",
+      "replace": "import { saveUnlockedAchievements, ACHIEVEMENTS_STORAGE_KEY } from '../utils/achievementManager.js';\nconst loadUnlockedAchievements = () => JSON.parse(localStorage.getItem('suidoku_achievements_v1') || '{}');",
       "expectFailure": "must read achievements through achievementManager"
     },
     {
@@ -84,6 +84,22 @@
       "find": "    .then(() => cloudSyncService.saveToCloud())",
       "replace": "    .then(() => null)",
       "expectFailure": "The win must start the cloud save itself"
+    },
+    {
+      "name": "cloud saves stop taking turns",
+      "why": "RT-4. A save is read-merge-write against one snapshot slot, and two can be asked for at once: every win saves, and useCloudAutoSync saves on foreground, reconnect and sign-in. Interleaved, the second reads before the first writes and then writes last, so the cloud goes back to a smaller number of wins while the phone has more. Measured as a reversal from 2 wins to 1.",
+      "file": "src/services/cloudSyncService.js",
+      "find": "    const pending = this._saveQueue.then(task, task);\n    this._saveQueue = pending.catch(() => { /* one failed save must not block the next */ });\n    return pending;",
+      "replace": "    return task();",
+      "expectFailure": "a second save started reading while the first was still in flight"
+    },
+    {
+      "name": "the backup mark goes back to being one per phone",
+      "why": "RT-5. The snapshot slot is per account, so the mark has to be too. With one mark for the phone, signing in as a second player and backing up was skipped as 'up to date' - the local data had not changed since the FIRST player's backup - so the second player's slot stayed empty while Settings showed a backup time.",
+      "file": "src/services/cloudSyncService.js",
+      "find": "    const mark = stored[this.getEffectiveUserId()];",
+      "replace": "    const mark = stored[Object.keys(stored)[0]];",
+      "expectFailure": "B has never been backed up"
     }
   ]
 }

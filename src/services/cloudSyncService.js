@@ -7,7 +7,7 @@
  */
 
 import { loadStats, loadSettings, getPlayGamesUser, USER_STATS_KEY } from '../utils/storage.js';
-import { loadUnlockedAchievements, saveUnlockedAchievements } from '../utils/achievementManager.js';
+import { loadUnlockedAchievements, saveUnlockedAchievements, ACHIEVEMENTS_STORAGE_KEY } from '../utils/achievementManager.js';
 import { WALLET_STORAGE_KEY } from '../utils/wallet.js';
 import { DAILY_STORAGE_KEY } from '../utils/dailyChallenge.js';
 import { GHOST_STORAGE_KEY } from '../utils/ghostManager.js';
@@ -30,8 +30,16 @@ const readJson = (key) => {
 };
 
 const LAST_SYNC_KEY = 'suidoku_last_cloud_sync_v1';
-// The last save that actually reached Play Games: { at, fp }. LAST_SYNC_KEY above is
-// also written by a local-only save, so it cannot say whether anything left the phone.
+// The last save that actually reached Play Games, PER ACCOUNT:
+// { [userId]: { at, fp } }. LAST_SYNC_KEY above is also written by a local-only
+// save, so it cannot say whether anything left the phone.
+//
+// Per account, because the snapshot slot is per account. It used to be one
+// { at, fp } for the phone: sign in as A and back up, switch to B, and the
+// fingerprint of the local data still matched A's mark — so "nothing new to back
+// up" and B's slot never received anything, though B had never been backed up at
+// all (RT-5). Keyed the same way as RESTORE_OFFERED_KEY below, which had the
+// problem in mind already.
 const REMOTE_SYNC_KEY = 'suidoku_cloud_remote_sync_v1';
 // Players already asked "load your earlier record?" on this device, by user id.
 const RESTORE_OFFERED_KEY = 'suidoku_cloud_restore_offered_v1';
@@ -53,6 +61,28 @@ const fingerprint = (p) => {
 const SNAPSHOT_NAME = 'suidoku_progress_v1';
 
 class CloudSyncService {
+  /**
+   * Cloud saves run one at a time, in the order they were asked for.
+   *
+   * A save is read-merge-write against a single snapshot slot, and two of them
+   * could be in the air at once: every win calls saveToCloud, while
+   * useCloudAutoSync calls syncIfNeeded when the app comes back to the
+   * foreground, the connection returns, or Play Games signs in. Interleaved,
+   * the second one reads the slot BEFORE the first one writes, so it merges
+   * against a stale copy and then writes last — the cloud goes back to one win
+   * while this phone has two (RT-4, from ChatGPT's red team). The local copy is
+   * untouched, so the next successful backup repairs it; a player who switches
+   * phones in between loses the wins that were only ever in that lost write.
+   *
+   * `_syncing` in syncIfNeeded was not enough: the win path does not go through
+   * it. So the queue lives here, where the read and the write are, and it is the
+   * same shape as the banner queue in ads/admobProvider.js — a promise chain
+   * whose rejections cannot poison what is behind it.
+   */
+  constructor() {
+    this._saveQueue = Promise.resolve();
+  }
+
   getEffectiveUserId() {
     try {
       const playUser = getPlayGamesUser();
@@ -122,7 +152,21 @@ class CloudSyncService {
    * Local game data is not changed by a save. Pulling the other phone's progress
    * into this one is restore's job, which the player chooses.
    */
-  async saveToCloud() {
+  saveToCloud({ onlyIfChanged = false } = {}) {
+    const task = async () => {
+      // Re-read here, not at the call site: by the time this reaches the front of
+      // the queue the save in front may already have uploaded these very changes.
+      if (onlyIfChanged && !this.hasUnsyncedChanges()) {
+        return { success: true, method: 'skipped', skipped: 'up_to_date' };
+      }
+      return this._saveToCloudNow();
+    };
+    const pending = this._saveQueue.then(task, task);
+    this._saveQueue = pending.catch(() => { /* one failed save must not block the next */ });
+    return pending;
+  }
+
+  async _saveToCloudNow() {
     const local = this.compileBackupPayload();
     const now = Date.now();
 
@@ -169,7 +213,11 @@ class CloudSyncService {
         );
     if (remoteSave.success) {
       try {
-        localStorage.setItem(REMOTE_SYNC_KEY, JSON.stringify({ at: now, fp: fingerprint(local) }));
+        const stored = readJson(REMOTE_SYNC_KEY);
+        // the old single-mark shape belongs to no account; it is replaced, not merged
+        const marks = stored && typeof stored === 'object' && !stored.fp && !stored.at ? stored : {};
+        marks[local.userId] = { at: now, fp: fingerprint(local) };
+        localStorage.setItem(REMOTE_SYNC_KEY, JSON.stringify(marks));
       } catch { /* the backup happened; only the marker is lost, so the next check re-uploads */ }
     }
 
@@ -226,24 +274,51 @@ class CloudSyncService {
       const mergedStats = merged.stats;
 
       if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(USER_STATS_KEY, JSON.stringify(mergedStats));
+        /*
+         * All of it, or none of it.
+         *
+         * These are five separate writes, and storage can refuse partway through
+         * (a full quota is the ordinary way). It used to write what it could and
+         * then report failure: the player was told the restore failed while
+         * their stats had already been replaced by the cloud's, with the wallet,
+         * achievements, daily records and ghost times still local — a mixture
+         * neither device ever had (RT-7 / F04).
+         *
+         * localStorage has no transaction, so this keeps the old values and puts
+         * them back if any write throws. Restoring a key that was absent means
+         * removing it again, which is why null is kept apart from a stored value.
+         */
+        const touched = [USER_STATS_KEY, WALLET_STORAGE_KEY, DAILY_STORAGE_KEY, GHOST_STORAGE_KEY,
+                         ACHIEVEMENTS_STORAGE_KEY, LAST_SYNC_KEY];
+        const before = new Map(touched.map((k) => [k, localStorage.getItem(k)]));
+        try {
+          localStorage.setItem(USER_STATS_KEY, JSON.stringify(mergedStats));
 
-        // Each part is written only when the cloud carries it, so a backup that
-        // predates a field does not overwrite the local value with nothing.
-        if (cloudData.achievements && typeof cloudData.achievements === 'object') {
-          saveUnlockedAchievements(merged.achievements);
-        }
-        if (cloudData.wallet) {
-          localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify(merged.wallet));
-        }
-        if (cloudData.daily && typeof cloudData.daily === 'object') {
-          localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(merged.daily));
-        }
-        if (cloudData.ghost && typeof cloudData.ghost === 'object') {
-          localStorage.setItem(GHOST_STORAGE_KEY, JSON.stringify(merged.ghost));
-        }
+          // Each part is written only when the cloud carries it, so a backup that
+          // predates a field does not overwrite the local value with nothing.
+          if (cloudData.achievements && typeof cloudData.achievements === 'object') {
+            saveUnlockedAchievements(merged.achievements);
+          }
+          if (cloudData.wallet) {
+            localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify(merged.wallet));
+          }
+          if (cloudData.daily && typeof cloudData.daily === 'object') {
+            localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(merged.daily));
+          }
+          if (cloudData.ghost && typeof cloudData.ghost === 'object') {
+            localStorage.setItem(GHOST_STORAGE_KEY, JSON.stringify(merged.ghost));
+          }
 
-        localStorage.setItem(LAST_SYNC_KEY, String(Date.now()));
+          localStorage.setItem(LAST_SYNC_KEY, String(Date.now()));
+        } catch (e) {
+          for (const [k, v] of before) {
+            try {
+              if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v);
+            } catch { /* nothing else can be done; the next line reports the failure */ }
+          }
+          console.error('[CloudSync] restore rolled back:', e?.message || e);
+          return { success: false, error: 'RESTORE_FAILED', message: e?.message || String(e) };
+        }
       }
 
       return {
@@ -259,15 +334,30 @@ class CloudSyncService {
     }
   }
 
-  /** When a backup last reached Play Games, or null. Shown in Settings. */
+  /**
+   * The mark this account left when its last backup reached Play Games, or null.
+   *
+   * Installs updated from before the per-account change hold a bare { at, fp }.
+   * That is read as belonging to nobody: the first backup after the update is
+   * made again rather than skipped, which costs one upload and cannot lose a
+   * save. The old shape is replaced the moment any backup succeeds.
+   */
+  _remoteMark() {
+    const stored = readJson(REMOTE_SYNC_KEY);
+    if (!stored || typeof stored !== 'object' || stored.fp || stored.at) return null;
+    const mark = stored[this.getEffectiveUserId()];
+    return mark && mark.fp ? mark : null;
+  }
+
+  /** When a backup last reached Play Games for this account, or null. Shown in Settings. */
   getLastRemoteBackup() {
-    const mark = readJson(REMOTE_SYNC_KEY);
+    const mark = this._remoteMark();
     return mark && mark.at ? Number(mark.at) : null;
   }
 
-  /** Has anything changed on this phone since the last backup that reached Play Games? */
+  /** Has anything changed on this phone since this account's last backup? */
   hasUnsyncedChanges() {
-    const mark = readJson(REMOTE_SYNC_KEY);
+    const mark = this._remoteMark();
     return !mark || mark.fp !== fingerprint(this.compileBackupPayload());
   }
 
@@ -278,16 +368,13 @@ class CloudSyncService {
    * without waiting for the next win. One at a time.
    */
   async syncIfNeeded() {
-    if (this._syncing) return { skipped: 'in_flight' };
     if (!playGamesService.isAuthenticated) return { skipped: 'signed_out' };
     if (typeof navigator !== 'undefined' && navigator.onLine === false) return { skipped: 'offline' };
     if (!this.hasUnsyncedChanges()) return { skipped: 'up_to_date' };
-    this._syncing = true;
-    try {
-      return await this.saveToCloud();
-    } finally {
-      this._syncing = false;
-    }
+    // No in-flight flag of its own any more: the queue in saveToCloud is what
+    // keeps two saves from overlapping, and it covers the win path too, which a
+    // flag here never did.
+    return this.saveToCloud({ onlyIfChanged: true });
   }
 
   /**
