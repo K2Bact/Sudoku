@@ -719,7 +719,7 @@ console.log('▶ 9. 승리 순서는 멈춤 → 광고 → 승리 화면이고, 
 // hide keeps the view GONE; show on an existing view reloads it, stays hidden,
 // and never resolves its PluginCall. Only resume makes that view visible again.
 function nativeBannerStub() {
-  const ctl = { exists: false, visible: false, creates: 0, resumes: 0, hold: null, waiting: [], failResume: false };
+  const ctl = { exists: false, visible: false, creates: 0, resumes: 0, removes: 0, hold: null, waiting: [], failResume: false, widths: [] };
   const finish = (kind, action) => {
     if (ctl.hold !== kind) { action(); return Promise.resolve(); }
     return new Promise(resolve => ctl.waiting.push(() => { action(); resolve(); }));
@@ -733,9 +733,16 @@ function nativeBannerStub() {
         if (ctl.exists) return new Promise(() => {});
         ctl.exists = true;
         ctl.creates++;
+        // 앵커드 어댑티브 배너는 만들어지는 순간의 창 폭으로 크기가 정해진다.
+        ctl.widths.push(globalThis.innerWidth || 0);
         return finish('show', () => { ctl.visible = true; });
       },
       hideBanner: () => finish('hide', () => { ctl.visible = false; }),
+      // 네이티브에는 이것도 있다. hideBanner 는 뷰를 GONE 으로 둘 뿐이고,
+      // 뷰를 없애는 것은 이쪽이다 — 새 폭으로 다시 만들려면 반드시 거쳐야 한다.
+      removeBanner: () => finish('remove', () => {
+        ctl.exists = false; ctl.visible = false; ctl.removes++;
+      }),
       resumeBanner() {
         ctl.resumes++;
         if (ctl.failResume) return Promise.reject(new Error('resume failed'));
@@ -814,6 +821,136 @@ for (const kind of ['show', 'resume']) {
     '진행 중인 네이티브 표시 뒤에 홈으로 나갔는데 배너가 남았다');
 }
 console.log('  ✅ 표시·숨김이 엇갈려도 마지막 화면의 의도를 따른다');
+
+// ── 배너 폭: 회전하면 새 폭으로 다시 만든다 ──────────────────────────────
+//
+// 실기에서만 드러난 결함이다. 앵커드 어댑티브 배너는 **만들 때 크기가 정해지고
+// 스스로 바뀌지 않는다.** 앱이 세로로 잠겨 있던 동안에는 드러날 수 없었다.
+// 태블릿 회전을 연 뒤(V22 ③), 태블릿 폭으로 넓힌 플립6에서 재보니:
+//
+//   가로 화면 2640 폭 · 앱 WebView x 94..2640
+//   배너                x 94..1174   ← 세로 폭 1080 그대로, 오른쪽 1,400px 검정
+//
+// 광고주는 구석에 처박힌, 아무도 읽지 않는 배너 값을 내고 있었다.
+// 에뮬레이터로는 못 찾는다 — 처음부터 가로로 켜면 배너도 가로 폭으로 만들어진다.
+// **회전을 거쳐야** 보인다. 그래서 이 절은 회전 자체를 흉내낸다.
+console.log('▶ 배너 폭: 창이 넓어지면 배너를 다시 만든다');
+{
+  // 이 게이트의 window 는 globalThis 라서 이벤트 API 가 없다. 감시자가 실제로
+  // 붙는지 보려면 있어야 한다 — 없으면 제공자는 조용히 감시를 건너뛴다.
+  const registry = new Map();
+  globalThis.addEventListener = (name, fn) => {
+    if (!registry.has(name)) registry.set(name, new Set());
+    registry.get(name).add(fn);
+  };
+  globalThis.removeEventListener = (name, fn) => { registry.get(name)?.delete(fn); };
+  const dispatch = (name) => { for (const fn of [...(registry.get(name) || [])]) fn(); };
+  const listeners = () => [...registry.values()].reduce((n, set) => n + set.size, 0);
+
+  // A document just real enough to hold the one custom property the app
+  // reserves the slot's height with. Without it the provider's guard skips the
+  // reset and this section would pass for the wrong reason.
+  const reserve = new Map();
+  globalThis.document = {
+    documentElement: {
+      style: {
+        setProperty: (k, v) => reserve.set(k, v),
+        removeProperty: (k) => reserve.delete(k),
+      },
+    },
+  };
+
+  globalThis.innerWidth = 1080;
+  const b = nativeBannerStub();
+  const p = await newProvider(b.stub);
+  assert.strictEqual(await p.showBanner(), true);
+  assert.deepStrictEqual(b.ctl.widths, [1080], '첫 배너는 세로 폭으로 만들어진다');
+  assert(listeners() > 0,
+    '배너를 띄웠는데 창 폭 감시가 붙지 않았다. 감시가 없으면 회전 뒤 배너는 옛 폭 그대로다.');
+
+  // 세로 배너가 보고한 높이. 아래에서 "지워졌는가" 를 묻기 전에, 애초에 값이
+  // 있었다는 것을 세워둔다 — 없는 값이 없어진 것을 통과로 읽으면 안 된다.
+  globalThis.document.documentElement.style.setProperty('--ad-banner-h', '50px');
+  assert(reserve.get('--ad-banner-h') === '50px');
+
+  // 키보드가 열리거나 소프트키 줄이 생기는 정도의 변화. 광고를 다시 받아오면
+  // 그 요청은 낭비다 — 화면은 그대로이고 배너도 그 폭에 맞다.
+  globalThis.innerWidth = 1080 - 24;
+  assert.strictEqual(await p.rebuildBannerIfWidthChanged(), false);
+  assert.strictEqual(b.ctl.creates, 1, '작은 폭 변화로 광고를 다시 요청했다');
+
+  // 회전. 안드로이드는 회전 한 번에 resize 를 여러 번 쏘고, 중간 값들은 아직
+  // 자리를 잡지 못한 창 크기다. 모아서 한 번 처리하지 않으면 그 중간 폭으로도
+  // 광고를 새로 받아온다 — 회전 한 번에 요청 두세 번.
+  for (const [at, w] of [[0, 1200], [200, 1600], [400, 2100], [600, 2640]]) {
+    await new Promise((r) => setTimeout(r, at ? 200 : 0));
+    globalThis.innerWidth = w;
+    dispatch(at === 600 ? 'orientationchange' : 'resize');
+  }
+  await new Promise((r) => setTimeout(r, 900));
+
+  assert.strictEqual(b.ctl.removes, 1,
+    'hideBanner 로는 부족하다 — 그 뷰는 살아남고 resumeBanner 가 같은 폭으로 되돌린다. ' +
+    'removeBanner 로 없애야 새 폭으로 다시 만들어진다. 그리고 회전이 이벤트를 세 번 쏴도 ' +
+    '재생성은 한 번이어야 한다 — 회전 한 번에 광고 요청 세 번은 낭비다.');
+  assert.deepStrictEqual(b.ctl.widths, [1080, 2640],
+    '회전 뒤에도 배너가 옛 폭이다. 화면 왼쪽에 붙은 채 오른쪽이 검게 비는 그림이 되고, ' +
+    '광고주는 아무도 읽지 않는 구석 배너 값을 낸다.');
+  assert(b.ctl.visible, '다시 만든 배너가 보이지 않는다');
+  assert(!reserve.has('--ad-banner-h'),
+    '배너를 다시 만들면서 앱이 잡아둔 높이를 그대로 남겼다. 그 값은 사라진 배너의 것이다 — ' +
+    '가로로 돌면 50px 을 잡아둔 자리에 90px 짜리가 그려져 키패드를 덮고(U-1 그 자체), ' +
+    '세로로 돌아오면 50px 배너 자리에 90px 을 잡아둔 채 검은 띠가 남는다. ' +
+    '값을 지우면 screens.css 의 폭 기반 추정값으로 돌아가고, 그것은 어댑티브 배너와 같은 식이라 ' +
+    '새 폭에서 곧바로 맞다.');
+
+  // ── 회전을 반복해도 광고 요청이 그만큼 나가지는 않는다 ──────────────────
+  //
+  // 디바운스는 **한 번의** 회전을 한 번으로 묶을 뿐이다. 스무 번 돌리면 스무 번
+  // 요청이다 — AdMob 이 제공하는 어떤 갱신 주기보다 빠르고, 계정을 들여다보게
+  // 만드는 모양의 트래픽이다. 창 간격 안의 재생성은 버리는 것이 아니라 간격 끝으로
+  // 미루고, 미뤄진 쪽은 그때의 폭을 다시 읽는다 — 원래 방향으로 되돌아왔으면
+  // 아무 일도 일어나지 않는다.
+  const { BANNER_REBUILD_MIN_INTERVAL_MS } = await import(`${PROVIDER}?case=${instance}`);
+  assert(BANNER_REBUILD_MIN_INTERVAL_MS >= 10000 && BANNER_REBUILD_MIN_INTERVAL_MS <= 120000,
+    `재생성 최소 간격 ${BANNER_REBUILD_MIN_INTERVAL_MS}ms — 요청 폭주를 막을 만큼 길고, ` +
+    '진짜 회전을 오래 잘못된 폭으로 두지 않을 만큼 짧아야 한다');
+  {
+    const before = b.ctl.creates;
+    // 방금 다시 만든 참이다. 곧바로 또 돌린다.
+    globalThis.innerWidth = 1080;
+    assert.strictEqual(await p.rebuildBannerIfWidthChanged(), false,
+      '간격 안의 재생성이 곧바로 광고를 다시 요청했다');
+    assert.strictEqual(b.ctl.creates, before, '간격 안에서 배너를 다시 만들었다');
+    assert(p.rebuildDeferred, '미루지 않고 그냥 버렸다 — 회전은 남아 있는데 배너는 옛 폭 그대로다');
+
+    // 간격이 300ms 남은 것처럼 만들어 두고, 미뤄둔 쪽이 실제로 도는지 본다.
+    clearTimeout(p.rebuildDeferred);
+    p.rebuildDeferred = null;
+    p.lastBannerRebuildAt = Date.now() - (BANNER_REBUILD_MIN_INTERVAL_MS - 300);
+    assert.strictEqual(await p.rebuildBannerIfWidthChanged(), false);
+    assert(p.rebuildDeferred, '미뤄둔 작업이 잡히지 않았다');
+    await new Promise((r) => setTimeout(r, 800));
+    assert.strictEqual(b.ctl.creates, before + 1,
+      '간격이 지났는데도 미뤄둔 재생성이 돌지 않았다. 버리는 것과 미루는 것은 다르다 — ' +
+      '버리면 배너는 다음 화면 전환까지 옛 폭으로 남는다.');
+    assert.deepStrictEqual(b.ctl.widths, [1080, 2640, 1080], '미뤄진 재생성이 그때의 폭을 읽지 않았다');
+  }
+
+  // 홈으로 나간 뒤의 회전이 배너를 되살리면, 배너 없는 화면 위에 배너가 얹힌다.
+  await p.hideBanner();
+  assert.strictEqual(listeners(), 0, '배너를 내렸는데 감시자가 남았다');
+  globalThis.innerWidth = 1080;
+  assert.strictEqual(await p.rebuildBannerIfWidthChanged(), false,
+    '배너를 원하지 않는 화면에서 회전이 배너를 되살렸다');
+  assert(!b.ctl.visible);
+
+  delete globalThis.addEventListener;
+  delete globalThis.removeEventListener;
+  delete globalThis.innerWidth;
+  delete globalThis.document;
+  console.log('  ✅ 회전하면 새 폭으로 한 번만 다시 만들고, 떠난 화면에서는 되살리지 않는다');
+}
 
 console.log('\n======================================================');
 console.log('🎉 광고 수명주기 경합 게이트 통과');

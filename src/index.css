@@ -244,10 +244,49 @@ html, body {
 }
 
 /* Large Tablet & Desktop Expansion (>= 840px) */
+/* 680px was written for a desktop browser window, where the rest of the screen
+   is somebody else's. On a tablet held upright it is the whole device: 680 in a
+   1066px window is 64%, and the game screen's board stopped at 648px with a
+   third of the screen empty under the keypad. 80vw keeps the same 16px-ish
+   margins the narrow sizes have, and 820 is where a card stops being easier to
+   read. 840 → 672 · 1066 → 820 · 1280 → 820. */
 @media (min-width: 840px) {
   .app-viewport {
-    max-width: 680px;
+    max-width: min(820px, 80vw);
     padding: 0 16px;
+  }
+}
+
+/* ── A tablet lying down ──────────────────────────────────────────────────
+   680px in a 1280px window left 47% of the screen empty, which is what Play's
+   large-screen review calls an app that does not use the device.
+
+   The first fix was a flat 900px, measured at 1280x800 where it came to 70%.
+   On the 1706px window a tablet actually has, the same 900px is 53% — the very
+   number the change was written to fix — and that is how the store screenshots
+   came out. A cap that does not grow with the window is only right at the one
+   size it was measured on.
+
+     max()  never narrower than the 900 that 1024 and 1280 need
+     70vw   the share of the screen the app should be using
+     1200px a list of cards stops being easier to read past about here
+
+   1024 → 900 (88%) · 1280 → 900 (70%) · 1706 → 1194 (70%) · 2000 → 1200 (60%)
+
+   Not the full width, because these screens are lists and cards and a 1700px
+   line is harder to read, not easier. The game screen is not governed here at
+   all — it has its own landscape layout (styles/gameLayout.css) and takes the
+   whole window. Gate 3-12 measures both. */
+@media (orientation: landscape) and (min-width: 1000px) {
+  .app-viewport {
+    max-width: max(900px, min(1200px, 70vw));
+  }
+
+  /* Lying down, these screens are shorter than the window, and left at the top
+     they sit above half a screen of nothing. `flex: 1` makes the container fill
+     the column, so the cards inside are what needs centring. */
+  .home-screen-container {
+    justify-content: center;
   }
 }
 

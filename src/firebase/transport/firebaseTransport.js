@@ -51,7 +51,29 @@ export class FirebaseTransport {
     this.unsubscribers = [];
     this.startedAt = Date.now();
     this.api = null;
-    this.ready = this.init();
+    /**
+     * Nothing is connected until something is actually asked for.
+     *
+     * This used to be `this.init()`, and battleService builds its transport at
+     * import time — so every launch opened the database and signed a new
+     * anonymous account in, for every player, including the ones who never touch
+     * 1v1. That is an account and a network round trip spent on nothing, and on
+     * 2026-09-23 a day of test runs hit Google's ceiling for it:
+     * `accounts:signUp` started answering TOO_MANY_ATTEMPTS_TRY_LATER, which the
+     * academy gate saw as a page error in an unrelated test.
+     *
+     * Matchmaking is pull-based — a player is only reachable once they search —
+     * so there is nothing to miss by waiting. connect() is called by every method
+     * that needs the network, whoAmI() included, which is the first thing a
+     * search does.
+     */
+    this.ready = null;
+  }
+
+  /** Open the connection once, on first use. */
+  connect() {
+    if (!this.ready) this.ready = this.init();
+    return this.ready;
   }
 
   async init() {
@@ -77,12 +99,12 @@ export class FirebaseTransport {
 
   /** The id this transport signs with — the one the database can vouch for. */
   async whoAmI() {
-    await this.ready;
+    await this.connect();
     return this.identity;
   }
 
   async send(message) {
-    const api = this.api || (await this.ready);
+    const api = this.api || (await this.connect());
     if (!api || !api.db) return;
     const payload = { ...message, senderId: this.identity, _ts: Date.now() };
     try {
@@ -100,7 +122,7 @@ export class FirebaseTransport {
   }
 
   async listQueue() {
-    const api = this.api || (await this.ready);
+    const api = this.api || (await this.connect());
     if (!api || !api.db) return [];
     try {
       const snap = await api.get(api.ref(api.db, QUEUE_PATH));
@@ -113,7 +135,7 @@ export class FirebaseTransport {
   }
 
   async enqueue(ticket) {
-    const api = this.api || (await this.ready);
+    const api = this.api || (await this.connect());
     if (!api || !api.db) return;
     try {
       const ticketRef = api.ref(api.db, `${QUEUE_PATH}/${ticket.playerId}`);
@@ -127,7 +149,7 @@ export class FirebaseTransport {
   }
 
   async dequeue(playerId) {
-    const api = this.api || (await this.ready);
+    const api = this.api || (await this.connect());
     if (!api || !api.db) return;
     try {
       await api.remove(api.ref(api.db, `${QUEUE_PATH}/${playerId}`));
@@ -183,7 +205,7 @@ export class FirebaseTransport {
    * 가져간 것이다.
    */
   async claimTicket(playerId) {
-    const api = this.api || (await this.ready);
+    const api = this.api || (await this.connect());
     if (!api || !api.db) return null;
     if (!api.runTransaction) {
       // 트랜잭션을 못 쓰는 빌드에서 조용히 경합 있는 선점으로 되돌아가지 않는다.
@@ -226,6 +248,8 @@ export class FirebaseTransport {
       }
     }
     this.unsubscribers = [];
-    this.dequeue(this.playerId).catch(() => {});
+    // Only if there is something to clean up. Closing a transport that never
+    // connected must not be the thing that opens the connection.
+    if (this.ready) this.dequeue(this.playerId).catch(() => {});
   }
 }

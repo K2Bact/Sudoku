@@ -27,10 +27,26 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
             android:name=".MainActivity"
             android:label="${appName}"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:launchMode="singleTask"
             android:exported="true">
+
+            <!--
+              The smallest window the game is playable in.
+
+              A 9x9 board has to be seen all at once. In a split-screen half of
+              about 780x380dp, with the banner at the bottom, the board came out
+              132dp across — 15dp cells, which is not a board anyone can read or
+              tap (measured, gate 3-12). Declaring the minimum is honest: Android
+              then keeps the window at least this big, or letterboxes it, instead
+              of the app pretending to fit and handing the player a stamp.
+
+              480dp tall is where the board gets back to about 270dp with the ad
+              still in place. 400dp wide is the narrowest phone we support upright.
+            -->
+            <layout
+                android:minWidth="400dp"
+                android:minHeight="480dp" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

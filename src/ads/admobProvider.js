@@ -21,6 +21,13 @@
 
 import { watchRewarded, withTimeout } from './rewardedWatch.js';
 import { InterstitialSlot } from './interstitialWatch.js';
+import {
+  bannerWidth,
+  rebuildBannerIfWidthChanged,
+  watchBannerWidth,
+  stopWatchingBannerWidth,
+} from './bannerWidthWatcher.js';
+export { BANNER_REBUILD_MIN_INTERVAL_MS } from './bannerWidthWatcher.js';
 
 /**
  * Cancel the navigation-bar inset the AdMob plugin adds on Android 15+.
@@ -180,6 +187,11 @@ export class AdMobProvider {
     // The native view survives hideBanner; calling showBanner again neither
     // reveals it nor resolves its PluginCall in the installed Android SDK.
     this.bannerCreated = false;
+    /** The window width the current banner was built for; a change rebuilds it. */
+    this.bannerWidth = 0;
+    this.widthWatcher = null;
+    this.lastBannerRebuildAt = 0;
+    this.rebuildDeferred = null;
     this.bannerQueue = Promise.resolve();
     /** The rewarded flow in progress, so a second tap joins it instead of loading another ad. */
     this.rewardedInFlight = null;
@@ -397,6 +409,7 @@ export class AdMobProvider {
     // A fixed 52px was shorter than the adaptive banner on wide phones (about 64
     // at 412dp), so the overlay covered the top of the keypad (BACKLOG U-1).
     // The SDK reports the real size in dp, which is CSS px in the WebView.
+    this.watchBannerWidth();
     if (!this.sizeListener && typeof admob.addListener === 'function') {
       this.sizeListener = admob.addListener('bannerAdSizeChanged', (info) => {
         const h = Number(info?.height) || 0;
@@ -410,6 +423,7 @@ export class AdMobProvider {
         if (this.bannerCreated) {
           await admob.resumeBanner();
         } else {
+          this.bannerWidth = bannerWidth();
           await admob.showBanner({
             adId: ids.banner,
             adSize: 'ADAPTIVE_BANNER',
@@ -434,10 +448,27 @@ export class AdMobProvider {
     }
   }
 
+  /**
+   * Rebuild the banner when the window changed width, and watch for that.
+   *
+   * The policy lives in bannerWidthWatcher.js; what stays here is the native
+   * plugin and the queue it has to go through. Both are kept as methods because
+   * the watcher calls back into provider.rebuildBannerIfWidthChanged() when a
+   * deferred rebuild comes due.
+   */
+  rebuildBannerIfWidthChanged() {
+    return rebuildBannerIfWidthChanged(this, plugin());
+  }
+
+  watchBannerWidth() {
+    watchBannerWidth(this);
+  }
+
   async hideBanner() {
     // 의도를 먼저, 동기적으로. 이 대입이 await 뒤로 밀리면 진행 중인
     // showBanner 가 자기가 낡았다는 것을 알 방법이 없다.
     this.bannerWanted = false;
+    stopWatchingBannerWidth(this);
 
     const admob = plugin();
     if (!admob) return;

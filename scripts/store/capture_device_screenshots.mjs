@@ -4,10 +4,23 @@
  *   node scripts/store/capture_device_screenshots.mjs ja ja-JP
  *   → store_assets/ja-JP/ja-JP_screenshot_01.png … 08.png   (1080x1920, 9:16)
  *
- * Needs: a debug build installed and running on a USB-connected phone (the WebView
- * is only inspectable in debug builds), adb from the Android SDK, and Python with
- * Pillow for the crop. Written for the Flip5 (1080x2640, status bar 95px); other
- * phones need STATUS_BAR_PX checked.
+ *   node scripts/store/capture_device_screenshots.mjs ko ko-KR "" tablet
+ *   → store_assets/ko-KR/tablet/ko-KR_tablet_screenshot_01.png … 08.png
+ *
+ * Needs: a debug build installed and running on a USB-connected device (the
+ * WebView is only inspectable in debug builds), adb from the Android SDK, and
+ * Python with Pillow for the crop.
+ *
+ * The BARS are measured, not assumed. This used to crop a fixed 95px off the top
+ * because that is the Flip5's status bar; on any other device that either left a
+ * strip of the bar in the picture or ate the top of the app. The app's own
+ * WebView bounds say where the usable area starts and ends, and uiautomator
+ * reports them, so the same script works on a tablet — or on the emulator
+ * widened into one, which is where the tablet shots come from (no tablet here).
+ *
+ * The phone crop's 1080x1920 is still an assumption — the store listing's shape,
+ * which happens to be the Flip5's screen. It is asserted rather than trusted;
+ * see the crop below.
  *
  * The app's own settings are switched for the shoot (language, dark theme, ads
  * hidden) and put back afterwards. The phone's system settings are never touched —
@@ -23,16 +36,26 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-const [LANG = 'ja', FOLDER = 'ja-JP', ONLY = ''] = process.argv.slice(2);
+const [LANG = 'ja', FOLDER = 'ja-JP', ONLY = '', MODE = 'phone'] = process.argv.slice(2);
+const TABLET = MODE === 'tablet';
 const ADB = `${process.env.LOCALAPPDATA}/Android/Sdk/platform-tools/adb.exe`;
-const OUT = path.resolve('store_assets', FOLDER);
+const OUT = path.resolve('store_assets', FOLDER, ...(TABLET ? ['tablet'] : []));
+fs.mkdirSync(OUT, { recursive: true });
 const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'shots-'));
-const STATUS_BAR_PX = 95;
+// Filled in from the device once the app is up; see measureUsableArea().
+let CROP = null;
 const env = { ...process.env, MSYS_NO_PATHCONV: '1' };
 const adb = (...a) => execFileSync(ADB, a, { env }).toString().trim();
 
-const serial = adb('devices').split('\n').slice(1).map((l) => l.split('\t')).find(([, s]) => s === 'device')?.[0];
-if (!serial) throw new Error('no phone connected (adb devices)');
+// ANDROID_SERIAL picks the device when more than one is attached — the phone and
+// the emulator standing in for a tablet are usually both plugged in here.
+const attached = adb('devices').split(String.fromCharCode(10)).slice(1).map((l) => l.split(String.fromCharCode(9)))
+  .filter(([, st]) => st === 'device').map(([d]) => d);
+const serial = process.env.ANDROID_SERIAL || attached[0];
+if (!serial) throw new Error('no device connected (adb devices)');
+if (!process.env.ANDROID_SERIAL && attached.length > 1) {
+  throw new Error(`${attached.length} devices attached (${attached.join(', ')}) — set ANDROID_SERIAL to choose one`);
+}
 const sh = (...a) => adb('-s', serial, ...a);
 const display = sh('shell', 'dumpsys', 'SurfaceFlinger', '--display-id').match(/Display (\d+)/)?.[1];
 const pid = sh('shell', 'pidof', 'com.powerneja.suidoku');
@@ -58,7 +81,13 @@ const card = (id) => `document.querySelector('[data-theory-board="${id}"]')?.clo
 
 // Scenes are chosen by structure, not by translated text, so they work in any language.
 const SCENES = [
-  ['01_home', [], onScreen('.home-screen-container .btn-play-new')],
+  // The home screen only has to BE the home screen, with its main button fully in
+  // view. onScreen() below asks for the top 60% of the window, which is right for
+  // a card that was scrolled to, and wrong here: on a tablet lying down the home
+  // content is centred vertically, and the button landed at 607px of a 1011px
+  // window — 0.4px past the line (2026-09-24).
+  ['01_home', [], `(()=>{const b=document.querySelector('.home-screen-container .btn-play-new'); if(!b) return false;
+    const r=b.getBoundingClientRect(); return r.top>=0 && r.bottom<=innerHeight;})()`],
   ['02_game', [click('.home-screen-container .btn-play-new')], `document.querySelectorAll('.sudoku-cell').length===81`],
   ['03_academy_theory', [click('.home-bottom-nav .nav-item', 2), click('.academy-tab-bar .seg-tab-btn', 2),
     click('.strategy-item-card .theory-board-diagram .cross-tab-btn', 1),
@@ -78,8 +107,66 @@ const SCENES = [
   ['08_play_analysis', [click('.home-bottom-nav .nav-item', 1)], `!document.querySelector('.home-screen-container')`],
 ];
 
+/**
+ * Where the app actually is on the screen: the app's WebView, as uiautomator
+ * reports it. Its top is the bottom of the status bar and its bottom is the top
+ * of the navigation bar, which is exactly what a store screenshot should show.
+ */
+function measureUsableArea() {
+  sh('shell', 'uiautomator', 'dump', '/sdcard/ui.xml');
+  const xml = sh('shell', 'cat', '/sdcard/ui.xml');
+  const views = [...xml.matchAll(/class="android\.webkit\.WebView"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"/g)]
+    .map((m) => ({ x1: +m[1], y1: +m[2], x2: +m[3], y2: +m[4] }))
+    .sort((a, b) => (b.y2 - b.y1) - (a.y2 - a.y1));
+  const app = views[0];
+  if (!app) throw new Error('could not find the app WebView — is the app on screen?');
+  // Only the vertical bounds are taken from here. The width comes from the
+  // screenshot itself: `wm size` prints both a physical and an override line,
+  // and reading the wrong one cropped a tablet shot to 1080px of its top-left
+  // corner (2026-09-24). The picture cannot disagree with itself.
+  return { top: app.y1, bottom: app.y2 };
+}
+
+/**
+ * Refuse to shoot in the wrong orientation.
+ *
+ * Tablet store shots are landscape, and the device does not always agree. Twice
+ * now the emulator came back upright after an install — `settings put system
+ * user_rotation 1` leaves mCurrentRotation at 0 and only `wm user-rotation lock`
+ * actually turns it — and both times the script took eight portrait pictures,
+ * named them tablet shots and reported success. Nothing in the crop could tell:
+ * a portrait frame is a perfectly ordinary rectangle.
+ *
+ * So the shape is stated up front, checked against one throwaway screencap, and
+ * the failure carries the command that fixes it. Before any scene is captured,
+ * because eight wrong pictures are worse than none.
+ */
+function requireOrientation() {
+  const want = TABLET ? 'land' : 'port';
+  const probe = path.join(TMP, '__orient.png');
+  fs.writeFileSync(probe, execFileSync(ADB, ['-s', serial, 'exec-out', 'screencap', '-p'], { env, maxBuffer: 64 * 1024 * 1024 }));
+  const dims = execFileSync('python', ['-c',
+    `from PIL import Image; im = Image.open(r'${probe}'); print(im.size[0], im.size[1])`]).toString().trim().split(/\s+/).map(Number);
+  fs.unlinkSync(probe);
+  const [w, h] = dims;
+  const got = w > h ? 'land' : 'port';
+  if (got !== want) {
+    throw new Error(
+      `the device is ${got} (${w}x${h}) but ${TABLET ? 'tablet' : 'phone'} shots must be ${want}.
+` +
+      `  adb -s ${serial} shell wm user-rotation lock ${want === 'land' ? 1 : 0}
+` +
+      '  (settings put system user_rotation is not enough — it leaves mCurrentRotation at 0)');
+  }
+  console.log(`device is ${got} ${w}x${h}, as ${TABLET ? 'tablet' : 'phone'} shots require`);
+}
+
 const saved = await evaluate(`(()=>{const s=localStorage.getItem('suidoku_settings_v1'); const r=localStorage.getItem('suidoku_remove_ads_purchased_v1'); const n=JSON.parse(s||'{}'); n.language=${JSON.stringify(LANG)}; n.theme='matte-dark'; localStorage.setItem('suidoku_settings_v1', JSON.stringify(n)); localStorage.setItem('suidoku_remove_ads_purchased_v1','true'); return {s, r};})()`);
 try {
+  requireOrientation();
+  CROP = measureUsableArea();
+  console.log(`usable area: y ${CROP.top}..${CROP.bottom} (the width comes from each screenshot)`);
+
   for (const [name, steps, check] of SCENES) {
     if (ONLY && !ONLY.split(',').some((o) => name.startsWith(o))) continue;
     // The browser restores the previous scene's scroll on reload, and that restore
@@ -106,13 +193,41 @@ try {
   ws.close();
 }
 
+// A phone keeps the 1080x1920 the store listing has always used; a tablet keeps
+// the whole usable area, and its width is whatever the screenshot is.
+//
+// The 1080 in the phone branch is a real assumption, not a measurement: it is
+// the Flip5's width, and on a wider phone this would quietly take the left 1080
+// columns and save a picture with the right-hand side cut off. The 320..3840
+// size check below cannot see that — 1080 is a perfectly ordinary width. So the
+// phone branch states the assumption and fails on it instead.
+const cropBox = TABLET
+  ? [0, CROP.top, null, CROP.bottom]
+  : [0, CROP.top, 1080, CROP.top + 1920];
+const suffix = TABLET ? '_tablet_screenshot_' : '_screenshot_';
 execFileSync('python', ['-c', `
 from PIL import Image
 import glob, os
 for f in sorted(glob.glob(os.path.join(r'${TMP}', '*.png'))):
     n = os.path.basename(f)[:2]
-    im = Image.open(f).convert('RGB').crop((0, ${STATUS_BAR_PX}, 1080, ${STATUS_BAR_PX} + 1920))
-    assert im.size == (1080, 1920)
-    im.save(os.path.join(r'${OUT}', '${FOLDER}_screenshot_' + n + '.png'), optimize=True)
+    im = Image.open(f).convert('RGB')
+    right = ${cropBox[2] === null ? 'im.size[0]' : cropBox[2]}
+    bottom = min(${cropBox[3]}, im.size[1])
+    im = im.crop((${cropBox[0]}, ${cropBox[1]}, right, bottom))
+    w, h = im.size
+    # Play takes 320..3840 on each side; nothing here should be outside that, and
+    # a screenshot that is has been cropped from the wrong rectangle.
+    assert 320 <= w <= 3840 and 320 <= h <= 3840, (w, h)
+    if ${TABLET ? "True" : "False"}:
+        # Checked before the first shot too; this catches a device that turned
+        # while the eight scenes were being walked.
+        assert w > h, 'tablet shots must be landscape, got %sx%s' % (w, h)
+    else:
+        # The phone listing is 1080x1920. Anything else means this ran on a phone
+        # the crop was not written for, and the picture would be silently cut.
+        assert (w, h) == (1080, 1920), (
+            'phone mode expects a 1080-wide screen and a 1920-tall crop, got %sx%s. '
+            'Check the device, or give this phone its own crop.' % (w, h))
+    im.save(os.path.join(r'${OUT}', '${FOLDER}' + '${suffix}' + n + '.png'), optimize=True)
 `]);
 console.log(`saved ${fs.readdirSync(TMP).length} screenshots to ${OUT}`);

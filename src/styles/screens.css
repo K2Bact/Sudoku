@@ -53,6 +53,7 @@
   }
 }
 
+/* Matches the viewport cap in index.css; see the note there. */
 @media (min-width: 840px) {
   .full-screen-container,
   .academy-screen-container,
@@ -61,7 +62,23 @@
   .brain-screen-container,
   .remove-ads-screen-container,
   .battle-lobby-container {
-    max-width: 680px;
+    max-width: min(820px, 80vw);
+  }
+}
+
+/* The screens the viewport cap in index.css also governs: same reasoning, same
+   width. This block used to sit INSIDE the one above — nested @media is legal
+   and it did work, but a rule you have to count braces to place is a rule that
+   gets moved wrong next time. */
+@media (orientation: landscape) and (min-width: 1000px) {
+  .full-screen-container,
+  .academy-screen-container,
+  .daily-screen-container,
+  .stats-screen-container,
+  .brain-screen-container,
+  .remove-ads-screen-container,
+  .battle-lobby-container {
+    max-width: max(900px, min(1200px, 70vw));
   }
 }
 

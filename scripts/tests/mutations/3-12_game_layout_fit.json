@@ -3,7 +3,7 @@
   "name": "The Game Screen Fits the Phone",
   "command": "node scripts/tests/ui/test_game_layout_fit.js",
   "greenMarker": "The game screen fits every size and font scale checked",
-  "note": "BACKLOG U-1: a Galaxy S25 Ultra at a larger system font had the banner over the keypad. Each mutation puts back one of the three causes.",
+  "note": "BACKLOG U-1: a Galaxy S25 Ultra at a larger system font had the banner over the keypad. The first three mutations put back one of the three causes. The rest put back the ways the app failed to USE a tablet rather than fit on one (Diary ㊸): a width cap that stops growing with the window, the row of nine digits kept on a wide screen, and the stacked layout kept lying down.",
   "mutations": [
     {
       "name": "the keypad may shrink again",
@@ -28,6 +28,46 @@
       "find": "  padding-bottom: 16px;\n  box-sizing: border-box;\n}",
       "replace": "  padding-bottom: 0px;\n  box-sizing: border-box;\n}",
       "expectFailure": "accidental ad taps"
+    },
+    {
+      "name": "the portrait cap stops growing",
+      "why": "680px was written for a desktop browser window. In the 1066px window a tablet held upright has, it is 64% of the screen and the board stops at 648px with a third of the screen empty under the keypad.",
+      "file": "src/index.css",
+      "find": "    max-width: min(820px, 80vw);",
+      "replace": "    max-width: 680px;",
+      "expectFailure": "of the width"
+    },
+    {
+      "name": "the digits stay in one row of nine",
+      "why": "Nine across is the only shape that fits a phone. Lying down on a tablet it makes 46px keys in a column a thousand pixels tall, with the pad floating in the middle of it.",
+      "file": "src/styles/gameLayout.css",
+      "find": "    grid-template-columns: repeat(3, minmax(0, 1fr));",
+      "replace": "    grid-template-columns: repeat(9, minmax(0, 1fr));",
+      "expectFailure": "keypad columns"
+    },
+    {
+      "name": "lying down, the keypad goes back under the board",
+      "why": "Stacked in a landscape window the board is starved by a keypad taller than the window — a 780x380 split-screen half gave a 26px board.",
+      "file": "src/styles/gameLayout.css",
+      "find": "    flex-direction: row;",
+      "replace": "    flex-direction: column;",
+      "expectFailure": "keypad is still under the board"
+    },
+    {
+      "name": "the 3x3 pad drops its height condition",
+      "why": "Red-team finding. The pad is about three times the height of the row it replaces, so a wide LOW window cannot hold it: at 1280x480 — a tablet's split-screen half, and the minimum height the manifest declares — it ran 90px under the banner. Digit buttons on top of an ad is the report this gate exists for.",
+      "file": "src/styles/gameLayout.css",
+      "find": "and (min-height: 760px) {",
+      "replace": " {",
+      "expectFailure": "under the banner"
+    },
+    {
+      "name": "the 3x3 line goes back to 720",
+      "why": "720 held at the normal font and left 23px of clearance at 1.3x — one pixel under what this layout promises, at the exact font setting the original report came from.",
+      "file": "src/styles/gameLayout.css",
+      "find": "and (min-height: 760px) {",
+      "replace": "and (min-height: 720px) {",
+      "expectFailure": "above the banner"
     }
   ],
   "rebuild": true

@@ -9,22 +9,32 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--
+      One window layout on every Android version: edge to edge, with MainActivity's
+      inset listener as the single place that reserves room for the system bars.
+
+      windowOptOutEdgeToEdgeEnforcement is honoured on Android 15 and IGNORED from
+      targetSdk 36 (Android 16), so the app had two different layouts. On 16 it was
+      edge to edge and the padding in MainActivity did the work. On 15 the window
+      already ended above the navigation bar AND the same padding was applied, so
+      the space was reserved twice: an empty band under the banner, 24dp with
+      gestures and 48dp with three buttons, and the keypad ended up 38dp above the
+      ad instead of the 28dp the layout asks for (measured on emulators, Diary ㉛).
+      fitsSystemWindows goes with it, for the same reason — it is the other half of
+      the double reserve.
+
+      statusBarColor and navigationBarColor are gone too: they do nothing under
+      edge to edge, where what shows behind the bars is the window background.
+    -->
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
-        <item name="android:fitsSystemWindows">true</item>
-        <item name="android:statusBarColor">#0f172a</item>
-        <item name="android:navigationBarColor">#0f172a</item>
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 
 
+    <!-- The splash covers the whole screen, bars included; same reasoning as above. -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="android:background">@drawable/splash</item>
-        <item name="android:fitsSystemWindows">true</item>
-        <item name="android:statusBarColor">#0f172a</item>
-        <item name="android:navigationBarColor">#0f172a</item>
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 </resources>

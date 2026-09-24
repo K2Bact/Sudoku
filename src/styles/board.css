@@ -2,6 +2,7 @@
    SUDOKU BOARD STYLES (스도쿠 게임 보드 & 셀 스타일)
    ========================================================= */
 @import './gameHeader.css';
+@import './gameLayout.css';
 @import './keypad.css';
 
 /* Sudoku Board */

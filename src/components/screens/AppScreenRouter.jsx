@@ -101,6 +101,7 @@ export function AppScreenRouter({
 
       {activeScreen === 'battleLobby' && (
         <BattleLobbyScreen
+          onOpen={() => battleService.warmUp()}
           onBack={() => returnToParent(false)}
           isSearching={isMatchSearching}
           matchTimedOut={matchTimedOut}

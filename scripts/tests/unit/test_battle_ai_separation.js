@@ -154,7 +154,11 @@ assert(/Delta Height\s*=\s*0/.test(layoutDoc),
 // 8. Android Native System Insets & Safe Area Clean Break Audit
 console.log('\n▶ Testing Android Native System Insets & Safe Area Inset Protection...');
 const mainActivityContent = readFileSync('android/app/src/main/java/com/powerneja/suidoku/MainActivity.java', 'utf8');
-const stylesXmlContent = readFileSync('android/app/src/main/res/values/styles.xml', 'utf8');
+// Comments stripped: the file explains at length why the attributes below are
+// gone, and a plain includes() finds the words in that explanation. The same
+// trap caught gate 2-23 this morning, in CSS.
+const stylesXmlContent = readFileSync('android/app/src/main/res/values/styles.xml', 'utf8')
+  .replace(/<!--[\s\S]*?-->/g, '');
 const capConfigContent = readFileSync('capacitor.config.json', 'utf8');
 const academyCssContent = readFileSync('src/styles/academy.css', 'utf8');
 const screensCssContent = readFileSync('src/styles/screens.css', 'utf8');
@@ -163,8 +167,20 @@ assert(mainActivityContent.includes('findViewById(android.R.id.content)'), 'Main
 assert(mainActivityContent.includes('setOnApplyWindowInsetsListener'), 'MainActivity enforces ViewCompat.setOnApplyWindowInsetsListener');
 assert(mainActivityContent.includes('v.setPadding(insets.left, insets.top, insets.right, insets.bottom)'), 'MainActivity physically sets padding on content FrameLayout');
 assert(mainActivityContent.includes('Type.displayCutout()'), 'MainActivity accounts for camera displayCutout insets');
-assert(stylesXmlContent.includes('<item name="android:fitsSystemWindows">true</item>'), 'styles.xml specifies android:fitsSystemWindows true');
-assert(stylesXmlContent.includes('android:windowOptOutEdgeToEdgeEnforcement'), 'styles.xml specifies windowOptOutEdgeToEdgeEnforcement');
+// The window reserves room for the system bars in ONE place: the inset listener
+// above. These two attributes used to be required here, as a second line of
+// defence — and that was the defect. windowOptOutEdgeToEdgeEnforcement is
+// honoured on Android 15 and ignored from targetSdk 36, so the app ran two
+// different layouts, and on 15 the window ended above the navigation bar AND was
+// padded again: an empty band under the banner, 24dp with gestures and 48dp with
+// three buttons (measured on emulators, SudokuDiary ㊷). fitsSystemWindows is the
+// other half of that double reserve. Neither may come back.
+assert(!stylesXmlContent.includes('fitsSystemWindows'),
+  'styles.xml must NOT set fitsSystemWindows — with the inset listener it reserves the bars twice (㊷)');
+assert(!stylesXmlContent.includes('windowOptOutEdgeToEdgeEnforcement'),
+  'styles.xml must NOT opt out of edge-to-edge — Android 15 honours it and 16 ignores it, which is two layouts (㊷)');
+assert(!stylesXmlContent.includes('navigationBarColor') && !stylesXmlContent.includes('statusBarColor'),
+  'bar colours do nothing under edge-to-edge; what shows behind the bars is the window background');
 assert(capConfigContent.includes('adjustMarginsForEdgeToEdge'), 'capacitor.config.json specifies adjustMarginsForEdgeToEdge');
 assert(academyCssContent.includes('safe-area-inset-bottom'), 'academy.css enforces bottom safe area padding');
 assert(screensCssContent.includes('safe-area-inset-bottom'), 'screens.css enforces bottom safe area padding');

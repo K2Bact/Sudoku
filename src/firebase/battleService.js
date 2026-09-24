@@ -70,6 +70,25 @@ class BattleService {
   }
 
   /**
+   * Open the connection while the player is still reading the lobby.
+   *
+   * The transport connects on first use, so a player who never opens 1v1 never
+   * signs an anonymous account in (transport/firebaseTransport.js). That moved
+   * the connection — sign-in included — into the search itself, and the first
+   * search of a session got slower by a round trip or two: two players pressing
+   * at the same moment could miss each other's ticket and wait for the next one.
+   *
+   * Opening the lobby is the player saying they want 1v1, which is the right
+   * moment. Failure is nothing to report: the search will try again and say so
+   * itself.
+   */
+  warmUp() {
+    if (this.channel && typeof this.channel.whoAmI === 'function') {
+      Promise.resolve(this.channel.whoAmI()).catch(() => {});
+    }
+  }
+
+  /**
    * Whether a real opponent on another device can be reached at all. The local
    * transport answers false, and the UI must not offer a live 1v1 search that
    * cannot possibly resolve. See transport/index.js.

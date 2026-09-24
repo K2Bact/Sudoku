@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Swords, Users, ShieldCheck, Globe, Bot } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
 import { loadStats } from '../utils/storage';
@@ -6,6 +6,7 @@ import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
 
 export function BattleLobbyScreen({
+  onOpen,
   onBack,
   onStartQuickMatch,
   isSearching: isSearchingProp,
@@ -15,6 +16,11 @@ export function BattleLobbyScreen({
 }) {
   const { t } = useTranslation();
   const [internalSearching, setInternalSearching] = useState(false);
+
+  // Opening this screen is the player saying they want 1v1, so this is where the
+  // network connection is worth making — not at app start, where it cost every
+  // player an anonymous account they never used (SudokuDiary ㊷).
+  useEffect(() => { if (onOpen) onOpen(); }, [onOpen]);
   const isSearching = isSearchingProp !== undefined ? isSearchingProp : internalSearching;
 
   // The player's own clear rate across all games. It is not used for matching —

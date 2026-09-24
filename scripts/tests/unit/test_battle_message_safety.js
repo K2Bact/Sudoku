@@ -204,6 +204,20 @@ console.log('  ✅ Claims an uncontended ticket and one that arrives after a col
   // The app side: the Firebase transport signs with the account uid, and
   // battleService adopts it before anything with an id goes out.
   const transport = fs.readFileSync(path.join(root, 'src/firebase/transport/firebaseTransport.js'), 'utf8');
+  // Nothing may connect before something is asked for. battleService builds its
+  // transport at import time, so a constructor that connects signs a new
+  // anonymous account in on every launch, for players who never open 1v1 — and
+  // on 2026-09-23 a day of test runs hit Google's ceiling for exactly that
+  // (accounts:signUp answering TOO_MANY_ATTEMPTS_TRY_LATER, seen by the academy
+  // gate as a page error in an unrelated test).
+  // Comments stripped: the constructor explains this at length, and the words
+  // in that explanation would otherwise decide where the constructor ends.
+  const bare = transport.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  const ctor = bare.slice(bare.indexOf('constructor('), bare.indexOf('connect()'));
+  assert(ctor.includes('this.ready = null'),
+    'the transport must not connect from its constructor — it opens the database on every app launch');
+  assert(/connect\(\)\s*\{[\s\S]*?this\.ready = this\.init\(\)/.test(transport),
+    'it connects on first use instead (connect())');
   assert(/this\.identity = api\.uid/.test(transport),
     'the Firebase transport must take its identity from the signed-in account');
   assert(/senderId: this\.identity/.test(transport),

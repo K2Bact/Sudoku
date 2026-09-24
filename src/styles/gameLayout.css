@@ -1,0 +1,239 @@
+/* =========================================================
+   GAME SCREEN LAYOUT BY WINDOW SHAPE
+   =========================================================
+   Split out of gameHeader.css when that file went over its 320-line budget
+   (gate 0-1). What is here is one subject: how the board and the keypad
+   arrange themselves as the window changes shape — lying down, held upright
+   on a tablet, or squeezed into a split-screen half. The header's own styling
+   stayed behind.
+
+   Loaded from board.css BEFORE keypad.css, so every rule that touches the
+   keypad here is written with at least two classes; keypad.css would otherwise
+   win on order. The first version of the landscape block was one class and was
+   silently overridden. */
+
+/* ── A wide screen lying down: board beside the keypad ────────────────────
+   A tablet can rotate (MainActivity frees the orientation at 600dp of smallest
+   width; a phone stays portrait, where this layout would leave a stamp-sized
+   board). Lying down, the column layout wastes the width and starves the height:
+   the board came out about a third of the screen with empty margins either side.
+
+   So the two halves sit side by side. The board takes the height, which is the
+   scarce direction now, and the keypad takes a column of its own. --board-rest
+   does not apply here — it measures what is ABOVE and BELOW the board, and in
+   this layout nothing is.
+
+   The selectors are `.game-main > ...` on purpose: keypad.css sets width and
+   max-width on .keypad-container and is loaded after this file, so a rule of the
+   same weight loses. The first version of this block was silently overridden and
+   the keypad took the whole row.
+
+   720px of width is where the board stops being the smaller dimension. There is
+   deliberately no height floor: the shorter the window, the MORE this layout is
+   needed. A 780x380 split-screen half left the stacked layout a 26px board —
+   the keypad alone is taller than the window — where side by side gives 215.
+   Measured at six sizes, phone to 10-inch tablet, before and after. */
+@media (orientation: landscape) and (min-width: 720px) {
+  /* The centred column cap would squeeze the two halves back together. */
+  .app-viewport:has(.game-screen-wrapper) {
+    max-width: none;
+    padding: 0 12px;
+  }
+
+  .game-main {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    /* Lying down it is the BOARD, not the keypad, that ends up nearest the
+       banner, and its bottom row is as tappable as a keypad digit. 8px left
+       about 21dp between them and 16px left 27dp — both under the 28dp this
+       layout promises (U-1, accidental ad taps). 20px measures 30dp on the
+       tablet emulator, with room for rounding at other densities. */
+    padding-bottom: 20px;
+  }
+
+  .game-main > .board-zone {
+    height: 100%;
+    align-items: center;
+  }
+
+  .game-main > .board-zone .sudoku-board-container {
+    /* Height runs out first; the rest of the width belongs to the keypad. */
+    width: min(100cqh, 58cqw);
+  }
+
+  .game-main > .keypad-container {
+    width: min(420px, 36cqw);
+    max-width: none;
+    align-self: center;
+  }
+}
+
+/* ── A tablet held upright: centre the column ─────────────────────────────
+   The board fills the width it is given and then stops, so on a 1650px-tall
+   window the header, board and keypad came to about 1170px and the remaining
+   480 sat under the keypad as one block of nothing. Upright on a phone that
+   never happens — the board runs out of width and height at nearly the same
+   time — so the column has always been laid out from the top.
+
+   Centring puts the slack above and below instead of all below. The bottom
+   padding the base rule sets still keeps the keypad off the banner, because
+   centring moves the column down by half the slack, not onto the ad. */
+@media (orientation: portrait) and (min-width: 840px) {
+  .game-main {
+    justify-content: center;
+  }
+
+  /* The digit's clamp tops out at 22px, written for a phone key about 39px
+     across. Here the key is 80px, so the same digit reads at 0.27 of the key
+     instead of the 0.46 it has on a phone. This restores the proportion; the
+     count underneath stays the quieter of the two. */
+  .game-main .num-val {
+    font-size: clamp(22px, 3.8cqw, 30px);
+  }
+
+  .game-main .num-count {
+    font-size: clamp(10px, 1.6cqw, 13px);
+  }
+}
+
+/* ── A wide window: the digits become a 3x3 pad ───────────────────────────
+   Upright, nine digits in one row is the only shape that fits across a phone.
+   Lying down on a tablet that row is the wrong shape twice over: the buttons
+   come out about 46px across in a 420px column — small for a finger on a
+   screen that has room to spare — and the column they sit in is nearly a
+   thousand pixels tall, so the pad floats in the middle of it with nothing
+   above or below.
+
+   A 3x3 grid is the shape of the board it enters digits into, it trades the
+   unused height for button size (about 150px a side here), and it fills the
+   column instead of hovering in it.
+
+   Measured on the tablet emulator, 1706x1011 CSS px: buttons 46px → 152px.
+
+   BOTH conditions, and the first version had only the width one. A 3x3 pad is
+   about three times as tall as the row it replaces, so in a window that is wide
+   but low it does not fit the column: at 1280x480 — a tablet's split-screen half,
+   and exactly the minimum height the manifest declares — the pad came out 476px
+   tall in a 480px window and ran 90px UNDER the banner. That is digit buttons
+   sitting on top of an ad, which is the report this whole layout exists to
+   answer (U-1). Found by red-teaming the sizes the gate did not cover.
+
+   Measured at 1280 wide, 480..840 in 40px steps, with only the width condition.
+   The gap between the lowest element and the banner (24px is the minimum this
+   layout promises):
+
+     480  -90    600  -43    720  +17    840  +32
+     520  -70    640  -23    760  +32
+     560  -63    680   -3    800  +32
+
+   Under the banner all the way to 680, and 720 clears by too little.
+
+   720 was the first line drawn, and it held at the normal font and failed at
+   1.3× with 23px — one pixel under. That is the S25 Ultra user's setting, the
+   report this gate was built for, so the line is 760. Below it the row of nine
+   is not a compromise, it is the right shape.
+
+   The cqh term is a second lock: the pad can never be taller than the column
+   that holds it. 120px, not 80, because a 3x3 pad's height is about its width
+   plus the toolbar and the padding, and the toolbar grows with the system font
+   — 80 was measured at the normal font only.
+
+   Be clear about what it is worth: with the line at 760, **no size the gate
+   checks depends on this term.** Removing it leaves the gate green. It is here
+   for the device the browser cannot show us — one whose header, cutout insets or
+   banner measure taller than they do here, which is precisely what U-1 was (a
+   real banner taller than the 52px the app had assumed). A rule that only ever
+   matters on hardware we do not have is worth its four words, but it is not
+   something the gate can be said to have verified. */
+@media (orientation: landscape) and (min-width: 1000px) and (min-height: 760px) {
+  .game-main > .keypad-container {
+    width: min(520px, 32cqw, calc(100cqh - 120px));
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .game-main > .keypad-container .number-pad {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .game-main > .keypad-container .num-btn {
+    /* Square, not the 0.82 of the narrow row: there is no width to save. */
+    aspect-ratio: 1;
+  }
+
+  .game-main > .keypad-container .action-btn {
+    padding: 10px 4px;
+    font-size: 12px;
+  }
+
+  /* The digit is capped at 22px by a vw clamp written for a phone, which on a
+     150px key is a small mark in a large square. The count under it keeps its
+     place as the quieter of the two. */
+  .game-main > .keypad-container .num-val {
+    font-size: clamp(22px, 3.2cqw, 40px);
+  }
+
+  .game-main > .keypad-container .num-count {
+    font-size: clamp(10px, 1.3cqw, 15px);
+    margin-top: 4px;
+  }
+}
+
+/* ── A short window: give the header's height back to the board ───────────
+   A split-screen half on a tablet is about 780x380. The header is 131px of that
+   — a third of the window — and with the banner below it the board came out
+   107px across with 16px left above the ad (gate 3-12). Nothing about the header
+   needs that much room when the window is this short: the title and the version
+   badge are decoration, and the badges can lose a few pixels of padding.
+
+   Only the height is tested. A tall narrow phone keeps the full header; this is
+   about windows that are short, whichever way up they are. */
+@media (max-height: 520px) {
+  .game-screen-wrapper {
+    gap: 8px;
+  }
+
+  .game-header {
+    gap: 4px;
+    padding-top: 0;
+  }
+
+  .game-header .app-title,
+  .game-header .version-tag {
+    display: none;
+  }
+
+  .game-header .header-status-container {
+    gap: 4px;
+  }
+
+  .game-header .current-level-badge,
+  .game-header .mistakes-badge,
+  .game-header .timer-badge,
+  .game-header .restart-btn,
+  .game-header .new-game-btn {
+    height: 30px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  /* The keypad is the other tall block. Its digit keys are taller than they are
+     wide (aspect-ratio 0.82) so a thumb has room; in a window this short that
+     height comes straight out of the board, so the keys lie down instead. */
+  .keypad-container {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .keypad-container .action-btn {
+    padding: 3px 2px;
+    gap: 2px;
+  }
+
+  .keypad-container .num-btn {
+    aspect-ratio: 1.15;
+  }
+}

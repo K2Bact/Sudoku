@@ -38,6 +38,22 @@ public class MainActivity extends BridgeActivity {
             Log.w(TAG, "Could not cap the WebView text zoom", e);
         }
 
+        // Rotation: free on a large screen, still portrait on a phone.
+        //
+        // android:screenOrientation="portrait" used to be in the manifest, which
+        // locks every device including tablets and foldables. Play's large-screen
+        // guidance treats that as an app that does not support the device, and the
+        // console lists it under recommended actions.
+        //
+        // A phone stays portrait because the game screen is a column — board over
+        // keypad — and in landscape on a 5-inch-tall window the board would be the
+        // size of a stamp. A tablet has the room, and the layout answers with two
+        // columns (styles/gameHeader.css, the landscape rule).
+        //
+        // 600dp of smallest width is Android's own line between a phone and a
+        // tablet, the same one the sw600dp resource qualifier uses.
+        applyOrientationPolicy(getResources().getConfiguration());
+
         // Restrict content view strictly within system window insets (Status Bar bottom to Navigation Bar top)
         android.view.View contentView = findViewById(android.R.id.content);
         if (contentView != null) {
@@ -105,6 +121,41 @@ public class MainActivity extends BridgeActivity {
             });
         } catch (Exception e) {
             Log.e(TAG, "Error initializing Play Games SDK", e);
+        }
+    }
+
+    /**
+     * A foldable crosses the phone/tablet line while the app is running.
+     *
+     * This activity declares smallestScreenSize, screenLayout and screenSize in
+     * configChanges, so unfolding does NOT recreate it — onCreate runs once, with
+     * whatever size the device had at launch. Deciding the policy only there means
+     * an app opened folded stays locked upright after it becomes a tablet, and,
+     * worse, an app opened unfolded keeps free rotation after it is folded back:
+     * the game screen would lay itself out sideways in a window about 5 inches
+     * tall, which is the stamp-sized board the phone rule exists to prevent.
+     *
+     * So the same decision is made again whenever the configuration changes.
+     */
+    @Override
+    public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // newConfig, not getResources(): this callback is handed the new values,
+        // and reading them back out of the resources means trusting that they
+        // have already been swapped. The one that cannot be stale is the one in
+        // the argument.
+        applyOrientationPolicy(newConfig);
+    }
+
+    /** Free rotation on a large screen, upright on a phone. See onCreate. */
+    private void applyOrientationPolicy(android.content.res.Configuration config) {
+        try {
+            boolean largeScreen = config != null && config.smallestScreenWidthDp >= 600;
+            setRequestedOrientation(largeScreen
+                ? android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                : android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } catch (Exception e) {
+            Log.w(TAG, "Could not set the orientation policy", e);
         }
     }
 
