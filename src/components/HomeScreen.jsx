@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { isResumableGame } from '../utils/savedGame';
-import { Play, BarChart3, Brain, BookOpen, ChevronRight, Zap, RefreshCw, Hourglass, Lock, X } from 'lucide-react';
+import { Play, BarChart3, Brain, BookOpen, ChevronRight, Zap, RefreshCw, Hourglass } from 'lucide-react';
 import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine';
 import { loadStats, loadGameState } from '../utils/storage';
 import { loadWallet } from '../utils/wallet';
-import { getGhostForModeLevel } from '../utils/ghostManager';
 import { iqStatsService } from '../services/iqStatsService';
 import { useTranslation } from '../i18n/i18nContext';
 import { soundHaptic } from '../utils/soundHaptic';
 import { HomeTopHeader } from './home/HomeTopHeader';
 import { HomeHeroCard } from './home/HomeHeroCard';
+import { RivalModeChips } from './home/RivalModeChips';
 import { HomeBottomBanners } from './home/HomeBottomBanners';
 
 export function HomeScreen({
@@ -35,35 +35,17 @@ export function HomeScreen({
   const handleStart = onStartSingleGame || onStartGame;
   const [selectedLevel, setSelectedLevel] = useState(3);
   const [localMode, setLocalMode] = useState(selectedMode);
-  const [rivalMode, setRivalMode] = useState('standard');
-  const [lockedToast, setLockedToast] = useState(null);
+  // The mode a game would actually start with. RivalModeChips owns the choice
+  // and reports the EFFECTIVE value, which is not always the chip that looks
+  // selected — Ghost and Time Gap fall back to Standard where they are off.
+  const [effectiveRivalMode, setEffectiveRivalMode] = useState('standard');
 
   const currentSelectedMode = onSelectMode ? selectedMode : localMode;
   const setMode = (m) => {
     if (onSelectMode) onSelectMode(m);
     setLocalMode(m);
-    setLockedToast(null);
   };
 
-  const isTimeLimit = currentSelectedMode === 'timeLimit';
-  const ghost = getGhostForModeLevel(isTimeLimit ? 'timeAttack' : currentSelectedMode, selectedLevel);
-  const isGhostAvailable = Boolean(ghost && typeof ghost.bestSeconds === 'number' && ghost.bestSeconds > 0);
-  const canSelectGhost = !isTimeLimit && isGhostAvailable;
-  const effectiveRivalMode = (isTimeLimit || !canSelectGhost) ? 'standard' : rivalMode;
-
-  const formatSecs = (s) => {
-    if (!s) return '00:00';
-    const m = Math.floor(s / 60);
-    const sec = s % 60;
-    return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-  };
-
-  const ghostTimeDisplay = (!isTimeLimit && isGhostAvailable) ? formatSecs(ghost.bestSeconds) : '--:--';
-
-  const triggerLockedToast = () => {
-    soundHaptic.playErrorSound();
-    setLockedToast(t('home.rivalModes.lockedToast'));
-  };
   
   const savedGame = loadGameState();
   const hasSavedGame = isResumableGame(savedGame);
@@ -147,52 +129,11 @@ export function HomeScreen({
           </div>
 
           {/* Row 3: Rival Race Mode Selector Chips (Standard on Top, Ghost & Delta on Bottom) */}
-          <div className="rival-mode-chip-group">
-            {/* Top Row: Standard Mode (Full Width) */}
-            <button type="button"
-              className={`rival-chip standard-chip ${effectiveRivalMode === 'standard' ? 'active' : ''}`}
-              onClick={() => {
-                soundHaptic.playSelectSound();
-                setRivalMode('standard');
-                setLockedToast(null);
-              }}
-            >
-              <span>{t('home.rivalModes.standard')}</span>
-            </button>
-
-            {/* Bottom Row: Ghost PB (Left) & Delta Pace (Right) */}
-            <div className="rival-bottom-chips">
-              <button type="button"
-                className={`rival-chip ghost-chip ${effectiveRivalMode === 'ghost' ? 'active' : ''} ${!canSelectGhost ? 'disabled' : ''}`}
-                onClick={() => {
-                  if (!canSelectGhost) {
-                    triggerLockedToast();
-                    return;
-                  }
-                  soundHaptic.playSelectSound();
-                  setRivalMode('ghost');
-                }}
-              >
-                <span>{t('home.rivalModes.ghost')} ({ghostTimeDisplay})</span>
-                {!canSelectGhost && <Lock size={10} className="lock-icon" />}
-              </button>
-
-              <button type="button"
-                className={`rival-chip delta-chip ${effectiveRivalMode === 'delta' ? 'active' : ''} ${!canSelectGhost ? 'disabled' : ''}`}
-                onClick={() => {
-                  if (!canSelectGhost) {
-                    triggerLockedToast();
-                    return;
-                  }
-                  soundHaptic.playSelectSound();
-                  setRivalMode('delta');
-                }}
-              >
-                <span>{t('home.rivalModes.delta')}</span>
-                {!canSelectGhost && <Lock size={10} className="lock-icon" />}
-              </button>
-            </div>
-          </div>
+          <RivalModeChips
+            selectedMode={currentSelectedMode}
+            selectedLevel={selectedLevel}
+            onChange={setEffectiveRivalMode}
+          />
 
           {/* Full-Width Mobile Action Buttons */}
           <div className="action-btn-row">
@@ -238,25 +179,6 @@ export function HomeScreen({
             )}
           </div>
         </div>
-
-        {/* Locked Rival Mode Notification Popup (Sized to Message) */}
-        {lockedToast && (
-          <div className="locked-mode-popup" role="alert" onClick={() => setLockedToast(null)}>
-            <Lock size={12} className="locked-popup-icon" />
-            <span className="locked-popup-text">{lockedToast}</span>
-            <button
-              type="button"
-              className="locked-popup-close-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                setLockedToast(null);
-              }}
-              aria-label={t('common.close')}
-            >
-              <X size={12} />
-            </button>
-          </div>
-        )}
 
         {/* Bottom Banner Cards: Online PvP, AI Battle & Daily Challenge */}
         <HomeBottomBanners

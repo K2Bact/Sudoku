@@ -90,6 +90,13 @@ try {
       await page.goto(URL);
       await page.evaluate(() => localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'ko', theme: 'clay' })));
       await page.reload();
+      // Wait for the home screen to exist before clicking into it. Without this
+      // the click lands while the screen is still arriving — it animates in over
+      // 0.25s and the cards below it settle as stats and records load — and
+      // Playwright gives up with "element is not stable". It passed alone and
+      // failed inside the full suite on 2026-09-26, which is what a missing wait
+      // looks like: fine when the machine is idle, not when it is not.
+      await page.waitForSelector('.home-bottom-nav');
       await page.locator('.home-screen-container .btn-play-new').first().click();
       await page.waitForSelector('.sudoku-board-container', { timeout: 8000 });
       await page.evaluate(() => {

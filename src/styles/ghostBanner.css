@@ -109,6 +109,80 @@
   margin-bottom: 2px;
 }
 
+/* The Standard chip keeps the whole row it had; the ⓘ is a fixed square
+   beside it, so adding the explainer did not shrink any chip. */
+.rival-top-row {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+}
+
+.rival-top-row .standard-chip {
+  flex: 1;
+  min-width: 0;
+}
+
+.rival-info-btn {
+  flex: 0 0 auto;
+  width: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--btn-bg);
+  color: var(--text-muted);
+  border: 1px solid var(--board-grid-line);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.rival-info-btn.active,
+.rival-info-btn:active {
+  color: var(--text-main);
+  border-color: var(--text-muted);
+}
+
+/* Two lines instead of one, so this cannot keep the toast's `width: max-content`
+   — the longest of thirteen languages would run off the screen. */
+.rival-info-popup {
+  align-items: flex-start;
+  width: calc(100vw - 32px);
+  max-width: 420px;
+  padding: 10px 10px 10px 14px;
+  cursor: default;
+}
+
+.rival-info-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rival-info-line {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rival-info-name {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.rival-info-desc {
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  opacity: 0.88;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
 .rival-bottom-chips {
   display: grid;
   grid-template-columns: 1fr 1fr;

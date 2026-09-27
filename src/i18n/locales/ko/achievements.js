@@ -46,7 +46,7 @@ export const achievements = {
     clear_lv3: { title: '중급자 등극', desc: 'Lv.3 보통 난이도 완주' },
     clear_lv4: { title: '상급 정복자', desc: 'Lv.4 어려움 난이도 완주' },
     clear_lv5: { title: '그랜드 마스터', desc: 'Lv.5 마스터 최고 난이도 완주' },
-    survival_hero: { title: '타임 서바이벌', desc: '타임리밋(서바이벌) 모드 완주 성공' },
+    survival_hero: { title: '타임 서바이벌', desc: '서바이벌 모드 완주 성공' },
     survival_clutch: { title: '기사회생', desc: '남은 시간 5초 이하 위기를 극복하고 클리어' },
 
     // 27 ~ 30. 데일리, 배틀 & 두뇌지능

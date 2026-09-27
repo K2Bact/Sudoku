@@ -19,7 +19,11 @@ export const screens = {
       standard: '🎯 一般',
       ghost: '👻 幽灵',
       delta: '⚡ 时间差',
-      lockedToast: '至少通关此难度 1 次后解锁。'
+      lockedToast: '至少通关此难度 1 次后解锁。',
+      timeLimitToast: "极限生存模式不支持幽灵和时间差。",
+      infoAria: "关于幽灵和时间差",
+      infoGhost: "重玩创造纪录的那一局，与当时的自己较量。",
+      infoDelta: "换一局新的，用±秒显示比自己最佳节奏快多少。",
     },
     modes: {
       classic: { badge: '经典模式', title: '经典单人', desc: '沉浸于逻辑思考的纯粹数独体验', startBtn: '开始新游戏' },

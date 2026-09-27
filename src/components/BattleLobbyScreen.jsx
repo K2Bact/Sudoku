@@ -52,9 +52,12 @@ export function BattleLobbyScreen({
     });
   };
 
+  // No level here on purpose. This opens the AI lobby, where the player picks
+  // one of the five; passing a number from this screen is what pinned every
+  // fallback match to Lv.3.
   const handlePlayAi = () => {
     soundHaptic.playSelectSound();
-    if (onPlayAiInstead) onPlayAiInstead(3);
+    if (onPlayAiInstead) onPlayAiInstead();
   };
 
   return (

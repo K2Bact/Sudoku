@@ -1,0 +1,91 @@
+<en-US>
+• Tablets and foldables — the game turns with your device now, and lying down the board sits beside a larger 3x3 number pad.
+• A game you left part-way through comes back when you reopen the app.
+• Fixed the win screen flashing after an ad.
+• Fixed the empty strip under the banner on Android 15.
+• 1v1 — fixed rematch, progress restore, and games counted twice.
+</en-US>
+<ar>
+• دعم الأجهزة اللوحية والقابلة للطي — تدور الشاشة مع الجهاز، وفي الوضع الأفقي تظهر لوحة أرقام 3×3 أكبر بجانب الشبكة.
+• تعود اللعبة التي تركتها في منتصفها عند إعادة فتح التطبيق.
+• تم إصلاح وميض شاشة الفوز بعد الإعلان.
+• تم إصلاح الشريط الفارغ أسفل لافتة الإعلان على Android 15.
+• مباريات 1v1 — تم إصلاح إعادة المباراة واستعادة التقدم واحتساب المباريات مرتين.
+</ar>
+<de-DE>
+• Tablets und Foldables — das Spiel dreht sich jetzt mit dem Gerät, und im Querformat steht neben dem Feld ein größerer 3x3-Ziffernblock.
+• Ein angefangenes Spiel ist beim nächsten Start wieder da.
+• Behoben: Flackern des Siegesbildschirms nach einer Anzeige.
+• Behoben: leerer Streifen unter dem Banner auf Android 15.
+• 1v1 — Revanche, Wiederherstellung des Fortschritts und doppelt gezählte Partien behoben.
+</de-DE>
+<es-ES>
+• Tabletas y plegables — el juego gira con el dispositivo y, en horizontal, el tablero se acompaña de un teclado numérico 3x3 más grande.
+• La partida que dejaste a medias vuelve al abrir la aplicación.
+• Corregido el parpadeo de la pantalla de victoria tras un anuncio.
+• Corregida la franja vacía bajo el banner en Android 15.
+• 1v1 — corregidos la revancha, la restauración del progreso y las partidas contadas dos veces.
+</es-ES>
+<fr-FR>
+• Tablettes et pliables — le jeu pivote avec l'appareil et, à l'horizontale, la grille est accompagnée d'un pavé numérique 3x3 plus grand.
+• La partie laissée en cours revient à la réouverture de l'application.
+• Correction du scintillement de l'écran de victoire après une publicité.
+• Correction de la bande vide sous la bannière sur Android 15.
+• 1v1 — correction de la revanche, de la restauration de la progression et des parties comptées deux fois.
+</fr-FR>
+<hi-IN>
+• टैबलेट और फ़ोल्डेबल सपोर्ट — स्क्रीन अब डिवाइस के साथ घूमती है, और लैंडस्केप में बोर्ड के बगल में बड़ा 3x3 नंबर पैड आता है।
+• बीच में छोड़ा गया गेम ऐप दोबारा खोलने पर वापस आ जाता है।
+• विज्ञापन के बाद जीत की स्क्रीन के झिलमिलाने की समस्या ठीक की।
+• Android 15 पर बैनर के नीचे खाली पट्टी की समस्या ठीक की।
+• 1v1 — रीमैच, प्रोग्रेस रिस्टोर और गेम दो बार गिने जाने की समस्याएँ ठीक कीं।
+</hi-IN>
+<it-IT>
+• Tablet e pieghevoli — il gioco ruota con il dispositivo e, in orizzontale, accanto alla griglia compare un tastierino 3x3 più grande.
+• La partita lasciata a metà torna alla riapertura dell'app.
+• Corretto lo sfarfallio della schermata di vittoria dopo un annuncio.
+• Corretta la striscia vuota sotto il banner su Android 15.
+• 1v1 — corrette la rivincita, il ripristino dei progressi e le partite contate due volte.
+</it-IT>
+<ja-JP>
+• タブレット・折りたたみ端末に対応 — 端末を回すと画面も回り、横向きでは盤の横に3×3の大きな数字パッドが並びます。
+• 途中でやめたゲームが、アプリを開き直すとそのまま戻ります。
+• 広告のあと勝利画面がちらつく問題を修正しました。
+• Android 15 で広告バナーの下に空白の帯が出る問題を修正しました。
+• 1v1 — 再戦、記録の復元、対局数が二重に数えられる問題を修正しました。
+</ja-JP>
+<ko-KR>
+• 태블릿·폴더블 지원 — 기기를 돌리면 화면도 같이 돌고, 가로에서는 판 옆에 3x3 숫자판이 크게 놓입니다.
+• 하다 만 게임이 앱을 다시 열면 그대로 돌아옵니다.
+• 광고 뒤 승리 화면이 번쩍이던 문제를 고쳤습니다.
+• 안드로이드 15에서 배너 아래 빈 띠가 보이던 문제를 고쳤습니다.
+• 1v1 — 재대결, 기록 복원, 판수가 두 번 세어지던 문제를 고쳤습니다.
+</ko-KR>
+<pt-BR>
+• Tablets e dobráveis — o jogo gira com o aparelho e, na horizontal, o tabuleiro fica ao lado de um teclado numérico 3x3 maior.
+• A partida deixada pela metade volta ao reabrir o aplicativo.
+• Corrigido o piscar da tela de vitória após um anúncio.
+• Corrigida a faixa vazia abaixo do banner no Android 15.
+• 1v1 — corrigidos a revanche, a restauração do progresso e partidas contadas duas vezes.
+</pt-BR>
+<ru-RU>
+• Планшеты и складные устройства — игра поворачивается вместе с устройством, а в горизонтальном режиме рядом с полем появляется увеличенная клавиатура 3x3.
+• Незаконченная партия возвращается при следующем запуске.
+• Исправлено мерцание экрана победы после рекламы.
+• Исправлена пустая полоса под баннером на Android 15.
+• 1v1 — исправлены реванш, восстановление прогресса и двойной подсчёт партий.
+</ru-RU>
+<zh-CN>
+• 支持平板和折叠屏 — 屏幕会随设备旋转，横屏时棋盘旁会显示更大的 3x3 数字键盘。
+• 中途退出的对局，重新打开应用后会继续。
+• 修复了看完广告后胜利画面闪烁的问题。
+• 修复了 Android 15 上广告横幅下方出现空白条的问题。
+• 1v1 — 修复了再战、进度恢复以及对局被重复计数的问题。
+</zh-CN>
+<zh-TW>
+• 支援平板與摺疊螢幕 — 畫面會隨裝置旋轉，橫向時棋盤旁會顯示更大的 3x3 數字鍵盤。
+• 中途離開的對局，重新開啟應用程式後會繼續。
+• 修正了看完廣告後勝利畫面閃爍的問題。
+• 修正了 Android 15 上廣告橫幅下方出現空白列的問題。
+• 1v1 — 修正了再戰、進度還原以及對局被重複計算的問題。
+</zh-TW>

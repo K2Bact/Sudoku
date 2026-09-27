@@ -19,7 +19,11 @@ export const screens = {
       "standard": "🎯 Standard",
       "ghost": "👻 Ghost",
       "delta": "⚡ Time Gap",
-      "lockedToast": "Clear this difficulty at least once to unlock."
+      "lockedToast": "Clear this difficulty at least once to unlock.",
+      "timeLimitToast": "Ghost and Time Gap are not available in Survival mode.",
+      "infoAria": "About Ghost and Time Gap",
+      "infoGhost": "Replays the puzzle you set the record on, against the run you made.",
+      "infoDelta": "A fresh puzzle, showing how far ahead or behind your best pace you are.",
 },
     modes: {
       classic: { badge: 'CLASSIC', title: 'Classic', desc: 'Classic Sudoku at your own pace', startBtn: 'New Game' },

@@ -19,7 +19,11 @@ export const screens = {
       standard: '🎯 Normale',
       ghost: '👻 Fantasma',
       delta: '⚡ Distacco',
-      lockedToast: 'Completa questa difficoltà almeno 1 volta per sbloccarla.'
+      lockedToast: 'Completa questa difficoltà almeno 1 volta per sbloccarla.',
+      timeLimitToast: "Fantasma e Scarto di tempo non sono disponibili in modalità Sopravvivenza.",
+      infoAria: "Informazioni su Fantasma e Scarto di tempo",
+      infoGhost: "Rigioca lo schema del record, contro la tua stessa partita.",
+      infoDelta: "Uno schema nuovo, con il vantaggio o il ritardo sul tuo ritmo migliore.",
     },
     modes: {
       classic: { badge: 'CLASSICO', title: 'Singolo Classico', desc: 'Sudoku tradizionale, calmo e coinvolgente', startBtn: 'Nuova Partita' },

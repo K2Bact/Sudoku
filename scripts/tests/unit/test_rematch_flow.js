@@ -10,6 +10,25 @@ import http from 'http';
 const PORT = 5203;
 const PREVIEW_URL = `http://localhost:${PORT}`;
 
+/**
+ * How long to let a pairing take.
+ *
+ * The app looks for an opponent for 12s (SEARCH_TIMEOUT_MS in
+ * useBattleMultiplayer), so a gate that gives up at 5s calls "nobody paired" on
+ * a search the product has not finished. On 2026-09-26 this gate passed on its
+ * own and failed inside the full suite, at exactly this wait, after forty other
+ * gates had been through the same Firebase project — two anonymous sign-ins and
+ * a few RTDB round-trips do not fit in five seconds on a loaded machine.
+ *
+ * 15s is the app's own patience plus a margin. Deliberately not longer: a real
+ * hang should still be reported in the same minute, not the same coffee break.
+ *
+ * The waits that are NOT pairing — the result card, the rematch toast — stay at
+ * 5s. Those are reactions to a message that has already arrived, and giving them
+ * the same slack would hide a slow one.
+ */
+const PAIRING_MS = 15000;
+
 function waitForServer(url, timeout = 10000) {
   const start = Date.now();
   return new Promise((resolve, reject) => {
@@ -85,8 +104,8 @@ async function run() {
     await pageB.waitForSelector('.primary-battle-card button');
     await pageB.click('.primary-battle-card button');
 
-    await pageA.waitForSelector('.game-screen-wrapper', { timeout: 5000 });
-    await pageB.waitForSelector('.game-screen-wrapper', { timeout: 5000 });
+    await pageA.waitForSelector('.game-screen-wrapper', { timeout: PAIRING_MS });
+    await pageB.waitForSelector('.game-screen-wrapper', { timeout: PAIRING_MS });
     console.log('✅ Real Match Paired! Both Player A & B are actively in 1v1 Game!');
 
     // Player A wins
@@ -112,8 +131,8 @@ async function run() {
     console.log('🤝 6. Player B clicks [수락] on Rematch Toast...');
     await pageB.click('.rematch-btn-accept');
 
-    await pageA.waitForSelector('.game-screen-wrapper', { timeout: 5000 });
-    await pageB.waitForSelector('.game-screen-wrapper', { timeout: 5000 });
+    await pageA.waitForSelector('.game-screen-wrapper', { timeout: PAIRING_MS });
+    await pageB.waitForSelector('.game-screen-wrapper', { timeout: PAIRING_MS });
     console.log('🎉 7. Both Players simultaneously started New Rematch Battle with a fresh puzzle!');
 
     console.log('======================================================');

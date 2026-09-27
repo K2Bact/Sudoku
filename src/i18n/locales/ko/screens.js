@@ -14,17 +14,21 @@ export const screens = {
     brainReportTitle: '플레이 분석',
     brainPercentileShort: '클리어 {won}판',
     startSelectedLevel: 'Lv.{level} {name} 시작',
-    modeTabs: { classic: '클래식', timeAttack: '타임어택', timeLimit: '타임리밋' },
+    modeTabs: { classic: '클래식', timeAttack: '스피드런', timeLimit: '서바이벌' },
     rivalModes: {
       "standard": "🎯 일반",
       "ghost": "👻 고스트",
       "delta": "⚡ 델타타임",
-      "lockedToast": "해당 난이도를 1회 이상 클리어하면 활성화됩니다."
+      "lockedToast": "해당 난이도를 1회 이상 클리어하면 활성화됩니다.",
+      "timeLimitToast": "서바이벌 모드에서는 고스트·델타타임을 쓸 수 없습니다.",
+      "infoAria": "고스트·델타타임 설명",
+      "infoGhost": "기록을 세운 그 판을 다시 풀며 그때의 나와 겨룹니다.",
+      "infoDelta": "새 판에서, 내 최고기록 페이스보다 얼마나 빠른지 ±초로 봅니다.",
 },
     modes: {
       classic: { badge: '클래식', title: '클래식 싱글', desc: '차분하게 논리를 완성하는 정통 스도쿠', startBtn: '새 게임 시작' },
-      timeAttack: { badge: '스피드런', title: '⚡ 타임어택 (스피드런)', desc: '1초라도 더 빠른 최고 기록에 도전하세요!', startBtn: '스피드런 시작' },
-      timeLimit: { badge: '서바이벌', title: '⏳ 타임리밋 (서바이벌)', desc: 'Lv.{level} 제한시간 {minutes}분! 0초가 되기 전에 생존하세요.', startBtn: '서바이벌 시작' },
+      timeAttack: { badge: '스피드런', title: '⚡ 스피드런', desc: '1초라도 더 빠른 최고 기록에 도전하세요!', startBtn: '스피드런 시작' },
+      timeLimit: { badge: '서바이벌', title: '⏳ 서바이벌', desc: 'Lv.{level} 제한시간 {minutes}분! 0초가 되기 전에 생존하세요.', startBtn: '서바이벌 시작' },
       daily: { title: '오늘의 챌린지', desc: '매일 새로운 퍼즐 & 월별 마스터 뱃지', badge: 'NEW' },
       battle: { title: '1v1 온라인 배틀', desc: '글로벌 실시간 매칭' },
       aiBattle: { title: 'AI 봇 대전', desc: '1:1 AI 스피드 대결' },
@@ -57,7 +61,7 @@ export const screens = {
       advLv4Title: '[Lv.4 어려움 이상] 스도쿠 1회 클리어', advLv4Desc: 'Lv.4 이상의 고난도 퍼즐을 격파하고 마스터 논리력을 증명하세요.',
       advLv5Title: '[Lv.5 전문가] 스도쿠 1회 클리어', advLv5Desc: 'Lv.5 전문가 최고 난도 퍼즐을 완주하여 최상위 티어에 도전하세요.',
       battleTitle: '1v1 온라인/AI 배틀 1회 대전하기', battleDesc: '실시간 1v1 대전 또는 AI 봇 연습 매치에 1회 참여하세요.',
-      speedrunTitle: '⚡ 스피드런(타임어택) 1회 클리어', speedrunDesc: '스피드런 모드에서 콤보 가속을 살려 완주하세요.'
+      speedrunTitle: '⚡ 스피드런 1회 클리어', speedrunDesc: '스피드런 모드에서 콤보 가속을 살려 완주하세요.'
     }
   },
   removeAds: {
@@ -129,7 +133,7 @@ export const screens = {
   stats: {
     classicBest: "클래식 최고 기록",
     speedrunBest: "스피드런 최고 기록",
-    survivalTitle: "⏳ 타임리밋 (서바이벌)",
+    survivalTitle: "⏳ 서바이벌",
     survivalTotalWins: "서바이벌 생존 성공",
     survivalWinsUnit: "{count}회 성공",
     summaryTitle: '종합 성적 요약',

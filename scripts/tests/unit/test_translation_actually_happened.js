@@ -177,6 +177,64 @@ report('영어를 그대로 둔 자리가 없다', problems.sameAsEn,
   '그 언어에서도 같은 단어가 맞다면 COINCIDENTAL 에, 모든 언어에서 영어로 둘 값이면 ' +
   'INTENTIONALLY_ENGLISH 에 이유와 함께 추가하십시오. 목록이 길어지는 것 자체가 신호입니다.');
 
+// ── One mode, one name ───────────────────────────────────────────────────
+//
+// Each mode is written in three places — the tab, the badge on its card and the
+// card's title — and they had drifted apart. Korean called one mode 타임어택 on
+// the tab, 스피드런 on the badge and "타임어택 (스피드런)" in the title: three
+// names for one thing on one screen. German mixed Zeitrennen with SPEEDRUN,
+// Spanish Contrarreloj with SPEEDRUN, Arabic and Traditional Chinese each ran
+// two words per mode (user report, 2026-09-26: "말 헷갈린다").
+//
+// Nothing else in this file would notice: every string is present, translated
+// and non-empty. It is only wrong when you read two of them together.
+//
+// Two rules, because two different things go wrong:
+//
+//   1. the badge uses an unrelated word — SPEEDRUN where the tab says
+//      Zeitrennen. "Unrelated" has to survive inflection: German Klassisch and
+//      Klassik ARE the same word, and demanding they match letter for letter
+//      would ask for bad German. Sharing a four-character opening, or one
+//      containing the other, counts as the same name.
+//
+//   2. the title carries a second name in brackets — "타임어택 (스피드런)",
+//      "Überleben (Zeitlimit)". That one is exact: a mode's title needs no
+//      alias, and if it does the alias is the name.
+console.log('\n▶ 모드 이름이 탭·배지·제목에서 같은가');
+{
+  const bare = (v) => String(v || '').replace(/^[^\p{L}\p{N}]+/u, '').trim().toLocaleLowerCase();
+  const related = (a, b) => {
+    if (!a || !b) return true;
+    if (a.includes(b) || b.includes(a)) return true;
+    let i = 0;
+    while (i < a.length && i < b.length && a[i] === b[i]) i++;
+    return i >= 4;
+  };
+  const problems = [];
+  for (const loc of LOCALES) {
+    for (const mode of ['classic', 'timeAttack', 'timeLimit']) {
+      const tab = bare(dict[loc][`home.modeTabs.${mode}`]);
+      if (!tab) continue;
+      const badge = bare(dict[loc][`home.modes.${mode}.badge`]);
+      const title = dict[loc][`home.modes.${mode}.title`] || '';
+      if (badge && !related(badge, tab)) {
+        problems.push(`[${loc}] ${mode}: 탭 "${tab}" 와 배지 "${badge}" 가 다른 말이다`);
+      }
+      const alias = title.match(/[（(]([^）)]+)[）)]/);
+      if (alias) {
+        problems.push(`[${loc}] ${mode}: 제목 "${title}" 이 괄호로 두 번째 이름 "${alias[1]}" 을 달고 있다`);
+      }
+      if (title && !related(bare(title), tab)) {
+        problems.push(`[${loc}] ${mode}: 탭 "${tab}" 인데 제목은 "${title}" 로 시작한다`);
+      }
+    }
+  }
+  report('한 모드를 탭·배지·제목이 같은 이름으로 부른다', problems,
+    '같은 모드를 자리마다 다른 말로 부르면, 이용자는 그것이 같은 모드인지 알 수 없습니다. ' +
+    '그 언어의 탭 이름 하나로 통일하십시오. 어형 변화는 같은 이름으로 봅니다 — ' +
+    '문제는 다른 낱말과 괄호 속 별명입니다.');
+}
+
 console.log('\n======================================================');
 if (failed > 0) {
   console.error(`❌ [AUDIT FAILED] ${failed} check(s) failed.`);

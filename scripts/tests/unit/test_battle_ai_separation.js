@@ -84,12 +84,86 @@ assert(hookContent.includes("setActiveScreen(isAIBattle ? 'aiBattle' : 'battleLo
 // 4. HomeScreen Locked Popup & Icon Cleanliness Audit
 console.log('\n▶ Testing HomeScreen.jsx Locked Popup & Non-duplicate Icons...');
 const homeContent = readFileSync('src/components/HomeScreen.jsx', 'utf8');
+// The chips, the ⓘ and both popups live here now — HomeScreen.jsx went over its
+// 280-line budget and the rival block was the one coherent piece to lift out
+// (gate 0-1). The checks follow the code; reading the old file would have passed
+// them all by finding nothing to object to.
+const rivalContent = readFileSync('src/components/home/RivalModeChips.jsx', 'utf8');
 
-assert(!homeContent.includes('setTimeout(() => setLockedToast'), 'HomeScreen does not auto-dismiss lockedToast with setTimeout');
-assert(homeContent.includes('locked-mode-popup'), 'HomeScreen uses dedicated locked-mode-popup class');
-assert(homeContent.includes('locked-popup-close-btn'), 'HomeScreen has explicit close button for locked popup');
-assert(!homeContent.includes('<Target size={12} />'), 'HomeScreen removed duplicate Lucide Target icon from standard chip');
-assert(!homeContent.includes('<Ghost size={12} />'), 'HomeScreen removed duplicate Lucide Ghost icon from ghost chip');
+assert(!rivalContent.includes('setTimeout(() => setLockedToast'), 'RivalModeChips does not auto-dismiss lockedToast with setTimeout');
+assert(rivalContent.includes('locked-mode-popup'), 'RivalModeChips uses dedicated locked-mode-popup class');
+assert(rivalContent.includes('locked-popup-close-btn'), 'RivalModeChips has explicit close button for locked popup');
+assert(!rivalContent.includes('<Target size={12} />'), 'RivalModeChips removed duplicate Lucide Target icon from standard chip');
+assert(!rivalContent.includes('<Ghost size={12} />'), 'RivalModeChips removed duplicate Lucide Ghost icon from ghost chip');
+
+// 4b. A locked chip has to say WHICH lock it is.
+//
+// Ghost and Time Gap are off for two unrelated reasons: you have not set a
+// record on this difficulty yet, or you are in Survival, where they are off by
+// design and no record will ever turn them on. One line served both, so
+// Survival told the player to go and earn something that was never coming
+// (user report, 2026-09-26).
+//
+// This is invisible to a screenshot test and to a translation count — both
+// sentences exist, and the wrong one is a perfectly good sentence.
+const rivalKo = readFileSync('src/i18n/locales/ko/screens.js', 'utf8');
+assert(/["']?timeLimitToast["']?\s*:/.test(rivalKo),
+  'home.rivalModes.timeLimitToast must exist — Survival needs its own reason');
+assert(/setLockedToast\(\s*t\(\s*isTimeLimit\s*\?/.test(rivalContent),
+  'the locked toast must choose its line by reason: Survival gets timeLimitToast, everyone else lockedToast');
+
+for (const lang of locales) {
+  const src = readFileSync(`src/i18n/locales/${lang}/screens.js`, 'utf8');
+  assert(/["']?timeLimitToast["']?\s*:/.test(src), `[${lang}] rivalModes.timeLimitToast exists`);
+}
+
+// Survival must actually be the mode that switches them off, or the line above
+// is chosen for a condition that never happens.
+assert(/canSelectGhost\s*=\s*!isTimeLimit/.test(rivalContent),
+  'Survival must be what disables ghost and delta — the toast branches on it');
+
+// 4c. The two rival modes have to say how they differ.
+//
+// Ghost and Time Gap looked like two names for the same thing, because on screen
+// that is what they were: the same banner, the same ±seconds badge, the same two
+// bars. The one difference decides everything — Ghost deals the puzzle the record
+// was set on, Time Gap deals a new one — and nothing said so (user report,
+// 2026-09-26). An ⓘ beside the chips now explains both.
+// The class name, not a string that starts with it: renaming it to
+// rival-info-btnXX left /rival-info-btn/ perfectly happy.
+assert(/rival-info-btn(?![\w-])/.test(rivalContent),
+  'the rival chips need the ⓘ that explains them');
+assert(/\.rival-info-btn\s*\{/.test(readFileSync('src/styles/ghostBanner.css', 'utf8')),
+  'the ⓘ needs its style, or it is an unstyled button in the middle of the chips');
+assert(/home\.rivalModes\.infoGhost/.test(rivalContent) && /home\.rivalModes\.infoDelta/.test(rivalContent),
+  'the explainer must describe BOTH modes — one of them alone is the confusion, not the fix');
+
+// The label has to be on the BUTTON. Searching the whole file for infoAria
+// passed with the button's label deleted, because the popup carries one too.
+const infoBtnTag = (() => {
+  const at = rivalContent.search(/rival-info-btn(?![\w-])/);
+  if (at === -1) return '';
+  const open = rivalContent.lastIndexOf('<button', at);
+  const close = rivalContent.indexOf('>', at);
+  return open === -1 || close === -1 ? '' : rivalContent.slice(open, close);
+})();
+assert(/aria-label=/.test(infoBtnTag),
+  'the ⓘ needs a label on the button itself; an icon-only button says nothing to a screen reader');
+
+for (const lang of locales) {
+  const src = readFileSync(`src/i18n/locales/${lang}/screens.js`, 'utf8');
+  for (const key of ['infoAria', 'infoGhost', 'infoDelta']) {
+    assert(new RegExp(`["']?${key}["']?\\s*:`).test(src), `[${lang}] rivalModes.${key} exists`);
+  }
+  // Same sentence for both modes would pass every count and teach nothing.
+  const grab = (k) => (src.match(new RegExp(`["']?${k}["']?\\s*:\\s*(["'])([\\s\\S]*?)\\1`)) || [])[2];
+  const g = grab('infoGhost');
+  const d = grab('infoDelta');
+  assert(g && d && g !== d, `[${lang}] infoGhost and infoDelta must differ — the point is that the modes do`);
+}
+
+assert(/<RivalModeChips\b/.test(homeContent) && /from '\.\/home\/RivalModeChips'/.test(homeContent),
+  'HomeScreen must render RivalModeChips — a chip group nothing mounts is a file, not a feature');
 
 // 5. AI Bot Immediate Loop Termination Audit
 console.log('\n▶ Testing AI Bot Immediate Loop Termination on Match Finish...');
@@ -205,6 +279,52 @@ const AI_FORBIDDEN_IMPORTS = [
 for (const [mod, why] of AI_FORBIDDEN_IMPORTS) {
   const importsIt = new RegExp('(import|require)[^\\n]*[\'"`][^\'"`]*' + mod).test(aiSessionSrc);
   assert(!importsIt, `aiBattleSession must not import ${mod} — ${why}`);
+}
+
+// ── 상대가 없을 때의 AI 제안은 "고르러 가기" 여야 한다 ──────────────────
+//
+// 1v1 검색이 12초 동안 아무도 못 찾으면 "AI와 대전할까요?" 를 띄운다. 그 버튼이
+// 곧장 **Lv.3 대전을 시작**하고 있었다 — 부르는 쪽이 3 을 박아 넣었기 때문이다.
+// 화면 어디에도 그 말은 없다. 이용자는 "AI와 대전" 을 눌렀을 뿐인데 난이도를
+// 남이 고른 판 한가운데에 놓인다(사용자 보고, 2026-09-26).
+//
+// 다섯 단계가 있고 고르는 곳은 AI 로비다. 홈의 AI 버튼이 가는 바로 그 화면이다.
+//
+// 이 경로에는 검사가 하나도 없었다. 화면 문구 검사로는 못 잡는다 — 문구는
+// 그대로였고 바뀐 것은 눌렀을 때 벌어지는 일이다.
+console.log('\n▶ Testing the no-opponent fallback...');
+{
+  const hookSrc = readFileSync('src/hooks/useBattleMultiplayer.js', 'utf8');
+  const lobbySrc = readFileSync('src/components/BattleLobbyScreen.jsx', 'utf8');
+  const strip = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*/g, '');
+
+  // 중괄호를 세어 함수 몸통만 본다. 넉넉한 창으로 자르면 다음 함수까지 읽혀
+  // 없어진 코드를 남의 것으로 통과시킨다(게이트 3-2 에서 두 번 그랬다).
+  const body = (code, name) => {
+    const at = code.indexOf(name);
+    if (at === -1) return null;
+    const open = code.indexOf('{', at);
+    let depth = 0;
+    for (let i = open; i < code.length; i++) {
+      if (code[i] === '{') depth++;
+      else if (code[i] === '}' && --depth === 0) return code.slice(open, i + 1);
+    }
+    return null;
+  };
+
+  const fallback = body(strip(hookSrc), 'startAIFallback');
+  assert(Boolean(fallback), 'useBattleMultiplayer must define startAIFallback');
+  assert(Boolean(fallback) && /setActiveScreen\(\s*'aiBattle'\s*\)/.test(fallback),
+    "the no-opponent fallback must open the AI lobby (setActiveScreen('aiBattle'))");
+  assert(Boolean(fallback) && !/startAIBattle\s*\(/.test(fallback),
+    'the fallback must NOT start a match itself — that is what pinned every one of them to Lv.3');
+  assert(Boolean(fallback) && !/startNewGame\s*\(/.test(fallback),
+    'the fallback must not deal a board; the AI lobby does that once a level is chosen');
+
+  const handler = body(strip(lobbySrc), 'handlePlayAi');
+  assert(Boolean(handler), 'BattleLobbyScreen must define handlePlayAi');
+  assert(Boolean(handler) && !/onPlayAiInstead\s*\(\s*\d/.test(handler),
+    'the lobby must not hand the fallback a level number — the player picks it');
 }
 
 console.log('\n======================================================');

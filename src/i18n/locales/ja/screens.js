@@ -19,7 +19,11 @@ export const screens = {
       "standard": "🎯 通常",
       "ghost": "👻 ゴースト",
       "delta": "⚡ デルタ",
-      "lockedToast": "この難易度を1回以上クリアすると解放されます。"
+      "lockedToast": "この難易度を1回以上クリアすると解放されます。",
+      "timeLimitToast": "サバイバルモードではゴースト・デルタタイムは使えません。",
+      "infoAria": "ゴースト・デルタタイムの説明",
+      "infoGhost": "記録を出したその盤をもう一度解き、当時の自分と競います。",
+      "infoDelta": "新しい盤で、自己ベストのペースより何秒速いかを表示します。",
 },
     modes: {
       classic: { badge: 'クラシック', title: 'クラシックシングル', desc: '落ち着いて論理を組み立てる正統派ナンプレ', startBtn: '新規ゲーム' },

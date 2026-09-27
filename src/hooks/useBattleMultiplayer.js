@@ -95,15 +95,24 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
   // "searching for an opponent" until they backed out.
   const SEARCH_TIMEOUT_MS = 12000;
 
-  const startAIFallback = (lvl) => {
-    setMatchTimedOut(false);
-    setIsMatchSearching(false);
-    battleService.leaveRoom();
-    battleService.startAIBattle(lvl, (room) => {
-      setActiveBattleRoom({ ...room });
-      startNewGame(lvl, 'aiBattle', { board: room.puzzle, solution: room.solution });
-      setActiveScreen('game');
-    });
+  /**
+   * Nobody came, so offer the AI — by opening the AI lobby, not by starting a
+   * match.
+   *
+   * This used to drop the player straight into a Lv.3 game, because the caller
+   * passed a hard-coded 3. Nothing on screen said so: the player accepted "play
+   * the AI instead" and found themselves mid-match against an opponent whose
+   * difficulty somebody else had chosen. Five levels exist and the AI lobby is
+   * where you pick one, which is the same place the home screen's AI button
+   * goes. Losing to a Lv.3 bot you never agreed to is not a fallback, it is a
+   * decision made for you.
+   *
+   * cleanupBattleSession does the rest: the search timer, the timed-out flag and
+   * the queue entry all belong to the 1v1 search being abandoned here.
+   */
+  const startAIFallback = () => {
+    cleanupBattleSession();
+    setActiveScreen('aiBattle');
   };
 
   const handleStartQuickMatch = (lvl, onComplete) => {

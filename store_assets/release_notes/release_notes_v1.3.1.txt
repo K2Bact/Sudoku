@@ -1,0 +1,91 @@
+<en-US>
+• No opponent in 1v1? The AI offer now takes you to the AI lobby, where you pick the level — it used to start a Lv.3 match for you.
+• Ghost and Time Gap now explain themselves: tap the ⓘ beside the mode chips.
+• In Survival, those two say why they are off instead of asking you to unlock something that never unlocks.
+• One name per mode everywhere: Classic, Speedrun, Survival.
+• Fixed the version shown in Settings.
+</en-US>
+<ar>
+• لا يوجد خصم في 1v1؟ يأخذك عرض الذكاء الاصطناعي الآن إلى قائمة المستويات لتختار بنفسك، بعد أن كان يبدأ مباراة بمستوى 3.
+• الشبح وفارق الوقت صارا يشرحان نفسيهما: المس ⓘ بجوار أزرار الوضع.
+• في وضع النجاة يوضّحان سبب إيقافهما بدل مطالبتك بفتح شيء لا يُفتح.
+• اسم واحد لكل وضع في كل مكان: كلاسيكي، سباق الزمن، النجاة.
+• تم تصحيح رقم الإصدار الظاهر في الإعدادات.
+</ar>
+<de-DE>
+• Kein Gegner im 1v1? Das KI-Angebot führt jetzt in die KI-Lobby, wo Sie die Stufe wählen — vorher begann einfach ein Lv.3-Spiel.
+• Geist und Zeitabstand erklären sich jetzt selbst: Tippen Sie auf das ⓘ neben den Modus-Chips.
+• Im Überlebensmodus nennen die beiden den Grund, statt zum Freischalten von etwas aufzufordern, das nie freischaltet.
+• Überall ein Name pro Modus: Klassik, Zeitrennen, Überleben.
+• Die in den Einstellungen angezeigte Version wurde korrigiert.
+</de-DE>
+<es-ES>
+• ¿Sin rival en 1v1? La propuesta de IA ahora lleva al lobby de IA para que elijas el nivel; antes empezaba una partida de Lv.3.
+• Fantasma y Contrarreloj ya se explican: toca la ⓘ junto a las fichas de modo.
+• En Supervivencia ambos dicen por qué están apagados, en vez de pedirte desbloquear algo que nunca se desbloquea.
+• Un solo nombre por modo en toda la app: Clásico, Contrarreloj, Supervivencia.
+• Corregida la versión que se muestra en Ajustes.
+</es-ES>
+<fr-FR>
+• Aucun adversaire en 1v1 ? La proposition d'IA ouvre maintenant le lobby IA, où vous choisissez le niveau ; avant, une partie Lv.3 démarrait toute seule.
+• Le Fantôme et l'Écart de temps s'expliquent : appuyez sur le ⓘ à côté des puces de mode.
+• En mode Survie, ils indiquent pourquoi ils sont désactivés au lieu de vous demander de débloquer l'indébloquable.
+• Un seul nom par mode partout : Classique, Contre-la-montre, Survie.
+• Correction de la version affichée dans les Paramètres.
+</fr-FR>
+<hi-IN>
+• 1v1 में कोई नहीं मिला? AI का सुझाव अब AI लॉबी पर ले जाता है, जहां आप स्तर चुनते हैं — पहले यह खुद ही स्तर 3 का मुकाबला शुरू कर देता था।
+• घोस्ट और टाइम गैप अब खुद बताते हैं कि वे क्या हैं: मोड चिप के पास ⓘ दबाएं।
+• सर्वाइवल में ये दोनों कारण बताते हैं, न कि ऐसी चीज़ अनलॉक करने को कहते हैं जो कभी अनलॉक नहीं होती।
+• पूरे ऐप में हर मोड का एक ही नाम: क्लासिक, स्पीडरन, सर्वाइवल।
+• हिंदी अनुवाद को कई जगह बेहतर किया गया।
+</hi-IN>
+<it-IT>
+• Nessun avversario in 1v1? La proposta IA ora apre la lobby IA, dove scegli tu il livello; prima partiva una partita Lv.3.
+• Fantasma e Scarto di tempo ora si spiegano: tocca la ⓘ accanto ai pulsanti modalità.
+• In Sopravvivenza i due dicono perché sono disattivati, invece di chiederti di sbloccare qualcosa che non si sblocca mai.
+• Un solo nome per modalità ovunque: Classico, Cronometro, Sopravvivenza.
+• Corretta la versione mostrata nelle Impostazioni.
+</it-IT>
+<ja-JP>
+• 1v1 で相手が見つからないとき、AI の提案から AI ロビーへ進み、自分で難易度を選べるようになりました。これまではレベル3で勝手に始まっていました。
+• ゴーストとデルタタイムの違いを説明します。モードチップの隣の ⓘ をタップしてください。
+• サバイバルでは、解除できないものを解除しろと言う代わりに、使えない理由を表示します。
+• モード名をアプリ全体で統一しました（クラシック・タイムアタック・サバイバル）。
+• 設定画面に表示されるバージョンを修正しました。
+</ja-JP>
+<ko-KR>
+• 1v1에서 상대를 못 찾았을 때, AI 대전 제안이 이제 AI 로비로 갑니다. 난이도를 직접 고를 수 있어요 — 전에는 Lv.3으로 바로 시작됐습니다.
+• 고스트와 델타타임이 뭐가 다른지 알려줍니다. 모드 칩 옆 ⓘ를 눌러보세요.
+• 서바이벌에서는 왜 쓸 수 없는지 말해줍니다. 영영 열리지 않는 걸 열라고 하지 않아요.
+• 모드 이름을 하나로 통일했습니다 — 클래식, 스피드런, 서바이벌.
+• 설정 화면의 버전 표시를 바로잡았습니다.
+</ko-KR>
+<pt-BR>
+• Sem rival no 1v1? A sugestão de IA agora leva ao lobby de IA, onde você escolhe o nível; antes começava uma partida Lv.3.
+• Fantasma e Diferença de tempo agora se explicam: toque no ⓘ ao lado dos botões de modo.
+• Na Sobrevivência os dois dizem por que estão desativados, em vez de pedir para desbloquear algo que nunca desbloqueia.
+• Um nome por modo em todo o app: Clássico, Contra o Tempo, Sobrevivência.
+• Corrigida a versão exibida nas Configurações.
+</pt-BR>
+<ru-RU>
+• Нет соперника в 1v1? Предложение сыграть с ИИ теперь открывает лобби ИИ, где уровень выбираете вы, — раньше сразу начинался матч 3-го уровня.
+• Призрак и Спидран-отрыв теперь объясняют себя: нажмите ⓘ рядом с кнопками режима.
+• В режиме выживания они сообщают причину, а не просят разблокировать то, что не разблокируется.
+• Одно название на режим по всему приложению: Классика, Спидран, Выживание.
+• Исправлена версия, показываемая в настройках.
+</ru-RU>
+<zh-CN>
+• 1v1 找不到对手？现在点击 AI 提示会进入 AI 大厅，由你选择难度，而不是直接开始 Lv.3 对局。
+• 幽灵和时间差会自我说明了：点一下模式按钮旁的 ⓘ。
+• 在极限生存中，这两项会说明为何不可用，而不是让你去解锁永远解锁不了的东西。
+• 全应用统一模式名称：经典、计时竞速、极限生存。
+• 修复了设置页显示的版本号。
+</zh-CN>
+<zh-TW>
+• 1v1 找不到對手？現在點擊 AI 提示會進入 AI 大廳，由你選擇難度，而不是直接開始 Lv.3 對局。
+• 幽靈與時間差會自我說明了：點一下模式按鈕旁的 ⓘ。
+• 在極限生存中，這兩項會說明為何無法使用，而不是要你去解鎖永遠解鎖不了的東西。
+• 全應用統一模式名稱：經典、計時競速、極限生存。
+• 修正了設定頁顯示的版本號。
+</zh-TW>

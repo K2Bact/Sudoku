@@ -1,11 +1,11 @@
 export const common = {
   common: {
     you: 'आप',
-    back: 'पीछे',
+    back: 'वापस',
     close: 'बंद करें',
-    confirm: 'पुष्टि करें',
+    confirm: 'ठीक है',
     cancel: 'रद्द करें',
-    restart: 'पुनः प्रारंभ',
+    restart: 'पुनः आरंभ',
     restartConfirm: "इस पहेली को फिर से शुरू करें? मौजूदा खेल हार के रूप में गिना जाएगा।",
     abandonConfirm: "एक खेल चल रहा है। नया शुरू करने पर वह हार के रूप में गिना जाएगा। फिर भी शुरू करें?",
     newGame: 'नया खेल',
@@ -43,8 +43,8 @@ export const common = {
     restartShort: 'पुनः आरंभ',
     newGameShort: 'नया खेल',
     themeTooltip: 'थीम बदलें',
-    soundOn: 'ध्वनि म्यूट',
-    soundOff: 'ध्वनि चालू'
+    soundOn: 'ध्वनि बंद करें',
+    soundOff: 'ध्वनि चालू करें'
   },
   keypad: {
     undo: 'पूर्ववत',
@@ -66,10 +66,10 @@ export const common = {
     editorial: '📰 क्लासिक समाचार पत्र'
   },
   conflicts: {
-    boxDuplicate: '⚠️ [{box} 3x3 ब्लॉक] में संख्या {num} पहले से मौजूद है! {suffix}',
+    boxDuplicate: '⚠️ 3x3 वर्ग {box} में संख्या {num} पहले से मौजूद है! {suffix}',
     rowDuplicate: '⚠️ पंक्ति {row} में संख्या {num} पहले से मौजूद है! {suffix}',
     colDuplicate: '⚠️ स्तंभ {col} में संख्या {num} पहले से मौजूद है! {suffix}',
-    multipleDuplicates: '⚠️ इस ब्लॉक/पंक्ति/स्तंभ में संख्या {num} पहले से मौजूद है! {suffix}',
+    multipleDuplicates: '⚠️ इस वर्ग/पंक्ति/स्तंभ में संख्या {num} पहले से मौजूद है! {suffix}',
     notSolution: '⚠️ संख्या {num} इस सेल का सही उत्तर नहीं है! {suffix}',
     boardFullHasMistakes: '⚠️ बोर्ड भरा है लेकिन कुछ गलतियां हैं। पुनः जांचें!',
     timeAttackSuffix: '(गलती {count} | +10 सेकंड दंड)',

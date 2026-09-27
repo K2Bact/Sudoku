@@ -19,7 +19,11 @@ export const screens = {
       standard: '🎯 Padrão',
       ghost: '👻 Fantasma',
       delta: '⚡ Diferença',
-      lockedToast: 'Conclua esta dificuldade pelo menos 1 vez para desbloquear.'
+      lockedToast: 'Conclua esta dificuldade pelo menos 1 vez para desbloquear.',
+      timeLimitToast: "Fantasma e Diferença de tempo não estão disponíveis no modo Sobrevivência.",
+      infoAria: "Sobre Fantasma e Diferença de tempo",
+      infoGhost: "Rejoga o tabuleiro do recorde, disputando com a sua própria partida.",
+      infoDelta: "Um tabuleiro novo, com a vantagem ou o atraso sobre o seu melhor ritmo.",
     },
     modes: {
       classic: { badge: 'CLÁSSICO', title: 'Solo Clássico', desc: 'Sudoku tradicional, calmo e envolvente', startBtn: 'Novo Jogo' },

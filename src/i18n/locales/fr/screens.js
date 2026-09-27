@@ -19,11 +19,15 @@ export const screens = {
       standard: '🎯 Normal',
       ghost: '👻 Fantôme',
       delta: '⚡ Écart',
-      lockedToast: 'Terminez ce niveau au moins 1 fois pour débloquer ce mode.'
+      lockedToast: 'Terminez ce niveau au moins 1 fois pour débloquer ce mode.',
+      timeLimitToast: "Le Fantôme et l’Écart de temps ne sont pas disponibles en mode Survie.",
+      infoAria: "À propos du Fantôme et de l’Écart de temps",
+      infoGhost: "Rejoue la grille du record, contre votre propre partie.",
+      infoDelta: "Une nouvelle grille, avec l’avance ou le retard sur votre meilleur rythme.",
     },
     modes: {
       classic: { badge: 'CLASSIQUE', title: 'Solo classique', desc: 'Grille de sudoku traditionnelle, calme et immersive', startBtn: 'Nouvelle partie' },
-      timeAttack: { badge: 'CHRONO', title: '⚡ Contre-la-montre', desc: 'Battez le chrono pour établir votre meilleur record !', startBtn: 'Lancer le chrono' },
+      timeAttack: { badge: 'CONTRE-LA-MONTRE', title: '⚡ Contre-la-montre', desc: 'Battez le chrono pour établir votre meilleur record !', startBtn: 'Lancer le chrono' },
       timeLimit: { badge: 'SURVIE', title: '⏳ Survie', desc: 'Lv.{level}, limite de {minutes} min ! Tenez jusqu’au bout.', startBtn: 'Lancer Survie' },
       daily: { title: 'Défi quotidien', desc: 'Nouvelle grille chaque jour & badges mensuels', badge: 'NOUVEAU' },
       battle: { title: 'Duel 1v1 en ligne', desc: 'Match mondial en direct' },

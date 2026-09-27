@@ -10,7 +10,7 @@ Sudoku Master ist ein erstklassiges Logik- und Gehirntrainingsspiel für Anfäng
 Genießen Sie den puren Denkspaß, intuitive haptische Rückmeldung und eine integrierte Sudoku-Akademie mit 32 echten Meister-Techniken.
 
 ━━━━━━━━━━━━━━━━━━━━━
-🌟 HIGHLIGHTS VON SUIDOKU
+🌟 HIGHLIGHTS
 ━━━━━━━━━━━━━━━━━━━━━
 
 🧩 1. 5 Klassische Schwierigkeitsstufen
