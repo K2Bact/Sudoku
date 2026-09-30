@@ -4,7 +4,8 @@
  * Prints firebase.rules.json in the shape the Firebase console wants, so the
  * rules can be pasted without editing them by hand.
  *
- *   node scripts/store/print_firebase_rules.js
+ *   node scripts/store/print_firebase_rules.js          print it
+ *   node scripts/store/print_firebase_rules.js --copy   put ONLY the JSON on the clipboard
  *
  * The repo file carries a long "//" block explaining every rule — why senderId
  * must equal auth.uid, why deleting is asymmetric, why roomId is capped at 64.
@@ -19,6 +20,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SRC = path.join(ROOT, 'firebase.rules.json');
@@ -31,13 +33,29 @@ if (!parsed.rules) {
 
 const out = JSON.stringify({ rules: parsed.rules }, null, 2);
 
+// --copy: the JSON alone, on the clipboard. Printing it made the reader find where
+// the JSON starts under a Korean notice, and a terminal panel that wraps long lines
+// makes that worse (2026-09-30, user: "firebase 어떻게 하는지 다시 제대로 알려줘").
+// The rules are ASCII, so clip.exe's codepage cannot garble them.
+if (process.argv.includes('--copy')) {
+  if (!/^[\x00-\x7F]*$/.test(out)) {
+    console.error('The rules contain non-ASCII text; clip.exe could garble it. Print instead and copy by hand.');
+    process.exit(1);
+  }
+  if (process.platform !== 'win32') {
+    console.error('--copy uses clip.exe (Windows). Print instead.');
+    process.exit(1);
+  }
+  execSync('clip', { input: out });
+  const lines = out.split('\n').length;
+  console.log(`클립보드에 규칙 JSON 만 넣었다 — ${lines}줄 · ${out.length}자 · "{" 로 시작해 "}" 로 끝난다.`);
+  console.log('Firebase 콘솔 > Realtime Database > 규칙 탭 > 편집기 클릭 > Ctrl+A > Ctrl+V > [게시]');
+  process.exit(0);
+}
+
 console.log('─'.repeat(68));
-console.log('Firebase 콘솔 > Realtime Database > 규칙 에 아래를 통째로 붙여넣고');
-console.log('[게시] 를 누른다. 붙여넣기 전에 반드시 읽을 것:');
-console.log('');
-console.log('  이 규칙은 senderId 가 로그인 계정의 uid 와 같기를 요구한다.');
-console.log('  그렇게 서명하는 것은 빌드 22(1.3.0)부터다. 21 을 쓰는 이용자는');
-console.log('  게시하는 순간 1v1 쓰기가 전부 거부된다 — 22 가 퍼진 뒤에 게시할 것.');
+console.log('Firebase 콘솔 > Realtime Database > 규칙 에 아래 JSON 을 통째로 붙여넣고');
+console.log('[게시] 를 누른다. 줄이 꺾여 보여서 고르기 어려우면 --copy 를 쓴다.');
 console.log('─'.repeat(68));
 console.log(out);
 console.log('─'.repeat(68));

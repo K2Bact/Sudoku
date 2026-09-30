@@ -16,6 +16,7 @@ export const leaderboard = {
     lastBackup: "Last backup: {time}",
     notBackedUp: "Not backed up yet",
     restorePrompt: "Play Games has a saved record (wins: {won}). Load it onto this device?",
-    noData: 'No cloud backup data found for this account.'
+    noData: 'No cloud backup data found for this account.',
+    restoreFailed: "Could not restore. Nothing on this device was changed."
   }
 };

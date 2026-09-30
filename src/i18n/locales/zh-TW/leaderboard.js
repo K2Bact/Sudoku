@@ -16,6 +16,7 @@ export const leaderboard = {
     lastBackup: "上次備份：{time}",
     notBackedUp: "尚未備份",
     restorePrompt: "Play 遊戲中有已儲存的紀錄（{won} 勝）。要載入到此裝置嗎？",
-    noData: '未找到該帳號的雲端備份數據。'
+    noData: '未找到該帳號的雲端備份數據。',
+    restoreFailed: "復原失敗。此裝置上的數據沒有任何改動。"
   }
 };

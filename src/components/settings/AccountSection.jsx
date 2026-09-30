@@ -5,7 +5,7 @@ import { cloudSyncService } from '../../services/cloudSyncService';
 import { connectPlayGames } from '../../utils/playGamesBridge';
 import { getPlayGamesUser } from '../../utils/storage';
 import { useTranslation } from '../../i18n/i18nContext';
-import { useConfirm } from '../common/ConfirmProvider';
+import { useConfirm, useNotify } from '../common/ConfirmProvider';
 
 /**
  * Play Games connection + cloud backup, split out of SettingsScreen so that
@@ -26,6 +26,7 @@ import { useConfirm } from '../common/ConfirmProvider';
 export function AccountSection() {
   const { t, activeLanguage } = useTranslation();
   const confirm = useConfirm();
+  const notify = useNotify();
   const [syncStatus, setSyncStatus] = useState(null);
   const [player, setPlayer] = useState(() => getPlayGamesUser());
   const [connecting, setConnecting] = useState(false);
@@ -78,7 +79,11 @@ export function AccountSection() {
       setSyncStatus('restoreSuccess');
       setTimeout(() => window.location.reload(), 1200);
     } else {
-      window.alert(res.message || t('cloudSync.noData'));
+      // The app's own dialog, in the player's language. This was window.alert, whose
+      // button Capacitor draws as English "OK", showing res.message — the service's
+      // English sentence — ahead of the translation (found 2026-09-30 when gate
+      // 2-11 learned to see window.alert).
+      notify(t(res.error === 'NO_CLOUD_DATA' ? 'cloudSync.noData' : 'cloudSync.restoreFailed'));
       setSyncStatus(null);
     }
   };

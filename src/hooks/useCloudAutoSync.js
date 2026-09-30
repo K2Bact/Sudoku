@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { cloudSyncService } from '../services/cloudSyncService';
-import { useConfirm } from '../components/common/ConfirmProvider';
+import { useConfirm, useNotify } from '../components/common/ConfirmProvider';
 import { useTranslation } from '../i18n/i18nContext';
 
 /**
@@ -16,6 +16,7 @@ import { useTranslation } from '../i18n/i18nContext';
  */
 export function useCloudAutoSync() {
   const confirm = useConfirm();
+  const notify = useNotify();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -27,6 +28,9 @@ export function useCloudAutoSync() {
         if (offer && (await confirm(t('cloudSync.restorePrompt', { won: offer.gamesWon })))) {
           const res = await cloudSyncService.restoreFromCloud();
           if (res.success) { window.location.reload(); return; }
+          // The player said yes; saying nothing when it fails reads as a restore
+          // that happened. The backup was found, so the only failure left is this one.
+          notify(t('cloudSync.restoreFailed'));
         }
       } catch (e) {
         console.warn('[CloudAutoSync] restore offer failed:', e?.message || e);
@@ -43,5 +47,5 @@ export function useCloudAutoSync() {
       window.removeEventListener('online', sync);
       document.removeEventListener('visibilitychange', onVisible);
     };
-  }, [confirm, t]);
+  }, [confirm, notify, t]);
 }

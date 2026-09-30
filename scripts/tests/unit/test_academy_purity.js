@@ -22,7 +22,7 @@
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const rel = (f) => path.relative(ROOT, f).split(path.sep).join('/');
@@ -71,6 +71,51 @@ assert(!/mini-col-grid/.test(stage1),
   'Stage1MiniGrids still contains mini-col-grid, the column layout that once ' +
   'replaced the 3×3 box');
 console.log('  ✅ 3×3 box grid, no column fallback');
+
+// ── 3. A stage title names its own rank and its own techniques ───────────
+// The academy screen shows each stage's title above cards badged "Master 4-1",
+// "Grandmaster 5-1". In German (DE29-06, 2026-09-30) and then Korean, Chinese,
+// Spanish, French, Portuguese, Italian and Russian, stage 4's title said "Expert"
+// and stage 5's said "Master" — the word the badges use for stage 4. Korean,
+// Traditional Chinese and Arabic also put Unique Rectangle, a stage-4 technique,
+// in stage 5's title (BACKLOG ST-3). Every string was translated and present; it
+// was only wrong when the title and the badges were read together.
+console.log('▶ 3. Stage titles: the badges\' rank, and no other stage\'s techniques');
+const { LOCALES } = await import('../../lib/locales.js');
+const stages = await Promise.all([1, 2, 3, 4, 5].map((n) =>
+  import(pathToFileURL(path.join(ROOT, `src/data/academy/stage${n}.js`)).href).then((m) => m[`stage${n}`])));
+// Arabic writes the rank with the article in a title (الأستاذ الكبير) and without it
+// on a badge (أستاذ كبير); compare the words, not the article.
+const norm = (s) => String(s || '').toLocaleLowerCase().replace(/(^|\s)ال/g, '$1');
+// Technique marks that every language writes in Latin letters, by the stage that teaches
+// them. Only these: a translated name (المستطيل الفريد, 唯一矩形) cannot be checked this way.
+const MARKS = { 3: ['BUG'], 4: ['UR'], 5: ['AIC', 'ALS', 'Exocet'] };
+const titleProblems = [];
+for (const loc of LOCALES) {
+  const titles = (await import(pathToFileURL(path.join(ROOT, `src/i18n/locales/${loc}.js`)).href)).default.academy.stageTitles;
+  const rank = stages.map((s) => norm(s.strategies[0].badge[loc].replace(/\s*\d+-\d+\s*$/, '')).trim());
+  stages.forEach((_, i) => {
+    const n = i + 1;
+    const title = String(titles[`stage${n}`] || '');
+    const low = norm(title);
+    // "master" sits inside "grandmaster": take the stage's own rank out before looking for another's.
+    const rest = low.split(rank[i]).join(' ');
+    rank.forEach((r, j) => {
+      if (j !== i && r && rest.includes(r)) titleProblems.push(`[${loc}] stage ${n} "${title}" uses stage ${j + 1}'s rank "${r}" — its badges say "${rank[i]}"`);
+    });
+    if (n >= 4 && !low.includes(rank[i])) titleProblems.push(`[${loc}] stage ${n} "${title}" does not name its rank "${rank[i]}"`);
+    for (const [m, words] of Object.entries(MARKS)) {
+      if (+m === n) continue;
+      for (const w of words) {
+        if (new RegExp(`(^|[^A-Za-z])${w}([^A-Za-z]|$)`).test(title)) titleProblems.push(`[${loc}] stage ${n} "${title}" names ${w}, which stage ${m} teaches`);
+      }
+    }
+  });
+}
+assert.deepStrictEqual(titleProblems, [],
+  'Stage titles that disagree with their stage:\n  ' + titleProblems.join('\n  ') +
+  '\n\nA title names its own stage\'s rank (the word on its badges) and its own techniques.');
+console.log(`  ✅ ${LOCALES.length} languages × 5 stages`);
 
 /*
  * A third check was attempted and deliberately dropped: "no caption rendered

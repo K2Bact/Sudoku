@@ -25,7 +25,7 @@ runStep('0-2. Oxlint Static Code Analysis', 'npx oxlint');
 runStep('0-3. Node ESM Import Extension Compliance', 'node scripts/tests/unit/test_esm_import_extensions.js');
 runStep('0-4. No Committed Secrets or Signing Material', 'node scripts/tests/unit/test_no_committed_secrets.js');
 runStep('0-4b. The Secrets Gate Catches Planted Material', 'node scripts/tests/unit/test_secrets_gate_catches_bait.js');
-runStep('0-5. Firebase Config Reaches the Build (1v1 is live)', 'node scripts/tests/unit/test_firebase_config_present.js');
+runStep('0-5. Firebase Config Reaches the Build (keys set; not a live connection)', 'node scripts/tests/unit/test_firebase_config_present.js');
 runStep('0-6. Scan — Did the Signed-Up Player Turn Up?', 'node scripts/scan/run_scan.js');
 
 // -----------------------------------------------------------------------------
@@ -75,10 +75,11 @@ runStep('2-25. Language Picker Order (System, device language, then A-Z by Engli
 // The build takes well under a second. A tier that silently validates a stale
 // bundle costs considerably more than that.
 runStep('3-0. Build the bundle Tier 3 will actually test', 'npm run build');
+runStep('3-0b. Firebase Config Is Inside The Bundle Just Built', 'node scripts/tests/unit/test_firebase_config_present.js --built');
 
 runStep('3-1. Forbidden Hardcoded Text Scanner in Source Code', 'node scripts/tests/ui/check_no_hardcoded_text.js');
-runStep('3-2. Android Manifest Zero-PII & Insets Security Contract', 'node scripts/tests/ui/test_android_manifest.js');
-runStep('3-3. Modal Box Borders & Non-Overlapping Action Layout', 'node scripts/tests/ui/test_modal_box_borders.js');
+runStep('3-2. Android Manifest: No Dangerous Permission (app + merged) & Insets Contract', 'node scripts/tests/ui/test_android_manifest.js');
+runStep('3-3. Modal Layout Regressions (grid gaps, phantom classes, leaderboard placement)', 'node scripts/tests/ui/test_modal_box_borders.js');
 runStep('3-4. Theme Contrast & Button State Visibility Audit', 'node scripts/tests/ui/test_theme_and_button_contrast.js');
 runStep('3-5. Home Layout Grid & Responsive Layout Audit', 'node scripts/tests/ui/test_home_layout.js');
 runStep('3-6. Android Hardware Back Button & Matchmaking Cancel', 'node scripts/tests/ui/test_back_navigation.js');

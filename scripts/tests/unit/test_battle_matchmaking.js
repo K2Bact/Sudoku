@@ -171,44 +171,79 @@ console.log(`  ✅ B sees A at ${B.currentRoom.opponentProgress}%`);
 // ticket AND its own. Its own ticket is the public promise that it is still
 // available, and it has to withdraw that promise in the same breath.
 console.log('▶ 5b. Three players search at once — nobody gets a phantom opponent');
-storage.clear();
-seen.length = 0;
-const trio = [
-  ['D', await newPlayer(11)],
-  ['E', await newPlayer(12)],
-  ['F', await newPlayer(13)],
-];
-await Promise.all(trio.map(([, p]) => p.startQuickMatch(3, () => {})));
-await wait(700);
 
-const nameById = new Map(trio.map(([n, p]) => [p.myPlayerId, n]));
-const inRoom = trio.filter(([, p]) => p.currentRoom);
-
-for (const [name, p] of inRoom) {
-  const peerName = nameById.get(p.currentRoom.opponentId);
-  assert(peerName, `${name} is in a room against an id belonging to no player in this test`);
-  const peer = trio.find(([n]) => n === peerName)[1];
-  assert(
-    peer.currentRoom && peer.currentRoom.code === p.currentRoom.code,
-    `${name} thinks it is playing ${peerName}, but ${peerName} is ` +
-      `${peer.currentRoom ? `in room ${peer.currentRoom.code}` : 'in no room'} while ${name} is ` +
-      `in ${p.currentRoom.code}. That is the phantom opponent: the match starts, the name shows, ` +
-      `and the bar never moves. A host must claim both its own ticket and the peer's, atomically ` +
-      `— see claimBothTickets in battleService and claimTicket in the transport contract.`,
-  );
+// Nobody is in a room against somebody who is in a different one, exactly two
+// paired, and the one left over is still searching.
+function assertNoPhantom(trio, label) {
+  const nameById = new Map(trio.map(([n, p]) => [p.myPlayerId, n]));
+  const inRoom = trio.filter(([, p]) => p.currentRoom);
+  for (const [name, p] of inRoom) {
+    const peerName = nameById.get(p.currentRoom.opponentId);
+    assert(peerName, `${label}: ${name} is in a room against an id belonging to no player in this test`);
+    const peer = trio.find(([n]) => n === peerName)[1];
+    assert(
+      peer.currentRoom && peer.currentRoom.code === p.currentRoom.code,
+      `${label}: ${name} thinks it is playing ${peerName}, but ${peerName} is ` +
+        `${peer.currentRoom ? `in room ${peer.currentRoom.code}` : 'in no room'} while ${name} is ` +
+        `in ${p.currentRoom.code}. That is the phantom opponent: the match starts, the name shows, ` +
+        `and the bar never moves. A host must claim both its own ticket and the peer's, atomically ` +
+        `— see claimBothTickets in battleService and claimTicket in the transport contract.`,
+    );
+  }
+  assert.strictEqual(inRoom.length, 2,
+    `${label}: exactly two of three must pair and the third stays queued. Got ${inRoom.length} in rooms ` +
+    `(${inRoom.map(([n]) => n).join(',')}) — three means somebody is talking to nobody.`);
+  const oddOne = trio.find(([, p]) => !p.currentRoom);
+  assert(oddOne[1].searchingLevel,
+    `${label}: ${oddOne[0]} paired with nobody, so it must still be searching. If its ticket was consumed ` +
+    `while it stopped searching, it waits forever and no one can find it.`);
+  return `${inRoom.map(([n]) => n).join('+')} in one room, ${oddOne[0]} still searching`;
 }
-assert.strictEqual(inRoom.length, 2,
-  `Exactly two of three must pair and the third stays queued. Got ${inRoom.length} in rooms ` +
-  `(${inRoom.map(([n]) => n).join(',')}) — three means somebody is talking to nobody.`);
-const oddOne = trio.find(([, p]) => !p.currentRoom);
-assert(oddOne[1].searchingLevel,
-  `${oddOne[0]} paired with nobody, so it must still be searching. If its ticket was consumed ` +
-  `while it stopped searching, it waits forever and no one can find it.`);
-console.log(`  ✅ ${inRoom.map(([n]) => n).join('+')} in one room, ${oddOne[0]} still searching`);
+const until = async (ok, ms, what) => {
+  const end = Date.now() + ms;
+  while (!ok()) {
+    if (Date.now() > end) throw new Error(`timed out waiting for ${what}`);
+    await wait(10);
+  }
+};
 
-for (const [, p] of trio) {
-  p.leaveRoom();
-  p.channel.close();
+// i. The order the bug needs, forced (2026-09-30, BACKLOG "2-9 변형이 가끔만 잡습니다").
+//
+// This section used to start all three with Promise.all and look 700ms later. The
+// phantom only appears if F reads the queue after E has become host — and with three
+// broadcasts in flight, F sometimes took D's ticket first, and then there was nothing
+// to catch: the half-fix mutation below survived one audit in six.
+//
+// So the order is made, not hoped for. D and E start together — both list an empty
+// queue before either enqueues, because every step to that point is an await on an
+// in-memory call, so the two interleave the same way every run — and pair off. Only
+// once both are in their room does F start. A host that left its own ticket in the
+// queue has left it for F to find, every time; a host that withdrew it has not.
+{
+  storage.clear();
+  seen.length = 0;
+  const trio = [['D', await newPlayer(11)], ['E', await newPlayer(12)], ['F', await newPlayer(13)]];
+  const [[, D], [, E], [, F]] = trio;
+  await Promise.all([D.startQuickMatch(3, () => {}), E.startQuickMatch(3, () => {})]);
+  await until(() => D.currentRoom && E.currentRoom, 3000, 'D and E to pair');
+  await F.startQuickMatch(3, () => {});
+  await wait(200);
+  console.log(`  ✅ i. forced order: ${assertNoPhantom(trio, 'forced order')}`);
+  for (const [, p] of trio) { p.leaveRoom(); p.channel.close(); }
+}
+
+// ii. All three at once, as before. The interleaving varies from run to run, so this
+// cannot be what catches the half-fix — (i) is. It stays because a different race
+// could hide in an order (i) never makes.
+{
+  storage.clear();
+  seen.length = 0;
+  // Tags must be unused elsewhere in this file: a tag is a module instance, and 5c's G/H are 21/22.
+  const trio = [['D', await newPlayer(31)], ['E', await newPlayer(32)], ['F', await newPlayer(33)]];
+  await Promise.all(trio.map(([, p]) => p.startQuickMatch(3, () => {})));
+  await wait(700);
+  console.log(`  ✅ ii. all at once: ${assertNoPhantom(trio, 'all at once')}`);
+  for (const [, p] of trio) { p.leaveRoom(); p.channel.close(); }
 }
 
 // ── 5c. Both players finish at once: exactly one of them won ───────────────
@@ -370,6 +405,118 @@ console.log('▶ 7. No signed-in account: "could not connect", at once, and a re
     'the lobby must say it could not connect when that is what happened, not that nobody was found');
 }
 console.log('  ✅ No account: told at once, nothing sent; sign-in retried; /bus heard only once signed in');
+
+// ── 8. A match's own channel, and every way it can fail to exist (RT-2) ─────
+//
+// In-match traffic moves off the shared /bus into /rooms/{roomId}, which only the
+// two players can read — but only after a three-step handshake has shown it works
+// both ways (transport/roomLink.js). Each case below is one thing the real world
+// can hand a match: both players current, the rules not yet published, a player
+// on 24 or older on either side, and a rule that lets a player write but not read.
+// In every one of them progress must reach the opponent. In the first, it must
+// also stop appearing on /bus.
+console.log('▶ 8. The match room: private when both ends prove it, /bus whenever they cannot');
+{
+  const { localRoomRules } = await import('../../../src/firebase/transport/localTransport.js');
+  // Its own ear on /bus. The spy at the top of this file is closed after section 6, and
+  // the first version of this section asserted "nothing on /bus" through it: a closed
+  // listener hears nothing, so the check passed without having listened.
+  const busSeen = [];
+  const busSpy = new BroadcastChannel('suidoku_1v1_realtime');
+  busSpy.onmessage = (e) => busSeen.push(e.data);
+  const OLD = ['openRoom', 'joinRoom', 'sendRoom', 'leaveRoom'];
+  const makeOld = (p) => { for (const k of OLD) p.channel[k] = undefined; };
+  const restore = (p) => { for (const k of OLD) delete p.channel[k]; };
+  let tag = 40;
+
+  async function match(label, { oldFirst = false, oldSecond = false } = {}) {
+    storage.clear();
+    const first = await newPlayer(++tag);
+    const second = await newPlayer(++tag);
+    if (oldFirst) makeOld(first);
+    if (oldSecond) makeOld(second);
+    await first.startQuickMatch(3, () => {});
+    await wait(120);
+    await second.startQuickMatch(3, () => {});
+    await until(() => first.currentRoom && second.currentRoom, 3000, `${label}: both players in a room`);
+    await wait(300);   // room to finish a handshake, if there is going to be one
+    return [first, second];
+  }
+  async function progressArrives(from, to, label) {
+    busSeen.length = 0;
+    const before = to.currentRoom.opponentProgress;
+    from.sendProgress({ 1: 1 }, 0);
+    await until(() => to.currentRoom.opponentProgress !== before, 2000, `${label}: progress to arrive`);
+    // The /bus spy is another listener and can hear it a moment after the player does.
+    // Look too early and a message that did go out on /bus reads as one that did not.
+    await wait(150);
+    return busSeen.some((m) => m && m.type === 'player_progress');
+  }
+  const done = (...ps) => { for (const p of ps) { p.leaveRoom(); restore(p); p.channel.close(); } };
+  const linked = (p) => Boolean(p.channel.room && p.channel.room.ready);
+
+  // a. Both current, rules published: the handshake completes and /bus goes quiet.
+  {
+    const [a, b] = await match('both current');
+    await until(() => linked(a) && linked(b), 2000, 'both ends of the room to be proved');
+    assert(!(await progressArrives(a, b, 'room')), 'progress went out on /bus although both ends had proved the room — everyone listening still sees it');
+    assert(!(await progressArrives(b, a, 'room back')), 'and the other way too');
+    // leaving still reaches the opponent, and the goodbye leaves the room behind it
+    let left = false;
+    const off = b.subscribeOpponentLeft(() => { left = true; });
+    const roomId = a.currentRoom.roomId;
+    a.leaveRoom();
+    await until(() => left, 2000, 'player_left to arrive over the room');
+    off();
+    b.leaveRoom();
+    await until(() => !storage.has(`suidoku_pvp_room_members:${roomId}`), 2000, 'both memberships to be released');
+    done(a, b);
+    console.log('  ✅ a. both current: handshake done, progress only in the room, goodbye delivered, room released');
+  }
+
+  // b. The rules allowing /rooms are not published yet: nothing changes.
+  {
+    localRoomRules.roomsAllowed = false;
+    const [a, b] = await match('rules not published');
+    assert(!linked(a) && !linked(b), 'no room can be proved when the server refuses it');
+    assert(await progressArrives(a, b, 'bus'), 'so progress must travel on /bus');
+    localRoomRules.roomsAllowed = true;
+    done(a, b);
+    console.log('  ✅ b. rules not published: /bus, exactly as before');
+  }
+
+  // c. A player on 24 or older, as guest and as host.
+  for (const [label, opts] of [['old guest', { oldFirst: true }], ['old host', { oldSecond: true }]]) {
+    const [a, b] = await match(label, opts);
+    assert(!linked(a) && !linked(b), `${label}: an old client cannot finish a handshake, so neither end may switch`);
+    assert(await progressArrives(a, b, `${label} a→b`), `${label}: progress a→b over /bus`);
+    assert(await progressArrives(b, a, `${label} b→a`), `${label}: progress b→a over /bus`);
+    done(a, b);
+  }
+  console.log('  ✅ c. a player on 24 or older, either side: /bus both ways');
+
+  // d. A rule that lets the guest write but not read. Its hello reaches the host; the
+  //    host's ack never reaches it. A host that switched on hello would now be talking
+  //    into a room the guest cannot hear.
+  {
+    storage.clear();
+    const guest = await newPlayer(++tag);
+    const host = await newPlayer(++tag);
+    localRoomRules.unreadableFor.add(guest.myPlayerId);
+    await guest.startQuickMatch(3, () => {});
+    await wait(120);
+    await host.startQuickMatch(3, () => {});
+    await until(() => guest.currentRoom && host.currentRoom, 3000, 'unreadable: both in a room');
+    await wait(400);
+    assert(!linked(host), 'the host switched to the room although the guest never confirmed it could read it');
+    assert(!linked(guest), 'the guest cannot read the room, so it must not switch');
+    await progressArrives(host, guest, 'unreadable host→guest');
+    localRoomRules.unreadableFor.clear();
+    done(guest, host);
+    console.log('  ✅ d. a guest that cannot read the room: nobody switches, progress still arrives');
+  }
+  busSpy.close();
+}
 
 console.log('\n======================================================');
 console.log('🎉 Matchmaking gate passed — two players really do meet.');

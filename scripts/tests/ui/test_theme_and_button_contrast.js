@@ -143,17 +143,33 @@ function gradientStops(backgroundImage) {
 function minContrast(textRgb, styles) {
   const stops = gradientStops(styles.backgroundImage);
   if (stops.length > 0) {
-    return Math.min(...stops.map((stop) => colorDistance(textRgb, stop)));
+    return Math.min(...stops.map((stop) => contrastRatio(textRgb, stop)));
   }
-  return colorDistance(textRgb, parseRgb(styles.backgroundColor));
+  return contrastRatio(textRgb, parseRgb(styles.backgroundColor));
 }
 
-function colorDistance(rgb1, rgb2) {
-  return Math.sqrt(
-    Math.pow(rgb1[0] - rgb2[0], 2) +
-    Math.pow(rgb1[1] - rgb2[1], 2) +
-    Math.pow(rgb1[2] - rgb2[2], 2)
-  );
+/**
+ * WCAG contrast ratio — relative luminance, (L1 + 0.05) / (L2 + 0.05).
+ *
+ * This used to be the straight-line RGB distance, passing above 30. The external
+ * audit (V06, 2026-09-12) put white on #e6e6e6 through it: distance 43, passed —
+ * and 1.25:1, which nobody can read. Distance in RGB is not how eyes see contrast.
+ *
+ * The line is 3:1 (MIN_CONTRAST): WCAG's level for bold large text and for UI
+ * components. It is NOT the 4.5:1 WCAG asks of small text, and these labels are
+ * small — 2026-09-30 the blue and purple gradients measure 3.68 and 4.23 at their
+ * light end, so the gate says what it can honestly hold (BACKLOG, contrast AA).
+ * Measuring it put the stats tab's white on amber at 2.15:1; it is darker now.
+ */
+const MIN_CONTRAST = 3;
+function luminance([r, g, b]) {
+  const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+function contrastRatio(a, b) {
+  const x = luminance(a);
+  const y = luminance(b);
+  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
 }
 
 /**
@@ -163,11 +179,11 @@ function colorDistance(rgb1, rgb2) {
  * 검사가 조용히 건너뛰어지고 게이트는 통과한다. 요소가 사라진 것과 대비가
  * 멀쩡한 것을 구별할 수 없다는 뜻이다.
  *
- * 그래서 실제 수행 횟수를 세고 마지막에 단언한다. 테마 4개 × 버튼 2종 = 8회가
+ * 그래서 실제 수행 횟수를 세고 마지막에 단언한다. 테마 4개 × 버튼 3종 = 12회가
  * 나와야 한다. 화면이 사라지면 이 수가 줄고 게이트가 실패한다.
  */
 let contrastChecksRun = 0;
-const EXPECTED_CONTRAST_CHECKS = 8;
+const EXPECTED_CONTRAST_CHECKS = 12;
 
 async function runVisualContrastTest() {
   const preview = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], {
@@ -228,9 +244,9 @@ async function runVisualContrastTest() {
           contrastChecksRun++;
 
           assert(
-            dist > 30,
+            dist >= MIN_CONTRAST,
             `[${themeId}] Active language button text must have strong contrast with every gradient stop. ` +
-            `(text: ${styles.color}, bg: ${styles.backgroundColor}, image: ${styles.backgroundImage}, 최소거리: ${dist.toFixed(1)})`
+            `(text: ${styles.color}, bg: ${styles.backgroundColor}, image: ${styles.backgroundImage}, 최소 대비 ${dist.toFixed(2)}:1, 기준 ${MIN_CONTRAST}:1)`
           );
         }
       }
@@ -242,6 +258,20 @@ async function runVisualContrastTest() {
       if (await statsNavBtn.isVisible()) {
         await statsNavBtn.click();
         await page.waitForTimeout(200);
+
+        // The stats tab is selected on arrival — white on an amber gradient, which
+        // measured 2.15:1 when this check was added (2026-09-30).
+        const statsTab = page.locator('.stats-tab-bar .seg-tab-btn.active').first();
+        if (await statsTab.isVisible()) {
+          const s = await statsTab.evaluate((el) => {
+            const cs = window.getComputedStyle(el);
+            return { color: cs.color, backgroundColor: cs.backgroundColor, backgroundImage: cs.backgroundImage };
+          });
+          const d = minContrast(parseRgb(s.color), s);
+          contrastChecksRun++;
+          assert(d >= MIN_CONTRAST,
+            `[${themeId}] Selected stats tab text must reach ${MIN_CONTRAST}:1 against every gradient stop (최소 대비 ${d.toFixed(2)}:1, image: ${s.backgroundImage})`);
+        }
 
         // Open the Achievements tab — its selected button is a gradient
         const lbTab = page.locator('.stats-tab-bar button:nth-child(2)').first();
@@ -272,9 +302,9 @@ async function runVisualContrastTest() {
             contrastChecksRun++;
 
             assert(
-              dist > 30,
+              dist >= MIN_CONTRAST,
               `[${themeId}] Selected stats tab button must have strong contrast with every gradient stop. ` +
-              `(text: ${lv3Styles.color}, bg: ${lv3Styles.backgroundColor}, image: ${lv3Styles.backgroundImage}, 최소거리: ${dist.toFixed(1)})`
+              `(text: ${lv3Styles.color}, bg: ${lv3Styles.backgroundColor}, image: ${lv3Styles.backgroundImage}, 최소 대비 ${dist.toFixed(2)}:1, 기준 ${MIN_CONTRAST}:1)`
             );
           }
         }

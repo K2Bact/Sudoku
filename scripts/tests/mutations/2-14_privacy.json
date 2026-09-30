@@ -25,7 +25,7 @@
       "name": "the policy says the records are kept only on the device",
       "why": "This is the sentence that shipped. Case 1's phrase list did not contain it, and Android Auto Backup was copying localStorage to Drive the whole time — which is why a player who deleted the app and reinstalled it still had their old hint balance.",
       "file": "docs/privacy.html",
-      "find": "<p>클리어 기록, 승률, IQ 점수, 업적, 보유 힌트 수량, 테마 등 설정은 기기의 로컬 저장소(localStorage)에 저장됩니다.</p>",
+      "find": "<p>클리어 기록, 승률, Logic Score, 업적, 보유 힌트 수량, 테마 등 설정은 기기의 로컬 저장소(localStorage)에 저장됩니다.</p>",
       "replace": "<p>게임 플레이와 관련된 모든 기록은 사용자의 스마트폰 <strong>로컬 저장소(localStorage)</strong>에만 보관됩니다.</p>",
       "expectFailure": "says the data stays on the device"
     },
@@ -57,8 +57,8 @@
       "name": "the version in settings drifts from the version that ships",
       "why": "build.gradle said 1.2.1 build 15 while the settings screen said 1.2.0 build 14. A bug report then names a build that was never uploaded.",
       "file": "android/app/build.gradle",
-      "find": "versionName \"1.2.5\"",
-      "replace": "versionName \"1.2.4\"",
+      "find": "versionName \"",
+      "replace": "versionName \"0.",
       "expectFailure": "build.gradle"
     },
     {
@@ -113,9 +113,17 @@
       "name": "a second </style> leaks CSS onto the page",
       "why": "Found on 2026-09-18 on the live site: CSS rules printed as text above the header. Every wording check passed.",
       "file": "docs/privacy.html",
-      "find": "    }\n    .lang-nav { text-align: center;",
-      "replace": "    }\n  </style>\n    .lang-nav { text-align: center;",
+      "find": "    a { color: #60a5fa; }\n    .app-line {",
+      "replace": "    a { color: #60a5fa; }\n  </style>\n    .app-line {",
       "expectFailure": "shows CSS as page text"
+    },
+    {
+      "name": "a claim tucked between the owner and the notice",
+      "why": "External audit V11. The owner used to be any run of letters, spaces and periods, so a sentence fitted in front of 'All rights reserved.' — including the one the gate's own comment names as the reason it exists.",
+      "file": "src/config/appInfo.js",
+      "find": "  copyright: '© 2026 K2Bact. All rights reserved.',",
+      "replace": "  copyright: '© 2026 K2Bact. Your data never leaves your phone. All rights reserved.',",
+      "expectFailure": "appInfo.copyright must be exactly"
     }
   ]
 }

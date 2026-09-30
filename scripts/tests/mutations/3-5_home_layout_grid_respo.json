@@ -7,11 +7,28 @@
   "mutations": [
     {
       "name": "the home hero card stops rendering",
-      "why": "The gate walks the home screen in several modes and captures each one. If the screen it is looking for is gone it has to say so rather than save an empty picture.",
+      "why": "The gate walks the home screen in several modes and captures each one. If the screen it is looking for is gone it has to say so rather than save an empty picture. Repointed 2026-09-30: it renamed the export, which does not build — the runner used to swallow that and run the gate on the old bundle, so this mutation was never actually seen (external audit V12-2). It now builds and renders nothing.",
       "file": "src/components/home/HomeHeroCard.jsx",
-      "find": "export function HomeHeroCard",
-      "replace": "export function __RenamedHeroCard",
-      "expectFailure": "Error"
+      "find": "  return (\n    <div className=\"home-hero-card\">",
+      "replace": "  return null && (\n    <div className=\"home-hero-card\">",
+      "expectFailure": ".home-hero-card is not on screen"
+    },
+    {
+      "name": "the daily card slides up over the duel cards",
+      "why": "A layout that renders and is wrong: the card is there, the picture is saved, and it covers the row above. The old gate passed this.",
+      "file": "src/styles/homeCards.css",
+      "find": ".daily-card-banner {\n  position: relative;",
+      "replace": ".daily-card-banner {\n  margin-top: -80px;\n  position: relative;",
+      "expectFailure": "overlap"
+    },
+    {
+      "name": "the ghost chip stops showing the recorded time",
+      "why": "The time is what tells the player there is a record to race; --:-- over a real record reads as no record.",
+      "file": "src/components/home/RivalModeChips.jsx",
+      "find": "const ghostTimeDisplay = canSelectGhost ? formatSecs(ghost.bestSeconds) : '--:--';",
+      "replace": "const ghostTimeDisplay = '--:--';",
+      "expectFailure": "expected it to show 01:06"
     }
-  ]
+  ],
+  "note": "Until 2026-09-30 this gate saved screenshots and asserted nothing (external audit V05). It now measures the home screen in five states; the mutations below break the layout while it still renders."
 }

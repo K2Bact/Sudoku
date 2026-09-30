@@ -1,13 +1,13 @@
 import React from 'react';
-import { Stage3XWingYWing } from './Stage3XWingYWing';
-import { Stage3XYZWWing } from './Stage3XYZWWing';
+import { Stage3YWing } from './Stage3YWing';
+import { Stage3XYZWing } from './Stage3XYZWing';
 
 export function Stage3Wings({ type, lang = 'ko' }) {
-  if (type === 'x-wing' || type === 'y-wing') {
-    return <Stage3XWingYWing type={type} lang={lang} />;
+  if (type === 'y-wing') {
+    return <Stage3YWing type={type} lang={lang} />;
   }
-  if (type === 'xyz-wing' || type === 'w-wing') {
-    return <Stage3XYZWWing type={type} lang={lang} />;
+  if (type === 'xyz-wing') {
+    return <Stage3XYZWing type={type} lang={lang} />;
   }
   return null;
 }

@@ -241,8 +241,8 @@ export const screens = {
       stage1: 'Étape 1 : techniques de base (Singles & lignes)',
       stage2: 'Étape 2 : techniques intermédiaires (paires & intersections)',
       stage3: 'Étape 3 : techniques avancées (famille Wing)',
-      stage4: 'Étape 4 : techniques expertes (Fish, coloriage & rectangle unique)',
-      stage5: 'Étape 5 : techniques maître (chaînes AIC, ALS & Exocet)'
+      stage4: 'Étape 4 : techniques de maître (Fish, coloriage & rectangle unique)',
+      stage5: 'Étape 5 : techniques de grand maître (AIC, ALS & Exocet)'
     },
     title: 'Académie Sudoku',
     theoryBoard: {

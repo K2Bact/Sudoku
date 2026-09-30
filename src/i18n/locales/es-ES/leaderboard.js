@@ -16,6 +16,7 @@ export const leaderboard = {
     lastBackup: "Última copia: {time}",
     notBackedUp: "Aún sin copia de seguridad",
     restorePrompt: "Play Juegos tiene un progreso guardado (victorias: {won}). ¿Quieres cargarlo en este dispositivo?",
-    noData: 'No se encontraron copias de seguridad en la nube para esta cuenta.'
+    noData: 'No se encontraron copias de seguridad en la nube para esta cuenta.',
+    restoreFailed: "No se pudo restaurar. No se ha cambiado nada en este dispositivo."
   }
 };

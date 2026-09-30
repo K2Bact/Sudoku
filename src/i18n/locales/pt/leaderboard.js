@@ -16,6 +16,7 @@ export const leaderboard = {
     lastBackup: "Último backup: {time}",
     notBackedUp: "Ainda sem backup",
     restorePrompt: "O Play Games tem um progresso salvo (vitórias: {won}). Carregar neste aparelho?",
-    noData: 'Nenhum dado de backup em nuvem encontrado para esta conta.'
+    noData: 'Nenhum dado de backup em nuvem encontrado para esta conta.',
+    restoreFailed: "Não foi possível restaurar. Nada foi alterado neste dispositivo."
   }
 };

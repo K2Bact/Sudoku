@@ -1,8 +1,8 @@
 {
   "gate": "3-2",
-  "name": "Android Manifest Zero-PII & Insets Security Contract",
+  "name": "Android Manifest: No Dangerous Permission (app + merged) & Insets Contract",
   "command": "node scripts/tests/ui/test_android_manifest.js",
-  "greenMarker": "Android Native Manifest & Security Contracts 100% Verified",
+  "greenMarker": "Android Manifest Permissions & Insets Contracts Verified",
   "mutations": [
     {
       "name": "a permission the app does not need is declared",
@@ -11,6 +11,14 @@
       "find": "    <application",
       "replace": "    <uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />\n\n    <application",
       "expectFailure": "permission"
+    },
+    {
+      "name": "a comment that names a dangerous permission (control)",
+      "why": "External audit V11 follow-up. The check was includes() over the raw file, so a comment explaining why CAMERA is not requested failed it. Permissions are now read from <uses-permission> elements with comments removed; an explanation must stay writable.",
+      "file": "android/app/src/main/AndroidManifest.xml",
+      "find": "    <application",
+      "replace": "    <!-- No android.permission.CAMERA: the app never takes a photo. -->\n    <application",
+      "expectSurvival": true
     }
   ]
 }

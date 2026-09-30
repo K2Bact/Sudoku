@@ -8,14 +8,31 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..', '..', '..');
 
 console.log('======================================================');
-console.log('📱 Testing Android Manifest, Zero-PII Security & Insets Contracts');
+console.log('📱 Testing Android Manifest Permissions & Insets Contracts');
 console.log('======================================================\n');
 
-// 1. Android Manifest Dangerous Permissions Scan
-console.log('▶ 1. Testing Zero-PII Compliance & Android Manifest Dangerous Permissions...');
+/*
+ * 1. No dangerous permission — in the app's manifest AND in what ships.
+ *
+ * This used to search the app's own manifest for eleven strings and print "Zero-PII
+ * verified" (external audit V11, 2026-09-12; fixed 2026-09-30). Two things were
+ * wrong with that:
+ *
+ *   What ships is the MERGED manifest. Libraries add their own permissions at
+ *   build time — the AdMob SDK adds AD_ID and three ACCESS_ADSERVICES_* — and the
+ *   app's manifest shows none of them. The merged one is read below.
+ *
+ *   No dangerous permission is not "no personal data". The app sends an
+ *   advertising ID and an anonymous Firebase id; that is disclosed in the privacy
+ *   policy and the Data safety form, and gate 2-14 ties those to the code. This
+ *   gate says only which permissions are asked for.
+ */
+console.log('▶ 1. No dangerous permission in the app manifest or the merged (shipped) one');
 const manifestPath = path.join(rootDir, 'android', 'app', 'src', 'main', 'AndroidManifest.xml');
 assert(fs.existsSync(manifestPath), 'AndroidManifest.xml must exist');
 const manifestContent = fs.readFileSync(manifestPath, 'utf8');
+const permissionsIn = (xml) => [...xml.replace(/<!--[\s\S]*?-->/g, '')
+  .matchAll(/<uses-permission(?:-sdk-23)?\b[^>]*\bandroid:name="([^"]+)"/g)].map((m) => m[1]);
 
 const forbiddenPermissions = [
   'android.permission.ACCESS_FINE_LOCATION',
@@ -31,10 +48,33 @@ const forbiddenPermissions = [
   'android.permission.READ_SMS'
 ];
 
+const own = permissionsIn(manifestContent);
+assert(own.length > 0, 'no <uses-permission> read from the app manifest — the pattern did not reach it (INTERNET alone should be there)');
 for (const perm of forbiddenPermissions) {
-  assert(!manifestContent.includes(perm), `CRITICAL SECURITY: AndroidManifest must NOT contain dangerous permission [${perm}]`);
+  assert(!own.includes(perm), `the app manifest requests a dangerous permission: [${perm}]`);
 }
-console.log('  ✅ Zero-PII verified: AndroidManifest contains 0 dangerous privacy permissions');
+console.log(`  ✅ app manifest: ${own.length} permission(s), none dangerous — ${own.join(', ')}`);
+
+// The merged manifest is a gradle build product; QA does not run gradle, so this
+// is the last build's. Its age is printed, so an old one is not read as current.
+const MERGED = [
+  'android/app/build/intermediates/merged_manifests/release/processReleaseManifest/AndroidManifest.xml',
+  'android/app/build/intermediates/merged_manifest/release/processReleaseMainManifest/AndroidManifest.xml'
+].map((p) => path.join(rootDir, p)).find((p) => fs.existsSync(p));
+if (!MERGED) {
+  console.log('  ⏭  merged release manifest: NOT CHECKED — no gradle release build in this tree');
+} else {
+  const shipped = permissionsIn(fs.readFileSync(MERGED, 'utf8'));
+  for (const perm of forbiddenPermissions) {
+    assert(!shipped.includes(perm), `the SHIPPED (merged) manifest requests a dangerous permission: [${perm}] — a library added it; the app manifest does not show it`);
+  }
+  const builtAt = fs.statSync(MERGED).mtime;
+  const newer = ['android/app/src/main/AndroidManifest.xml', 'android/app/build.gradle', 'package.json']
+    .filter((p) => fs.statSync(path.join(rootDir, p)).mtime > builtAt);
+  console.log(`  ✅ merged release manifest (built ${builtAt.toISOString().slice(0, 16)}): ${shipped.length} permission(s), none dangerous`);
+  console.log(`     ${shipped.join(', ')}`);
+  if (newer.length) console.log(`     ⚠ older than ${newer.join(', ')} — as of the last release build, not this tree`);
+}
 
 // 2. Android 15 Edge-to-Edge & System Insets Contract
 console.log('\n▶ 2. Testing Android 15 Edge-to-Edge & System Insets Contracts...');
@@ -111,4 +151,4 @@ assert(/applyOrientationPolicy\(/.test(methodBody(javaCode, 'onCreate')),
   'onCreate must still set the policy for the size the app launched at');
 console.log('  ✅ Android 15 Edge-to-Edge, Camera Notch & Safe Area Inset contracts verified');
 
-console.log('\n🎉 [PASS] Android Native Manifest & Security Contracts 100% Verified!\n');
+console.log('\n🎉 [PASS] Android Manifest Permissions & Insets Contracts Verified!\n');

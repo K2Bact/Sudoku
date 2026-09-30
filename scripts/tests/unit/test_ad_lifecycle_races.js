@@ -226,18 +226,29 @@ console.log('▶ 5. 숨김이 아직 끝나지 않았어도 배너가 뜨지 않
 
   // 숨김이 아직 끝나지 않은 상태에서 동의가 풀린다.
   release();
-  const result = await showing;
+  // 숨김을 끝낸 뒤에 판정한다. 22 부터 배너 호출은 큐(queueBanner)로 한 줄로 서므로,
+  // 낡은 showBanner 가 물러나지 않으면 숨김 뒤에 줄을 서서 기다린다 — 숨김을 붙잡은 채
+  // `await showing` 을 하면 판정 대신 테스트가 멈췄다(2026-09-30 전체 변이 감사의
+  // WRONG_REASON: 결함은 잡았지만 "unsettled top-level await" 로). 그래서 먼저 몇 틱을
+  // 흘려 그동안 배너가 안 떴는지 보고, 숨김을 풀고, 그 뒤 결과를 본다.
+  for (let i = 0; i < 5; i++) await Promise.resolve();
+  assert(!calls.includes('showBanner'),
+    '숨김이 아직 끝나지 않았는데 배너를 띄웠다.');
+  releaseHide();
+  await hiding;
+  const result = await Promise.race([
+    showing,
+    new Promise((resolve) => setTimeout(() => resolve('timeout'), 2000)),
+  ]);
 
+  assert.notStrictEqual(result, 'timeout', 'showBanner 가 숨김이 끝난 뒤에도 끝나지 않았다');
   assert.strictEqual(result, false,
     '숨김이 진행 중이면 showBanner 는 물러나야 한다');
   assert(!calls.includes('showBanner'),
-    '숨김이 아직 끝나지 않았는데 배너를 띄웠다. 의도를 세우는 대입이 await 뒤에 ' +
+    '숨김이 끝나자 배너를 띄웠다. 의도를 세우는 대입이 await 뒤에 ' +
     '있으면 진행 중인 showBanner 가 자기가 낡았다는 것을 알 방법이 없다. ' +
     '화면 전환은 네이티브 숨김이 끝날 때까지 기다려주지 않으므로, 이것이 기기에서 ' +
     '실제로 일어나는 순서다.');
-
-  releaseHide();
-  await hiding;
   console.log('  ✅ 진행 중인 숨김도 낡은 showBanner 를 막는다');
 }
 

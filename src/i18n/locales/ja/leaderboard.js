@@ -16,6 +16,7 @@ export const leaderboard = {
     lastBackup: "最終バックアップ: {time}",
     notBackedUp: "まだバックアップされていません",
     restorePrompt: "Play ゲームに保存された記録があります（{won}勝）。この端末に読み込みますか？",
-    noData: 'このアカウントのクラウドバックアップデータが見つかりません。'
+    noData: 'このアカウントのクラウドバックアップデータが見つかりません。',
+    restoreFailed: "復元できませんでした。この端末の記録は変更されていません。"
   }
 };

@@ -241,8 +241,8 @@ export const screens = {
       stage1: '第1阶段: 基础技巧 (基本单数与行列)',
       stage2: '第2阶段: 中级技巧 (区块数对与交集排除)',
       stage3: '第3阶段: 高级技巧 (翼系列)',
-      stage4: '第4阶段: 专家技巧 (鱼类、着色法与唯一矩形)',
-      stage5: '第5阶段: 大师技巧 (AIC、ALS 与 Exocet 链)'
+      stage4: '第4阶段: 大师技巧 (鱼类、着色法与唯一矩形)',
+      stage5: '第5阶段: 宗师技巧 (AIC、ALS 与 Exocet)'
     },
     title: '数独学院',
     theoryBoard: {

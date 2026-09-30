@@ -16,6 +16,7 @@ export const leaderboard = {
     lastBackup: "上次备份：{time}",
     notBackedUp: "尚未备份",
     restorePrompt: "Play 游戏中有已保存的记录（{won} 胜）。要载入到此设备吗？",
-    noData: '未找到该账号的云端备份数据。'
+    noData: '未找到该账号的云端备份数据。',
+    restoreFailed: "恢复失败。此设备上的数据没有任何改动。"
   }
 };

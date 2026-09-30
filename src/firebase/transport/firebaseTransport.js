@@ -10,17 +10,26 @@
  * two phones signed into the same database genuinely see each other's messages.
  *
  * Data layout:
- *   /queue/{playerId}   matchmaking tickets, removed on disconnect
- *   /bus/{pushId}       broadcast messages, each expiring on its own
+ *   /queue/{playerId}              matchmaking tickets, removed on disconnect
+ *   /bus/{pushId}                  broadcast messages, each expiring on its own
+ *   /rooms/{roomId}/members        the match's two players (RT-2, 2026-09-30)
+ *   /rooms/{roomId}/msgs/{pushId}  the match's own traffic, once both ends proved it (roomLink.js)
  *
  * Realtime Database bills by bytes transferred, not by operation count, and every
  * message here is ~100 bytes — which is why this and not Firestore.
  */
 
 import { getDatabase } from '../firebaseApp.js';
+import { RoomLink } from './roomLink.js';
 
 const QUEUE_PATH = 'queue';
 const BUS_PATH = 'bus';
+const ROOMS_PATH = 'rooms';
+// A host waits this long for the server to accept a room before starting the match
+// on /bus instead. A refused write answers in one round trip; a network that holds
+// the request without answering must not hold the match with it.
+const ROOM_CLAIM_TIMEOUT_MS = 2000;
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error('timeout')), ms))]);
 const TICKET_TTL_MS = 30000;
 // Messages older than this are ignored on arrival; a listener that reconnects
 // must not replay a finished match.
@@ -69,6 +78,8 @@ export class FirebaseTransport {
      * search does.
      */
     this.ready = null;
+    /** The current match's own channel, if one was opened (roomLink.js). */
+    this.room = null;
   }
 
   /** Open the connection once, on first use. */
@@ -277,7 +288,79 @@ export class FirebaseTransport {
     }
   }
 
+  // ── The match's own channel (RT-2) ───────────────────────────────────────
+  // What roomLink.js needs from this database. Every call fails soft: a refused
+  // or silent write returns false, and the match carries on over /bus.
+  roomIo(api) {
+    const rooms = (roomId, ...rest) => api.ref(api.db, [ROOMS_PATH, roomId, ...rest].join('/'));
+    return {
+      claim: async (roomId, peerId) => {
+        try {
+          // Registered first, so a host that drops mid-write does not leave itself behind.
+          api.onDisconnect(rooms(roomId, 'members', this.identity)).remove();
+          await withTimeout(api.set(rooms(roomId, 'members'), { [this.identity]: true, [peerId]: true }), ROOM_CLAIM_TIMEOUT_MS);
+          return true;
+        } catch (e) {
+          console.warn('[FirebaseTransport] room not available, staying on /bus:', e?.message || e);
+          return false;
+        }
+      },
+      attach: (roomId, onPayload, onDenied) =>
+        api.onChildAdded(rooms(roomId, 'msgs'), (snap) => onPayload(snap.val()), () => onDenied()),
+      write: async (roomId, payload) => {
+        try {
+          const entryRef = api.push(rooms(roomId, 'msgs'));
+          await withTimeout(api.set(entryRef, payload), ROOM_CLAIM_TIMEOUT_MS);
+          api.onDisconnect(entryRef).remove();
+          setTimeout(() => { api.remove(entryRef).catch(() => {}); }, MESSAGE_TTL_MS);
+          return true;
+        } catch (e) {
+          console.warn('[FirebaseTransport] room write failed:', e?.message || e);
+          return false;
+        }
+      },
+      release: (roomId) => api.remove(rooms(roomId, 'members', this.identity)),
+    };
+  }
+
+  newRoomLink(api) {
+    this.leaveRoom();
+    this.room = new RoomLink(this.roomIo(api), () => this.identity, (p) => this.onMessage(p));
+    return this.room;
+  }
+
+  /** Host: open the match's room. False means stay on /bus (see roomLink.js). */
+  async openRoom(roomId, peerId) {
+    const api = this.api || (await this.connect());
+    if (!api || !api.db || !api.uid) return false;
+    return this.newRoomLink(api).host(roomId, peerId);
+  }
+
+  /** Guest: join a room the host says it opened, and start the handshake. */
+  async joinRoom(roomId) {
+    const api = this.api || (await this.connect());
+    if (!api || !api.db || !api.uid) return;
+    try {
+      api.onDisconnect(api.ref(api.db, `${ROOMS_PATH}/${roomId}/members/${this.identity}`)).remove();
+    } catch { /* the handshake will simply not complete */ }
+    await this.newRoomLink(api).guest(roomId);
+  }
+
+  /** In-match messages: the room once both ends proved it, /bus until then. */
+  async sendRoom(message) {
+    if (this.room && (await this.room.send(message))) return;
+    return this.send(message);
+  }
+
+  /** Leave the room — only the one named, so a late call cannot close the next match's. */
+  leaveRoom(roomId) {
+    if (!this.room || (roomId && this.room.roomId !== roomId)) return;
+    this.room.close();
+    this.room = null;
+  }
+
   close() {
+    this.leaveRoom();
     this.closed = true;
     for (const unsub of this.unsubscribers) {
       try {

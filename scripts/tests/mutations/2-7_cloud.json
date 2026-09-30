@@ -65,8 +65,8 @@
       "name": "a merge keeps the slower best time",
       "why": "min and max are one character apart. The rule is shared by save and restore now, so getting it wrong would push the worse time into the cloud on every win and pull it onto every phone that restores.",
       "file": "src/services/progressMerge.js",
-      "find": "      if (c && l) out[lv] = Math.min(c, l);",
-      "replace": "      if (c && l) out[lv] = Math.max(c, l);",
+      "find": "if (ct !== null && lt !== null) out[lv] = Math.min(ct, lt);",
+      "replace": "if (ct !== null && lt !== null) out[lv] = Math.max(ct, lt);",
       "expectFailure": "the faster best time wins a level both sides have"
     },
     {
@@ -100,6 +100,30 @@
       "find": "    const mark = stored[this.getEffectiveUserId()];",
       "replace": "    const mark = stored[Object.keys(stored)[0]];",
       "expectFailure": "B has never been backed up"
+    },
+    {
+      "name": "a negative cloud time is accepted as a time",
+      "why": "RT-6 / F03 (red team 2026-09-20, fixed 2026-09-30): bestTimes[5] = -10 in a backup became the fastest level-5 time on the phone.",
+      "file": "src/services/progressMerge.js",
+      "find": "const seconds = (v) => (typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : null);",
+      "replace": "const seconds = (v) => (typeof v === 'number' ? v : null);",
+      "expectFailure": "negative cloud time"
+    },
+    {
+      "name": "the wallet goes back to Math.max over whatever the cloud holds",
+      "why": "RT-6 / F03 (red team 2026-09-20, fixed 2026-09-30): a string in the cloud wallet makes Math.max return NaN, stored as null — the phone loses its hint count.",
+      "file": "src/services/progressMerge.js",
+      "find": "hints: larger(lw.hints, c.wallet.hints),",
+      "replace": "hints: Math.max(lw.hints || 0, c.wallet.hints || 0),",
+      "expectFailure": "broken cloud wallet"
+    },
+    {
+      "name": "any number counts as a count",
+      "why": "RT-6 / F03 (red team 2026-09-20, fixed 2026-09-30): a negative or infinite count from the cloud is carried onto the phone; Infinity is saved as null.",
+      "file": "src/services/progressMerge.js",
+      "find": "const count = (v) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? Math.floor(v) : null);",
+      "replace": "const count = (v) => (typeof v === 'number' ? v : null);",
+      "expectFailure": "negative count"
     }
   ]
 }

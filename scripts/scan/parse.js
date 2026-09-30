@@ -86,14 +86,23 @@ export function translationCalls(code) {
     if (!args.length) continue;
 
     const first = args[0].trim();
+    // Params are known only when written out as an object literal with no spread.
+    // `t('k', params)` or `{ ...rest }` could carry anything, so such a call is
+    // marked unknown instead of read as passing nothing (external audit V10).
     let params = [];
-    if (args[1] && args[1].startsWith('{')) {
-      const inner = matchBracket(args[1], 0);
-      if (inner > 0) params = objectKeys(args[1].slice(1, inner));
+    let paramsKnown = true;
+    if (args[1]) {
+      const second = args[1].trim();
+      const inner = second.startsWith('{') ? matchBracket(second, 0) : -1;
+      const body = inner > 0 ? second.slice(1, inner) : '';
+      if (inner > 0 && !splitTopLevel(body).some((p) => p.trim().startsWith('...'))) params = objectKeys(body);
+      else paramsKnown = false;
     }
 
-    const literal = first.match(/^'((?:[^'\\]|\\.)*)'$/);
-    if (literal) { out.push({ type: 'literal', key: literal[1], params }); continue; }
+    // Either quote. t("price") used to fall through to 'dynamic', so a key reached
+    // only that way looked unused and its placeholders were never checked.
+    const literal = first.match(/^'((?:[^'\\]|\\.)*)'$/) || first.match(/^"((?:[^"\\]|\\.)*)"$/);
+    if (literal) { out.push({ type: 'literal', key: literal[1], params, paramsKnown }); continue; }
 
     const template = first.match(/^`([^`]*)`$/);
     if (template) {

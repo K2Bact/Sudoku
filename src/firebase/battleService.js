@@ -157,9 +157,19 @@ class BattleService {
 
   handleMatchCreated(data) { return handleMatchCreated(this, data); }
 
+  /**
+   * Everything said inside a match goes through here. A transport that has a room
+   * for the match sends it there once both players proved the room works, and on
+   * /bus until then; an older transport has no rooms and always uses /bus
+   * (transport/roomLink.js, RT-2).
+   */
+  sendInRoom(message) {
+    return typeof this.channel.sendRoom === 'function' ? this.channel.sendRoom(message) : this.channel.send(message);
+  }
+
   setupRoom(cfg) {
     this.currentRoom = {
-      code: cfg.code, level: cfg.level, puzzle: cfg.puzzle, solution: cfg.solution,
+      code: cfg.code, roomId: cfg.roomId, level: cfg.level, puzzle: cfg.puzzle, solution: cfg.solution,
       initialEmptyCount: cfg.initialEmptyCount, status: 'playing', myProgress: 0, myMistakes: 0,
       opponentProgress: 0, opponentMistakes: 0, opponentId: cfg.opponentId, opponentName: cfg.opponentName,
       winner: null, rematchStatus: 'idle',
@@ -202,7 +212,7 @@ class BattleService {
       if (this.currentRoom.isAiMatch) aiBotService.stopMatch();
     }
 
-    this.channel.send({
+    this.sendInRoom({
       type: 'player_progress', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq,
       progressPct, mistakes,
       status: this.currentRoom.status, winner: this.currentRoom.winner,
@@ -272,7 +282,7 @@ class BattleService {
     if (!this.currentRoom) return;
     this.currentRoom.rematchStatus = 'waiting';
     this.currentRoom.rematchAsked = false;
-    this.channel.send({
+    this.sendInRoom({
       type: 'rematch_request', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq,
       requesterId: this.myPlayerId, requesterName: this.myPlayerName
     });
@@ -286,7 +296,7 @@ class BattleService {
       level: this.currentRoom.level || 3, puzzle: newPuzzle.puzzle, solution: newPuzzle.solution,
       initialEmptyCount: newPuzzle.puzzle.flat().filter(v => v === 0).length
     };
-    this.channel.send({
+    this.sendInRoom({
       type: 'rematch_accepted', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq, ...payload
     });
     this.resetForNewMatch(payload);
@@ -324,7 +334,7 @@ class BattleService {
 
   declineRematch() {
     if (!this.currentRoom) return;
-    this.channel.send({ type: 'rematch_declined', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq });
+    this.sendInRoom({ type: 'rematch_declined', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq });
   }
 
   subscribeRoom(cb) { this.listeners.push(cb); return () => { this.listeners = this.listeners.filter(fn => fn !== cb); }; }
@@ -344,13 +354,19 @@ class BattleService {
 
   leaveRoom() {
     aiBotService.stopMatch();
+    // Anything still on its way to starting a match is now answering a search that is over.
+    this.searchEpoch = (this.searchEpoch || 0) + 1;
     if (this.searchingLevel) {
       this.channel.dequeue(this.myPlayerId);
       this.searchingLevel = null;
     }
     if (this.currentRoom) {
       if (!this.currentRoom.isAiMatch) {
-        this.channel.send({ type: 'player_left', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq });
+        // Leave the room only once the goodbye is out: the rules let only members
+        // write there, so releasing first would refuse the last message.
+        const roomId = this.currentRoom.roomId;
+        Promise.resolve(this.sendInRoom({ type: 'player_left', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq }))
+          .finally(() => { if (typeof this.channel.leaveRoom === 'function') this.channel.leaveRoom(roomId); });
       }
       this.currentRoom = null;
     }

@@ -11,6 +11,38 @@
       "find": "export const STAGE1_PRACTICE = {",
       "replace": "export const STAGE1_PRACTICE = {\n  __leak: { title: { ko: '<b>굵게</b>' } },",
       "expectFailure": "tag"
+    },
+    {
+      "name": "Korean stage 5 goes back to the stage-4 rank and a stage-4 technique",
+      "why": "BACKLOG ST-3 / DE29-06 (2026-09-30): the title read \"마스터 테크닉 (UR, …)\" above cards badged 그랜드마스터 5-x, and Unique Rectangle is taught in stage 4.",
+      "file": "src/i18n/locales/ko/screens.js",
+      "find": "\"stage5\":\"5단계: 그랜드마스터 테크닉 (AIC, ALS & 엑소셋)\"",
+      "replace": "\"stage5\":\"5단계: 마스터 테크닉 (UR, AIC & ALS 체인)\"",
+      "expectFailure": "stage 4's rank"
+    },
+    {
+      "name": "Simplified Chinese stage 5 says 大师 again",
+      "why": "BACKLOG ST-3 / DE29-06 (2026-09-30): 大师 is the stage-4 badge; the stage-5 cards say 宗师.",
+      "file": "src/i18n/locales/zh-CN/screens.js",
+      "find": "stage5: '第5阶段: 宗师技巧 (AIC、ALS 与 Exocet)'",
+      "replace": "stage5: '第5阶段: 大师技巧 (AIC、ALS 与 Exocet 链)'",
+      "expectFailure": "stage 4's rank"
+    },
+    {
+      "name": "Arabic stage 5 goes back to the plural masters and Unique Rectangle",
+      "why": "BACKLOG ST-3 / DE29-06 (2026-09-30): the translated technique name cannot be matched, so this one is caught by the rank alone — which is the point of checking both.",
+      "file": "src/i18n/locales/ar/screens.js",
+      "find": "المرحلة 5: تقنيات الأستاذ الكبير (AIC و ALS و Exocet)",
+      "replace": "المرحلة 5: تقنيات الأساتذة (المستطيل الفريد، سلاسل AIC و ALS)",
+      "expectFailure": "does not name its rank"
+    },
+    {
+      "name": "German stage 4 says Experten again",
+      "why": "BACKLOG ST-3 / DE29-06 (2026-09-30): the original DE29-06 finding.",
+      "file": "src/i18n/locales/de/screens.js",
+      "find": "stage4: 'Stufe 4: Meister-Techniken (Fish, Coloring & Unique Rectangle)'",
+      "replace": "stage4: 'Stufe 4: Experten-Techniken (Fish, Coloring & Unique Rectangle)'",
+      "expectFailure": "does not name its rank"
     }
   ]
 }

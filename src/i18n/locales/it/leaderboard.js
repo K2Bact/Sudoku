@@ -16,6 +16,7 @@ export const leaderboard = {
     lastBackup: "Ultimo backup: {time}",
     notBackedUp: "Nessun backup ancora",
     restorePrompt: "Play Giochi ha dei progressi salvati (vittorie: {won}). Caricarli su questo dispositivo?",
-    noData: 'Nessun dato di salvataggio cloud trovato per questo account.'
+    noData: 'Nessun dato di salvataggio cloud trovato per questo account.',
+    restoreFailed: "Impossibile ripristinare. Non è stato modificato nulla su questo dispositivo."
   }
 };

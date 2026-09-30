@@ -1,8 +1,8 @@
 {
   "gate": "3-3",
-  "name": "Modal Box Borders & Non-Overlapping Action Layout",
+  "name": "Modal Layout Regressions (grid gaps, phantom classes, leaderboard placement)",
   "command": "node scripts/tests/ui/test_modal_box_borders.js",
-  "greenMarker": "MODAL BOX BORDER & LAYOUT AUDITS PASSED 100%",
+  "greenMarker": "Modal layout regression checks passed",
   "mutations": [
     {
       "name": "a modal action button gets a utility class this app never defines",
@@ -11,6 +11,14 @@
       "find": "export function VictoryModal",
       "replace": "const __phantom = '<button className=\"btn btn-secondary w-100 mb-2\">';\nexport function VictoryModal",
       "expectFailure": "phantom utility class"
+    },
+    {
+      "name": "a stat grid loses its gap while other rules in the file keep theirs",
+      "why": "External audit V11. Test 1 asked whether the FILE contained gap: 8px, so with the grid's gap deleted, a gap on any other rule in modals.css answered for it and the gate passed. It now reads the grid rule itself.",
+      "file": "src/styles/modals.css",
+      "find": "  grid-template-columns: repeat(3, 1fr);\n  gap: 8px;",
+      "replace": "  grid-template-columns: repeat(3, 1fr);",
+      "expectFailure": "the cards' borders overlap"
     }
   ]
 }

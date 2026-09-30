@@ -16,6 +16,7 @@ export const leaderboard = {
     lastBackup: "Letzte Sicherung: {time}",
     notBackedUp: "Noch nicht gesichert",
     restorePrompt: "In Play Spiele ist ein gespeicherter Fortschritt (Siege: {won}). Auf dieses Gerät laden?",
-    noData: 'Keine Cloud-Sicherungsdaten für dieses Konto gefunden.'
+    noData: 'Keine Cloud-Sicherungsdaten für dieses Konto gefunden.',
+    restoreFailed: "Wiederherstellen fehlgeschlagen. Auf diesem Gerät wurde nichts geändert."
   }
 };

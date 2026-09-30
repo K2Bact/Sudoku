@@ -28,6 +28,22 @@
       "find": "const locales = LOCALES;",
       "replace": "const locales = LOCALES; // was ['ko', 'en', 'ja', 'zh-CN', 'es-ES']",
       "expectSurvival": true
+    },
+    {
+      "name": "a language is listed twice in the picker",
+      "why": "External audit V09: the collector read dictionaries.js with a regex and compared only set differences, so a duplicate entry — the same language shown as two buttons — passed.",
+      "file": "src/i18n/dictionaries.js",
+      "find": "  { code: 'ar', nativeName: 'العربية', englishName: 'Arabic', flag: '🇸🇦', isRTL: true }\n];",
+      "replace": "  { code: 'ar', nativeName: 'العربية', englishName: 'Arabic', flag: '🇸🇦', isRTL: true },\n  { code: 'de', nativeName: 'Deutsch', englishName: 'German', flag: '🇩🇪' }\n];",
+      "expectFailure": "more than once"
+    },
+    {
+      "name": "a commented-out language is not taken for a real one",
+      "why": "External audit V09, the other half: the regex also read a code: inside a comment as a language. A comment must change nothing — this stays green.",
+      "file": "src/i18n/dictionaries.js",
+      "find": "export const SUPPORTED_LANGUAGES = [",
+      "replace": "// { code: 'vi', nativeName: 'Tiếng Việt' } — not shipped\nexport const SUPPORTED_LANGUAGES = [",
+      "expectSurvival": true
     }
   ]
 }

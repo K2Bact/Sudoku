@@ -31,11 +31,11 @@
     },
     {
       "name": "hideBanner records its intent only after awaiting the plugin",
-      "why": "The subtler half: the flag has to be set synchronously, before any await, or an in-flight showBanner wakes up and still reads bannerWanted as true. Ordering the assignment after the native call looks equivalent and is not, which is precisely the class of mistake a source-reading gate cannot catch. Recorded as SURVIVED first: the gate awaited hideBanner to completion, so the assignment's position made no difference. A screen transition does not wait for the native hide, so section 5 holds the plugin promise open — which is what the device actually does and what makes this detectable at all.",
+      "why": "The flag has to be set synchronously, before any await. Where that shows has moved. Originally section 5 caught it: an in-flight showBanner woke up and still read bannerWanted as true. Since 22 banner calls run through queueBanner, so a stale show waits behind the hide and re-checks the flag afterwards — section 5 now passes under this mutation, and until 2026-09-30 it hung instead (the full audit reported WRONG_REASON; section 5 was rewritten to judge rather than wait). What the late assignment still breaks is the fast-transition case: leave, come back, and the hide that finishes last writes false over the newer screen's intent, so the banner the player should see is gone.",
       "file": "src/ads/admobProvider.js",
-      "find": "    // 의도를 먼저, 동기적으로. 이 대입이 await 뒤로 밀리면 진행 중인\n    // showBanner 가 자기가 낡았다는 것을 알 방법이 없다.\n    this.bannerWanted = false;\n\n    const admob = plugin();\n    if (!admob) return;\n    try {\n      await this.queueBanner(() => admob.hideBanner());",
-      "replace": "    const admob = plugin();\n    if (!admob) { this.bannerWanted = false; return; }\n    try {\n      await admob.hideBanner();\n      this.bannerWanted = false;",
-      "expectFailure": "물러나야 한다"
+      "find": "    // 의도를 먼저, 동기적으로. 이 대입이 await 뒤로 밀리면 진행 중인\n    // showBanner 가 자기가 낡았다는 것을 알 방법이 없다.\n    this.bannerWanted = false;\n    stopWatchingBannerWidth(this);\n\n    const admob = plugin();\n    if (!admob) return;\n    try {\n      await this.queueBanner(() => admob.hideBanner());",
+      "replace": "    stopWatchingBannerWidth(this);\n\n    const admob = plugin();\n    if (!admob) { this.bannerWanted = false; return; }\n    try {\n      await this.queueBanner(() => admob.hideBanner());\n      this.bannerWanted = false;",
+      "expectFailure": "늦은 숨김이 마지막 화면의 배너 상태를 뒤집었다"
     },
     {
       "name": "a rewarded ad closed early never returns",

@@ -63,7 +63,8 @@ export function StatsScreen({ onBack, initialTab = 'stats' }) {
             fontWeight: '800',
             borderRadius: '8px',
             border: '1px solid var(--board-grid-line)',
-            background: activeTab === 'stats' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'var(--btn-bg)',
+            // White on #f59e0b is 2.15:1; one shade down each end clears 3:1 (gate 3-4, 2026-09-30).
+            background: activeTab === 'stats' ? 'linear-gradient(135deg, #d97706, #b45309)' : 'var(--btn-bg)',
             color: activeTab === 'stats' ? '#ffffff' : 'var(--text-muted)',
             cursor: 'pointer',
             display: 'flex',
@@ -163,7 +164,7 @@ export function StatsScreen({ onBack, initialTab = 'stats' }) {
                   return (
                     <div key={cfg.level} className="best-time-row">
                       <div className="level-info">
-                        <span className="lvl-badge" style={{ background: '#f59e0b', color: '#fff' }}>⚡ Lv.{cfg.level}</span>
+                        <span className="lvl-badge" style={{ background: '#d97706', color: '#fff' }}>⚡ Lv.{cfg.level}</span>
                         <span className="lvl-name">{t(`levels.${cfg.level}`)}</span>
                       </div>
                       <span className="best-time-val fw-bold" style={{ color: bestSecs ? '#f59e0b' : 'inherit' }}>

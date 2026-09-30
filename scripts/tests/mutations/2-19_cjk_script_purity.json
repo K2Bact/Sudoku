@@ -45,6 +45,14 @@
       "find": "\"ko\":\"실전 예시 2: 가로/세로/박스 연계로 [6] 확정\"",
       "replace": "\"ko\":\"실전 예시 2: 가로/세로/박스 連携로 [6] 확정\"",
       "expectFailure": "한국어 문자열에 한자"
+    },
+    {
+      "name": "a simplified character the data never pairs comes back into zh-TW",
+      "why": "2026-09-30: 「声音與震動」, 「工具栏」 and eleven more simplified forms had sat in zh-TW screens.js. Check 1 learns pairs from the data and had never seen 聲 or 欄; check 2 is rebuilt from the data and had allowed them. Check 4 names the forms itself.",
+      "file": "src/i18n/locales/zh-TW/screens.js",
+      "find": "soundSection: '🔊 聲音與震動'",
+      "replace": "soundSection: '🔊 声音與震動'",
+      "expectFailure": "간체 「声」"
     }
   ]
 }

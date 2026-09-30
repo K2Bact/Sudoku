@@ -23,10 +23,26 @@
  * billing library, no product and no charge, granting the entitlement from a
  * setTimeout. A gate can pin a bug in place as easily as it can catch one.
  *
- *   Case 1  the ad slot is labelled as a placeholder, naming no advertiser
+ *   Case 0  nothing threw on the page while the cases ran
+ *   Case 1  no ad slot while no advertiser is served
  *   Case 2  no Remove Ads button while nothing can be charged
- *   Case 3  the purchase screen is unreachable, not merely unlinked
- *   Case 4  an existing entitlement still hides the slot
+ *   Case 3  the purchase screen is not rendered on the game screen
+ *   Case 4  an entitlement hides a slot that is otherwise SHOWN
+ *
+ * Narrowed 2026-09-30 (external audit V11). Three things were claimed and not
+ * shown:
+ *
+ *   pageErrors were collected and never read. An exception thrown during the run
+ *   — the very failure in the story above — did not fail this gate. Case 0.
+ *
+ *   Case 4 ran in a browser where the slot never appears (Case 1 is exactly
+ *   that), so "gone after the entitlement" was true before it too. It now runs
+ *   on a page with a stand-in AdMob plugin, where the slot does appear, and
+ *   checks that first — a control — before checking the entitlement hides it.
+ *
+ *   Case 3 said "unreachable". It checks that the screen is not rendered where
+ *   the player is; no button leads there to try. That the route itself refuses
+ *   is test_billing_honesty.js (the router is gated on canPurchase).
  */
 
 import { chromium } from 'playwright';
@@ -73,6 +89,22 @@ async function primeStorage(page) {
     await page.locator('.modal-overlay button').last().click({ timeout: 2000 }).catch(() => {});
     await page.waitForTimeout(300);
   }
+}
+
+/**
+ * Stands in for the native AdMob plugin, so the app's AdMobProvider reports a
+ * real advertiser and draws the slot in a desktop browser. Runs before the app's
+ * scripts. Every method resolves; consent answers "may request". Nothing leaves
+ * the page — there is no SDK behind it.
+ */
+function installAdMobStandIn() {
+  const ok = (v = {}) => () => Promise.resolve(v);
+  const AdMob = new Proxy({
+    requestConsentInfo: ok({ status: 'NOT_REQUIRED', canRequestAds: true, isConsentFormAvailable: false, privacyOptionsRequirementStatus: 'NOT_REQUIRED' }),
+    addListener: () => Promise.resolve({ remove: () => {} })
+  }, { get: (target, key) => (key in target ? target[key] : ok()) });
+  window.Capacitor = window.Capacitor || {};
+  window.Capacitor.Plugins = Object.assign(window.Capacitor.Plugins || {}, { AdMob });
 }
 
 async function run() {
@@ -146,27 +178,51 @@ async function run() {
     if (await page.locator('.remove-ads-screen-container').count()) {
       failures.push('Case 3: the Remove Ads screen is rendered although billing is unavailable');
     } else {
-      console.log('  ✅ Case 3: the purchase screen is not reachable either');
+      console.log('  ✅ Case 3: the purchase screen is not rendered on the game screen');
     }
 
-    // ── Case 4: an entitlement still hides the ad slot ────────────────────
+    // ── Case 4: an entitlement hides a slot that would otherwise show ─────
     // Whatever grants Remove Ads later — a real purchase, a restore — the slot
-    // must disappear. Verified through the flag rather than a fake purchase.
-    await page.evaluate(() => localStorage.setItem('suidoku_remove_ads_purchased_v1', 'true'));
-    await page.reload();
-    await page.waitForTimeout(900);
-    for (let i = 0; i < 3; i++) {
-      if (!(await page.locator('.modal-overlay').count())) break;
-      await page.locator('.modal-overlay button').last().click({ timeout: 2000 }).catch(() => {});
-      await page.waitForTimeout(300);
-    }
-    await page.locator('.btn-resume, .btn-play-new').first().click({ timeout: 6000 });
-    await page.waitForSelector('.sudoku-grid', { timeout: 6000 });
-    await page.waitForTimeout(500);
-    if (await page.locator('.ad-slot-container').count()) {
-      failures.push('Case 4: the ad slot is still shown to a player who has Remove Ads');
+    // must disappear. Verified through the flag rather than a fake purchase, on a
+    // page where a stand-in AdMob plugin makes the slot real.
+    const adPage = await browser.newPage({ viewport: VIEWPORT });
+    adPage.on('pageerror', (e) => pageErrors.push(`(ad page) ${e.message}`));
+    await adPage.addInitScript(installAdMobStandIn);
+    await primeStorage(adPage);
+    await adPage.click('.btn-play-new', { timeout: 6000 });
+    await adPage.waitForSelector('.sudoku-grid', { timeout: 6000 });
+    await adPage.waitForTimeout(500);
+    const shownWithout = await adPage.locator('.ad-slot-container').count();
+    if (!shownWithout) {
+      failures.push(
+        'Case 4 control: with the stand-in AdMob plugin and no entitlement the slot did not ' +
+        'appear, so its absence after the entitlement would prove nothing. Is this build ' +
+        'using VITE_ADS_PROVIDER=admob with unit ids set?'
+      );
     } else {
-      console.log('  ✅ Case 4: the ad slot is gone once the entitlement exists');
+      await adPage.evaluate(() => localStorage.setItem('suidoku_remove_ads_purchased_v1', 'true'));
+      await adPage.reload();
+      await adPage.waitForTimeout(900);
+      for (let i = 0; i < 3; i++) {
+        if (!(await adPage.locator('.modal-overlay').count())) break;
+        await adPage.locator('.modal-overlay button').last().click({ timeout: 2000 }).catch(() => {});
+        await adPage.waitForTimeout(300);
+      }
+      await adPage.locator('.btn-resume, .btn-play-new').first().click({ timeout: 6000 });
+      await adPage.waitForSelector('.sudoku-grid', { timeout: 6000 });
+      await adPage.waitForTimeout(500);
+      if (await adPage.locator('.ad-slot-container').count()) {
+        failures.push('Case 4: the ad slot is still shown to a player who has Remove Ads');
+      } else {
+        console.log('  ✅ Case 4: the slot shows without the entitlement (control) and is gone with it');
+      }
+    }
+
+    // ── Case 0: nothing threw while the cases ran ─────────────────────────
+    if (pageErrors.length) {
+      failures.push(`Case 0: ${pageErrors.length} uncaught error(s) on the page — ${pageErrors.slice(0, 3).join(' | ')}`);
+    } else {
+      console.log('  ✅ Case 0: no uncaught error on either page');
     }
   } finally {
     if (browser) await browser.close();

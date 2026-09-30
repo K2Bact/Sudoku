@@ -453,11 +453,18 @@ async function run() {
     await page.locator('.number-pad .num-btn:nth-child(1)').click();
     await page.waitForTimeout(400);
 
+    // The cell that was played, read by its coordinates. This asked whether a 1
+    // was ANYWHERE on the saved board, and a puzzle's clues nearly always hold a
+    // 1 — so a move that was never saved passed (external audit V11, 2026-09-12;
+    // fixed 2026-09-30).
+    const row = Math.floor(blankIdx / 9);
+    const col = blankIdx % 9;
     const afterMove = await readSave();
+    const playedValue = afterMove?.board?.[row]?.[col];
     if (!afterMove || !Array.isArray(afterMove.board)) {
       failures.push('Case 5: no game state was saved after entering a digit');
-    } else if (!afterMove.board.flat().includes(1)) {
-      failures.push('Case 5: the entered digit is missing from the saved board — the move was not persisted');
+    } else if (playedValue !== 1) {
+      failures.push(`Case 5: the saved board has ${JSON.stringify(playedValue)} at row ${row + 1}, column ${col + 1}, where 1 was entered — the move was not persisted`);
     } else {
       const clockAtMove = afterMove.timerSeconds ?? 0;
 

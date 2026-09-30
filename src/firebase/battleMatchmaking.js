@@ -37,6 +37,30 @@ function newRoomId() {
 }
 
 /**
+ * Host: open the match's own room before announcing it (RT-2). True only if the
+ * server took it, so match_created says v2 only when the guest can actually join.
+ * The announcement itself stays on /bus: a guest running 24 or older listens only
+ * there, ignores the v2 flag, and the match runs over /bus as it always has.
+ */
+async function openMatchRoom(service, roomId, peerId) {
+  if (typeof service.channel.openRoom !== 'function') return false;
+  // Opening can take up to two seconds on a bad network. A player who cancelled in
+  // that time must not be dropped into the match anyway.
+  const epoch = service.searchEpoch;
+  let ok = false;
+  try {
+    ok = Boolean(await service.channel.openRoom(roomId, peerId));
+  } catch {
+    ok = false;
+  }
+  if (service.searchEpoch !== epoch) {
+    if (typeof service.channel.leaveRoom === 'function') service.channel.leaveRoom(roomId);
+    return 'cancelled';
+  }
+  return ok;
+}
+
+/**
  * Async because a network transport answers listQueue over the wire. The local
  * transport resolves immediately, so both behave the same to callers — which
  * fire-and-forget and wait for the onMatched callback.
@@ -90,9 +114,12 @@ export async function startQuickMatch(service, level = 3, onMatched, onUnavailab
     };
 
     service.searchingLevel = null;
+    const room = await openMatchRoom(service, roomId, peer.playerId);
+    if (room === 'cancelled') return;
+    if (room) payload.v2 = true;
     service.channel.send({ type: 'match_created', ...payload });
     service.setupRoom({
-      code: roomId.slice(-5), level, puzzle: puzzle.puzzle, solution: puzzle.solution,
+      code: roomId.slice(-5), roomId, level, puzzle: puzzle.puzzle, solution: puzzle.solution,
       initialEmptyCount, opponentId: peer.playerId, opponentName: peer.playerName
     });
     if (onMatched) onMatched(service.currentRoom);
@@ -189,9 +216,12 @@ export async function handleMatchTicket(service, data) {
     player2: { id: data.playerId, name: data.playerName }
   };
 
+  const room = await openMatchRoom(service, roomId, data.playerId);
+  if (room === 'cancelled') return;
+  if (room) payload.v2 = true;
   service.channel.send({ type: 'match_created', ...payload });
   service.setupRoom({
-    code: roomId.slice(-5), level: data.level, puzzle: puzzle.puzzle, solution: puzzle.solution,
+    code: roomId.slice(-5), roomId, level: data.level, puzzle: puzzle.puzzle, solution: puzzle.solution,
     initialEmptyCount, opponentId: data.playerId, opponentName: data.playerName
   });
   if (service.onMatchSuccess) service.onMatchSuccess(service.currentRoom);
@@ -211,8 +241,13 @@ export function handleMatchCreated(service, data) {
   const opponent = data.player1.id === service.myPlayerId ? data.player2 : data.player1;
 
   service.setupRoom({
-    code: data.roomId.slice(-5), level: data.level, puzzle: data.puzzle, solution: data.solution,
+    code: data.roomId.slice(-5), roomId: data.roomId, level: data.level, puzzle: data.puzzle, solution: data.solution,
     initialEmptyCount: data.initialEmptyCount, opponentId: opponent.id, opponentName: opponent.name
   });
+  // The host opened a room for this match; answer its handshake. Until that finishes
+  // (or if it never does) everything keeps going over /bus — see transport/roomLink.js.
+  if (data.v2 === true && typeof service.channel.joinRoom === 'function') {
+    Promise.resolve(service.channel.joinRoom(data.roomId)).catch(() => {});
+  }
   if (service.onMatchSuccess) service.onMatchSuccess(service.currentRoom);
 }

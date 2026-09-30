@@ -187,7 +187,16 @@ const copyright = m[1];
 //
 // So the permitted shape is pinned instead. A copyright notice is a year and an
 // owner; a sentence of any other shape fails whatever it says.
-const COPYRIGHT_SHAPE = /^© \d{4} [A-Za-z0-9][A-Za-z0-9 .,&'-]*\. All rights reserved\.$/;
+//
+// The owner is pinned by name, not by character class. The class used here was
+// [A-Za-z0-9 .,&'-]*, which is room for a sentence: "© 2026 K2Bact. Your data
+// never leaves your phone. All rights reserved." fitted it — the very example
+// above (external audit V11, 2026-09-12; fixed 2026-09-30). Any pattern loose
+// enough to admit an unknown name admits a short claim too. The owner changes
+// about never, and when it does, editing this line is the right amount of
+// friction.
+const OWNER = 'K2Bact';
+const COPYRIGHT_SHAPE = new RegExp(`^© \\d{4} ${OWNER}\\. All rights reserved\\.$`);
 assert(COPYRIGHT_SHAPE.test(copyright),
   `appInfo.copyright must be exactly "© <year> <owner>. All rights reserved." — got:\n` +
   `    "${copyright}"\n\n` +
@@ -370,9 +379,15 @@ console.log('  ✅ no stylesheet text leaks into the page body');
 // actually enforces.
 console.log('▶ 4b. The policy\'s claim about ads matches the build');
 
-const gradle = fs.readFileSync(path.join(ROOT, 'android/app/build.gradle'), 'utf8');
-const pkg = fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8');
-const shipsAdSdk = /play-services-ads|admob/i.test(gradle) || /admob/i.test(pkg);
+// Dependencies, not text. This read both files whole, and on 2026-09-30 a comment
+// in build.gradle explaining R8 named AdMob — after which the build "carried an
+// ad SDK" whatever package.json said, and removing the SDK passed silently.
+const gradle = fs.readFileSync(path.join(ROOT, 'android/app/build.gradle'), 'utf8')
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/\/\/.*$/gm, '');
+const pkgJson = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
+const deps = Object.keys({ ...pkgJson.dependencies, ...pkgJson.devDependencies });
+const shipsAdSdk = /play-services-ads|admob/i.test(gradle) || deps.some((d) => /admob/i.test(d));
 
 // The policy sentence is checked before the permission, deliberately. Both are
 // tied to the same fact, and a mutation can only touch one file — so with the

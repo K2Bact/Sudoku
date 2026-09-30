@@ -8,14 +8,12 @@
 import { STAGE1_DIAGRAMS } from './diagrams/stage1Diagrams.js';
 import { STAGE2_DIAGRAMS } from './diagrams/stage2Diagrams.js';
 import { STAGE3_DIAGRAMS } from './diagrams/stage3Diagrams.js';
-import { STAGE4_DIAGRAMS } from './diagrams/stage4Diagrams.js';
 import { STAGE5_DIAGRAMS } from './diagrams/stage5Diagrams.js';
 
 export const DIAGRAM_TRANSLATIONS = {
   ...STAGE1_DIAGRAMS,
   ...STAGE2_DIAGRAMS,
   ...STAGE3_DIAGRAMS,
-  ...STAGE4_DIAGRAMS,
   ...STAGE5_DIAGRAMS
 };
 

@@ -83,6 +83,38 @@
       "find": "                  {matchUnavailable ? t('battleLobby.connectFailed') : t('battleLobby.noOpponentFound')}",
       "replace": "                  {t('battleLobby.noOpponentFound')}",
       "expectFailure": "must say it could not connect"
+    },
+    {
+      "name": "the host switches to the room on hello instead of ready",
+      "why": "RT-2 match rooms (2026-09-30): hello proves only that the guest can write and the host can read. A host that switched there would talk into a room a guest might not be able to hear — the frozen bar again, from the other side.",
+      "file": "src/firebase/transport/roomLink.js",
+      "find": "      this.io.write(this.roomId, this.stamp({ type: 'room_ack', roomId: this.roomId }));",
+      "replace": "      this.ready = true;\n      this.io.write(this.roomId, this.stamp({ type: 'room_ack', roomId: this.roomId }));",
+      "expectFailure": "the host switched to the room although"
+    },
+    {
+      "name": "the room is used before the handshake finishes",
+      "why": "RT-2 match rooms (2026-09-30): with a guest on 24 or older nobody ever answers the hello; a host that sends into the room anyway sends to nobody.",
+      "file": "src/firebase/transport/roomLink.js",
+      "find": "    if (!this.ready) return false;",
+      "replace": "",
+      "expectFailure": "timed out waiting for"
+    },
+    {
+      "name": "in-match messages stay on /bus",
+      "why": "RT-2 match rooms (2026-09-30): the whole point: every signed-in client can read /bus. A service that never uses the room keeps every match public.",
+      "file": "src/firebase/battleService.js",
+      "find": "    return typeof this.channel.sendRoom === 'function' ? this.channel.sendRoom(message) : this.channel.send(message);",
+      "replace": "    return this.channel.send(message);",
+      "expectFailure": "progress went out on /bus although"
+    },
+    {
+      "name": "the room announcement never says v2",
+      "why": "RT-2 match rooms (2026-09-30): the guest only joins a room the host says it opened; without the flag no handshake ever starts.",
+      "file": "src/firebase/battleMatchmaking.js",
+      "find": "    if (room) payload.v2 = true;\n    service.channel.send",
+      "replace": "    service.channel.send",
+      "expectFailure": "timed out waiting for both ends"
     }
   ],
   "note": "Three simultaneous searchers were added later, after ChatGPT flagged the matchmaking race on review. The id comparison that fixed the two-player case decides who hosts but never checks that either player is still free: with D < E < F all pressing at once, E claims D and hosts while F claims E — which is legitimate, because E's ticket was still in the queue. E already has a room so it drops F's match_created, and F sits against an opponent who never answers. Note that all three DO get a room under the bug, so a gate counting matches would pass it; what the gate asserts is that no room points at an opponent who is in a different room."

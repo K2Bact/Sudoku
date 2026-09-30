@@ -33,7 +33,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../..');
@@ -50,24 +50,29 @@ function fromFiles() {
 }
 
 /**
- * Locale codes the language selector offers.
+ * Locale codes the language selector offers — read from the list the app itself
+ * imports, not from its source text.
+ *
+ * This used to run a regular expression over dictionaries.js. That read a `code:`
+ * sitting in a comment as a language, depended on single quotes, and could not
+ * see a code listed twice (external audit V09, 2026-09-12; fixed 2026-09-30).
+ * The object is what the picker renders, so it is the thing to ask.
  *
  * `auto` is dropped: it is a instruction to follow the device, not a language,
  * and it has no translation file by design.
  */
-function fromSelector() {
-  const src = fs.readFileSync(DICTIONARIES, 'utf8');
-  const block = src.slice(src.indexOf('export const SUPPORTED_LANGUAGES'));
-  const end = block.indexOf('\n]');
-  const list = block.slice(0, end === -1 ? undefined : end);
-  return [...list.matchAll(/code:\s*'([^']+)'/g)]
-    .map((m) => m[1])
-    .filter((c) => c !== 'auto')
-    .sort();
+async function fromSelector() {
+  const { SUPPORTED_LANGUAGES } = await import(pathToFileURL(DICTIONARIES).href);
+  const codes = SUPPORTED_LANGUAGES.map((l) => l.code).filter((c) => c !== 'auto');
+  const twice = codes.filter((c, i) => codes.indexOf(c) !== i);
+  if (twice.length) {
+    throw new Error(`SUPPORTED_LANGUAGES lists ${[...new Set(twice)].join(', ')} more than once — the picker shows that language twice.`);
+  }
+  return codes.sort();
 }
 
 const files = fromFiles();
-const selector = fromSelector();
+const selector = await fromSelector();
 
 const onlyFiles = files.filter((c) => !selector.includes(c));
 const onlySelector = selector.filter((c) => !files.includes(c));

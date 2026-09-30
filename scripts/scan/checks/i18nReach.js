@@ -20,35 +20,43 @@
  * are rendered with `t(ach.titleKey)` and the key never appears next to a `t(`.
  */
 
+import path from 'path';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { isAllowed } from '../allowlist.js';
 import { translationCalls } from '../parse.js';
 
-/** Every leaf key path in a locale file, e.g. removeAds.purchaseBtn */
-function leafKeys(raw) {
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
+
+/**
+ * Every leaf key of the English dictionary, as the app loads it.
+ *
+ * This used to read the locale files as text, matching `key: 'value'`. Files
+ * written with double quotes (`"ahead": "{time} ahead"`) matched nothing, so it
+ * saw 411 of 465 strings and 42 of the 49 that carry a placeholder — the other
+ * seven were never checked, and a clean result said nothing about them (external
+ * audit V10 follow-up, 2026-09-30). The object the app imports has no quoting
+ * to get wrong.
+ */
+async function englishLeaves() {
+  const { default: en } = await import(pathToFileURL(path.join(ROOT, 'src/i18n/locales/en.js')).href);
   const out = new Map();
-  const stack = [];
-  for (const line of raw.split('\n')) {
-    const inline = line.match(/^\s*([A-Za-z0-9_-]+)\s*:\s*\{(.+)\}\s*,?\s*$/);
-    if (inline) {
-      for (const m of inline[2].matchAll(/([A-Za-z0-9_-]+)\s*:\s*'((?:[^'\\]|\\.)*)'/g)) {
-        out.set([...stack, inline[1], m[1]].join('.'), m[2]);
-      }
-      continue;
+  const walk = (node, prefix) => {
+    for (const [k, v] of Object.entries(node)) {
+      const key = prefix ? `${prefix}.${k}` : k;
+      if (v && typeof v === 'object' && !Array.isArray(v)) walk(v, key);
+      else if (typeof v === 'string') out.set(key, v);
     }
-    const open = line.match(/^\s*([A-Za-z0-9_-]+)\s*:\s*\{\s*$/);
-    if (open) { stack.push(open[1]); continue; }
-    if (/^\s*\}[,;]?\s*$/.test(line)) { stack.pop(); continue; }
-    for (const m of line.matchAll(/([A-Za-z0-9_-]+)\s*:\s*'((?:[^'\\]|\\.)*)'/g)) {
-      out.set([...stack, m[1]].join('.'), m[2]);
-    }
-  }
+  };
+  walk(en, '');
   return out;
 }
+
+const EN = await englishLeaves();
 
 export function scanI18nReach(index) {
   const findings = [];
 
-  const literalSites = new Map(); // key -> [{file, params}]
+  const literalSites = new Map(); // key -> [{file, params, paramsKnown}]
   const patterns = [];
   let dynamicCalls = 0;
 
@@ -56,7 +64,7 @@ export function scanI18nReach(index) {
     for (const call of translationCalls(code)) {
       if (call.type === 'literal') {
         if (!literalSites.has(call.key)) literalSites.set(call.key, []);
-        literalSites.get(call.key).push({ file, params: call.params });
+        literalSites.get(call.key).push({ file, params: call.params, paramsKnown: call.paramsKnown });
       } else if (call.type === 'pattern') {
         patterns.push(new RegExp(call.pattern));
       } else {
@@ -69,15 +77,12 @@ export function scanI18nReach(index) {
   // achievements name theirs, in a data file rather than at the call site.
   const stringKeys = new Set();
   for (const [, { code }] of index.app) {
-    for (const m of code.matchAll(/'([A-Za-z][A-Za-z0-9_]*(?:\.[A-Za-z0-9_-]+)+)'/g)) {
-      stringKeys.add(m[1]);
+    for (const m of code.matchAll(/(['"])([A-Za-z][A-Za-z0-9_]*(?:\.[A-Za-z0-9_-]+)+)\1/g)) {
+      stringKeys.add(m[2]);
     }
   }
 
-  const en = new Map();
-  for (const f of [...index.locales.keys()].filter((f) => f.startsWith('src/i18n/locales/en/'))) {
-    for (const [k, v] of leafKeys(index.locales.get(f))) en.set(k, v);
-  }
+  const en = EN;
 
   for (const [key, value] of en) {
     const sites = literalSites.get(key);
@@ -103,6 +108,18 @@ export function scanI18nReach(index) {
     if (isAllowed('unresolvedPlaceholders', key)) continue;
 
     for (const site of sites) {
+      // `t(key, params)` passes whatever `params` holds. Reading that as "passed
+      // nothing" filed a CONFIRMED defect for a call that may be fine (external
+      // audit V10). What cannot be read is said so, one step down.
+      if (!site.paramsKnown) {
+        findings.push({
+          severity: 'SUSPECT',
+          kind: 'unresolvedPlaceholders',
+          where: `${site.file} -> t('${key}', <변수>)`,
+          detail: `params 를 변수로 넘겨 {${placeholders.join('}, {')}} 가 들어가는지 읽을 수 없음 — 직접 확인`
+        });
+        continue;
+      }
       const missing = placeholders.filter((p) => !site.params.includes(p));
       if (!missing.length) continue;
       findings.push({

@@ -1,6 +1,6 @@
 {
   "//": [
-    "Realtime Database security rules for Suidoku 1v1 — LIVE as published.",
+    "Realtime Database security rules for Suidoku 1v1. Everything but /rooms is LIVE as published; /rooms (below) is new on 2026-09-30 and must be published by the user.",
     "",
     "Paste into Firebase console > Realtime Database > Rules, then Publish.",
     "Kept in the repo so the rules are reviewable and versioned alongside the",
@@ -51,7 +51,21 @@
     "uids that is about 76, so every match_created came back PERMISSION_DENIED:",
     "the host sat in a room the other player never heard of, and that player kept",
     "searching. The id is now short and random (battleMatchmaking.newRoomId).",
-    "A refused write shows up as a feature that half works, not as an error."
+    "A refused write shows up as a feature that half works, not as an error.",
+    "",
+    "2026-09-30 (RT-2): /rooms/{roomId}. /bus is readable by every signed-in client,",
+    "so every match's progress, rematches and departures were public. A match now",
+    "gets its own path: /rooms/{roomId}/members names its two players, written once by",
+    "the host, and only a member may read /rooms/{roomId}/msgs or add to it. The",
+    "senderId rule is the same as /bus. A member may remove its own membership and",
+    "its own messages — nothing else, so nobody can delete a match's traffic.",
+    "",
+    "This section is ADDITIVE. 24 and older never touch /rooms. 25 uses a room only",
+    "after a handshake proves both players can read and write it (roomLink.js), and",
+    "stays on /bus otherwise — so before these rules are published, 25 behaves exactly",
+    "like 24, and a mistake in them sends a match back to /bus instead of breaking it.",
+    "Publishing before or after 25 ships are both safe; before means 25-to-25 matches",
+    "are private from the first day."
   ],
   "rules": {
     ".read": false,
@@ -106,6 +120,51 @@
         },
         "$other": {
           ".validate": true
+        }
+      }
+    },
+    "rooms": {
+      "$roomId": {
+        "members": {
+          ".write": "auth != null && $roomId.length <= 64 && !data.exists() && newData.child(auth.uid).val() === true",
+          "$uid": {
+            ".write": "auth != null && $uid === auth.uid && !newData.exists()",
+            ".validate": "newData.val() === true && $uid.length <= 64"
+          }
+        },
+        "msgs": {
+          ".read": "auth != null && data.parent().child('members').child(auth.uid).exists()",
+          "$messageId": {
+            ".write": "auth != null && (newData.exists() ? (!data.exists() && newData.child('senderId').val() === auth.uid && root.child('rooms').child($roomId).child('members').child(auth.uid).exists()) : data.child('senderId').val() === auth.uid)",
+            ".validate": "newData.hasChildren(['type','senderId','_ts'])",
+            "type": {
+              ".validate": "newData.isString() && newData.val().length <= 32"
+            },
+            "senderId": {
+              ".validate": "newData.isString() && newData.val() === auth.uid && newData.val().length <= 64"
+            },
+            "_ts": {
+              ".validate": "newData.isNumber()"
+            },
+            "roomId": {
+              ".validate": "newData.isString() && newData.val().length <= 64"
+            },
+            "progressPct": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+            },
+            "mistakes": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3"
+            },
+            "level": {
+              ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 5"
+            },
+            "$other": {
+              ".validate": true
+            }
+          }
+        },
+        "$other": {
+          ".validate": false
         }
       }
     }

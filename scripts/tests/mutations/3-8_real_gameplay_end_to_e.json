@@ -12,6 +12,14 @@
       "find": "    if (num !== validSolution[r][c] && autoCheckMistakes) {",
       "replace": "    if (num === validSolution[r][c] && autoCheckMistakes) {",
       "expectFailure": "gameplay failure(s)"
+    },
+    {
+      "name": "the save writes the starting board, not the played one",
+      "why": "External audit V11. The check asked whether a 1 was anywhere on the saved board, and the clues nearly always hold one — so a save that dropped every move passed. Resuming would then put the player back at the start with the clock still running.",
+      "file": "src/hooks/useGameLifecycle.js",
+      "find": "    saveGameState({\n      board: s.board,",
+      "replace": "    saveGameState({\n      board: s.initialBoard,",
+      "expectFailure": "where 1 was entered"
     }
   ],
   "rebuild": true

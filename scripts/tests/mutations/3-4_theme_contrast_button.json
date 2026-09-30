@@ -3,15 +3,31 @@
   "name": "Theme Contrast & Button State Visibility Audit",
   "command": "node scripts/tests/ui/test_theme_and_button_contrast.js",
   "greenMarker": "GATE 15 PASSED",
-  "note": "The contrast comparison in this gate had never executed. It was guarded by `dist > 30 || backgroundImage.includes(gradient)`, and the button it measures is always a gradient, so white text on a white background passed.",
+  "note": "The contrast comparison in this gate had never executed. It was guarded by `dist > 30 || backgroundImage.includes(gradient)`, and the button it measures is always a gradient, so white text on a white background passed. 2026-09-30: the threshold is now the WCAG contrast ratio (3:1), not RGB distance (external audit V06).",
   "mutations": [
     {
       "name": "the selected language button is given text the same colour as its background",
-      "why": "Text at #4a8bf5 sits 17 units from the gradient stop #3b82f6, under the threshold of 30 — the selected language is then unreadable against its own button. The first attempt used #dbeafe, which is 191 units away and correctly passed: an unfair mutation reported as a gate defect until the numbers were checked.",
+      "why": "Text at #4a8bf5 sits 17 units from the gradient stop #3b82f6, under the threshold of 30 — the selected language is then unreadable against its own button. The first attempt used #dbeafe, which is 191 units away and correctly passed: an unfair mutation reported as a gate defect until the numbers were checked. Under the ratio rule: #4a8bf5 on #3b82f6 is 1.1:1.",
       "file": "src/styles/settings.css",
       "find": "  color: #ffffff !important;\n  border: 1.5px solid #2563eb !important;",
       "replace": "  color: #4a8bf5 !important;\n  border: 1.5px solid #2563eb !important;",
       "expectFailure": "contrast"
+    },
+    {
+      "name": "the selected language gets pale blue text — far in RGB, unreadable to the eye",
+      "why": "External audit V06: #93c5fd sits 110 units from #3b82f6, so the old distance rule (>30) passed it. Its contrast is 2.0:1. This is the case the distance rule could not see.",
+      "file": "src/styles/settings.css",
+      "find": "  color: #ffffff !important;\n  border: 1.5px solid #2563eb !important;",
+      "replace": "  color: #93c5fd !important;\n  border: 1.5px solid #2563eb !important;",
+      "expectFailure": "Active language button"
+    },
+    {
+      "name": "the stats tab goes back to white on light amber",
+      "why": "White on #f59e0b is 2.15:1 — measured when the stats tab joined this gate on 2026-09-30, and darkened then.",
+      "file": "src/components/StatsScreen.jsx",
+      "find": "'linear-gradient(135deg, #d97706, #b45309)'",
+      "replace": "'linear-gradient(135deg, #f59e0b, #d97706)'",
+      "expectFailure": "Selected stats tab"
     }
   ],
   "rebuild": true

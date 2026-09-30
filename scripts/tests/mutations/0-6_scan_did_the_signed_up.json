@@ -12,6 +12,22 @@
       "find": "adsService.isAdsRemoved()",
       "replace": "adsService.isAdsRemovedNow()",
       "expectFailure": "존재하지 않는 메서드"
+    },
+    {
+      "name": "a translation called with double quotes drops its placeholder",
+      "why": "External audit V10. The scan read only single-quoted keys; t(\"...\") fell through to 'dynamic', so the key looked unused and its placeholders were never checked. The same call with the param removed would print {time} to the player, and the scan said nothing.",
+      "file": "src/components/battle/GhostRivalBanner.jsx",
+      "find": "t('game.ghost.ahead', { time: pace.deltaText })",
+      "replace": "t(\"game.ghost.ahead\")",
+      "expectFailure": "를 안 넘김"
+    },
+    {
+      "name": "params passed through something the scan cannot read (control)",
+      "why": "External audit V10, the other half. t(key, params) passes whatever params holds, and the scan used to read it as passing nothing — a CONFIRMED defect for a call that works. The control keeps that from coming back: an unreadable second argument is reported as SUSPECT for a human, and CONFIRMED stays at 0.",
+      "file": "src/components/battle/GhostRivalBanner.jsx",
+      "find": "t('game.ghost.ahead', { time: pace.deltaText })",
+      "replace": "t('game.ghost.ahead', Object.assign({}, { time: pace.deltaText }))",
+      "expectSurvival": true
     }
   ]
 }

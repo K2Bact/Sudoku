@@ -13,23 +13,39 @@
  * bug this project keeps finding — working-looking code that cannot work — so
  * it gets a gate rather than a note in a README.
  *
- * Checked here:
+ * Checked here (step 0-5):
  *   1. .env.example documents every key firebaseApp.js reads, so a fresh clone
  *      knows what is missing.
- *   2. .env supplies all of them, non-empty.
- *   3. If dist/ exists, the database URL is actually inside it. A stale bundle
- *      built before the config existed would otherwise ship as-is.
+ *   2. The production build will get all of them, non-empty — asked of Vite
+ *      itself: vite.config's envDir and envPrefix, then loadEnv, which merges
+ *      .env, .env.local, .env.production(.local) and the process environment in
+ *      Vite's order. This used to parse .env alone, so a value set only in
+ *      .env.production.local failed the gate, and a blank one there that
+ *      overrode .env passed it (external audit V11, 2026-09-12; fixed 09-30).
+ *
+ * Checked with --built (step 3-0b, right after this run's build):
+ *   3. The database URL is inside dist/. This used to run at 0-5, against
+ *      whatever dist/ the PREVIOUS build left — a check of a bundle this run was
+ *      about to replace.
+ *
+ * What a pass does NOT say: that Firebase answers, that sign-in works, or that
+ * the database rules let a match through. A URL in the bundle proves the app
+ * knows where to go. Going there is gate 3-14 (the lobby says when it cannot
+ * connect) and a phone.
  */
 
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { loadConfigFromFile, loadEnv } from 'vite';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
+const BUILT = process.argv.includes('--built');
+const MODE = 'production'; // what `vite build` uses
 
 console.log('======================================================');
-console.log('🔑 Testing Firebase Config Reaches the Build');
+console.log(`🔑 Testing Firebase Config ${BUILT ? 'Is Inside The Bundle' : 'Reaches the Build'}`);
 console.log('======================================================\n');
 
 /** The keys firebaseApp.js actually reads, taken from the source, not a list. */
@@ -51,38 +67,52 @@ function parseEnv(file) {
   return out;
 }
 
+/** Where the build looks for env files, and which names it lets through. */
+async function viteEnvSettings() {
+  const loaded = await loadConfigFromFile({ command: 'build', mode: MODE }, undefined, ROOT, 'silent');
+  const config = loaded?.config ?? {};
+  return {
+    envDir: path.resolve(ROOT, config.envDir ?? '.'),
+    prefix: config.envPrefix ?? 'VITE_'
+  };
+}
+
 const keys = requiredKeys();
 assert(keys.length >= 5, 'Could not read the config keys out of firebaseApp.js');
 console.log(`▶ firebaseApp.js reads ${keys.length} keys: ${keys.join(', ')}\n`);
 
-// ── 1. The template documents every key ───────────────────────────────────
-console.log('▶ 1. .env.example documents every key');
-const example = parseEnv(path.join(ROOT, '.env.example'));
-assert(example, '.env.example is missing — a fresh clone has no way to know what to set');
-for (const k of keys) {
-  assert(k in example, `.env.example does not list ${k}, which firebaseApp.js reads`);
-}
-console.log('  ✅ Every key firebaseApp.js reads is documented');
+const { envDir, prefix } = await viteEnvSettings();
 
-// ── 2. This machine can actually build a working 1v1 ──────────────────────
-console.log('▶ 2. .env supplies every key');
-const env = parseEnv(path.join(ROOT, '.env'));
-assert(env,
-  '.env is missing. Copy .env.example and fill it from the Firebase console. ' +
-  'Without it the app builds fine and 1v1 silently cannot match anyone.');
-const empty = keys.filter((k) => !env[k]);
-assert.deepStrictEqual(empty, [],
-  `.env has no value for: ${empty.join(', ')} — 1v1 will fall back to the ` +
-  'same-device transport and never reach another phone');
-console.log('  ✅ All values present');
+if (!BUILT) {
+  // ── 1. The template documents every key ─────────────────────────────────
+  console.log('▶ 1. .env.example documents every key');
+  const example = parseEnv(path.join(ROOT, '.env.example'));
+  assert(example, '.env.example is missing — a fresh clone has no way to know what to set');
+  for (const k of keys) {
+    assert(k in example, `.env.example does not list ${k}, which firebaseApp.js reads`);
+  }
+  console.log('  ✅ Every key firebaseApp.js reads is documented');
 
-// ── 3. A built bundle really carries it ───────────────────────────────────
-console.log('▶ 3. dist/, if built, carries the database URL');
-const dist = path.join(ROOT, 'dist');
-if (!fs.existsSync(dist)) {
-  console.log('  ⏭  No dist/ yet — nothing built to check');
+  // ── 2. This machine can actually build a working 1v1 ────────────────────
+  console.log(`▶ 2. the ${MODE} build gets every key (envDir ${path.relative(ROOT, envDir) || '.'}, prefix ${JSON.stringify(prefix)})`);
+  const env = loadEnv(MODE, envDir, prefix);
+  const empty = keys.filter((k) => !env[k] || !String(env[k]).trim());
+  assert.deepStrictEqual(empty, [],
+    `the ${MODE} build gets no value for: ${empty.join(', ')} — copy .env.example to ` +
+    '.env and fill it from the Firebase console. Without it the app builds fine and ' +
+    '1v1 falls back to the same-device transport and never reaches another phone');
+  console.log('  ✅ All values present');
+  console.log('▶ 3. the bundle — checked after this run builds it (step 3-0b, --built)');
 } else {
-  const url = env.VITE_FIREBASE_DATABASE_URL;
+  // ── 3. A bundle built just now really carries it ────────────────────────
+  // The value is looked up with no prefix filter: the question is whether the
+  // URL the developer set made it in, not whether it passed the filter. If the
+  // prefix kept it out, the bundle is exactly where that shows.
+  console.log('▶ 3. dist/ just built carries the database URL');
+  const url = loadEnv(MODE, envDir, '').VITE_FIREBASE_DATABASE_URL;
+  assert(url && url.trim(), 'no VITE_FIREBASE_DATABASE_URL is set at all — step 0-5 says where to put it');
+  const dist = path.join(ROOT, 'dist');
+  assert(fs.existsSync(dist), 'dist/ does not exist — --built runs right after `npm run build`, which did not produce it');
   const found = (function search(dir) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       const p = path.join(dir, entry.name);
@@ -96,10 +126,11 @@ if (!fs.existsSync(dist)) {
   })(dist);
   assert(found,
     'The built bundle in dist/ does not contain the Firebase database URL, so ' +
-    'that build cannot do 1v1. It was built before .env existed — rebuild it.');
+    'that build cannot do 1v1. The build did not get the config — check .env and ' +
+    "vite.config's envDir / envPrefix.");
   console.log('  ✅ The database URL is compiled into the bundle');
 }
 
 console.log('\n======================================================');
-console.log('🎉 Firebase config gate passed — 1v1 can reach the network.');
+console.log(`🎉 Firebase config gate passed — the config ${BUILT ? 'is compiled into the bundle' : 'reaches the build'}.`);
 console.log('======================================================');

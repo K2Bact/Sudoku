@@ -16,6 +16,12 @@
  * it can see, so the message is "here are the seams" rather than "you are over a
  * number".
  *
+ * What a pass means, and does not: the numbers below are this team's housekeeping
+ * limit. A file under them is short, not proven to do one thing — a 150-line file
+ * can still mix three jobs, and one long statement per line would slip under any
+ * line count. The gate says "small enough to read", and the unit list it prints
+ * is where a human decides about responsibilities (external audit V11).
+ *
  * Thresholds come from measuring this repository (107 files, median 86% code):
  *   Logic (.js/.jsx)   WARN 200 code lines, FAIL 280  (~325 raw at 86% density)
  *   Styles (.css)      FAIL 320 only, no warning
@@ -51,25 +57,53 @@ function walk(dir, out = []) {
   return out;
 }
 
-/** Lines that carry logic: blank lines and comments do not count. */
-function countCodeLines(text) {
-  let code = 0;
-  let inBlock = false;
-  for (const raw of text.split('\n')) {
-    const line = raw.trim();
-    if (inBlock) {
-      if (line.includes('*/')) inBlock = false;
+/**
+ * The file with its comments blanked out and everything else kept, line for line.
+ * Quotes are tracked so `'//'` in a string stays code. CSS has no `//` comment —
+ * `url(https://...)` is a value — so a stylesheet only loses its block comments.
+ *
+ * This used to judge each line by how it STARTED: a line beginning `/*` was a
+ * comment. `/* why *\/ const x = f();` is code, and it counted 0 — three hundred
+ * such lines counted 0 too (external audit V11, 2026-09-12; fixed 2026-09-30).
+ */
+function stripComments(text, isStyle = false) {
+  let out = '';
+  let quote = null;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    const next = text[i + 1];
+    if (quote) {
+      out += c;
+      if (c === '\\') { out += next ?? ''; i++; } else if (c === quote) quote = null;
       continue;
     }
-    if (!line) continue;
-    if (line.startsWith('/*')) {
-      if (!line.includes('*/')) inBlock = true;
+    if (!isStyle && c === '/' && next === '/') {
+      while (i < text.length && text[i] !== '\n') i++;
+      out += '\n';
       continue;
     }
-    if (line.startsWith('//') || line.startsWith('*')) continue;
-    code++;
+    if (c === '/' && next === '*') {
+      const end = text.indexOf('*/', i + 2);
+      const stop = end < 0 ? text.length : end + 2;
+      out += text.slice(i, stop).replace(/[^\n]/g, '');
+      i = stop - 1;
+      continue;
+    }
+    if (c === '\'' || c === '"' || c === '`') quote = c;
+    out += c;
   }
-  return code;
+  return out;
+}
+
+/**
+ * Lines that carry logic: blank lines and comments do not count. A JSX comment
+ * `{/* ... *\/}` leaves a bare `{}` behind, which is not logic either.
+ */
+function countCodeLines(text, isStyle = false) {
+  return stripComments(text, isStyle).split('\n').filter((l) => {
+    const line = l.trim();
+    return line && line !== '{}';
+  }).length;
 }
 
 /** Top-level units in the file — the candidate seams to split along. */
@@ -100,7 +134,7 @@ const measured = files.map((f) => {
     file: f.slice(f.indexOf('/src/') + 1),
     isStyle,
     limit: isStyle ? CSS_FAIL_AT : FAIL_AT,
-    code: countCodeLines(text),
+    code: countCodeLines(text, isStyle),
     raw: text.split('\n').length,
     units: isStyle ? [] : findUnits(text)
   };

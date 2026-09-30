@@ -16,6 +16,7 @@ export const leaderboard = {
     lastBackup: "마지막 백업: {time}",
     notBackedUp: "아직 백업되지 않았어요",
     restorePrompt: "Play 게임즈에 저장된 기록이 있어요({won}승). 이 기기로 불러올까요?",
-    noData: '해당 계정에 저장된 클라우드 백업 데이터가 없습니다.'
+    noData: '해당 계정에 저장된 클라우드 백업 데이터가 없습니다.',
+    restoreFailed: "복원하지 못했습니다. 이 기기의 기록은 바뀌지 않았습니다."
   }
 };

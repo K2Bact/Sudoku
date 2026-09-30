@@ -1,6 +1,6 @@
 {
   "gate": "0-5",
-  "name": "Firebase Config Reaches the Build (1v1 is live)",
+  "name": "Firebase Config Reaches the Build (keys set; not a live connection)",
   "command": "node scripts/tests/unit/test_firebase_config_present.js",
   "greenMarker": "Firebase config gate passed",
   "note": "Without the config the transport falls back to same-device mode. Every 1v1 gate still passes, because two tabs on one machine really do meet — and no two phones ever would.",
@@ -12,6 +12,14 @@
       "find": "        databaseURL: env.VITE_FIREBASE_DATABASE_URL,",
       "replace": "        databaseURL: env.VITE_FIREBASE_DATABASE_URL_RENAMED,",
       "expectFailure": "VITE_FIREBASE_DATABASE_URL_RENAMED"
+    },
+    {
+      "name": "vite.config moves where the build reads env files",
+      "why": "External audit V11. The gate parsed ROOT/.env itself, so it kept passing when the build was told to read somewhere else and got nothing. It now asks vite.config where the build looks, so the answer is the build's answer.",
+      "file": "vite.config.js",
+      "find": "  plugins: [react()],",
+      "replace": "  plugins: [react()],\n  envDir: 'no-such-env-dir',",
+      "expectFailure": "build gets no value for"
     }
   ]
 }

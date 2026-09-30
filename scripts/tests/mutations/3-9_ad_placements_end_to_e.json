@@ -11,6 +11,22 @@
       "find": "  if (!adsService.isReal) {",
       "replace": "  if (false) {",
       "expectFailure": "an ad slot rendered with provider"
+    },
+    {
+      "name": "the banner stops honouring Remove Ads",
+      "why": "External audit V11. Case 4 used to run where the slot never appears, so this passed: nothing shown before, nothing shown after. With the stand-in plugin the slot really appears, and a player who paid would keep seeing it.",
+      "file": "src/components/AdBanner.jsx",
+      "find": "  if (removed) {\n    return null;\n  }",
+      "replace": "",
+      "expectFailure": "still shown to a player who has Remove Ads"
+    },
+    {
+      "name": "an error thrown from a timer on the game screen",
+      "why": "External audit V11. The story at the top of this gate is a TypeError thrown inside a setTimeout — invisible to React, visible only as a page error. The gate collected page errors and never read them, so that exact failure passed.",
+      "file": "src/components/AdBanner.jsx",
+      "find": "  const removed = adsService.isAdsRemoved();",
+      "replace": "  const removed = adsService.isAdsRemoved();\n  useEffect(() => { const id = setTimeout(() => { throw new TypeError('onAdsRemovedPurchased is not a function'); }, 0); return () => clearTimeout(id); }, []);",
+      "expectFailure": "Case 0"
     }
   ],
   "rebuild": true,

@@ -150,7 +150,11 @@ function expandBait(text) {
  */
 function isGreen(manifest, res) {
   if (manifest.greenBy === 'exit') return res.exitZero;
-  return res.out.includes(manifest.greenMarker);
+  // The marker says which run passed; the exit code says the run finished. A gate
+  // that prints its success line and then dies in cleanup has not passed — and a
+  // baseline accepted that way certifies a broken gate (external audit V12-1,
+  // 2026-09-12; fixed 2026-09-30).
+  return res.exitZero && res.out.includes(manifest.greenMarker);
 }
 
 // ── Load manifests ─────────────────────────────────────────────────────────
@@ -207,7 +211,11 @@ console.log('======================================================\n');
  */
 const LOCK = path.join(BACKUP_DIR, '.audit-running');
 fs.mkdirSync(BACKUP_DIR, { recursive: true });
-if (fs.existsSync(LOCK)) {
+// Taken atomically: 'wx' fails if the file exists, so two audits started in the same
+// instant cannot both check, find nothing and write (external audit V12-4).
+let lockFd = null;
+try { lockFd = fs.openSync(LOCK, 'wx'); } catch (e) { if (e.code !== 'EEXIST') throw e; }
+if (lockFd === null) {
   const held = fs.readFileSync(LOCK, 'utf8').trim();
   const ageMin = Math.round((Date.now() - fs.statSync(LOCK).mtimeMs) / 60000);
   console.error('❌ Another mutation audit holds the lock.');
@@ -221,7 +229,8 @@ if (fs.existsSync(LOCK)) {
   console.error(`   ${path.relative(ROOT, LOCK)}`);
   process.exit(1);
 }
-fs.writeFileSync(LOCK, `pid ${process.pid} · gates ${wanted.length ? wanted.join(' ') : 'all'} · started ${new Date().toISOString()}`, 'utf8');
+fs.writeSync(lockFd, `pid ${process.pid} · gates ${wanted.length ? wanted.join(' ') : 'all'} · started ${new Date().toISOString()}`);
+fs.closeSync(lockFd);
 const releaseLock = () => { try { fs.unlinkSync(LOCK); } catch (e) { /* already gone */ } };
 process.on('exit', releaseLock);
 for (const sig of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGBREAK']) {
@@ -263,11 +272,16 @@ const results = [];
  * in the tree becomes a lint error against innocent code an hour later.
  */
 let inFlight = null;
+let restoreBuildFailed = false;
 
 function restoreEverything() {
   if (!inFlight) return;
   fs.writeFileSync(inFlight.full, inFlight.original, 'utf8');
   console.error(`\n↩ restored ${inFlight.rel} before exiting`);
+  // A mutation with rebuildFixture also rewrote the fixtures; the normal finally puts
+  // them back, a kill used to leave them behind (external audit V12-5).
+  for (const [fp, body] of inFlight.fixtures || []) fs.writeFileSync(fp, body, 'utf8');
+  if (inFlight.rebuilt) console.error('   dist/ may still hold the mutated build — run `npm run build` before any UI gate');
   inFlight = null;
 }
 
@@ -321,14 +335,14 @@ for (const manifest of selected) {
     // source mutation is invisible to it until the bundle is rebuilt. Getting
     // this wrong reports SURVIVED for a gate that is in fact fine — the
     // mutation simply never reached the browser.
+    // Returns false when the build fails. That used to be swallowed and the gate run
+    // against whatever dist/ held — the previous build, or a half-emptied folder —
+    // so a mutation that did not compile was reported as caught or survived by a
+    // gate that never saw it (external audit V12-2). It is its own verdict now.
     const rebuild = () => {
-      if (!manifest.rebuild) return;
-      try { execSync('npm run build', { cwd: ROOT, stdio: 'pipe' }); }
-      catch (e) {
-        // A mutation that will not compile is still a valid mutation: the gate
-        // must go red. Let the gate run and report on the stale bundle rather
-        // than crashing the audit here.
-      }
+      if (!manifest.rebuild) return true;
+      try { execSync('npm run build', { cwd: ROOT, stdio: 'pipe' }); return true; }
+      catch { return false; }
     };
 
     /*
@@ -362,18 +376,29 @@ for (const manifest of selected) {
     }
 
     let res;
+    let built = true;
     try {
-      inFlight = { full, original, rel };
+      inFlight = { full, original, rel, fixtures: fixtureFiles, rebuilt: Boolean(manifest.rebuild) };
       writeWithRetry(full, original.replace(find, toFile(expandBait(mut.replace))));
-      rebuild();
+      built = rebuild();
       rebuildFixture();
-      res = runGate(manifest.command);
+      if (built) res = runGate(manifest.command);
     } finally {
       for (const [fp, body] of fixtureFiles) writeWithRetry(fp, body);
       writeWithRetry(full, original);
-      rebuild();
+      if (!rebuild()) {
+        console.error('  ❌ the restored source does not build — dist/ is not the tree any more');
+        restoreBuildFailed = true;
+      }
       inFlight = null;
       if (sha(full) === hashesBefore[rel]) fs.unlinkSync(backup);
+    }
+
+    if (!built) {
+      console.log(`  ⚠  ${mut.name}`);
+      console.log('       the mutated source did not build — no gate ever saw it');
+      results.push({ gate: manifest.gate, mutation: mut.name, verdict: 'BUILD_ERROR' });
+      continue;
     }
 
     const stillGreen = isGreen(manifest, res);
@@ -404,7 +429,7 @@ for (const manifest of selected) {
         results.push({ gate: manifest.gate, mutation: mut.name, verdict: 'UNJUSTIFIED_SURVIVAL' });
       } else if (stillGreen) {
         console.log(`  ✅ ${mut.name}  [통과해야 정상]`);
-        results.push({ gate: manifest.gate, mutation: mut.name, verdict: 'CAUGHT' });
+        results.push({ gate: manifest.gate, mutation: mut.name, verdict: 'CONTROL_HELD' });
       } else {
         console.log(`  ❌ ${mut.name}  [통과해야 정상]`);
         console.log('       the gate went red on something it must not object to.');
@@ -445,11 +470,16 @@ if (gitStatus() !== statusBefore) {
 }
 
 // ── Report ─────────────────────────────────────────────────────────────────
+if (restoreBuildFailed) restored = false;
+// A control that stayed green is not a defect caught, so it is not counted as one
+// (external audit V12-3): "N caught" means N defects the gates really stopped.
 const caught = results.filter((r) => r.verdict === 'CAUGHT').length;
-const bad = results.filter((r) => r.verdict !== 'CAUGHT');
+const controls = results.filter((r) => r.verdict === 'CONTROL_HELD').length;
+const bad = results.filter((r) => r.verdict !== 'CAUGHT' && r.verdict !== 'CONTROL_HELD');
+const defects = results.length - controls;
 
 console.log('======================================================');
-console.log(`${caught}/${results.length} mutations caught · tree ${restored ? 'restored' : 'NOT RESTORED'}`);
+console.log(`${caught}/${defects} mutations caught${controls ? ` · ${controls} control(s) held` : ''} · tree ${restored ? 'restored' : 'NOT RESTORED'}`);
 if (bad.length) {
   console.log('');
   for (const b of bad) console.log(`  ${b.verdict.padEnd(17)} ${b.gate}  ${b.mutation}`);
@@ -460,6 +490,7 @@ if (bad.length) {
   console.log('UNJUSTIFIED_SURVIVAL means expectSurvival was claimed with no reason written.');
   console.log('WRONG_REASON means an earlier failure hid this one — the check is unproven.');
   console.log('ANCHOR_* means the manifest rotted. Repoint it; do not delete the mutation.');
+  console.log('BUILD_ERROR means the mutated source did not compile, so no gate saw it.');
 }
 console.log('======================================================');
 

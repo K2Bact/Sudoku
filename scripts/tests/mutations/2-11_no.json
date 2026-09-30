@@ -12,6 +12,38 @@
       "find": "    if (!(await confirm(t('cloudSync.restoreConfirm')))) return;",
       "replace": "    if (!window.confirm(t('cloudSync.restoreConfirm'))) return;",
       "expectFailure": "window.confirm"
+    },
+    {
+      "name": "window.alert comes back",
+      "why": "External audit V11, and it was live: the regex saw only window.confirm and a bare alert, so this exact call sat in AccountSection.jsx from the first 1v1 commit until 2026-09-30 — English OK button, English message, every language.",
+      "file": "src/components/settings/AccountSection.jsx",
+      "find": "notify(t(res.error === 'NO_CLOUD_DATA' ? 'cloudSync.noData' : 'cloudSync.restoreFailed'));",
+      "replace": "window.alert(t('cloudSync.noData'));",
+      "expectFailure": "window.alert"
+    },
+    {
+      "name": "a bare prompt()",
+      "why": "prompt draws the same native dialog with the same English buttons. It was not in the pattern at all.",
+      "file": "src/components/settings/AccountSection.jsx",
+      "find": "notify(t(res.error === 'NO_CLOUD_DATA' ? 'cloudSync.noData' : 'cloudSync.restoreFailed'));",
+      "replace": "prompt(t('cloudSync.noData'));",
+      "expectFailure": "-> prompt"
+    },
+    {
+      "name": "globalThis.confirm",
+      "why": "The same dialog reached through a different name for the global object. The check reads the call, not the spelling of one path to it.",
+      "file": "src/components/settings/AccountSection.jsx",
+      "find": "    if (!(await confirm(t('cloudSync.restoreConfirm')))) return;",
+      "replace": "    if (!globalThis.confirm(t('cloudSync.restoreConfirm'))) return;",
+      "expectFailure": "globalThis.confirm"
+    },
+    {
+      "name": "a comment and a string that mention alert( (control)",
+      "why": "The parser reads calls, not text, so explaining the old bug in a comment or naming it in a string must not fail the gate. Without this control the natural fix for a false positive would be to stop writing the explanation down.",
+      "file": "src/components/settings/AccountSection.jsx",
+      "find": "notify(t(res.error === 'NO_CLOUD_DATA' ? 'cloudSync.noData' : 'cloudSync.restoreFailed'));",
+      "replace": "notify(t(res.error === 'NO_CLOUD_DATA' ? 'cloudSync.noData' : 'cloudSync.restoreFailed')); // was: window.alert(res.message)\n      console.debug('window.alert( is not used here');",
+      "expectSurvival": true
     }
   ]
 }

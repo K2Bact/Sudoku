@@ -17,8 +17,8 @@
       "name": "a which-candidate-goes mission shows the ordinary prompt",
       "why": "The prompt tells the player what to enter. Showing \"enter the number for the empty cell\" on a mission that asks which candidate is removed makes the correct answer look wrong.",
       "file": "src/components/academy/practice/InteractivePracticeSection.jsx",
-      "find": "{currentMission.asks === 'eliminated'",
-      "replace": "{currentMission.asks === 'never'",
+      "find": "{mission.asks === 'eliminated'",
+      "replace": "{mission.asks === 'never'",
       "expectFailure": "prompt"
     },
     {

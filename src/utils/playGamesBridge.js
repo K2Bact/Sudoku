@@ -25,7 +25,7 @@ function isAutoSignInBlocked() {
 }
 
 /** 자동 시도를 멈춘다. 설정 화면의 버튼은 계속 동작한다. */
-export function blockAutoSignIn() {
+function blockAutoSignIn() {
   try { localStorage.setItem(AUTO_SIGNIN_BLOCKED_KEY, '1'); } catch { /* 저장 못 해도 흐름은 계속 */ }
 }
 

@@ -237,7 +237,7 @@ export const screens = {
   },
   academy: {
     tabs: { stage1: '1단계', stage2: '2단계', stage3: '3단계', stage4: '4단계', stage5: '5단계' },
-    stageTitles: {"stage1":"1단계: 기본 테크닉 (기초 싱글 & 라인)","stage2":"2단계: 중급 테크닉 (블록 페어 & 인터섹션)","stage3":"3단계: 고급 테크닉 (윙 시리즈 & 피쉬 기법)","stage4":"4단계: 전문가 테크닉 (컬러링 & 3D 메두사)","stage5":"5단계: 마스터 테크닉 (UR, AIC & ALS 체인)"},
+    stageTitles: {"stage1":"1단계: 기본 테크닉 (기초 싱글 & 라인)","stage2":"2단계: 중급 테크닉 (블록 페어 & 인터섹션)","stage3":"3단계: 고급 테크닉 (윙 시리즈)","stage4":"4단계: 마스터 테크닉 (피쉬, 컬러링 & 유일 사각형)","stage5":"5단계: 그랜드마스터 테크닉 (AIC, ALS & 엑소셋)"},
     title: '스도쿠 아카데미',
     theoryBoard: {
       patternTab: '패턴',

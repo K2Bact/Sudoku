@@ -36,6 +36,14 @@
       "find": "ゲームオーバーになったり、途中でやめたりすると、",
       "replace": "ゲームオーバーや途中でやめると",
       "expectFailure": "JA parallel clauses mix a noun and a verb (J-01)"
+    },
+    {
+      "name": "a translation grows a token its source never had",
+      "why": "External audit V08: the token gate skipped every key whose source had no tokens, so \"Start {ghost}\" against a plain \"시작\" counted as symmetric. The player would see the braces, or a value that never arrives. It first survived even with the gate fixed: the engine never loaded keypad.* at all — it read only the section of common.js named after the file, 70 of 465 strings per language. The loader now reads every section; this mutation holds both fixes.",
+      "file": "src/i18n/locales/de/common.js",
+      "find": "notesOn: 'Notizen AN',",
+      "replace": "notesOn: 'Notizen AN {ghost}',",
+      "expectFailure": "Token mismatch"
     }
   ]
 }

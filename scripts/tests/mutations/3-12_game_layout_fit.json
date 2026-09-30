@@ -63,11 +63,11 @@
     },
     {
       "name": "the 3x3 line goes back to 720",
-      "why": "720 held at the normal font and left 23px of clearance at 1.3x — one pixel under what this layout promises, at the exact font setting the original report came from.",
+      "why": "When the line was first drawn at 720 it held at the normal font and left 23px of clearance at 1.3x — one pixel under what this layout promises. Since then the cqh lock keeps the pad inside its column, so clearance no longer fails; what 720 breaks now is the shape: a 1280x720 window gets the 3x3 pad where the row of nine is what fits. Repointed 2026-09-30 when the full audit reported WRONG_REASON — the gate was right, the stated reason had gone stale. A 740 line passes, because no measured size sits between 720 and 760.",
       "file": "src/styles/gameLayout.css",
       "find": "and (min-height: 760px) {",
       "replace": "and (min-height: 720px) {",
-      "expectFailure": "above the banner"
+      "expectFailure": "1280x720 font×1: 3 keypad columns"
     }
   ],
   "rebuild": true

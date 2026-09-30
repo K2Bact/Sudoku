@@ -1,6 +1,6 @@
 # [SUIDOKU_TECHNICAL_SPEC] 스도쿠(Suidoku) 애플리케이션 상세 기술 명세서
 
-> **문서 버전**: 2.0.0 (Release v1.2.0 Architecture)  
+> **문서 버전**: 2.1.0 (2026-09-30, 1.3.2 코드와 대조 — §2·§4·§5 정정)  
 > **상위 공통 명세서**: [`COMMON_APP_TECHNICAL_SPEC.md`](file:///D:/PowerNeJa/PythonWorkspace/app_common/docs/COMMON_APP_TECHNICAL_SPEC.md) (전역 공통 표준 상속)  
 > **타깃 런타임**: Android SDK 35 (Android 15), React 19, Vite 8, Capacitor 8  
 
@@ -13,7 +13,7 @@
 | 아키텍처 영역 | 공통 기술 명세 ([`COMMON_APP_TECHNICAL_SPEC.md`](file:///D:/PowerNeJa/PythonWorkspace/app_common/docs/COMMON_APP_TECHNICAL_SPEC.md)) | 스도쿠 특화 구현 (Suidoku Customization) |
 | :--- | :--- | :--- |
 | **다국어 QA** | 1단계: Universal Core 8-Gate 검증 엔진 상속 | 2단계: `app_common/l10n_engine/profiles/suidoku.mjs` (아카데미 5단계, 3분할 탭 제약, 브랜드명 Sudoku 검증) |
-| **보안 / 데이터** | Zero-PII 원칙, 무손실 클라우드 병합 프로토콜 | 스도쿠 판 상태(9x9 그리드, 메모 배열, 히스토리 스택), 365일 캘린더 출석 데이터 |
+| **보안 / 데이터** | 개인정보 최소 처리 — 이름·이메일을 직접 받지 않는다. 광고 ID(AdMob)·Firebase 익명 ID·Play Games 계정은 처리하며 `docs/privacy.html` 에 적혀 있다 ("Zero-PII" 표현은 2026-09-30 감사 D03 으로 뺐다). 저장은 평문 JSON localStorage, 앱 수준 암호화 없음. 무손실 클라우드 병합 (`progressMerge.js`) | 스도쿠 판 상태(9x9 그리드, 메모 배열, 히스토리 스택), 365일 캘린더 출석 데이터 |
 | **UI / 반응형** | 상하단 Safe Area, 1줄 고정 UI 글자수 제약 | 3D 클레이모피즘 키패드, 9x9 스도쿠 보드 충돌 감지 애니메이션, 5각 레이더 차트 |
 | **수익화 / IAP** | AdMob 배너/전면/리워드 라이프사이클, 영구 광고 제거 | 세라믹 테마 맞춤형 광고 영역 채움, 힌트 충전 리워드(게임당 최대 2회), 지난 일차 언락 |
 | **오디오 / 햅틱** | WebAudio Bridge, 브라우저 햅틱 표준 | 숫자 입력 시 타건음, 정답/오답 사운드 차별화, 실수 시 진동 피드백 |
@@ -22,26 +22,43 @@
 
 ## 🧩 2. 게임 코어 엔진 및 알고리즘 (Game Core & Solver Engine)
 
+> **2026-09-30 정정 (외부 감사 D01).** 이 절은 대칭 제거·DLX·기법 난이도 판정·"0.01ms 검증"을
+> 구현 사실로 적고 있었다. 전부 구현된 적이 없다. 아래는 `src/engine/SudokuEngine.js` 를 읽고 다시 쓴 것이고,
+> 원하던 설계는 맨 아래 「미구현」에 따로 남겼다. 동작하는 백트래킹 솔버를 명세에 맞추려고 바꿀 이유는 없다.
+
 ```mermaid
 graph TD
-    A["Deterministic Seed Generator (PRNG)"] --> B["Backtracking Generator (Complete 9x9 Grid)"]
-    B --> C["Cell Digging Algorithm (Symmetric Removal)"]
-    C --> D["Dancing Links X (DLX) Solver (Unique Solution Verification)"]
-    D --> E["Difficulty Grader (Technique Rating Lv.1 ~ Lv.5)"]
-    E --> F["Playable Sudoku Puzzle Model"]
+    A["createPRNG (Mulberry32) — 시드가 있을 때만"] --> B["generateFullSolution (첫 행 셔플 + 백트래킹)"]
+    B --> C["무작위 순서로 한 칸씩 제거 (대칭 아님)"]
+    C --> D["countSolutions(limit 2) — 해가 1개가 아니면 되돌림"]
+    D --> E["단서 수가 레벨 목표에 닿으면 멈춤"]
+    E --> F["{ puzzle, solution, level }"]
 ```
 
-### 2.1 퍼즐 생성 및 난이도 산정 엔진
-1. **결정론적 PRNG (Deterministic PRNG)**:
-   * 데일리 챌린지 및 1:1 대전에서 전 세계 모든 유저가 동일한 날짜/시드에서 100% 동일한 퍼즐을 플레이하도록 보장 (`src/utils/prng.js`).
-2. **유일해 검증 (DLX Solver)**:
-   * 크누스(Donald Knuth)의 **Dancing Links Algorithm X (DLX)**를 구현하여, 빈칸을 제거할 때마다 해가 반드시 유일(Unique Solution = 1)함을 0.01ms 내에 검증 (`src/utils/sudokuSolver.js`).
-3. **5단계 난이도 체계**:
-   * **Lv.1 (Initiation / 초급)**: 단일 숫자 및 라인 소거법만으로 해결 가능 (빈칸 30~35개)
-   * **Lv.2 (Easy / 쉬움)**: 숨은 싱글 및 기본 블록 교차 배제 필요 (빈칸 38~42개)
-   * **Lv.3 (Medium / 보통)**: Naked/Hidden Pair, Triple 등 페어 기법 요구 (빈칸 45~48개)
-   * **Lv.4 (Hard / 어려움)**: X-Wing, Y-Wing, 3D Medusa 등 고급 윙/컬러링 요구 (빈칸 50~54개)
-   * **Lv.5 (Master / 마스터)**: Swordfish, Jellyfish, AIC, ALS, Exocet 등 마스터 체인 요구 (빈칸 55~58개)
+### 2.1 퍼즐 생성과 난이도 — 실제 구현 (`src/engine/SudokuEngine.js`)
+1. **PRNG**: `createPRNG(seed)` — Mulberry32. 시드가 있을 때만 쓴다. **데일리 챌린지**는 날짜 키를 시드로 넘겨
+   (`dailyChallenge.js` → `generatePuzzle(level, dateKey)`) 같은 날 같은 퍼즐이 된다. **1:1 대전은 시드를 쓰지 않는다** —
+   방을 만든 쪽이 `generatePuzzle(level)` 로 만든 판과 해답을 `match_created` 에 실어 보내고, 상대는 그것을 받는다.
+2. **솔버**: `solveSudoku` / `countSolutions` — MRV(후보가 가장 적은 칸 먼저) 백트래킹. DLX 아님.
+   `countSolutions(grid, 2)` 는 해를 2개까지만 센다. 측정한 속도 수치는 없다.
+3. **제거**: 81칸을 섞은 순서대로 하나씩 비우고, 해가 1개가 아니게 되면 그 칸을 되돌린다. 대칭 제거가 아니다.
+   되돌림이 많으면 목표 단서 수에 못 미친 채(단서가 더 많은 채) 끝날 수 있다.
+4. **난이도 = 단서 수**. 기법 판정은 없다. 어떤 레벨도 특정 기법을 "반드시 요구"한다고 보장하지 않는다.
+
+| 레벨 | 목표 단서 수 | 빈칸 | 제한시간 모드 시간 |
+| :--- | :---: | :---: | :---: |
+| Lv.1 | 50 | 31 | 4분 |
+| Lv.2 | 42 | 39 | 6분 |
+| Lv.3 | 34 | 47 | 8분 |
+| Lv.4 | 28 | 53 | 12분 |
+| Lv.5 | 24 | 57 | 18분 |
+
+(`DIFFICULTY_CONFIG` 가 정본이다. 이 표와 다르면 코드가 맞다.)
+
+### 2.2 미구현 — 원하던 설계 (구현 사실 아님)
+* DLX(Algorithm X) 솔버
+* 기법 기반 난이도 판정(어떤 기법이 필요한지로 레벨을 매김)
+* 대칭 단서 제거
 
 ---
 
@@ -53,7 +70,7 @@ graph TD
 classDiagram
     class AcademyStage {
         +Stage 1: Basic (Singles & Lines)
-        +Stage 2: Intermediate (Pairs & Intersections)
+        +Stage 2: Intermediate (Locked Candidates & Subsets)
         +Stage 3: Advanced (Wing Family)
         +Stage 4: Expert (Fish, Coloring & UR)
         +Stage 5: Master (AIC, ALS & Exocet Chains)
@@ -70,12 +87,12 @@ classDiagram
     AcademyStage --> StrategyModule
 ```
 
-### 3.1 5단계 분류 체계 (`src/data/academy/`)
+### 3.1 5단계 분류 체계 (`src/data/academy/stage1~5.js`, 2026-09-30 대조)
 1. **Stage 1 (기초)**: Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single (5개)
-2. **Stage 2 (중급)**: Pointing Pairs, Claiming, Naked/Hidden Pair, Naked/Hidden Triple, Naked/Hidden Quad (8개)
-3. **Stage 3 (고급 - Wing Family)**: X-Wing, Y-Wing, XYZ-Wing, W-Wing, BUG, Remote Pairs (6개)
-4. **Stage 4 (전문가 - Fish, Coloring & UR)**: Swordfish, Jellyfish, Unique Rectangles, Simple Colouring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles (8개)
-5. **Stage 5 (마스터 - AIC, ALS & Exocet)**: Finned X-Wing, Alternating Inference Chains (AIC), Almost Locked Sets (ALS), Forcing Chains, Exocet (5개)
+2. **Stage 2 (중급)**: Locked Candidates 1 (Pointing), Locked Candidates 2 (Claiming), Naked/Hidden Pair, Naked/Hidden Triple, Naked/Hidden Quad (8개)
+3. **Stage 3 (고급 - Wing Family)**: X-Wing, XY-Wing / Y-Wing, XYZ-Wing, W-Wing, Bivalue Universal Grave (BUG), Remote Pairs (6개)
+4. **Stage 4 (전문가 - Fish, Coloring & UR)**: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles (8개)
+5. **Stage 5 (마스터 - AIC, ALS & Exocet)**: Finned X-Wing / Swordfish, Alternating Inference Chains (AIC), Almost Locked Sets (ALS), Forcing Chains, Exocet (5개)
 
 ### 3.2 2계층 카드 타이틀 렌더링 아키텍처
 * 전략 카드는 상단의 **공식 영문 기법명(굵은 15px)**과 하단의 **현지화 해설명(12.5px)**으로 2줄 분리 렌더링되어 다국어 UI 줄바꿈을 완벽 방어함.
@@ -87,41 +104,50 @@ classDiagram
 1. **솔로 클래식 (Solo Classic)**: 전통적인 3-Mistake 하트 시스템 및 자동 에러 검출 토글 지원.
 2. **타임어택 / 스피드런 (Speedrun)**:
    * 0초부터 카운트업 타이머 진행.
-   * 연속 정답 시 `🔥 Combo Streak` (최대 배수 가산점) 부여.
+   * 3.5초 안에 연속 정답이면 콤보 (`useGameTimer.js`).
    * 오답 입력 시 `+10초` 페널티 시간 즉시 가산.
 3. **서바이벌 / 제한시간 모드 (Survival)**:
-   * 난이도별 카운트다운 타이머 (Lv.1: 5분 ~ Lv.5: 15분).
-   * 0초 도달 전 그리드를 완성해야 클리어되는 긴장감 넘치는 모드.
+   * 난이도별 카운트다운 타이머 — 4 / 6 / 8 / 12 / 18분 (위 2.1 표, `DIFFICULTY_CONFIG.timeLimitSeconds`).
+   * 0초 도달 전 그리드를 완성해야 클리어.
 4. **데일리 챌린지 365 (Daily Challenge)**:
-   * 1년 365일 날짜별 전용 시드 퍼즐.
-   * 월별 마스터 뱃지 달성 프로그레스 (`15+ 완료 시 골드 뱃지`).
-   * 지난 날짜(🔒)는 리워드 광고 시청 후 즉시 잠금 해제 플레이 가능.
+   * 날짜 키를 시드로 한 날짜별 퍼즐.
+   * 월별 배지: 한 달에 15회 이상 완료 (`getMonthlyBadgeProgress`).
+   * 지난 날짜(🔒)는 리워드 광고 시청 후 잠금 해제 플레이 가능.
 5. **1:1 실시간 대전 & AI 봇 대전 (PvP & AI Battle)**:
    * 실시간 상대방 진행 상황(남은 칸 수) 인디케이터 동기화.
-   * MMR 레이팅 시스템 및 경기 종료 후 복기/재대결(Rematch) 트리거.
+   * 대전 레이팅(`battleRating.js`) 및 경기 종료 후 재대결(Rematch). 대전은 솔로 승률에 들어가지 않는다 (1.3.2).
 
 ---
 
-## 🧠 5. 5대 인지능력 두뇌 IQ 분석 엔진 (Brain IQ Report)
+## 🧠 5. 로직 스코어와 5축 프로필 (Logic Score · Brain Report)
 
-플레이어의 누적 플레이 데이터를 기반으로 5대 인지능력을 실시간 계산하여 5각형 레이더 차트로 시각화 (`src/components/BrainReportScreen.jsx`).
+> **2026-09-30 정정 (외부 감사 D01·D02).** 이 절은 "5축 표준점수 합산" 수식과 「Mensa Level」 등
+> 전체 플레이어 대비 등급을 적고 있었다. 코드는 그렇게 계산하지 않고, 화면은 1.2.6 부터 백분위·멘사를
+> 말하지 않는다 (SudokuDiary 「상위 % · 멘사 표기」). 아래가 `src/services/iqStatsService.js` 의 실제 산식이다.
+> 코드 안의 이름(`calculateBrainIQ`)은 옛 이름이고, 화면 이름은 **Logic Score** 다.
 
-$$IQ_{Score} = 100 + \sum_{i=1}^{5} \left( \frac{Score_i - \mu_i}{\sigma_i} \right) \times 10$$
+### 5.1 Logic Score (`calculateBrainIQ`, 95~150)
+승리가 0이면 100. 그 외에는 100 에서 시작해 셋을 더한다.
+1. **양**: `min(6, log2(승리+1) × 1.5)`
+2. **힌트 없이 깬 최고 레벨**: Lv.1~5 에 1 / 3 / 8 / 16 / 26
+3. **승률**: `승률 × 5 × min(1, 판수/5)` (5판 미만이면 비례해서 덜 반영)
 
-### 5.1 5대 인지 축 지표
-1. **집중력 (Focus / Concentration)**: 오답률이 극도로 낮고 연속 정답을 유지하는 능력.
-2. **지속력 (Durability / Mental Stamina)**: 장시간/고난도(Lv.4~5) 퍼즐을 끝까지 포기하지 않고 해결하는 인내력.
-3. **논리 추론력 (Logic Deduction)**: 힌트 없이 중급/고급 테크닉을 활용하여 해결한 비율.
-4. **처리 속도 (Processing Speed)**: 난이도별 기준 클리어 타임 대비 단축률.
-5. **정확도 (Accuracy)**: 0-Mistake 무결점 클리어 빈도.
+결과를 반올림해 95~150 으로 자른다. **실제 플레이어 분포를 읽지 않는다.** 등급(`tiers.*`) 경계는 이 점수를
+평균 100·표준편차 15 정규분포에 넣은 꼬리값으로 정하지만, 그 수치는 화면에 "상위 X%" 로 나오지 않는다 —
+실제 순위가 아니기 때문이다.
 
-### 5.2 글로벌 티어 시스템
-* `👑 Grand Master` (상위 1% 이내)
-* `🧠 Mensa Level` (상위 5% 이내)
-* `⚡ Superior Mind` (상위 15% 이내)
-* `💡 Above Average` (상위 35% 이내)
-* `🎯 Balanced Mind` (상위 60% 이내)
-* `🌱 Growing Mind` (훈련 및 발전 단계)
+### 5.2 5축 프로필 (`calculateCognitiveProfile`, 각 15~99)
+| 축 | 무엇으로 |
+| :--- | :--- |
+| speed | 레벨별 기준 시간(4/6/8/12/18분) 대비 최고 기록 |
+| logic | 힌트 없이 깬 최고 레벨과 사다리를 얼마나 덮었는지 |
+| accuracy | 시작한 판 대비 승률 (대전 제외) |
+| endurance | 제한시간 모드 승리, 전체 판수로 보정 |
+| focus | 무실수 승리 비율 + 최고 콤보 |
+
+### 5.3 등급 (`tiers.*`)
+`grandMaster` · `expert` · `superior` · `aboveAverage` · `developing` — 경계는 위 정규분포 꼬리 1% / 5% / 20% / 50%.
+이름은 게임 안 등급일 뿐 지능 평가가 아니다. (옛 「Mensa Level」 은 1.2.6 에서 `expert` 로 바뀌었다.)
 
 ---
 

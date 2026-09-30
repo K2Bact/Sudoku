@@ -95,13 +95,18 @@ export function scanWiring(index) {
     const rendered = sites.get(name) || [];
     if (!rendered.length) continue;
     const visible = rendered.filter((s) => !s.spread);
-    const supplied = new Set(visible.flatMap((s) => s.props));
 
     // ── declared, never supplied, and then called ─────────────────────────
+    // Judged per render site. This used to pool every site's props into one set, so
+    // a parent that forgot a required callback was hidden by any other parent that
+    // remembered it (external audit V10, 2026-09-12; fixed 2026-09-30) — the call
+    // still crashes on the path the forgetful parent opens.
     if (visible.length) {
-      const parents = visible.map((s) => s.file).join(', ');
       for (const { name: prop, hasDefault } of comp.entries) {
-        if (hasDefault || supplied.has(prop)) continue;
+        if (hasDefault) continue;
+        const lacking = visible.filter((s) => !s.props.includes(prop));
+        if (!lacking.length) continue;
+        const parents = lacking.map((s) => s.file).join(', ');
         if (!new RegExp(`\\b${prop}\\s*(\\?\\.)?\\(`).test(comp.code)) continue;
 
         // `if (onX) onX()` and `onX?.()` survive a missing prop; they just do
@@ -117,14 +122,14 @@ export function scanWiring(index) {
             severity: 'SUSPECT',
             kind: 'deadCallbackBranch',
             where: `${comp.file} -> <${name}> 의 ${prop}`,
-            detail: `${parents} 어디서도 ${prop} 를 안 넘김 — 가드가 있어 터지진 않지만 ` +
+            detail: `${parents} 가 ${prop} 를 안 넘김 — 가드가 있어 터지진 않지만 ` +
                     `그 분기는 영원히 실행되지 않음`
           }
           : {
             severity: 'CONFIRMED',
             kind: 'unsuppliedCallbacks',
             where: `${comp.file} -> <${name}> 의 ${prop}`,
-            detail: `${parents} 어디서도 ${prop} 를 안 넘기는데 가드 없이 ${prop}() 로 ` +
+            detail: `${parents} 가 ${prop} 를 안 넘기는데 가드 없이 ${prop}() 로 ` +
                     `호출함 — 그 경로가 실행되면 TypeError`
           });
       }

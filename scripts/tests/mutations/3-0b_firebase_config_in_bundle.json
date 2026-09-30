@@ -1,0 +1,18 @@
+{
+  "gate": "3-0b",
+  "name": "Firebase Config Is Inside The Bundle Just Built",
+  "command": "node scripts/tests/unit/test_firebase_config_present.js --built",
+  "rebuild": true,
+  "greenMarker": "Firebase config gate passed",
+  "note": "Split out of 0-5 on 2026-09-30 (external audit V11). At 0-5 the bundle check ran before this run's build, so it judged whatever dist/ the previous build left.",
+  "mutations": [
+    {
+      "name": "the build is told to let no VITE_ variable through",
+      "why": "The URL is in .env, .env.example lists it, firebaseApp.js reads it — every source-side check agrees, and the bundle still goes out without it because the build filtered it away. Only the bundle shows that, and only one built from this config, which is why this step runs after the build and not at 0-5.",
+      "file": "vite.config.js",
+      "find": "  plugins: [react()],",
+      "replace": "  plugins: [react()],\n  envPrefix: 'NOT_VITE_',",
+      "expectFailure": "does not contain the Firebase database URL"
+    }
+  ]
+}

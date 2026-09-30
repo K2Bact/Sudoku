@@ -124,6 +124,22 @@
       "find": "      {showVictory && victoryPhase === 'modal' && (",
       "replace": "      {showVictory && (",
       "expectFailure": "VictoryModal must render only once"
+    },
+    {
+      "name": "permission to request ads read from the status string",
+      "why": "External audit V11. The old assertion was 'no status comparison OR privacyOptionsRequirementStatus === REQUIRED anywhere in the file', and the second half is always true, so this exact line passed. A player who declines personalised ads is OBTAINED with canRequestAds true; this reading serves them nothing.",
+      "file": "src/ads/admobProvider.js",
+      "find": "        this.canRequestAds = Boolean(info?.canRequestAds);",
+      "replace": "        this.canRequestAds = info?.status === 'OBTAINED' || info?.status === 'NOT_REQUIRED';",
+      "expectFailure": "from something other than"
+    },
+    {
+      "name": "the status gates a request path instead of the form",
+      "why": "A status check placed in front of an ad request is the same hand-rolled permission in a different spot. The status may decide whether the form is shown, and nothing else.",
+      "file": "src/ads/admobProvider.js",
+      "find": "    if (!this.canRequestAds) return { rewarded: false, reason: 'unavailable' };",
+      "replace": "    if (!this.canRequestAds || this.lastInfo?.status === 'REQUIRED') return { rewarded: false, reason: 'unavailable' };",
+      "expectFailure": "compared somewhere other than the decision to show"
     }
   ]
 }

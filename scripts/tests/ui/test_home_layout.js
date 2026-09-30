@@ -49,6 +49,62 @@ function shutdownPreview(viteProcess) {
   try { execSync(`npx.cmd kill-port ${PORT}`, { stdio: 'ignore' }); } catch (e) { /* nothing listening */ }
 }
 
+/**
+ * What this gate asserts, per state (external audit V05, 2026-09-12 — until
+ * 2026-09-30 it saved five pictures and asserted nothing, so a home screen whose
+ * cards sat on top of each other passed as long as it rendered):
+ *   - the page does not scroll sideways, and no block runs past the screen edge
+ *   - the home screen's blocks do not overlap one another
+ *   - the three mode tabs share one row; the five level chips share one row at one width
+ *   - the ghost chip shows the recorded time when there is one, and --:-- when not
+ * The pictures are still saved, for a person to look at; they are not the verdict.
+ */
+async function checkLayout(page, state, expectGhostTime) {
+  const found = await page.evaluate((ghostTime) => {
+    const out = [];
+    const vw = document.documentElement.clientWidth;
+    if (document.documentElement.scrollWidth > vw + 1) out.push(`the page scrolls sideways (${document.documentElement.scrollWidth}px in ${vw}px)`);
+    const home = document.querySelector('.home-screen-container');
+    if (!home) return ['the home screen is not on screen'];
+    const visible = (el) => el.offsetParent !== null && el.getBoundingClientRect().height > 0;
+    const blocks = [...home.children].filter(visible);
+    if (blocks.length < 3) out.push(`only ${blocks.length} home blocks are visible`);
+    const r = (el) => el.getBoundingClientRect();
+    const name = (el) => (el.className && String(el.className).split(' ')[0]) || el.tagName.toLowerCase();
+    for (const b of blocks) {
+      const x = r(b);
+      if (x.left < -1 || x.right > vw + 1) out.push(`${name(b)} runs past the screen edge (${Math.round(x.left)}..${Math.round(x.right)} of ${vw})`);
+    }
+    const overlap = (a, b) => { const p = r(a), q = r(b); return Math.min(p.right, q.right) - Math.max(p.left, q.left) > 1 && Math.min(p.bottom, q.bottom) - Math.max(p.top, q.top) > 1; };
+    const pairs = (list) => { for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) if (overlap(list[i], list[j])) out.push(`${name(list[i])} and ${name(list[j])} overlap`); };
+    pairs(blocks);
+    // The mode card, the duel cards and the daily card sit one level down, in
+    // .home-menu-group — comparing only the top level never looked at them.
+    for (const group of home.querySelectorAll('.home-menu-group')) pairs([...group.children].filter(visible));
+    pairs([...home.querySelectorAll('.half-banner-card')].filter(visible));
+    for (const sel of ['.home-hero-card', '.btn-play-new']) if (!home.querySelector(sel) || !visible(home.querySelector(sel))) out.push(`${sel} is not on screen`);
+    const row = (sel, n, sameWidth) => {
+      const els = [...home.querySelectorAll(sel)].filter(visible);
+      if (els.length !== n) { out.push(`${sel}: ${els.length} visible, expected ${n}`); return; }
+      const tops = els.map((e) => Math.round(r(e).top));
+      if (Math.max(...tops) - Math.min(...tops) > 2) out.push(`${sel} do not share one row (tops ${tops.join(',')})`);
+      if (sameWidth) {
+        const w = els.map((e) => r(e).width);
+        if (Math.max(...w) - Math.min(...w) > 2) out.push(`${sel} differ in width (${w.map(Math.round).join(',')})`);
+      }
+      pairs(els);
+    };
+    row('.mode-tab-btn', 3, false);
+    row('.level-chip-group button', 5, true);
+    const ghost = home.querySelector('.ghost-chip');
+    if (!ghost) out.push('the ghost chip is not on screen');
+    else if (!ghost.textContent.includes(ghostTime)) out.push(`the ghost chip says "${ghost.textContent.trim()}", expected it to show ${ghostTime}`);
+    return out;
+  }, expectGhostTime);
+  if (found.length) layoutProblems.push(...found.map((p) => `${state}: ${p}`));
+}
+const layoutProblems = [];
+
 async function run() {
   console.log('Building Vite bundle...');
   execSync('cmd /c npx vite build', { stdio: 'ignore' });
@@ -93,34 +149,46 @@ async function run() {
     await page.waitForTimeout(600);
 
     // 1. Classic Mode Screenshot
+    await checkLayout(page, 'classic', '--:--');
     await page.screenshot({ path: path.join(SHOT_DIR, 'home_classic_verified.png') });
     console.log('Saved home_classic_verified.png');
 
     // 2. Click Time Attack Tab
     await page.click('.time-attack-tab');
     await page.waitForTimeout(400);
+    await checkLayout(page, 'speedrun with a record', '01:06');
     await page.screenshot({ path: path.join(SHOT_DIR, 'home_timeattack_pb_verified.png') });
     console.log('Saved home_timeattack_pb_verified.png');
 
     // 3. Click Ghost chip
     await page.click('.ghost-chip');
     await page.waitForTimeout(400);
+    await checkLayout(page, 'ghost selected', '01:06');
     await page.screenshot({ path: path.join(SHOT_DIR, 'home_timeattack_ghost_selected.png') });
     console.log('Saved home_timeattack_ghost_selected.png');
 
     // 4. Click Level 1 (No PB -> should show --:--)
     await page.click('.level-chip-group button:nth-child(1)');
     await page.waitForTimeout(400);
+    await checkLayout(page, 'speedrun, no record', '--:--');
     await page.screenshot({ path: path.join(SHOT_DIR, 'home_timeattack_nopb_verified.png') });
     console.log('Saved home_timeattack_nopb_verified.png');
 
     // 5. Click Survival (Time Limit) Tab
     await page.click('.time-limit-tab');
     await page.waitForTimeout(400);
+    await checkLayout(page, 'survival', '--:--');
     await page.screenshot({ path: path.join(SHOT_DIR, 'home_survival_verified.png') });
     console.log('Saved home_survival_verified.png');
 
     await browser.close();
+    if (layoutProblems.length) {
+      console.error(`❌ [3-5] ${layoutProblems.length} layout problem(s) on the home screen:`);
+      for (const p of layoutProblems) console.error('   - ' + p);
+      shutdownPreview(viteProcess);
+      process.exit(1);
+    }
+    console.log('  ✅ 5 home states: no sideways scroll, no overlapping blocks, tabs and chips in their rows, the ghost time shown');
     console.log('All screenshots captured successfully!');
   } finally {
     shutdownPreview(viteProcess);
@@ -129,6 +197,7 @@ async function run() {
 
 run().catch((e) => {
   console.error(e);
-  shutdownPreview(viteProcess);
+  // viteProcess lives inside run(); out here only the port can be freed.
+  shutdownPreview(null);
   process.exit(1);
 });

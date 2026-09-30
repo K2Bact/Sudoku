@@ -465,6 +465,73 @@ const { iqStatsService } = await import('../../../src/services/iqStatsService.js
   console.log('  ✅ 6b. merging two phones never invents a win rate neither of them had (MG-1)');
 }
 
+// ── A damaged backup cannot damage the phone (RT-6 / F03) ────────────────
+//
+// The red team restored a backup carrying gamesPlayed 'broken', gamesWon 'broken'
+// and bestTimes[5] = -10 onto a phone with 3 wins in 5 games. The restore reported
+// success; the two counts were stored as null (NaN does not survive JSON) and -10
+// became the fastest level-5 time. Parsing succeeded, so nothing asked whether the
+// values were values. Every field is fed something it cannot hold, here.
+{
+  const { mergeStats: merge, mergeProgress } = await import('../../../src/services/progressMerge.js');
+  const finiteCounts = (o) => Object.entries(o).every(([, v]) => typeof v !== 'number' || (Number.isFinite(v) && v >= 0));
+
+  const local = { gamesPlayed: 5, gamesWon: 3, bestTimes: { 3: 400, 5: 300 }, timeLimitSurvivalWins: 2, maxCombo: 4 };
+  const cloud = {
+    gamesPlayed: 'broken', gamesWon: 'broken', bestTimes: { 2: 200, 3: 'fast', 5: -10 },
+    timeLimitSurvivalWins: 'x', maxCombo: Infinity, flawlessWins: -3,
+    timeAttackBestTimes: 'not a table', clearedLevels: { 1: true, 2: 'yes' }, junk: 'text',
+  };
+  const m = merge(cloud, local);
+  assert.deepStrictEqual([m.gamesPlayed, m.gamesWon], [5, 3], `unreadable cloud counts must leave the phone's 3/5, got ${m.gamesWon}/${m.gamesPlayed}`);
+  assert.strictEqual(m.bestTimes[5], 300, `a negative cloud time must not become the record (got ${m.bestTimes[5]})`);
+  assert.strictEqual(m.bestTimes[3], 400, 'a cloud time that is not a number must not replace a real one');
+  assert.strictEqual(m.bestTimes[2], 200, 'while a real cloud time for a level the phone lacks still comes through');
+  assert.strictEqual(m.timeLimitSurvivalWins, 2, 'survival wins keep the phone\'s count');
+  assert.strictEqual(m.maxCombo, 4, 'the phone\'s combo stands against an infinite one');
+  assert(!('flawlessWins' in m), 'a negative count the phone never had is not carried over');
+  assert(!('junk' in m) && !('timeAttackBestTimes' in m), 'a text field and a table that is not a table are dropped');
+  assert.deepStrictEqual(m.clearedLevels, { 1: true }, 'only a real "cleared" mark counts');
+  assert(finiteCounts(m) && !JSON.stringify(m).includes('null,') && JSON.parse(JSON.stringify(m)).gamesPlayed === 5,
+    'nothing in the merged stats may turn into null when saved');
+
+  const p = mergeProgress(
+    { stats: cloud, wallet: { hints: 'x', streakDays: -5, totalAdsWatched: Infinity },
+      achievements: { first_win: 'x', win_5: { unlockedAt: '2026-09-01' } },
+      daily: { '2026-09-01': 'x', '2026-09-02': { completed: true } },
+      ghost: { classic: { 3: { bestSeconds: -1 }, 4: { bestSeconds: 120 } }, timeAttack: 'x' } },
+    { stats: local, wallet: { hints: 2, streakDays: 1, totalAdsWatched: 0, history: [] },
+      achievements: { first_win: { unlockedAt: '2026-08-01' } }, daily: {}, ghost: { classic: {}, timeAttack: {} } });
+  assert.deepStrictEqual([p.wallet.hints, p.wallet.streakDays, p.wallet.totalAdsWatched], [2, 1, 0],
+    `a broken cloud wallet must leave the phone's hints, streak and ad count (got ${[p.wallet.hints, p.wallet.streakDays, p.wallet.totalAdsWatched]})`);
+  assert.deepStrictEqual(p.achievements.first_win, { unlockedAt: '2026-08-01' }, 'a stray cloud value must not overwrite a real unlock');
+  assert(p.achievements.win_5, 'a real unlock from the cloud still arrives');
+  assert.deepStrictEqual(Object.keys(p.daily), ['2026-09-02'], 'only daily records that are records');
+  assert.deepStrictEqual(Object.keys(p.ghost.classic), ['4'], 'only ghosts with a real time');
+  assert.deepStrictEqual(mergeProgress({ wallet: 'x' }, { wallet: { hints: 2 } }).wallet, { hints: 2 }, 'a wallet that is not an object is ignored');
+
+  // and the red team's own restore, end to end
+  const { cloudSyncService: sync } = await import('../../../src/services/cloudSyncService.js');
+  const { playGamesService: pg } = await import('../../../src/services/playGamesService.js');
+  const { USER_STATS_KEY: STATS } = await import('../../../src/utils/storage.js');
+  const realLoad = pg.loadSnapshot;
+  localStorage.clear();
+  localStorage.setItem(STATS, JSON.stringify({ gamesPlayed: 5, gamesWon: 3, bestTimes: { 5: 300 } }));
+  pg.loadSnapshot = async () => ({ success: true, snapshot: { data: JSON.stringify({
+    userId: 'pg_f03', version: '1.3.1', stats: { gamesPlayed: 'broken', gamesWon: 'broken', bestTimes: { 5: -10 } } }) } });
+  try {
+    const r = await sync.restoreFromCloud();
+    const stored = JSON.parse(localStorage.getItem(STATS));
+    assert.strictEqual(r.success, true, 'the restore itself still goes through');
+    assert.deepStrictEqual([stored.gamesPlayed, stored.gamesWon, stored.bestTimes[5]], [5, 3, 300],
+      `after restoring the damaged backup the phone must still say 3/5 and 300s, got ${JSON.stringify(stored)} (RT-6 / F03)`);
+    console.log('  ✅ 6c. a damaged backup cannot damage the phone — every field fed what it cannot hold (RT-6 / F03)');
+  } finally {
+    pg.loadSnapshot = realLoad;
+    localStorage.clear();
+  }
+}
+
 // ── A restore either happens or it does not (RT-7 / F04) ─────────────────
 //
 // The restore is five separate writes and storage can refuse partway through —

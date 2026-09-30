@@ -24,6 +24,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { parseSync } from 'vite';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const PROVIDER = 'src/components/common/ConfirmProvider.jsx';
@@ -44,21 +45,59 @@ function walk(dir, out = []) {
 const rel = (f) => path.relative(ROOT, f).split(path.sep).join('/');
 const files = walk(path.join(ROOT, 'src')).filter((f) => rel(f) !== PROVIDER);
 
-const offenders = [];
-for (const f of files) {
-  const code = fs.readFileSync(f, 'utf8')
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\/\/.*$/gm, '');
-  if (/window\.confirm\s*\(/.test(code)) offenders.push(`${rel(f)} -> window.confirm`);
-  if (/(^|[^.\w])alert\s*\(/.test(code)) offenders.push(`${rel(f)} -> alert`);
+// All three native dialogs, however they are reached. This used to be two
+// regexes — window.confirm and a bare alert — so window.alert(), a bare confirm()
+// and prompt() in any form all passed (external audit V11, 2026-09-12; fixed
+// 2026-09-30). Calls are read from the parsed code, so comments and strings are
+// not calls.
+const NATIVE = new Set(['alert', 'confirm', 'prompt']);
+const GLOBAL_OBJECTS = new Set(['window', 'globalThis', 'self']);
+
+/** Every call expression in a parsed program. */
+function calls(node, out = []) {
+  if (!node || typeof node !== 'object') return out;
+  if (Array.isArray(node)) { node.forEach((n) => calls(n, out)); return out; }
+  if (node.type === 'CallExpression') out.push(node);
+  for (const v of Object.values(node)) if (v && typeof v === 'object') calls(v, out);
+  return out;
 }
 
-console.log(`▶ Inspected ${files.length} source files`);
+/**
+ * Whether the file binds this name itself — `const confirm = useConfirm()` is the
+ * pattern the app uses, and a call to that is the app's own modal. The check is
+ * per file, not per scope: a file that binds `confirm` in one function and calls
+ * the global in another would pass. None does today; the limit is written here
+ * so a pass is not read as more than it is.
+ */
+function bindsName(code, name) {
+  return new RegExp(`\\b(?:const|let|var|function)\\s+${name}\\b|[{,(]\\s*${name}\\s*[,}):=]`).test(code);
+}
+
+const offenders = [];
+let parsedCalls = 0;
+for (const f of files) {
+  const code = fs.readFileSync(f, 'utf8');
+  const parsed = parseSync(f, code);
+  assert.strictEqual(parsed.errors.length, 0, `${rel(f)} could not be parsed, so its calls were not checked: ${parsed.errors[0]?.message}`);
+  for (const call of calls(parsed.program)) {
+    parsedCalls++;
+    const c = call.callee;
+    if (c.type === 'Identifier' && NATIVE.has(c.name) && !bindsName(code, c.name)) {
+      offenders.push(`${rel(f)} -> ${c.name}`);
+    } else if (c.type === 'MemberExpression' && !c.computed && c.object.type === 'Identifier'
+      && GLOBAL_OBJECTS.has(c.object.name) && NATIVE.has(c.property.name)) {
+      offenders.push(`${rel(f)} -> ${c.object.name}.${c.property.name}`);
+    }
+  }
+}
+
+console.log(`▶ Inspected ${files.length} source files, ${parsedCalls} calls`);
+assert(parsedCalls > 100, `only ${parsedCalls} calls found in ${files.length} files — the parse did not reach the code`);
 assert.deepStrictEqual(offenders, [],
   'Native dialogs found:\n  ' + offenders.join('\n  ') +
   '\n\nCapacitor renders these with hardcoded English "OK"/"Cancel" buttons that no ' +
   'locale setting can reach. Use useConfirm() / useNotify() from ' + PROVIDER + ' instead.');
-console.log('  ✅ No window.confirm / alert outside ConfirmProvider');
+console.log('  ✅ No alert / confirm / prompt (bare, or on window / globalThis / self) outside ConfirmProvider');
 
 const provider = fs.readFileSync(path.join(ROOT, PROVIDER), 'utf8');
 assert(/t\('common\.confirm'\)/.test(provider) && /t\('common\.cancel'\)/.test(provider),
@@ -67,5 +106,5 @@ assert(/t\('common\.confirm'\)/.test(provider) && /t\('common\.cancel'\)/.test(p
 console.log('  ✅ The replacement labels its buttons from the app dictionary');
 
 console.log('\n======================================================');
-console.log('🎉 Native dialog gate passed — every button speaks the player’s language.');
+console.log('🎉 Native dialog gate passed — no native alert/confirm/prompt, so none of their English buttons.');
 console.log('======================================================');

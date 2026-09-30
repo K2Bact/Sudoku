@@ -185,12 +185,34 @@ assert(!/prepareInterstitial/.test(methodBody('showPreparedInterstitial')),
 // personalised ads ends up OBTAINED with canRequestAds still true, because
 // non-personalised ads may still be served. Reading the status instead would
 // silently drop the revenue of every EEA player who declines.
-assert(!/status\s*===\s*'(OBTAINED|REQUIRED|NOT_REQUIRED)'/.test(admobSrc)
-  || /privacyOptionsRequirementStatus\s*===\s*'REQUIRED'/.test(admobSrc),
-  'AdMobProvider decides whether ads may be requested by comparing the consent ' +
-  'status itself. Use canRequestAds, which is the SDK\'s own answer: declining ' +
-  'personalised ads still permits non-personalised ones, and a hand-rolled ' +
-  'reading of the status turns that into no ads at all.');
+//
+// Two questions, checked apart. This was one assertion — "no status comparison,
+// OR privacyOptionsRequirementStatus === 'REQUIRED' somewhere in the file" — and
+// that second half is always true, so any status comparison anywhere passed
+// (external audit V11, 2026-09-12; fixed 2026-09-30).
+//
+//   May an ad be requested?   only ever what the SDK said: canRequestAds.
+//   Should the form be shown? the status, which is exactly what it is for.
+const permissionWrites = [...admobSrc.matchAll(/this\.canRequestAds\s*=\s*([^;]+);/g)].map((m) => m[1].trim());
+assert(permissionWrites.length >= 2, `found ${permissionWrites.length} writes to canRequestAds — the pattern no longer reaches the provider`);
+const ALLOWED_PERMISSION = /^(?:false|null|Boolean\(\s*info\??\.canRequestAds\s*\)|info\??\.canRequestAds)$/;
+const handRolled = permissionWrites.filter((rhs) => !ALLOWED_PERMISSION.test(rhs));
+assert.deepStrictEqual(handRolled, [],
+  'AdMobProvider decides whether ads may be requested from something other than ' +
+  `the SDK's canRequestAds: ${handRolled.join(' | ')}. Declining personalised ads ` +
+  'still permits non-personalised ones, and a hand-rolled reading of the status ' +
+  'turns that into no ads at all.');
+// A status comparison is allowed only as the condition for showing the form.
+const lines = admobSrc.split('\n');
+const strayStatus = [];
+lines.forEach((line, i) => {
+  if (!/\bstatus\s*[!=]==?\s*'(?:OBTAINED|REQUIRED|NOT_REQUIRED|UNKNOWN)'/.test(line)) return;
+  const decidesForm = /^\s*if\s*\(/.test(line) && /showConsentForm\(/.test(lines.slice(i, i + 3).join('\n'));
+  if (!decidesForm) strayStatus.push(`line ${i + 1}: ${line.trim()}`);
+});
+assert.deepStrictEqual(strayStatus, [],
+  'The consent status is compared somewhere other than the decision to show the ' +
+  `form:\n  ${strayStatus.join('\n  ')}\nWhether an ad may be requested is canRequestAds, not the status.`);
 
 // Google requires a way back into the choice for anyone shown the form.
 assert(/showPrivacyOptionsForm\(/.test(admobSrc),

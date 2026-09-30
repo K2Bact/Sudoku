@@ -121,8 +121,9 @@ async function runScanner() {
         }
 
         // Run in-page DOM inspection
-        const issues = await page.evaluate((screenName) => {
+        const { issues, inspected } = await page.evaluate((screenName) => {
           const results = [];
+          let inspected = 0;
           // Target all interactive elements, badges, cards, titles
           // Target all interactive elements, badges, cards, titles, and text nodes
           const elements = document.querySelectorAll(
@@ -131,6 +132,7 @@ async function runScanner() {
 
           elements.forEach((el) => {
             if (!el || el.offsetParent === null) return; // Hidden
+            inspected++;
 
             const style = window.getComputedStyle(el);
             const rect = el.getBoundingClientRect();
@@ -210,10 +212,17 @@ async function runScanner() {
             }
           });
 
-          return results;
+          return { issues: results, inspected };
         }, scr.name);
 
-        totalScanned += 35;
+        // The count is what was looked at. It used to be a flat 35 per screen, so the
+        // total printed 3,185 whatever happened (external audit V04, 2026-09-12). A
+        // screen that shows nothing to inspect was not checked, and is not a pass.
+        totalScanned += inspected;
+        if (inspected === 0) {
+          errorLog.push({ lang, screen: scr.name, type: 'NOTHING_INSPECTED', text: 'no visible element to check', className: '' });
+          totalErrors++;
+        }
         if (issues.length > 0) {
           totalErrors += issues.length;
           errorLog.push(...issues.map((i) => ({ lang, ...i })));
@@ -238,7 +247,7 @@ async function runScanner() {
     console.log('\n======================================================');
     console.log(`📊 [UI Scanner Results]`);
     console.log(`- Languages Tested: ${LANGUAGES.join(', ').toUpperCase()}`);
-    console.log(`- Elements Inspected: ~${totalScanned}`);
+    console.log(`- Elements Inspected: ${totalScanned} (visible, counted)`);
     console.log(`- Layout Violations: ${totalErrors}`);
     console.log('======================================================');
 

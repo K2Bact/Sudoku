@@ -52,8 +52,17 @@ android {
             } else {
                 logger.warn('WARNING: no signing credentials found — release build will be UNSIGNED. See android/keystore.properties.example')
             }
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // R8 (V22 ④, 2026-09-30). The Java side is 80% of the bundle — AndroidX, Play services,
+            // AdMob — and the app calls a sliver of it; dex went 19.9MB → 8.2MB (zipped 8.0 → 3.7MB)
+            // in a minified debug build. Capacitor keeps every plugin class and @PluginMethod itself
+            // (capacitor-android proguard-rules.pro), Play Games ships consumer rules, AdMob and Play
+            // services carry theirs. Checked on the Flip5 with that build: Play Games sign-in and
+            // snapshot load, UMP consent, banner, interstitial and rewarded (show → reward → dismiss),
+            // back button, share sheet — no missing class or method. Resources are not shrunk:
+            // plugins look some up by name, and they are 0.55MB.
+            // The AAB carries the R8 mapping, so Play Console deobfuscates crash reports itself.
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

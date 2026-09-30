@@ -12,6 +12,30 @@
       "find": "import { getTodayDateKey, daysBetweenKeys } from './dateKey.js';",
       "replace": "import { getTodayDateKey, daysBetweenKeys } from './dateKey';",
       "expectFailure": "dateKey"
+    },
+    {
+      "name": "a side-effect import loses its extension",
+      "why": "External audit V11. `import './x'` has no `from`, and the regex required one, so this form was never checked. Node fails on it exactly as it fails on a named import.",
+      "file": "src/utils/wallet.js",
+      "find": "import { getTodayDateKey, daysBetweenKeys } from './dateKey.js';",
+      "replace": "import { getTodayDateKey, daysBetweenKeys } from './dateKey.js';\nimport './dateKey';",
+      "expectFailure": "imports './dateKey' (missing extension)"
+    },
+    {
+      "name": "a dynamic import loses its extension",
+      "why": "External audit V11. `import('./x')` is not an import statement, so the regex never saw it; the failure arrives only when that line runs, in the middle of a gate.",
+      "file": "src/utils/wallet.js",
+      "find": "import { getTodayDateKey, daysBetweenKeys } from './dateKey.js';",
+      "replace": "import { getTodayDateKey, daysBetweenKeys } from './dateKey.js';\nexport const __later = () => import('./dateKey');",
+      "expectFailure": "imports './dateKey' (missing extension)"
+    },
+    {
+      "name": "an extension-less import inside a comment (control)",
+      "why": "External audit V11, the other side. The regex matched import text in comments, so an explanation that quoted an old import failed the gate. A comment is not loaded by Node, so it must not fail here — the control keeps that false positive from returning.",
+      "file": "src/utils/wallet.js",
+      "find": "import { getTodayDateKey, daysBetweenKeys } from './dateKey.js';",
+      "replace": "import { getTodayDateKey, daysBetweenKeys } from './dateKey.js';\n// Formerly: import { getTodayDateKey } from './dateKey';",
+      "expectSurvival": true
     }
   ]
 }
