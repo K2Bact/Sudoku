@@ -220,6 +220,15 @@
     padding-bottom: 2px;
   }
 
+  /* The status badges may take a second line when their text does not fit
+     (gameHeader.css), so theirs is a floor, not a ceiling. */
+  .game-header .current-level-badge,
+  .game-header .mistakes-badge,
+  .game-header .timer-badge {
+    height: auto;
+    min-height: 30px;
+  }
+
   /* The keypad is the other tall block. Its digit keys are taller than they are
      wide (aspect-ratio 0.82) so a thumb has room; in a window this short that
      height comes straight out of the board, so the keys lie down instead. */

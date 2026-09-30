@@ -92,6 +92,7 @@ runStep('3-12. The Game Screen Fits the Phone (sizes × font scale, banner gap)'
 runStep('3-13. Each Academy Card Is As Tall As Its Tallest Tab', 'node scripts/tests/ui/test_academy_card_height.js');
 runStep('3-14. The 1v1 Lobby Says When It Cannot Connect (blocked sign-in, 13 languages)', 'node scripts/tests/ui/test_battle_connect_failure.js');
 runStep('3-15. The App Starts When The Network Does Not Answer (no startup requests, fonts bundled)', 'node scripts/tests/ui/test_offline_start.js');
+runStep('3-16. The Game Header Fits (13 languages × 3 modes × 360/320px × font 1/1.3)', 'node scripts/tests/ui/test_game_header_fit.js');
 
 console.log('======================================================');
 console.log('🎉 [QA MASTER PIPELINE] 100% PERFECT! ALL TIERS & GATES PASSED.');

@@ -39,7 +39,7 @@ export const common = {
     mistakes: 'الأخطاء {count}/{max}',
     mistakesUnlimited: 'الأخطاء {count}',
     timeAttackMistake: 'خطأ {count} (+10 ث)',
-    combo: '🔥 {count} متتالي!',
+    combo: '🔥 سلسلة متتالية: {count}!',
     restartShort: 'إعادة',
     newGameShort: 'لعبة جديدة',
     themeTooltip: 'تغيير المظهر',
@@ -50,8 +50,8 @@ export const common = {
     undo: 'تراجع',
     erase: 'مسح',
     notes: 'ملاحظات',
-    notesOn: 'ملاحظات ON',
-    notesOff: 'ملاحظات OFF',
+    notesOn: 'الملاحظات: مفعّلة',
+    notesOff: 'الملاحظات: معطّلة',
     hint: 'تلميح',
     rewardHint: '+1 تلميح',
     fastEntry: 'الوضع السريع'
@@ -64,7 +64,7 @@ export const common = {
   themes: {
     clay: '🏺 سيراميك وطين دافئ',
     matteDark: '🌌 راتنج غير لامع داكن',
-    pureCeramic: '🧊 كلايمورفيزم نقي',
+    pureCeramic: '🧊 سيراميك نقي',
     editorial: '📰 ورق كلاسيكي نقي'
   },
   conflicts: {

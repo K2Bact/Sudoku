@@ -73,6 +73,12 @@
   border: none;
 }
 
+/* Narrow screen or large system font (2026-09-30): the title and the mode badge
+   could not shrink, so at 360px with the 1.3x text zoom — or 320px with a larger
+   display size — they pushed the theme, sound and settings buttons off the right
+   edge in 16 language × mode cases (pt, ru, en, fr …). The buttons are what the
+   player needs, so they never shrink; the mode badge gives way first, then the
+   title, each ending in "…". The level badge below already names the mode. */
 .header-top {
   display: flex;
   justify-content: space-between;
@@ -83,6 +89,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.logo-group .back-home-btn,
+.header-actions {
+  flex: none;
 }
 
 .logo-icon {
@@ -97,6 +110,15 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin: 0;
+  /* The title keeps its width; the mode badge beside it gives way (two lines,
+     then "…"). Both shrinking took two pixels off "Sudoku" in French at 360px.
+     Half the group is its ceiling: only at 320px with the 1.3x text zoom, where
+     Japanese 「ナンプレ」 left the badge less than one character, does it end in "…". */
+  flex: none;
+  max-width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .version-tag {
@@ -107,6 +129,18 @@
   padding: 2px 7px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+  min-width: 0;
+  flex: 0 3 auto;
+  /* Two lines, as before — French 「CONTRE-LA-MONTRE」 has always broken at its
+     hyphens at 360px — and only past two lines an ellipsis. A single long word
+     (「SOBREVIVÊNCIA」 at 320px) may break inside itself rather than push the
+     buttons off the screen. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
 }
 
 .header-actions {
@@ -150,13 +184,22 @@
   color: var(--text-main);
   border: 1px solid var(--board-grid-line);
   box-shadow: var(--shadow-sm);
-  padding: 5px 3px;
+  /* 2px, not 3px, at the sides: at 360px Russian 「⚡ Lv.3 Средний」 needed 101.8px of
+     101 and was already cut by a pixel; with wrapping allowed that pixel would
+     have sent it to a second line on the most common screen. */
+  padding: 5px 2px;
   border-radius: var(--border-radius-sm);
   font-weight: 800;
   font-size: 11px;
-  white-space: nowrap;
   box-sizing: border-box;
-  height: 32px;
+  /* One line when it fits, two when it does not. These were nowrap + a fixed
+     32px + overflow:hidden, so text that did not fit was cut mid-word —
+     「Ошибка 0 (+1」, 「⏳ Lv.3 Méd」 — at 1.3x text zoom or 320px (2026-09-30).
+     At 360px and the normal font nothing wraps, so the usual look is unchanged. */
+  flex-wrap: wrap;
+  text-align: center;
+  line-height: 1.15;
+  min-height: 32px;
   min-width: 0;
   overflow: hidden;
 }

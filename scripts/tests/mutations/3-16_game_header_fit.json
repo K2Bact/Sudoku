@@ -1,0 +1,34 @@
+{
+  "gate": "3-16",
+  "name": "The Game Header Fits (13 languages × 3 modes × 360/320px × font 1/1.3)",
+  "command": "node scripts/tests/ui/test_game_header_fit.js",
+  "greenMarker": "[3-16] PASSED",
+  "rebuild": true,
+  "note": "Added 2026-09-30 after a sweep found 54 of 156 header cases broken: buttons pushed off screen, badge text cut mid-word. The mutations put each of the three causes back.",
+  "mutations": [
+    {
+      "name": "the mode badge sizes itself to its longest word again",
+      "why": "The original cause. As a plain flex item the badge could not get narrower than its longest word (「SOBREVIVÊNCIA」, 「CONTRE-LA-MONTRE」 grown 1.3x), and the title group could not shrink past it, so the theme, sound and settings buttons were what moved — off the right edge. First written as removing min-width from the title group, which SURVIVED: with the badge fixed, that alone was never the cause. Then it SURVIVED a second time, for a different reason: the title group can now shrink, so the old badge spilled over the buttons instead of pushing them — covered, not off screen. The gate gained an overlap check for that.",
+      "file": "src/styles/gameHeader.css",
+      "find": "  min-width: 0;\n  flex: 0 3 auto;\n  /* Two lines, as before — French 「CONTRE-LA-MONTRE」 has always broken at its\n     hyphens at 360px — and only past two lines an ellipsis. A single long word\n     (「SOBREVIVÊNCIA」 at 320px) may break inside itself rather than push the\n     buttons off the screen. */\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n  overflow: hidden;\n  overflow-wrap: anywhere;\n  line-height: 1.2;\n",
+      "replace": "",
+      "expectFailure": "covers a button"
+    },
+    {
+      "name": "the status badges go back to one line",
+      "why": "nowrap in a fixed-height, overflow:hidden badge is what cut 「Ошибка 0 (+10с)」 mid-word. Nothing marks the cut, so the player just reads half a word.",
+      "file": "src/styles/gameHeader.css",
+      "find": "  flex-wrap: wrap;\n  text-align: center;",
+      "replace": "  flex-wrap: wrap;\n  white-space: nowrap;\n  text-align: center;",
+      "expectFailure": "text cut without"
+    },
+    {
+      "name": "the title shrinks along with the mode badge",
+      "why": "Both shrinking took two pixels off \"Sudoku\" in French at 360px and the normal font — an ellipsis on the most ordinary phone. Rule 3 of the gate exists for exactly this.",
+      "file": "src/styles/gameHeader.css",
+      "find": "  flex: none;\n  max-width: 50%;",
+      "replace": "  flex: 0 1 auto;\n  min-width: 0;",
+      "expectFailure": "shortened on an ordinary phone"
+    }
+  ]
+}

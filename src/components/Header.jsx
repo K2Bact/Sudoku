@@ -133,16 +133,16 @@ export function Header({
           <div className="mistakes-badge">
             {gameMode === 'timeAttack' ? (
               comboCount >= 2 ? (
-                <span className="count" style={{ fontSize: '11px', whiteSpace: 'nowrap', color: '#f59e0b', fontWeight: '900' }}>
+                <span className="count" style={{ fontSize: '11px', color: '#f59e0b', fontWeight: '900' }}>
                   {t('header.combo', { count: comboCount })}
                 </span>
               ) : (
-                <span className={`count ${mistakes > 0 ? 'has-mistake' : ''}`} style={{ fontSize: '11px', whiteSpace: 'nowrap' }}>
+                <span className={`count ${mistakes > 0 ? 'has-mistake' : ''}`} style={{ fontSize: '11px' }}>
                   {t('header.timeAttackMistake', { count: mistakes })}
                 </span>
               )
             ) : (
-              <span className={`count ${mistakes > 0 ? 'has-mistake' : ''}`} style={{ fontSize: '11px', whiteSpace: 'nowrap' }}>
+              <span className={`count ${mistakes > 0 ? 'has-mistake' : ''}`} style={{ fontSize: '11px' }}>
                 {limitMistakes
                   ? t('header.mistakes', { count: mistakes, max: maxMistakes })
                   : t('header.mistakesUnlimited', { count: mistakes })}
