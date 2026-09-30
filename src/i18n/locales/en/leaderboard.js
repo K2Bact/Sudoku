@@ -15,7 +15,7 @@ export const leaderboard = {
     restoreConfirm: 'Restore from the cloud? Your local stats will be merged.',
     lastBackup: "Last backup: {time}",
     notBackedUp: "Not backed up yet",
-    restorePrompt: "Play Games has a saved record ({won} wins). Load it onto this device?",
+    restorePrompt: "Play Games has a saved record (wins: {won}). Load it onto this device?",
     noData: 'No cloud backup data found for this account.'
   }
 };

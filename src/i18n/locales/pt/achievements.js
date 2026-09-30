@@ -13,6 +13,8 @@ export const achievements = {
     statsTab: 'Dados',
     unlockedCount: '{unlocked} / {total} Desbloqueadas ({pct}%)',
     lockedBadge: 'Bloqueada',
+    pointsTotal: '{count} pts',
+    tiers: { bronze: 'Bronze', silver: 'Prata', gold: 'Ouro', diamond: 'Diamante', master: 'Mestre' },
     unlockedAt: 'Desbloqueada em: {date}',
 
     // 1 ~ 7. Progresso
@@ -27,10 +29,10 @@ export const achievements = {
     // 8 ~ 14. Lógica e Perfeição
     flawless_1: { title: 'Mestre Sem Erros', desc: 'Resolva um tabuleiro com 0 erros' },
     flawless_5: { title: 'Perfeccionista', desc: 'Resolva 5 tabuleiros com 0 erros cada' },
-    pure_logic_expert: { title: 'Lógica Pura', desc: 'Conclua o Nv.4 Difícil sem usar nenhuma dica' },
-    pure_logic_master: { title: 'Mente Suprema', desc: 'Conclua o Nv.5 Mestre com 0 erros e 0 dicas' },
+    pure_logic_expert: { title: 'Lógica Pura', desc: 'Conclua o Lv.4 Difícil sem usar nenhuma dica' },
+    pure_logic_master: { title: 'Mente Suprema', desc: 'Conclua o Lv.5 Especialista com 0 erros e 0 dicas' },
     note_master: { title: 'Mestre das Anotações', desc: 'Utilize anotações a lápis 50+ vezes ativamente' },
-    no_notes: { title: 'Olhar Intuitivo', desc: 'Conclua o Nv.3 Médio ou superior sem usar anotações' },
+    no_notes: { title: 'Olhar Intuitivo', desc: 'Conclua o Lv.3 Médio ou superior sem usar anotações' },
     fast_entry_fan: { title: 'Relâmpago', desc: 'Conclua um jogo no Modo Rápido (Número primeiro)' },
 
     // 15 ~ 19. Velocidade
@@ -41,11 +43,11 @@ export const achievements = {
     combo_streak_10: { title: 'Maestro do Combo', desc: 'Atinja um combo de 10 no modo Contra o Tempo' },
 
     // 20 ~ 26. Dificuldade & Sobrevivência
-    clear_lv1: { title: 'Primeira Conquista', desc: 'Conclua o tabuleiro Nv.1 Muito Fácil' },
-    clear_lv2: { title: 'Fácil Superado', desc: 'Conclua o tabuleiro Nv.2 Fácil' },
-    clear_lv3: { title: 'Médio Resolvido', desc: 'Conclua o tabuleiro Nv.3 Médio' },
-    clear_lv4: { title: 'Dedução Especialista', desc: 'Conclua o tabuleiro Nv.4 Difícil' },
-    clear_lv5: { title: 'Grão-Mestre', desc: 'Conclua o nível mais alto Nv.5 Mestre' },
+    clear_lv1: { title: 'Primeira Conquista', desc: 'Conclua o tabuleiro Lv.1 Iniciação' },
+    clear_lv2: { title: 'Fácil Superado', desc: 'Conclua o tabuleiro Lv.2 Fácil' },
+    clear_lv3: { title: 'Médio Resolvido', desc: 'Conclua o tabuleiro Lv.3 Médio' },
+    clear_lv4: { title: 'Dedução Especialista', desc: 'Conclua o tabuleiro Lv.4 Difícil' },
+    clear_lv5: { title: 'Grão-Mestre', desc: 'Conclua o nível mais alto Lv.5 Especialista' },
     survival_hero: { title: 'Herói da Sobrevivência', desc: 'Sobreviva e conclua o modo Limite de Tempo' },
     survival_clutch: { title: 'Fuga Épica', desc: 'Conclua com 5 segundos ou menos restantes no relógio' },
 

@@ -12,21 +12,23 @@ import ru from './locales/ru.js';
 import hi from './locales/hi.js';
 import ar from './locales/ar.js';
 
+// englishName is what the settings picker sorts by (languageOrder.js, user 2026-09-30):
+// the language's English name, not the country's — Arabic and English belong to many.
 export const SUPPORTED_LANGUAGES = [
   { code: 'auto', labelKey: 'settings.languages.auto', nativeName: 'Auto', flag: '🌐' },
-  { code: 'ko', nativeName: '한국어', flag: '🇰🇷' },
-  { code: 'en', nativeName: 'English', flag: '🇺🇸' },
-  { code: 'ja', nativeName: '日本語', flag: '🇯🇵' },
-  { code: 'zh-CN', nativeName: '简体中文', flag: '🇨🇳' },
-  { code: 'zh-TW', nativeName: '繁體中文', flag: '🇹🇼' },
-  { code: 'es-ES', nativeName: 'Español', flag: '🇪🇸' },
-  { code: 'de', nativeName: 'Deutsch', flag: '🇩🇪' },
-  { code: 'fr', nativeName: 'Français', flag: '🇫🇷' },
-  { code: 'pt', nativeName: 'Português', flag: '🇧🇷' },
-  { code: 'it', nativeName: 'Italiano', flag: '🇮🇹' },
-  { code: 'ru', nativeName: 'Русский', flag: '🇷🇺' },
-  { code: 'hi', nativeName: 'हिन्दी', flag: '🇮🇳' },
-  { code: 'ar', nativeName: 'العربية', flag: '🇸🇦', isRTL: true }
+  { code: 'ko', nativeName: '한국어', englishName: 'Korean', flag: '🇰🇷' },
+  { code: 'en', nativeName: 'English', englishName: 'English', flag: '🇺🇸' },
+  { code: 'ja', nativeName: '日本語', englishName: 'Japanese', flag: '🇯🇵' },
+  { code: 'zh-CN', nativeName: '简体中文', englishName: 'Chinese (Simplified)', flag: '🇨🇳' },
+  { code: 'zh-TW', nativeName: '繁體中文', englishName: 'Chinese (Traditional)', flag: '🇹🇼' },
+  { code: 'es-ES', nativeName: 'Español', englishName: 'Spanish', flag: '🇪🇸' },
+  { code: 'de', nativeName: 'Deutsch', englishName: 'German', flag: '🇩🇪' },
+  { code: 'fr', nativeName: 'Français', englishName: 'French', flag: '🇫🇷' },
+  { code: 'pt', nativeName: 'Português', englishName: 'Portuguese', flag: '🇧🇷' },
+  { code: 'it', nativeName: 'Italiano', englishName: 'Italian', flag: '🇮🇹' },
+  { code: 'ru', nativeName: 'Русский', englishName: 'Russian', flag: '🇷🇺' },
+  { code: 'hi', nativeName: 'हिन्दी', englishName: 'Hindi', flag: '🇮🇳' },
+  { code: 'ar', nativeName: 'العربية', englishName: 'Arabic', flag: '🇸🇦', isRTL: true }
 ];
 
 export const DICTIONARIES = {
@@ -73,9 +75,16 @@ export const DICTIONARIES = {
   'ar-KW': ar
 };
 
-export const detectSystemLanguage = () => {
-  if (typeof navigator === 'undefined') return 'ko';
-  const sysLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+/**
+ * Which of our languages the device speaks, or null when it speaks none of them.
+ *
+ * Kept apart from detectSystemLanguage because the two answer different questions.
+ * The app has to show SOME language, so detection falls back to English. The
+ * settings picker puts the device's language next to "System" — and a Vietnamese
+ * phone must not see English promoted there as if it were its language.
+ */
+export const matchSystemLanguage = (raw = typeof navigator === 'undefined' ? '' : (navigator.language || navigator.userLanguage || '')) => {
+  const sysLang = String(raw).toLowerCase();
   if (sysLang.startsWith('ko')) return 'ko';
   if (sysLang.startsWith('ja')) return 'ja';
   if (sysLang === 'zh-tw' || sysLang === 'zh-hk' || sysLang === 'zh-mo' || sysLang.includes('hant')) return 'zh-TW';
@@ -88,7 +97,13 @@ export const detectSystemLanguage = () => {
   if (sysLang.startsWith('ru')) return 'ru';
   if (sysLang.startsWith('hi')) return 'hi';
   if (sysLang.startsWith('ar')) return 'ar';
-  return 'en';
+  if (sysLang.startsWith('en')) return 'en';
+  return null;
+};
+
+export const detectSystemLanguage = () => {
+  if (typeof navigator === 'undefined') return 'ko';
+  return matchSystemLanguage() || 'en';
 };
 
 export default DICTIONARIES;

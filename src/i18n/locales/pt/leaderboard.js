@@ -15,7 +15,7 @@ export const leaderboard = {
     restoreConfirm: 'Deseja restaurar dados da nuvem? As estatísticas locais serão mescladas.',
     lastBackup: "Último backup: {time}",
     notBackedUp: "Ainda sem backup",
-    restorePrompt: "O Play Games tem um progresso salvo ({won} vitórias). Carregar neste aparelho?",
+    restorePrompt: "O Play Games tem um progresso salvo (vitórias: {won}). Carregar neste aparelho?",
     noData: 'Nenhum dado de backup em nuvem encontrado para esta conta.'
   }
 };

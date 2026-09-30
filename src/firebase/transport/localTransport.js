@@ -28,6 +28,11 @@ export class LocalTransport {
     return this.playerId;
   }
 
+  /** Nothing to sign in to on this device, so a search can always go out. */
+  async canSearch() {
+    return true;
+  }
+
   constructor(playerId, onMessage) {
     this.playerId = playerId;
     this.onMessage = onMessage;

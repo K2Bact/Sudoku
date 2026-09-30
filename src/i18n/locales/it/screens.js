@@ -3,7 +3,7 @@ export const screens = {
     ghost: {
       ahead: '{time} avanti',
       behind: '{time} indietro',
-      ghostHintNotice: '💡 L’uso dei suggerimenti esclude l’aggiornamento del record PB.'
+      ghostHintNotice: '💡 Suggerimento usato – questo tempo non conta come record personale.'
     }
   },
   home: {
@@ -29,9 +29,9 @@ export const screens = {
       classic: { badge: 'CLASSICO', title: 'Singolo Classico', desc: 'Sudoku tradizionale, calmo e coinvolgente', startBtn: 'Nuova Partita' },
       timeAttack: { badge: 'CRONOMETRO', title: '⚡ Cronometro', desc: 'Gareggia contro il tempo per il miglior record!', startBtn: 'Avvia Cronometro' },
       timeLimit: { badge: 'SOPRAVVIVENZA', title: '⏳ Sopravvivenza', desc: 'Lv.{level} con {minutes} min! Sopravvivi prima dello 0s.', startBtn: 'Avvia' },
-      daily: { title: 'Sfida Giornaliera', desc: 'Nuovo schema ogni giorno & stemmi mensili', badge: 'NUOVO' },
+      daily: { title: 'Sfida Giornaliera', desc: 'Nuovo schema ogni giorno & stemmi mensili', badge: 'GIORNALIERO' },
       battle: { title: 'Duello 1v1 Online', desc: 'Partite in tempo reale' },
-      aiBattle: { title: 'Duello contro l’IA', desc: 'Sfida 1:1 di velocità' },
+      aiBattle: { badge: 'VS IA', title: 'Duello contro l’IA', desc: 'Sfida 1:1 di velocità' },
       academy: { title: 'Accademia Sudoku', desc: 'Impara 32 tecniche dei maestri' },
       practice: { title: 'Allenamento Libero', desc: 'Errori illimitati, gioco rilassante' }
     },
@@ -55,13 +55,13 @@ export const screens = {
     missionReward: '+1 Suggerimento & Presenza',
     tiers: { beginner: 'Principiante', intermediate: 'Intermedio', advanced: 'Maestro' },
     missions: {
-      beginnerLv1Title: '[Lv.1 Molto Facile] 1 Sudoku', beginnerLv1Desc: 'Completa uno schema Lv.1 Molto Facile per acquisire le basi logiche.',
+      beginnerLv1Title: '[Lv.1 Iniziazione] 1 Sudoku', beginnerLv1Desc: 'Completa uno schema Lv.1 Iniziazione per acquisire le basi logiche.',
       beginnerLv2Title: '[Lv.2 Facile] 1 Sudoku', beginnerLv2Desc: 'Completa uno schema Lv.2 Facile per praticare le tecniche di base.',
       medLv3Title: '[Lv.3+ Medio] 1 Sudoku', medLv3Desc: 'Completa uno schema Lv.3 Medio o superiore per testare le tue deduzioni.',
       advLv4Title: '[Lv.4+ Difficile] 1 Sudoku', advLv4Desc: 'Supera uno schema Lv.4 Difficile e dimostra abilità da maestro.',
-      advLv5Title: '[Lv.5 Maestro] 1 Sudoku', advLv5Desc: 'Completa il difficilissimo Lv.5 Maestro per raggiungere l’élite.',
+      advLv5Title: '[Lv.5 Esperto] 1 Sudoku', advLv5Desc: 'Completa il difficilissimo Lv.5 Esperto per raggiungere l’élite.',
       battleTitle: 'Gioca 1 Duello 1v1 o IA', battleDesc: 'Partecipa a 1 duello in tempo reale o partita contro l’IA.',
-      speedrunTitle: '⚡ Completa 1 modalità Cronometro', speedrunDesc: 'Completa un puzzle in modalità Cronometro sfruttando le combo.'
+      speedrunTitle: '⚡ Completa 1 puzzle in modalità Cronometro', speedrunDesc: 'Completa un puzzle in modalità Cronometro.'
     }
   },
   removeAds: {
@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: 'Miglior Cronometro',
     survivalTitle: '⏳ Modalità Sopravvivenza',
     survivalTotalWins: 'Vittorie in Sopravvivenza',
-    survivalWinsUnit: '{count} Completati',
+    survivalWinsUnit: '{count}',
     summaryTitle: 'Riepilogo Prestazioni',
     pvpRating: "Punteggio",
     pvpRecordLabel: "Bilancio",
@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Come si calcola il Logic Score?",
-    scoreHowBody: "Sale quando completi tutta la griglia e vinci. Conta di più il livello più difficile superato senza suggerimenti; il numero di vittorie e la percentuale di vittorie contano un po’. Game over e partite abbandonate abbassano la percentuale di vittorie e possono togliere qualche punto. La classifica usa questo punteggio quando hai eseguito l’accesso a Play Giochi.",
+    scoreHowBody: "Sale quando completi tutta la griglia e vinci. Conta di più il livello più difficile superato senza suggerimenti; il numero di vittorie e la percentuale di vittorie contano un po’. I duelli 1v1 e contro l’IA non contano nelle vittorie né nella percentuale di vittorie: hanno un bilancio a parte nelle Stats. Game over e partite abbandonate abbassano la percentuale di vittorie e possono togliere qualche punto. La classifica usa questo punteggio quando hai eseguito l’accesso a Play Giochi.",
     shareText: '[Analisi di gioco Sudoku]\nLogic Score: {iq}\nLivello: {tier}\nProva Sudoku oggi stesso!',
     copiedToast: 'Analisi copiata negli appunti.',
     focus: 'Senza errori',
@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'Completamento: {rate}%',
     findOpponentBtn: 'Cerca Avversario',
     noOpponentFound: 'Nessun avversario trovato. Giocare contro l’IA?',
+    connectFailed: "Impossibile connettersi al gioco online. Riprova più tardi. Giocare contro l’IA?",
     playAiInstead: 'Sfida l’IA'
   },
   battleResult: {
@@ -219,6 +220,7 @@ export const screens = {
     declineBtn: 'Rifiuta'
   },
   battleHeader: {
+    aiTag: 'IA',
     confirmLeave: 'Vuoi dichiarare forfait e tornare alla home?',
     emptyCellsLeft: 'rimasti'
   },

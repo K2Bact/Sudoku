@@ -53,6 +53,8 @@ export const common = {
     undo: '撤销',
     erase: '擦除',
     notes: '笔记',
+    notesOn: '笔记 开',
+    notesOff: '笔记 关',
     hint: '提示',
     rewardHint: '+1 提示',
     fastEntry: '快速输入'

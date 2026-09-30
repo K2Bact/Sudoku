@@ -1,0 +1,34 @@
+{
+  "gate": "3-14",
+  "name": "The 1v1 Lobby Says When It Cannot Connect (blocked sign-in, 13 languages)",
+  "command": "node scripts/tests/ui/test_battle_connect_failure.js",
+  "greenMarker": "[3-14] PASSED",
+  "rebuild": true,
+  "note": "Written with the gate on 2026-09-29, from the red team that found the Japanese overflow (SudokuDiary 56). The gate serves dist, so every mutation rebuilds.",
+  "mutations": [
+    {
+      "name": "the search stops asking whether it can reach the server",
+      "why": "With sign-in failing, the player watches the radar for twelve seconds and is then told nobody was found — the BT-2 behaviour this gate exists to keep out.",
+      "file": "src/firebase/battleMatchmaking.js",
+      "find": "  if (typeof service.channel.canSearch === 'function' && !(await service.channel.canSearch())) {",
+      "replace": "  if (false) {",
+      "expectFailure": "instead of could-not-connect"
+    },
+    {
+      "name": "a failed sign-in is not tried again",
+      "why": "One dropped network at the first search locks 1v1 out until the app restarts; lifting the block changes nothing.",
+      "file": "src/firebase/transport/firebaseTransport.js",
+      "find": "    if (!api.uid && typeof api.signIn === 'function') {",
+      "replace": "    if (false) {",
+      "expectFailure": "after the block was lifted"
+    },
+    {
+      "name": "the failure text goes back to break-word",
+      "why": "Japanese has no spaces; with keep-all the whole sentence is one unbreakable run and pushes 21px out of the pill on a 360px phone.",
+      "file": "src/components/BattleLobbyScreen.jsx",
+      "find": "                <span style={{ wordBreak: 'keep-all', overflowWrap: 'anywhere' }}>",
+      "replace": "                <span style={{ wordBreak: 'keep-all', overflowWrap: 'break-word' }}>",
+      "expectFailure": "overflows at 360px"
+    }
+  ]
+}

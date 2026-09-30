@@ -61,7 +61,7 @@ export function BattleHeader({
           </button>
           <span className={`battle-meta-pill ${isAIBattle ? 'text-purple' : 'text-blue'}`}>
             {isAIBattle ? <Bot size={13} /> : <Swords size={13} />}
-            <span>{isAIBattle ? 'AI' : 'PVP'}</span>
+            <span>{isAIBattle ? t('battleHeader.aiTag') : 'PVP'}</span>
           </span>
         </div>
 

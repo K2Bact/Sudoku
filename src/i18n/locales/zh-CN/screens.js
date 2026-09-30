@@ -3,7 +3,7 @@ export const screens = {
     ghost: {
       ahead: '领先 {time}',
       behind: '落后 {time}',
-      ghostHintNotice: '💡 由于使用了提示，本局将不计入个人最佳记录（PB）。'
+      ghostHintNotice: '💡 由于使用了提示，本局将不计入个人最佳记录。'
     }
   },
   home: {
@@ -29,9 +29,9 @@ export const screens = {
       classic: { badge: '经典模式', title: '经典单人', desc: '沉浸于逻辑思考的纯粹数独体验', startBtn: '开始新游戏' },
       timeAttack: { badge: '计时竞速', title: '⚡ 计时竞速', desc: '分秒必争！挑战你的极速通关纪录', startBtn: '开始竞速' },
       timeLimit: { badge: '极限生存', title: '⏳ 极限生存', desc: 'Lv.{level} 限时 {minutes} 分钟！在倒计时结束前生存下来', startBtn: '开始生存' },
-      daily: { title: '每日挑战', desc: '每日专属谜题与月度大师徽章', badge: 'NEW' },
+      daily: { title: '每日挑战', desc: '每日专属谜题与月度大师徽章', badge: '每日' },
       battle: { title: '1v1 在线对决', desc: '全球玩家即时对战' },
-      aiBattle: { title: 'AI 机器人对战', desc: '1:1 AI 速度对决' },
+      aiBattle: { badge: '人机对战', title: 'AI 机器人对战', desc: '1:1 AI 速度对决' },
       academy: { title: '数独学院', desc: '学习 32 种实战解题策略' },
       practice: { title: '自由练习模式', desc: '无失误限制，轻松畅玩' }
     },
@@ -61,7 +61,7 @@ export const screens = {
       advLv4Title: '【Lv.4 高级以上】通关 1 局数独', advLv4Desc: '击破 Lv.4 以上高难度谜题，证明大师实力。',
       advLv5Title: '【Lv.5 大师】通关 1 局数独', advLv5Desc: '挑战 Lv.5 大师极限难度，冲击最高段位。',
       battleTitle: '参加 1 场 1v1 在线或 AI 对决', battleDesc: '参与 1 场即时对战或 AI 练习赛。',
-      speedrunTitle: '⚡ 完成 1 局计时竞速', speedrunDesc: '在竞速模式中利用连击加速通关。'
+      speedrunTitle: '⚡ 完成 1 局计时竞速', speedrunDesc: '在计时竞速模式中完成一局。'
     }
   },
   removeAds: {
@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Logic Score 是怎么决定的？",
-    scoreHowBody: "填满整个棋盘获胜时会上升。不用提示通关的最高难度影响最大，获胜局数和胜率也有少量影响。游戏结束或中途放弃会降低胜率，分数可能略微下降。登录 Play 游戏后，排行榜按这个分数排名。",
+    scoreHowBody: "填满整个棋盘获胜时会上升。不用提示通关的最高难度影响最大，获胜局数和胜率也有少量影响。1v1 对决和 AI 机器人对战不计入获胜局数和胜率，会单独记在个人统计的战绩里。游戏结束或中途放弃会降低胜率，分数可能略微下降。登录 Play 游戏后，排行榜按这个分数排名。",
     shareText: '[Sudoku 游戏分析]\nLogic Score: {iq}分\n等级: {tier}\n快来挑战 Sudoku 吧！',
     copiedToast: '游戏分析已复制到剪贴板。',
     focus: '零失误',
@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: '我的通关率 {rate}%',
     findOpponentBtn: '寻找对手',
     noOpponentFound: '找不到对手。要改与 AI 对战吗?',
+    connectFailed: "无法连接在线对战。请稍后再试。要改与 AI 对战吗?",
     playAiInstead: '与 AI 对战'
   },
   battleResult: {
@@ -219,6 +220,7 @@ export const screens = {
     declineBtn: '婉拒'
   },
   battleHeader: {
+    aiTag: 'AI',
     confirmLeave: '确定要认输并返回主页吗？',
     emptyCellsLeft: '剩余'
   },

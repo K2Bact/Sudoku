@@ -51,6 +51,7 @@ export class FirebaseTransport {
     this.unsubscribers = [];
     this.startedAt = Date.now();
     this.api = null;
+    this.listening = false;
     /**
      * Nothing is connected until something is actually asked for.
      *
@@ -80,10 +81,24 @@ export class FirebaseTransport {
     const api = await getDatabase();
     if (this.closed || !api.db) return null;
     this.api = api;
-    if (api.uid) this.identity = api.uid;
+    if (api.uid) {
+      this.identity = api.uid;
+      this.listen(api);
+    }
+    return api;
+  }
 
-    // Listen for new bus entries only. onChildAdded replays existing children
-    // once on attach, which the timestamp guard below filters out.
+  /**
+   * Listen for new bus entries only. onChildAdded replays existing children once
+   * on attach, which the timestamp guard below filters out.
+   *
+   * Only once signed in. The rules refuse to let an unsigned client read /bus, and
+   * a listener the server refuses is cancelled for good — attaching it before
+   * sign-in left a player who signed in later deaf to every message.
+   */
+  listen(api) {
+    if (this.listening) return;
+    this.listening = true;
     const busRef = api.ref(api.db, BUS_PATH);
     const unsub = api.onChildAdded(busRef, (snap) => {
       const payload = snap.val();
@@ -94,7 +109,31 @@ export class FirebaseTransport {
       this.onMessage(payload);
     });
     this.unsubscribers.push(unsub);
-    return api;
+  }
+
+  /**
+   * Whether a search can go out right now (BT-2).
+   *
+   * The published rules require a signed-in account for every read and write, so
+   * without one a search cannot meet anybody: the queue reads come back empty, the
+   * ticket is refused, and the player used to watch the radar for twelve seconds
+   * and then be told no opponent was found — which was not what happened.
+   *
+   * Sign-in is tried again here rather than trusted from the first attempt. The
+   * database handle is cached for the session, and the usual causes of a failed
+   * sign-in (a rate limit, a network that dropped) pass on their own.
+   */
+  async canSearch() {
+    const api = this.api || (await this.connect());
+    if (!api || !api.db) return false;
+    if (!api.uid && typeof api.signIn === 'function') {
+      const uid = await api.signIn();
+      if (uid) api.uid = uid;
+    }
+    if (!api.uid) return false;
+    this.identity = api.uid;
+    this.listen(api);
+    return true;
   }
 
   /** The id this transport signs with — the one the database can vouch for. */

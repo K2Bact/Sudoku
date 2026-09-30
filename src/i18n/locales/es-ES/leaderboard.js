@@ -15,7 +15,7 @@ export const leaderboard = {
     restoreConfirm: '¿Deseas restaurar desde la nube? Se fusionará con tus estadísticas locales.',
     lastBackup: "Última copia: {time}",
     notBackedUp: "Aún sin copia de seguridad",
-    restorePrompt: "Play Juegos tiene un progreso guardado ({won} victorias). ¿Quieres cargarlo en este dispositivo?",
+    restorePrompt: "Play Juegos tiene un progreso guardado (victorias: {won}). ¿Quieres cargarlo en este dispositivo?",
     noData: 'No se encontraron copias de seguridad en la nube para esta cuenta.'
   }
 };

@@ -11,8 +11,10 @@ export const achievements = {
     unlockedToast: 'Erfolg freigeschaltet!',
     tabTitle: 'Erfolge',
     statsTab: 'Statistik',
-    unlockedCount: '{unlocked} / {total} Freigeschaltet ({pct}%)',
+    unlockedCount: '{unlocked} / {total} freigeschaltet ({pct}%)',
     lockedBadge: 'Gesperrt',
+    pointsTotal: '{count} Pkt.',
+    tiers: { bronze: 'Bronze', silver: 'Silber', gold: 'Gold', diamond: 'Diamant', master: 'Meister' },
     unlockedAt: 'Freigeschaltet: {date}',
 
     // 1 ~ 7. Progression & Wins
@@ -28,7 +30,7 @@ export const achievements = {
     flawless_1: { title: 'Fehlerfreier Meister', desc: 'Löse ein Rätsel mit 0 Fehlern' },
     flawless_5: { title: 'Perfektionist', desc: 'Löse 5 Rätsel mit jeweils 0 Fehlern' },
     pure_logic_expert: { title: 'Reine Logik', desc: 'Lv.4 Schwer ohne Verwendung von Tipps abschließen' },
-    pure_logic_master: { title: 'Ultimativer Geist', desc: 'Lv.5 Meister mit 0 Fehlern und 0 Tipps lösen' },
+    pure_logic_master: { title: 'Ultimativer Geist', desc: 'Lv.5 Experte mit 0 Fehlern und 0 Tipps lösen' },
     note_master: { title: 'Notizen-Meister', desc: 'Nutze Bleistift-Notizen über 50-mal aktiv in Rätseln' },
     no_notes: { title: 'Intuitiver Blick', desc: 'Lv.3 Mittel oder höher ohne Bleistift-Notizen lösen' },
     fast_entry_fan: { title: 'Blitzschnell', desc: 'Ein Rätsel im Schnellmodus (Zahl-Zuerst) lösen' },
@@ -41,11 +43,11 @@ export const achievements = {
     combo_streak_10: { title: 'Kombo-Maestro', desc: 'Erreiche eine 10er-Kombo im Zeitrennen-Modus' },
 
     // 20 ~ 26. Difficulty & Survival
-    clear_lv1: { title: 'Anfänger-Bezwinger', desc: 'Lv.1 Sehr Leicht-Rätsel lösen' },
-    clear_lv2: { title: 'Leicht-Meister', desc: 'Lv.2 Leicht-Rätsel lösen' },
-    clear_lv3: { title: 'Mittel Gelöst', desc: 'Lv.3 Mittel-Rätsel lösen' },
+    clear_lv1: { title: 'Anfänger-Bezwinger', desc: 'Ein Rätsel der Stufe Lv.1 Einführung lösen' },
+    clear_lv2: { title: 'Leicht-Meister', desc: 'Ein Rätsel der Stufe Lv.2 Einfach lösen' },
+    clear_lv3: { title: 'Mittel gelöst', desc: 'Lv.3 Mittel-Rätsel lösen' },
     clear_lv4: { title: 'Experten-Deduktion', desc: 'Lv.4 Schwer-Rätsel lösen' },
-    clear_lv5: { title: 'Großmeister', desc: 'Lv.5 Meister-Höchstschwierigkeit lösen' },
+    clear_lv5: { title: 'Großmeister', desc: 'Die höchste Stufe Lv.5 Experte lösen' },
     survival_hero: { title: 'Überlebensheld', desc: 'Den Zeitlimit-Überlebensmodus erfolgreich bestehen' },
     survival_clutch: { title: 'Knappe Flucht', desc: 'Mit 5 Sekunden oder weniger Restzeit abschließen' },
 

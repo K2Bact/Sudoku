@@ -11,11 +11,11 @@ export const leaderboard = {
     playGamesConnected: 'Verbunden als {name}',
     playGamesFailed: 'Verbindung fehlgeschlagen. Bitte später erneut versuchen.',
     restoreTitle: 'Aus der Cloud wiederherstellen',
-    restoreDesc: 'Laden Sie Ihre gespeicherten Cloud-Daten herunter und stellen Sie Ihren Fortschritt wieder her.',
-    restoreConfirm: 'Möchten Sie Daten aus der Cloud wiederherstellen? Lokale Statistiken werden zusammengeführt.',
+    restoreDesc: 'Lade deine gespeicherten Cloud-Daten herunter und stelle deinen Fortschritt wieder her.',
+    restoreConfirm: 'Möchtest du Daten aus der Cloud wiederherstellen? Deine lokalen Statistiken werden zusammengeführt.',
     lastBackup: "Letzte Sicherung: {time}",
     notBackedUp: "Noch nicht gesichert",
-    restorePrompt: "In Play Spiele ist ein gespeicherter Fortschritt ({won} Siege). Auf dieses Gerät laden?",
+    restorePrompt: "In Play Spiele ist ein gespeicherter Fortschritt (Siege: {won}). Auf dieses Gerät laden?",
     noData: 'Keine Cloud-Sicherungsdaten für dieses Konto gefunden.'
   }
 };

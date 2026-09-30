@@ -3,7 +3,7 @@ export const screens = {
     ghost: {
       "ahead": "{time} 앞섬",
       "behind": "{time} 뒤처짐",
-      "ghostHintNotice": "💡 힌트 사용으로 이번 판의 PB 신기록 갱신이 제외됩니다."
+      "ghostHintNotice": "💡 힌트를 사용해 이번 판은 개인 최고 기록에 반영되지 않습니다."
     },
   },
   home: {
@@ -29,9 +29,9 @@ export const screens = {
       classic: { badge: '클래식', title: '클래식 싱글', desc: '차분하게 논리를 완성하는 정통 스도쿠', startBtn: '새 게임 시작' },
       timeAttack: { badge: '스피드런', title: '⚡ 스피드런', desc: '1초라도 더 빠른 최고 기록에 도전하세요!', startBtn: '스피드런 시작' },
       timeLimit: { badge: '서바이벌', title: '⏳ 서바이벌', desc: 'Lv.{level} 제한시간 {minutes}분! 0초가 되기 전에 생존하세요.', startBtn: '서바이벌 시작' },
-      daily: { title: '오늘의 챌린지', desc: '매일 새로운 퍼즐 & 월별 마스터 뱃지', badge: 'NEW' },
+      daily: { title: '오늘의 챌린지', desc: '매일 새로운 퍼즐 & 월별 마스터 뱃지', badge: '데일리' },
       battle: { title: '1v1 온라인 배틀', desc: '글로벌 실시간 매칭' },
-      aiBattle: { title: 'AI 봇 대전', desc: '1:1 AI 스피드 대결' },
+      aiBattle: { badge: 'VS AI', title: 'AI 봇 대전', desc: '1:1 AI 스피드 대결' },
       academy: { title: '스도쿠 아카데미', desc: '공식 기술 배우기 (Naked Single 등)' },
       practice: { title: '자유 연습 모드', desc: '실수 무제한으로 편안하게 즐기기' }
     },
@@ -55,13 +55,13 @@ export const screens = {
     missionReward: '+1 무료 힌트 & 출석',
     tiers: { beginner: '초급·신규', intermediate: '중급', advanced: '마스터' },
     missions: {
-      beginnerLv1Title: '[Lv.1 매우 쉬움] 스도쿠 1회 클리어', beginnerLv1Desc: 'Lv.1 매우 쉬움 난이도를 완주하여 기초 논리력을 기르세요.',
+      beginnerLv1Title: '[Lv.1 입문] 스도쿠 1회 클리어', beginnerLv1Desc: 'Lv.1 입문 난이도를 완주하여 기초 논리력을 기르세요.',
       beginnerLv2Title: '[Lv.2 쉬움] 스도쿠 1회 클리어', beginnerLv2Desc: 'Lv.2 쉬움 퍼즐을 완주하여 스도쿠 기본기를 다져보세요.',
       medLv3Title: '[Lv.3 보통 이상] 스도쿠 1회 클리어', medLv3Desc: 'Lv.3 보통 이상의 퍼즐을 완주하여 본격적인 추론을 시험하세요.',
       advLv4Title: '[Lv.4 어려움 이상] 스도쿠 1회 클리어', advLv4Desc: 'Lv.4 이상의 고난도 퍼즐을 격파하고 마스터 논리력을 증명하세요.',
       advLv5Title: '[Lv.5 전문가] 스도쿠 1회 클리어', advLv5Desc: 'Lv.5 전문가 최고 난도 퍼즐을 완주하여 최상위 티어에 도전하세요.',
       battleTitle: '1v1 온라인/AI 배틀 1회 대전하기', battleDesc: '실시간 1v1 대전 또는 AI 봇 연습 매치에 1회 참여하세요.',
-      speedrunTitle: '⚡ 스피드런 1회 클리어', speedrunDesc: '스피드런 모드에서 콤보 가속을 살려 완주하세요.'
+      speedrunTitle: '⚡ 스피드런 1회 클리어', speedrunDesc: '스피드런 모드에서 퍼즐 1판을 완주하세요.'
     }
   },
   removeAds: {
@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Logic Score는 어떻게 정해지나요?",
-    scoreHowBody: "판을 끝까지 채워 이길 때 올라가요. 힌트 없이 깬 가장 어려운 레벨이 가장 크게 반영되고, 이긴 판 수와 승률도 조금씩 반영돼요. 게임 오버가 되거나 중간에 그만두면 승률이 내려가 점수가 조금 깎일 수 있어요. 순위표는 Play 게임즈에 로그인했을 때 이 점수로 매겨져요.",
+    scoreHowBody: "판을 끝까지 채워 이길 때 올라가요. 힌트 없이 깬 가장 어려운 레벨이 가장 크게 반영되고, 이긴 판 수와 승률도 조금씩 반영돼요. 1v1 배틀과 AI 봇 대전은 이긴 판 수와 승률에 들어가지 않고, 나의 통계의 전적에 따로 남아요. 게임 오버가 되거나 중간에 그만두면 승률이 내려가 점수가 조금 깎일 수 있어요. 순위표는 Play 게임즈에 로그인했을 때 이 점수로 매겨져요.",
     shareText: "[Sudoku 플레이 분석]\nLogic Score: {iq}점\n등급: {tier}\n지금 Sudoku에 도전해 보세요!",
     copiedToast: "플레이 분석이 클립보드에 복사되었습니다.",
     focus: "무실수",
@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: '내 클리어율 {rate}%',
     findOpponentBtn: '상대 찾기',
     noOpponentFound: '상대를 찾지 못했습니다. AI와 대전할까요?',
+    connectFailed: "온라인 대전에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요. AI와 대전할까요?",
     playAiInstead: 'AI와 대전'
   },
   battleResult: {
@@ -219,6 +220,7 @@ export const screens = {
     declineBtn: '거절'
   },
   battleHeader: {
+    aiTag: 'AI',
     confirmLeave: '배틀을 포기하고 홈으로 나가시겠습니까?',
     emptyCellsLeft: '남음'
   },

@@ -41,9 +41,21 @@ function newRoomId() {
  * transport resolves immediately, so both behave the same to callers — which
  * fire-and-forget and wait for the onMatched callback.
  */
-export async function startQuickMatch(service, level = 3, onMatched) {
+export async function startQuickMatch(service, level = 3, onMatched, onUnavailable) {
   service.onMatchSuccess = onMatched;
   service.searchingLevel = level;
+
+  // A search nobody can answer is not a search. Without a signed-in account the
+  // rules refuse every read and write, so this used to run for twelve seconds and
+  // end with "no opponent found" — a claim about other players when the truth was
+  // that this phone never reached the server (BT-2). Say that instead, at once.
+  if (typeof service.channel.canSearch === 'function' && !(await service.channel.canSearch())) {
+    if (service.searchingLevel !== level) return;   // cancelled while we asked
+    service.searchingLevel = null;
+    if (onUnavailable) onUnavailable();
+    return;
+  }
+  if (service.searchingLevel !== level) return;
 
   await service.adoptProvenIdentity();
   if (service.searchingLevel !== level) return;

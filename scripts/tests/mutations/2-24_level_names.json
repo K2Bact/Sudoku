@@ -1,0 +1,73 @@
+{
+  "gate": "2-24",
+  "name": "A Level Has One Name (buttons, missions, achievements, store)",
+  "command": "node scripts/tests/unit/test_level_names.js",
+  "greenMarker": "[2-24] PASSED",
+  "note": "Written with the gate on 2026-09-28 (BACKLOG ES-1, LV-1). Each mutation puts back one of the real mismatches the gate was built from.",
+  "mutations": [
+    {
+      "name": "the Spanish buttons go back one step off",
+      "why": "Lv.1 is called Fácil on the home screen and Principiante in the daily mission; every level after it shifts too, so a Spanish player reads Lv.2 as Medium.",
+      "file": "src/i18n/locales/es-ES/common.js",
+      "find": "    1: 'Principiante',",
+      "replace": "    1: 'Fácil',",
+      "expectFailure": "the Lv.1 button says"
+    },
+    {
+      "name": "the Korean mission names a level the app does not have",
+      "why": "The daily mission asks for 「Lv.1 매우 쉬움」 — a very-easy level no button offers — while the button says 입문.",
+      "file": "src/i18n/locales/ko/screens.js",
+      "find": "'[Lv.1 입문] 스도쿠 1회 클리어'",
+      "replace": "'[Lv.1 매우 쉬움] 스도쿠 1회 클리어'",
+      "expectFailure": "the Lv.1 button says \"입문\""
+    },
+    {
+      "name": "a German achievement calls Lv.5 by the old name",
+      "why": "The achievement asks for Lv.5 Meister; the Lv.5 button says Experte. A player hunting for a Meister level finds none.",
+      "file": "src/i18n/locales/de/achievements.js",
+      "find": "'Lv.5 Experte mit 0 Fehlern und 0 Tipps lösen'",
+      "replace": "'Lv.5 Meister mit 0 Fehlern und 0 Tipps lösen'",
+      "expectFailure": "the Lv.5 button says \"Experte\""
+    },
+    {
+      "name": "the Spanish store listing names the old levels",
+      "why": "The listing promises Fácil to Maestro with an Experto the app does not have, and no Principiante; the store and the app describe different ladders.",
+      "file": "store_assets/es-ES/store_description_es.txt",
+      "find": "- Principiante, Fácil, Medio, Difícil y Maestro.",
+      "replace": "- Fácil, Medio, Difícil, Experto y Maestro.",
+      "expectFailure": "no line names the five levels"
+    },
+    {
+      "name": "a Portuguese achievement calls Lv.5 by the old name, behind the Nv. prefix",
+      "why": "Portuguese writes Nv., not Lv. — the first version of this gate never read it, and \"Nv.5 Mestre\" sat under a button saying Especialista. Since 2026-09-30 the app writes Lv. here; the mutation puts back the old prefix with the old name, so the name check must still read behind Nv.",
+      "file": "src/i18n/locales/pt/achievements.js",
+      "find": "desc: 'Conclua o Lv.5 Especialista com 0 erros e 0 dicas'",
+      "replace": "desc: 'Conclua o Nv.5 Mestre com 0 erros e 0 dicas'",
+      "expectFailure": "the Lv.5 button says \"Especialista\""
+    },
+    {
+      "name": "the Arabic mission names a very-easy level the app does not have",
+      "why": "Arabic writes مستوى, not Lv. — the mission asked for \"مستوى 1 سهل جداً\" (very easy) while the button says مبتدئ. Since 2026-09-30 the app writes Lv. here; the mutation puts back the old prefix with the old name.",
+      "file": "src/i18n/locales/ar/screens.js",
+      "find": "beginnerLv1Title: '[Lv.1 مبتدئ] حل لغز سودوكو 1'",
+      "replace": "beginnerLv1Title: '[مستوى 1 سهل جداً] حل لغز سودوكو 1'",
+      "expectFailure": "the Lv.1 button says \"مبتدئ\""
+    },
+    {
+      "name": "Russian writes the game header level as Ур. again",
+      "why": "User decision 2026-09-30: Lv. in every language. The home buttons said Lv.3 while the game header said Ур.3 — one level, two marks between the button and the board.",
+      "file": "src/i18n/locales/ru/common.js",
+      "find": "    levelPrefix: 'Lv.{level}',",
+      "replace": "    levelPrefix: 'Ур.{level}',",
+      "expectFailure": "writes the level as"
+    },
+    {
+      "name": "the Arabic share text writes the level as مستوى again",
+      "why": "The first sweep changed three files per language and missed this one; the new check found it on its first run.",
+      "file": "src/i18n/locales/ar/modals.js",
+      "find": "{mode} Lv.{level} {name}",
+      "replace": "{mode} مستوى {level} {name}",
+      "expectFailure": "writes the level as"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ export const screens = {
     ghost: {
       ahead: '領先 {time}',
       behind: '落後 {time}',
-      ghostHintNotice: '💡 由於使用了提示，本局將不計入個人最佳記錄（PB）。'
+      ghostHintNotice: '💡 由於使用了提示，本局將不計入個人最佳記錄。'
     }
   },
   home: {
@@ -17,7 +17,7 @@ export const screens = {
     modeTabs: { classic: '經典', timeAttack: '計時競速', timeLimit: '極限生存' },
     rivalModes: {
       standard: '🎯 一般',
-      ghost: '👻 幽靈 PB',
+      ghost: '👻 幽靈',
       delta: '⚡ Delta 步調',
       lockedToast: '至少通關此難度 1 次後解鎖。',
       timeLimitToast: "極限生存模式不支援幽靈與時間差。",
@@ -29,9 +29,9 @@ export const screens = {
       classic: { badge: '經典模式', title: '經典單人', desc: '沉浸於邏輯思考的純粹數獨體驗', startBtn: '開始新遊戲' },
       timeAttack: { badge: '計時競速', title: '⚡ 計時競速', desc: '分秒必争！挑戰你的極速通關紀錄', startBtn: '開始競速' },
       timeLimit: { badge: '極限生存', title: '⏳ 極限生存', desc: 'Lv.{level} 限時 {minutes} 分鐘！在倒計時結束前生存下來', startBtn: '開始生存挑戰' },
-      daily: { title: '每日挑戰', desc: '每日專屬謎題與月度大師徽章', badge: 'NEW' },
+      daily: { title: '每日挑戰', desc: '每日專屬謎題與月度大師徽章', badge: '每日' },
       battle: { title: '1v1 在線對決', desc: '全球玩家即時對戰' },
-      aiBattle: { title: 'AI 機器人對戰', desc: '1:1 AI 速度對決' },
+      aiBattle: { badge: '人機對戰', title: 'AI 機器人對戰', desc: '1:1 AI 速度對決' },
       academy: { title: '數獨學院', desc: '學習 32 種實戰解題策略' },
       practice: { title: '自由練習模式', desc: '無失誤限制，轻松畅玩' }
     },
@@ -61,7 +61,7 @@ export const screens = {
       advLv4Title: '【Lv.4 高級以上】通關 1 局數獨', advLv4Desc: '擊破 Lv.4 以上高難度謎題，證明大師實力。',
       advLv5Title: '【Lv.5 大師】通關 1 局數獨', advLv5Desc: '挑戰 Lv.5 大師極限難度，衝擊最高段位。',
       battleTitle: '參加 1 場 1v1 在線或 AI 對決', battleDesc: '參與 1 場即時對戰或 AI 練習賽。',
-      speedrunTitle: '⚡ 完成 1 局計時競速', speedrunDesc: '在競速模式中利用連擊加速通關。'
+      speedrunTitle: '⚡ 完成 1 局計時競速', speedrunDesc: '在計時競速模式中完成一局。'
     }
   },
   removeAds: {
@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Logic Score 是怎麼決定的？",
-    scoreHowBody: "填滿整個棋盤獲勝時會上升。不用提示通關的最高難度影響最大，獲勝局數和勝率也有少量影響。遊戲結束或中途放棄會降低勝率，分數可能略微下降。登入 Play 遊戲後，排行榜依這個分數排名。",
+    scoreHowBody: "填滿整個棋盤獲勝時會上升。不用提示通關的最高難度影響最大，獲勝局數和勝率也有少量影響。1v1 對決和 AI 機器人對戰不計入獲勝局數和勝率，會另外記在個人統計的戰績裡。遊戲結束或中途放棄會降低勝率，分數可能略微下降。登入 Play 遊戲後，排行榜依這個分數排名。",
     shareText: '[Sudoku 遊戲分析]\nLogic Score: {iq}分\n等級: {tier}\n快來挑戰 Sudoku 吧！',
     copiedToast: '遊戲分析已複製到剪貼簿。',
     focus: '零失誤',
@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: '我的通關率 {rate}%',
     findOpponentBtn: '尋找對手',
     noOpponentFound: '找不到對手。要改與 AI 對戰嗎?',
+    connectFailed: "無法連接在線對戰。請稍後再試。要改與 AI 對戰嗎?",
     playAiInstead: '與 AI 對戰'
   },
   battleResult: {
@@ -219,6 +220,7 @@ export const screens = {
     declineBtn: '婉拒'
   },
   battleHeader: {
+    aiTag: 'AI',
     confirmLeave: '確定要認輸並返回主頁嗎？',
     emptyCellsLeft: '剩餘'
   },

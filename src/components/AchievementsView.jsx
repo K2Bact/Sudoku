@@ -62,7 +62,7 @@ export function AchievementsView() {
           </div>
           <div className="points-pill">
             <Award size={14} />
-            <span>{totalPoints} pts</span>
+            <span>{t('achievements.pointsTotal', { count: totalPoints })}</span>
           </div>
         </div>
 
@@ -114,7 +114,7 @@ export function AchievementsView() {
                 <div className="ach-title-row">
                   <h4 className="ach-title">{t(ach.titleKey)}</h4>
                   <span className={`ach-tier-tag ${ach.tier}`}>
-                    {tierObj.label} (+{tierObj.points})
+                    {tierObj.emoji} {t(tierObj.labelKey)} (+{tierObj.points})
                   </span>
                 </div>
                 <p className="ach-desc">{t(ach.descKey)}</p>

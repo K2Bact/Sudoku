@@ -11,7 +11,7 @@ export const modals = {
       timeLabel: 'Tiempo empleado',
       timeRemainingLabel: 'Tiempo restante',
       mistakesLabel: 'Fallos cometidos',
-      mistakesCount: '{count} fallos',
+      mistakesCount: '{count}',
       notRecordedHint: "Usaste pistas, así que este tiempo no cuenta como récord.",
       notRecordedNoLimit: "Jugaste sin el límite de 3 fallos, así que este tiempo no cuenta como récord.",
       nextGame: 'Siguiente partida',
@@ -46,7 +46,7 @@ export const modals = {
     },
     dailyReward: {
       title: '¡Recompensa diaria recibida!',
-      streakBadge: 'Racha de {days} días',
+      streakBadge: 'Racha de {days} día(s)',
       desc: '¡Día {days} consecutivo completado!\nHas recibido +{count} pista(s) gratis.',
       confirm: 'Recoger'
     },

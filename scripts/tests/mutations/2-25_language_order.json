@@ -1,0 +1,41 @@
+{
+  "gate": "2-25",
+  "name": "Language Picker Order (System, device language, then A-Z by English name)",
+  "command": "node scripts/tests/unit/test_language_order.js",
+  "greenMarker": "[2-25] PASSED",
+  "note": "Written with the gate on 2026-09-30 (user decision on the picker order).",
+  "mutations": [
+    {
+      "name": "the device's language is not promoted beside System",
+      "why": "A Japanese player has to hunt for 日本語 between Italian and Korean instead of finding it next to System.",
+      "file": "src/i18n/languageOrder.js",
+      "find": "  const own = languages.filter((l) => l.code !== 'auto' && l.code === systemCode);",
+      "replace": "  const own = [];",
+      "expectFailure": "beside System"
+    },
+    {
+      "name": "the rest are left in the order they were written",
+      "why": "The list goes back to Korean, English, Japanese… — the order the user asked to replace.",
+      "file": "src/i18n/languageOrder.js",
+      "find": "    .sort((a, b) => a.englishName.localeCompare(b.englishName, 'en'));",
+      "replace": "    ;",
+      "expectFailure": "A–Z by English name"
+    },
+    {
+      "name": "a device language we do not have is taken for English",
+      "why": "A Vietnamese phone sees English promoted beside System as if it were its own language.",
+      "file": "src/i18n/dictionaries.js",
+      "find": "  return null;",
+      "replace": "  return 'en';",
+      "expectFailure": "must not be taken for English"
+    },
+    {
+      "name": "the picker draws the list as written",
+      "why": "The ordering exists and is never used; the settings screen keeps the old order.",
+      "file": "src/components/settings/LanguageSelectorSection.jsx",
+      "find": "          {ordered.map((lang) => (",
+      "replace": "          {supportedLanguages.map((lang) => (",
+      "expectFailure": "draw the ordered list"
+    }
+  ]
+}

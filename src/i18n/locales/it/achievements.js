@@ -13,6 +13,8 @@ export const achievements = {
     statsTab: 'Dati',
     unlockedCount: '{unlocked} / {total} Sbloccati ({pct}%)',
     lockedBadge: 'Bloccato',
+    pointsTotal: '{count} punti',
+    tiers: { bronze: 'Bronzo', silver: 'Argento', gold: 'Oro', diamond: 'Diamante', master: 'Maestro' },
     unlockedAt: 'Sbloccato il: {date}',
 
     // 1 ~ 7. Progresso
@@ -28,7 +30,7 @@ export const achievements = {
     flawless_1: { title: 'Maestro Senza Errori', desc: 'Risolvi uno schema con 0 errori' },
     flawless_5: { title: 'Perfezionista', desc: 'Risolvi 5 schemi con 0 errori ciascuno' },
     pure_logic_expert: { title: 'Logica Pura', desc: 'Completa Lv.4 Difficile senza usare suggerimenti' },
-    pure_logic_master: { title: 'Mente Suprema', desc: 'Completa Lv.5 Maestro con 0 errori e 0 suggerimenti' },
+    pure_logic_master: { title: 'Mente Suprema', desc: 'Completa Lv.5 Esperto con 0 errori e 0 suggerimenti' },
     note_master: { title: 'Mago delle Note', desc: 'Usa attivamente le note a matita 50+ volte' },
     no_notes: { title: 'Occhio Intuitivo', desc: 'Completa Lv.3 Medio o superiore senza usare note a matita' },
     fast_entry_fan: { title: 'Fulmineo', desc: 'Completa uno schema in modalità Modo Rapido (Numero prima)' },
@@ -41,11 +43,11 @@ export const achievements = {
     combo_streak_10: { title: 'Maestro delle Combo', desc: 'Raggiungi una combo da 10 in modalità Cronometro' },
 
     // 20 ~ 26. Difficoltà & Sopravvivenza
-    clear_lv1: { title: 'Prima Conquista', desc: 'Completa uno schema Lv.1 Molto Facile' },
+    clear_lv1: { title: 'Prima Conquista', desc: 'Completa uno schema Lv.1 Iniziazione' },
     clear_lv2: { title: 'Facile Superato', desc: 'Completa uno schema Lv.2 Facile' },
     clear_lv3: { title: 'Medio Risolto', desc: 'Completa uno schema Lv.3 Medio' },
     clear_lv4: { title: 'Deduzione Esperta', desc: 'Completa uno schema Lv.4 Difficile' },
-    clear_lv5: { title: 'Gran Maestro', desc: 'Completa la difficoltà massima Lv.5 Maestro' },
+    clear_lv5: { title: 'Gran Maestro', desc: 'Completa la difficoltà massima Lv.5 Esperto' },
     survival_hero: { title: 'Eroe della Sopravvivenza', desc: 'Sopravvivi e completa la modalità Limite di Tempo' },
     survival_clutch: { title: 'Fuga all’Ultimo Secondo', desc: 'Completa con 5 secondi o meno rimasti sul timer' },
 

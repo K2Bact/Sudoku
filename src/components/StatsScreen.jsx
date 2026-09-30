@@ -210,7 +210,7 @@ export function StatsScreen({ onBack, initialTab = 'stats' }) {
               <div className="best-times-list">
                 <div className="best-time-row">
                   <span className="lvl-name">{t('stats.pvpRating')}</span>
-                  <span className="best-time-val fw-bold">{battled ? `${battle.mmr} RP` : '--'}</span>
+                  <span className="best-time-val fw-bold">{battled ? battle.mmr : '--'}</span>
                 </div>
                 <div className="best-time-row">
                   <span className="lvl-name">{t('stats.pvpRecordLabel')}</span>

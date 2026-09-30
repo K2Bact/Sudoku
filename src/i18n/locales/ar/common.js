@@ -35,7 +35,7 @@ export const common = {
     5: 'خبير'
   },
   header: {
-    levelPrefix: 'مستوى {level}',
+    levelPrefix: 'Lv.{level}',
     mistakes: 'الأخطاء {count}/{max}',
     mistakesUnlimited: 'الأخطاء {count}',
     timeAttackMistake: 'خطأ {count} (+10 ث)',
@@ -50,6 +50,8 @@ export const common = {
     undo: 'تراجع',
     erase: 'مسح',
     notes: 'ملاحظات',
+    notesOn: 'ملاحظات ON',
+    notesOff: 'ملاحظات OFF',
     hint: 'تلميح',
     rewardHint: '+1 تلميح',
     fastEntry: 'الوضع السريع'

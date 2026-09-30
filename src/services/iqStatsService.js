@@ -192,7 +192,7 @@ class IQStatsService {
     }
     const logic = maxLevel === 0 ? 15 : clamp(28 + maxLevel * 10 + levelsCleared * 4);
 
-    // ACCURACY — win rate over every game started
+    // ACCURACY — win rate over every game started, duels aside (they keep their own record; storage.js BT-1)
     const accuracy = played === 0 ? 15 : clamp((won / played) * 100);
 
     // ENDURANCE — survival-mode wins, tempered by overall volume

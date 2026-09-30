@@ -60,6 +60,8 @@ runStep('2-20. Ad Lifecycle Races (init cache, banner show/hide)', 'node scripts
 runStep('2-21. A Best Time Is A Record Only When It Was Played For One', 'node scripts/tests/unit/test_record_eligibility.js');
 runStep('2-22. A Game Still Being Played Can Be Resumed', 'node scripts/tests/unit/test_saved_game_resume.js');
 runStep('2-23. The Win Screen Does Not Ask For A Full-Screen Canvas', 'node scripts/tests/unit/test_victory_effects.js');
+runStep('2-24. A Level Has One Name (buttons, missions, achievements, store)', 'node scripts/tests/unit/test_level_names.js');
+runStep('2-25. Language Picker Order (System, device language, then A-Z by English name)', 'node scripts/tests/unit/test_language_order.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests
@@ -87,6 +89,8 @@ runStep('3-10. 1v1 Matchmaking & Rematch End-to-End (two browsers)', 'node scrip
 runStep('3-11. Academy Practice Play-Through (64 missions × 13 languages)', 'node scripts/tests/ui/test_academy_practice_play.js');
 runStep('3-12. The Game Screen Fits the Phone (sizes × font scale, banner gap)', 'node scripts/tests/ui/test_game_layout_fit.js');
 runStep('3-13. Each Academy Card Is As Tall As Its Tallest Tab', 'node scripts/tests/ui/test_academy_card_height.js');
+runStep('3-14. The 1v1 Lobby Says When It Cannot Connect (blocked sign-in, 13 languages)', 'node scripts/tests/ui/test_battle_connect_failure.js');
+runStep('3-15. The App Starts When The Network Does Not Answer (no startup requests, fonts bundled)', 'node scripts/tests/ui/test_offline_start.js');
 
 console.log('======================================================');
 console.log('🎉 [QA MASTER PIPELINE] 100% PERFECT! ALL TIERS & GATES PASSED.');

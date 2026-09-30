@@ -12,7 +12,7 @@ export const screens = {
     badge: 'PRO',
     hintTooltip: 'Hints',
     brainReportTitle: 'Play Analysis',
-    brainPercentileShort: '{won} puzzles cleared',
+    brainPercentileShort: 'Puzzles cleared: {won}',
     startSelectedLevel: 'Start Lv.{level} {name}',
     modeTabs: { classic: 'Classic', timeAttack: 'Speedrun', timeLimit: 'Survival' },
     rivalModes: {
@@ -29,9 +29,9 @@ export const screens = {
       classic: { badge: 'CLASSIC', title: 'Classic', desc: 'Classic Sudoku at your own pace', startBtn: 'New Game' },
       timeAttack: { badge: 'SPEEDRUN', title: '⚡ Speedrun', desc: 'Race against the clock for the fastest record!', startBtn: 'Start Speedrun' },
       timeLimit: { badge: 'SURVIVAL', title: '⏳ Survival', desc: 'Lv.{level}, {minutes}-minute limit. Finish before time runs out!', startBtn: 'Start Survival' },
-      daily: { title: 'Daily Challenge', desc: 'New puzzle every day & monthly badges', badge: 'NEW' },
+      daily: { title: 'Daily Challenge', desc: 'New puzzle every day & monthly badges', badge: 'DAILY' },
       battle: { title: '1v1 Online Battle', desc: 'Real-time global multiplayer' },
-      aiBattle: { title: 'AI Bot Battle', desc: 'Speed match against the AI' },
+      aiBattle: { badge: 'VS AI', title: 'AI Bot Battle', desc: 'Speed match against the AI' },
       academy: { title: 'Sudoku Academy', desc: 'Learn 32 solving techniques' },
       practice: { title: 'Free Practice', desc: 'Unlimited mistakes, relaxing play' }
     },
@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: "Speedrun Best",
     survivalTitle: '⏳ Survival Mode',
     survivalTotalWins: "Survival Clears",
-    survivalWinsUnit: "{count} Clears",
+    survivalWinsUnit: "{count}",
     summaryTitle: 'Performance Summary',
     pvpRating: "Rating",
     pvpRecordLabel: "Record",
@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ How is the Logic Score decided?",
-    scoreHowBody: "It goes up when you fill the whole board and win. The hardest level you have cleared without hints counts the most; the number of wins and your win rate count a little. Game overs and quitting a game lower your win rate, which can take a few points off. The ranking uses this score when you are signed in to Play Games.",
+    scoreHowBody: "It goes up when you fill the whole board and win. The hardest level you have cleared without hints counts the most; the number of wins and your win rate count a little. 1v1 and AI battles aren't counted in wins or win rate; they have their own Record in Stats. Game overs and quitting a game lower your win rate, which can take a few points off. The ranking uses this score when you are signed in to Play Games.",
     shareText: "[Sudoku Play Analysis]\nLogic Score: {iq}\nRank: {tier}\nGive Sudoku a try!",
     copiedToast: "Play analysis copied to clipboard.",
     focus: 'Flawless',
@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'Your Clear Rate {rate}%',
     findOpponentBtn: 'Find Opponent',
     noOpponentFound: 'No opponent found. Play against the AI instead?',
+    connectFailed: "Couldn't connect to online play. Please try again later. Play against the AI instead?",
     playAiInstead: 'Battle the AI'
   },
   battleResult: {
@@ -219,6 +220,7 @@ export const screens = {
     declineBtn: 'Decline'
   },
   battleHeader: {
+    aiTag: 'AI',
     confirmLeave: 'Do you want to forfeit and return home?',
     emptyCellsLeft: 'left'
   },

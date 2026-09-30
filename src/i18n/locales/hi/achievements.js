@@ -13,6 +13,8 @@ export const achievements = {
     statsTab: 'आंकड़े',
     unlockedCount: '{unlocked} / {total} अनलॉक ({pct}%)',
     lockedBadge: 'लॉक',
+    pointsTotal: '{count} अंक',
+    tiers: { bronze: 'कांस्य', silver: 'रजत', gold: 'स्वर्ण', diamond: 'हीरा', master: 'मास्टर' },
     unlockedAt: 'अनलॉक तिथि: {date}',
 
     // 1 ~ 7. प्रगति
@@ -27,10 +29,10 @@ export const achievements = {
     // 8 ~ 14. तर्क और सटीकता
     flawless_1: { title: 'त्रुटिहीन', desc: '0 गलती के साथ 1 सुडोकू पूरा करें' },
     flawless_5: { title: 'परफेक्शनिस्ट', desc: 'बिना किसी गलती के 5 सुडोकू पूरे करें' },
-    pure_logic_expert: { title: 'शुद्ध तर्क', desc: 'बिना संकेत के स्तर 4 कठिन पूरा करें' },
-    pure_logic_master: { title: 'सर्वोच्च बुद्धि', desc: '0 गलती और 0 संकेत के साथ स्तर 5 विशेषज्ञ पूरा करें' },
+    pure_logic_expert: { title: 'शुद्ध तर्क', desc: 'बिना संकेत के Lv.4 कठिन पूरा करें' },
+    pure_logic_master: { title: 'सर्वोच्च बुद्धि', desc: '0 गलती और 0 संकेत के साथ Lv.5 विशेषज्ञ पूरा करें' },
     note_master: { title: 'नोट्स मास्टर', desc: 'पेंसिल नोट्स का 50+ बार सक्रिय उपयोग करें' },
-    no_notes: { title: 'सहज दृष्टि', desc: 'बिना नोट्स के स्तर 3 या उच्चतर पूरा करें' },
+    no_notes: { title: 'सहज दृष्टि', desc: 'बिना नोट्स के Lv.3 मध्यम या उच्चतर पूरा करें' },
     fast_entry_fan: { title: 'बिजली की गति', desc: 'फास्ट एंट्री मोड में 1 खेल पूरा करें' },
 
     // 15 ~ 19. गति
@@ -41,11 +43,11 @@ export const achievements = {
     combo_streak_10: { title: 'कॉम्बो किंग', desc: 'स्पीडरन मोड में 10 कॉम्बो हासिल करें' },
 
     // 20 ~ 26. कठिनाई और उत्तरजीविता
-    clear_lv1: { title: 'आरंभिक विजेता', desc: 'स्तर 1 शुरुआती पूरा करें' },
-    clear_lv2: { title: 'सरल स्तर पूरा', desc: 'स्तर 2 सरल पूरा करें' },
-    clear_lv3: { title: 'मध्यम स्तर पूरा', desc: 'स्तर 3 मध्यम पूरा करें' },
-    clear_lv4: { title: 'कठिन चुनौती', desc: 'स्तर 4 कठिन पूरा करें' },
-    clear_lv5: { title: 'ग्रैंडमास्टर', desc: 'सर्वोच्च स्तर 5 विशेषज्ञ पूरा करें' },
+    clear_lv1: { title: 'आरंभिक विजेता', desc: 'Lv.1 शुरुआती पूरा करें' },
+    clear_lv2: { title: 'सरल स्तर पूरा', desc: 'Lv.2 सरल पूरा करें' },
+    clear_lv3: { title: 'मध्यम स्तर पूरा', desc: 'Lv.3 मध्यम पूरा करें' },
+    clear_lv4: { title: 'कठिन चुनौती', desc: 'Lv.4 कठिन पूरा करें' },
+    clear_lv5: { title: 'ग्रैंडमास्टर', desc: 'सर्वोच्च Lv.5 विशेषज्ञ पूरा करें' },
     survival_hero: { title: 'सर्वाइवल हीरो', desc: 'सर्वाइवल मोड में एक पहेली पूरी करें' },
     survival_clutch: { title: 'अंतिम सेकंड', desc: 'टाइमर में 5 सेकंड या उससे कम समय शेष रहते जीतें' },
 

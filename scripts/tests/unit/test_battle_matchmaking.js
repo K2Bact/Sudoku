@@ -291,6 +291,86 @@ for (const rel of DIALOG_OWNERS) {
 }
 console.log('  ✅ Battle exits confirm through the in-app, localised modal');
 
+// ── 7. A search that cannot reach the server says so (BT-2) ────────────────
+//
+// The published rules refuse every read and write without a signed-in account.
+// When anonymous sign-in failed, the search still ran: the queue read came back
+// empty, the ticket was refused, and after twelve seconds the lobby said no
+// opponent had been found — a claim about other players, when this phone had
+// never reached the server. And the database handle is cached for the session,
+// so one failed sign-in locked 1v1 out until the app restarted.
+console.log('▶ 7. No signed-in account: "could not connect", at once, and a retry that can succeed');
+{
+  // (a) The matchmaking path asks first and puts nothing on the wire when refused.
+  const svc = await newPlayer('offline');
+  const ch = svc.channel;
+  const orig = { listQueue: ch.listQueue, enqueue: ch.enqueue, send: ch.send, canSearch: ch.canSearch };
+  const wire = [];
+  ch.listQueue = async () => { wire.push('listQueue'); return []; };
+  ch.enqueue = () => { wire.push('enqueue'); };
+  ch.send = (m) => { wire.push(`send:${m?.type}`); };
+  ch.canSearch = async () => false;
+  let unavailable = 0;
+  let matched = 0;
+  await svc.startQuickMatch(3, () => matched++, () => unavailable++);
+  assert.strictEqual(unavailable, 1, 'a search the server will refuse must report that it could not connect (BT-2)');
+  assert.strictEqual(matched, 0, 'and must not report a match');
+  assert.deepStrictEqual(wire, [], `nothing may go on the wire without an account — saw: ${wire.join(', ')}`);
+  assert.strictEqual(svc.searchingLevel, null, 'and the player is no longer searching');
+  Object.assign(ch, orig);
+
+  // (b) Cancelled while the answer was on its way: no late "could not connect".
+  let answer;
+  ch.canSearch = () => new Promise((r) => { answer = r; });
+  const pending = svc.startQuickMatch(3, () => matched++, () => unavailable++);
+  svc.leaveRoom();
+  answer(false);
+  await pending;
+  assert.strictEqual(unavailable, 1, 'a search the player already cancelled must not come back as "could not connect"');
+  Object.assign(ch, orig);
+  ch.close();
+
+  // (c) The Firebase transport tries sign-in again, and listens only once signed in.
+  const { FirebaseTransport } = await import('../../../src/firebase/transport/firebaseTransport.js');
+  const listeners = [];
+  let signInCalls = 0;
+  let nextUid = null;
+  const api = {
+    db: {}, uid: null,
+    ref: (_db, path) => path,
+    onChildAdded: (ref) => { listeners.push(ref); return () => {}; },
+    signIn: async () => { signInCalls++; return nextUid; },
+  };
+  const tr = new FirebaseTransport('local_abc', () => {});
+  tr.api = api;
+  tr.ready = Promise.resolve(api);
+  assert.strictEqual(await tr.canSearch(), false, 'no account, no search');
+  assert.strictEqual(signInCalls, 1, 'sign-in is tried again before giving up — a rate limit or a dropped network passes');
+  assert.strictEqual(listeners.length, 0, 'no /bus listener without an account: the server cancels it, and a cancelled listener never resumes');
+  nextUid = 'uid_after_retry';
+  assert.strictEqual(await tr.canSearch(), true, 'a later retry that signs in lets the search go out');
+  assert.strictEqual(await tr.whoAmI(), 'uid_after_retry', 'and the transport signs as that account from then on');
+  assert.deepStrictEqual(listeners, ['bus'], 'the /bus listener attaches once the account exists');
+  await tr.canSearch();
+  assert.strictEqual(listeners.length, 1, 'and only once');
+  assert.strictEqual(signInCalls, 2, 'a signed-in transport does not sign in again');
+
+  // (d) The pieces that are not reachable from node, held by their structure.
+  const read = (rel) => fs.readFileSync(rel, 'utf8');
+  const transport = read('src/firebase/transport/firebaseTransport.js');
+  const initBody = transport.slice(transport.indexOf('async init()'), transport.indexOf('listen(api) {'));
+  assert(/if \(api\.uid\) \{[^}]*this\.listen\(api\)/.test(initBody),
+    'init must attach the /bus listener only once signed in');
+  const hook = read('src/hooks/useBattleMultiplayer.js');
+  const start = hook.slice(hook.indexOf('const handleStartQuickMatch = '), hook.indexOf('const handleCancelQuickMatch = '));
+  assert(/startQuickMatch\([\s\S]*\},\s*\(\)\s*=>\s*\{[\s\S]*setMatchUnavailable\(true\)/.test(start),
+    'the lobby search must pass a could-not-connect handler that sets matchUnavailable (BT-2)');
+  const lobby = read('src/components/BattleLobbyScreen.jsx');
+  assert(/matchUnavailable \? t\('battleLobby\.connectFailed'\)/.test(lobby),
+    'the lobby must say it could not connect when that is what happened, not that nobody was found');
+}
+console.log('  ✅ No account: told at once, nothing sent; sign-in retried; /bus heard only once signed in');
+
 console.log('\n======================================================');
 console.log('🎉 Matchmaking gate passed — two players really do meet.');
 console.log('======================================================');

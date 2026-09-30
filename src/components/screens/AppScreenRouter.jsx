@@ -31,6 +31,7 @@ export function AppScreenRouter({
   onStartQuickMatch,
   isMatchSearching,
   matchTimedOut,
+  matchUnavailable,
   onPlayAiInstead,
   onCancelQuickMatch,
   setAdRefreshTrigger,
@@ -105,6 +106,7 @@ export function AppScreenRouter({
           onBack={() => returnToParent(false)}
           isSearching={isMatchSearching}
           matchTimedOut={matchTimedOut}
+          matchUnavailable={matchUnavailable}
           onPlayAiInstead={onPlayAiInstead}
           onCancelSearch={onCancelQuickMatch}
           onStartQuickMatch={onStartQuickMatch || ((lvl, cb) => {

@@ -3,7 +3,7 @@ export const screens = {
     ghost: {
       ahead: '{time} d’avance',
       behind: '{time} de retard',
-      ghostHintNotice: '💡 L’utilisation d’un indice exclut la mise à jour du record PB.'
+      ghostHintNotice: '💡 Indice utilisé – ce temps ne compte pas comme record personnel.'
     }
   },
   home: {
@@ -29,9 +29,9 @@ export const screens = {
       classic: { badge: 'CLASSIQUE', title: 'Solo classique', desc: 'Grille de sudoku traditionnelle, calme et immersive', startBtn: 'Nouvelle partie' },
       timeAttack: { badge: 'CONTRE-LA-MONTRE', title: '⚡ Contre-la-montre', desc: 'Battez le chrono pour établir votre meilleur record !', startBtn: 'Lancer le chrono' },
       timeLimit: { badge: 'SURVIE', title: '⏳ Survie', desc: 'Lv.{level}, limite de {minutes} min ! Tenez jusqu’au bout.', startBtn: 'Lancer Survie' },
-      daily: { title: 'Défi quotidien', desc: 'Nouvelle grille chaque jour & badges mensuels', badge: 'NOUVEAU' },
+      daily: { title: 'Défi quotidien', desc: 'Nouvelle grille chaque jour & badges mensuels', badge: 'QUOTIDIEN' },
       battle: { title: 'Duel 1v1 en ligne', desc: 'Match mondial en direct' },
-      aiBattle: { title: 'Duel contre l’IA', desc: 'Course de vitesse 1v1 contre l’IA' },
+      aiBattle: { badge: 'VS IA', title: 'Duel contre l’IA', desc: 'Course de vitesse 1v1 contre l’IA' },
       academy: { title: 'Académie Sudoku', desc: 'Apprenez 32 techniques de maître' },
       practice: { title: 'Entraînement libre', desc: 'Erreurs illimitées, jeu relaxant' }
     },
@@ -55,13 +55,13 @@ export const screens = {
     missionReward: '+1 indice & validation',
     tiers: { beginner: 'Débutant', intermediate: 'Intermédiaire', advanced: 'Maître' },
     missions: {
-      beginnerLv1Title: '[Lv.1 Très facile] 1 sudoku', beginnerLv1Desc: 'Terminez une grille Lv.1 Très Facile pour poser vos bases logiques.',
+      beginnerLv1Title: '[Lv.1 Initiation] 1 sudoku', beginnerLv1Desc: 'Terminez une grille Lv.1 Initiation pour poser vos bases logiques.',
       beginnerLv2Title: '[Lv.2 Facile] Réussir 1 Sudoku', beginnerLv2Desc: 'Terminez une grille Lv.2 Facile pour pratiquer les bases.',
       medLv3Title: '[Lv.3+ Moyen] Réussir 1 Sudoku', medLv3Desc: 'Terminez une grille Lv.3 Moyen ou supérieur pour tester vos déductions.',
       advLv4Title: '[Lv.4+ Difficile] Réussir 1 Sudoku', advLv4Desc: 'Domptez une grille Lv.4 Difficile et prouvez votre maîtrise.',
-      advLv5Title: '[Lv.5 Maître] Réussir 1 sudoku', advLv5Desc: 'Terminez la redoutable grille Lv.5 Maître pour atteindre l’élite.',
+      advLv5Title: '[Lv.5 Expert] Réussir 1 sudoku', advLv5Desc: 'Terminez la redoutable grille Lv.5 Expert pour atteindre l’élite.',
       battleTitle: 'Jouer 1 Duel 1v1 / IA', battleDesc: 'Participez à 1 duel en ligne en temps réel ou contre l’IA.',
-      speedrunTitle: '⚡ Réussir 1 partie chrono', speedrunDesc: 'Complétez un puzzle en mode Contre-la-montre avec accélération de combo.'
+      speedrunTitle: '⚡ Réussir 1 partie en Contre-la-montre', speedrunDesc: 'Complétez un puzzle en mode Contre-la-montre.'
     }
   },
   removeAds: {
@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Comment le Logic Score est-il calculé ?",
-    scoreHowBody: "Il augmente quand vous remplissez toute la grille et gagnez. Le niveau le plus difficile réussi sans indice compte le plus ; le nombre de victoires et le taux de victoire comptent un peu. Perdre ou abandonner une partie fait baisser le taux de victoire et peut retirer quelques points. Le classement utilise ce score quand vous êtes connecté à Play Jeux.",
+    scoreHowBody: "Il augmente quand vous remplissez toute la grille et gagnez. Le niveau le plus difficile réussi sans indice compte le plus ; le nombre de victoires et le taux de victoire comptent un peu. Les duels 1v1 et contre l’IA ne comptent ni dans les victoires ni dans le taux de victoire : ils ont leur propre bilan dans Statistiques. Perdre ou abandonner une partie fait baisser le taux de victoire et peut retirer quelques points. Le classement utilise ce score quand vous êtes connecté à Play Jeux.",
     shareText: '[Analyse de jeu Sudoku]\nLogic Score : {iq}\nRang : {tier}\nEssayez Sudoku dès aujourd’hui !',
     copiedToast: 'Analyse copiée dans le presse-papiers.',
     focus: 'Sans faute',
@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'Votre taux de réussite : {rate}%',
     findOpponentBtn: 'Chercher un duel',
     noOpponentFound: 'Aucun adversaire trouvé. Jouer contre l’IA ?',
+    connectFailed: "Connexion au jeu en ligne impossible. Réessayez plus tard. Jouer contre l’IA ?",
     playAiInstead: 'Affronter l’IA'
   },
   battleResult: {
@@ -219,6 +220,7 @@ export const screens = {
     declineBtn: 'Refuser'
   },
   battleHeader: {
+    aiTag: 'IA',
     confirmLeave: 'Voulez-vous déclarer forfait et retourner à l’accueil ?',
     emptyCellsLeft: 'restantes'
   },

@@ -8,14 +8,14 @@ export const modals = {
       timeLabel: 'समय',
       timeRemainingLabel: 'शेष समय',
       mistakesLabel: 'गलतियां',
-      mistakesCount: '{count} गलतियां',
+      mistakesCount: '{count}',
       notRecordedHint: "संकेत इस्तेमाल हुए, इसलिए यह समय रिकॉर्ड में नहीं गिना गया।",
       notRecordedNoLimit: "3 गलतियों की सीमा के बिना खेला, इसलिए यह समय रिकॉर्ड में नहीं गिना गया।",
       nextGame: 'अगला खेल',
       leaderboardBtn: "📊 मेरे रिकॉर्ड",
       shareBtn: 'शेयर करें',
       copiedToast: '🎉 परिणाम क्लिपबोर्ड पर कॉपी हो गया!',
-      shareText: '🧩 मैंने सुडोकू {mode} स्तर {level} {name} को [{time}] में हल किया! रैंक: {rank} ({mistakes} गलतियां)। क्या आप इससे तेज़ कर सकते हैं?',
+      shareText: '🧩 मैंने सुडोकू {mode} Lv.{level} {name} को [{time}] में हल किया! रैंक: {rank} (गलतियां: {mistakes})। क्या आप इससे तेज़ कर सकते हैं?',
       ranks: {
         'S+': '👑 S+ (दिव्य गति)',
         'S': '⭐️ S (मास्टर)',
@@ -26,7 +26,7 @@ export const modals = {
     },
     gameOver: {
       title: 'खेल समाप्त',
-      desc: 'आपकी तीनों गलतियां समाप्त हो चुकी हैं।\nखेल जारी रखने के लिए विज्ञापन देखें!',
+      desc: 'आपने तीन गलतियां कर दी हैं।\nखेल जारी रखने के लिए विज्ञापन देखें!',
       descNoRevive: 'सभी प्रयास समाप्त हो गए हैं।\n(पुनर्जीवन का मौका इस्तेमाल हो चुका है)',
       reviveBtn: 'विज्ञापन देखें (+1 जीवन)',
       restartBtn: 'पुनः आरंभ'

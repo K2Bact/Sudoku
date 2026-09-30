@@ -15,7 +15,7 @@ export const modals = {
       leaderboardBtn: "📊 سجلاتي",
       shareBtn: 'مشاركة',
       copiedToast: '🎉 تم نسخ سجل الفوز إلى الحافظة بنجاح!',
-      shareText: '🧩 سودوكو {mode} مستوى {level} {name} أكملته في [{time}]! التقييم: {rank} (عدد الأخطاء: {mistakes}). هل يمكنك التفوق علي؟',
+      shareText: '🧩 سودوكو {mode} Lv.{level} {name} أكملته في [{time}]! التقييم: {rank} (عدد الأخطاء: {mistakes}). هل يمكنك التفوق علي؟',
       ranks: {
         'S+': '👑 S+ (السرعة الإلهية)',
         'S': '⭐️ S (أستاذ)',
@@ -43,8 +43,8 @@ export const modals = {
     },
     dailyReward: {
       title: 'مكافأة الحضور اليومي!',
-      streakBadge: '{days} يوم متواصل',
-      desc: 'حضور متواصل: {days} يوم!\nتم الحصول على +{count} تلميح مجاني.',
+      streakBadge: 'أيام متواصلة: {days}',
+      desc: 'أيام الحضور المتواصل: {days}!\nالتلميحات المجانية: +{count}',
       confirm: 'استلام المكافأة'
     },
     adReward: {

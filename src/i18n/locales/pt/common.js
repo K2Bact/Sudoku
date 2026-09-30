@@ -35,7 +35,7 @@ export const common = {
     5: 'Especialista'
   },
   header: {
-    levelPrefix: 'Nv.{level}',
+    levelPrefix: 'Lv.{level}',
     mistakes: 'Erros {count}/{max}',
     mistakesUnlimited: 'Erros {count}',
     timeAttackMistake: 'Erro {count} (+10s)',
@@ -50,6 +50,8 @@ export const common = {
     undo: 'Desfazer',
     erase: 'Apagar',
     notes: 'Anotações',
+    notesOn: 'Anotações ON',
+    notesOff: 'Anotações OFF',
     hint: 'Dica',
     rewardHint: '+1 dica',
     fastEntry: 'Modo Rápido'

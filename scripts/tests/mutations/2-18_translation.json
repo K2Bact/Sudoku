@@ -15,10 +15,10 @@
     },
     {
       "name": "an English string ships in French as though it were translated",
-      "why": "The noisy half of the gate. Seventy-eight values legitimately match English — Pause is German, Sudoku is the app's name — so the allowlist has to absorb those without absorbing this. If the exception list ever grows wide enough to swallow a real omission, this mutation stops failing and says so.",
+      "why": "The noisy half of the gate. Seventy-eight values legitimately match English — Pause is German, Sudoku is the app's name — so the allowlist has to absorb those without absorbing this. If the exception list ever grows wide enough to swallow a real omission, this mutation stops failing and says so. Repointed 2026-09-30: it planted \"Haptic Feedback (Vibration)\" after English had become \"Vibration\", so the French value no longer equalled English and the mutation survived — found by the audit, rotted since before this session. It now plants the current English description, which no French reading can pass for.",
       "file": "src/i18n/locales/fr/screens.js",
-      "find": "hapticFx: 'Retour haptique',",
-      "replace": "hapticFx: 'Haptic Feedback (Vibration)',",
+      "find": "hapticFxDesc: 'Vibration lors des saisies correctes et incorrectes',",
+      "replace": "hapticFxDesc: 'Vibrate on correct and wrong entries',",
       "expectFailure": "영어를 그대로 둔 자리가 없다"
     },
     {
@@ -44,6 +44,14 @@
       "find": "<string name=\"app_name\">ナンプレ</string>",
       "replace": "<string name=\"app_name\">Sudoku</string>",
       "expectFailure": "launcher app_name"
+    },
+    {
+      "name": "the Korean hint notice says PB again",
+      "why": "User decision 2026-09-30 (BACKLOG HC-1): personal best is written in words. Seven languages said \"PB\" here, an English abbreviation none of them explained.",
+      "file": "src/i18n/locales/ko/screens.js",
+      "find": "💡 힌트를 사용해 이번 판은 개인 최고 기록에 반영되지 않습니다.",
+      "replace": "💡 힌트 사용으로 이번 판의 PB 신기록 갱신이 제외됩니다.",
+      "expectFailure": "PB 라는 약자가 없다"
     }
   ]
 }

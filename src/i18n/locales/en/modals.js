@@ -15,7 +15,7 @@ export const modals = {
       leaderboardBtn: "📊 My Records",
       shareBtn: 'Share',
       copiedToast: '🎉 Clear record copied to clipboard!',
-      shareText: '🧩 Sudoku {mode} Lv.{level} {name} cleared in [{time}]! Rank: {rank} ({mistakes} mistakes). Can you beat it?',
+      shareText: '🧩 Sudoku {mode} Lv.{level} {name} cleared in [{time}]! Rank: {rank} (mistakes: {mistakes}). Can you beat it?',
       ranks: {
         'S+': '👑 S+ (Godspeed)',
         'S': '⭐️ S (Master)',

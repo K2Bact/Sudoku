@@ -23,16 +23,16 @@ export const screens = {
       "timeLimitToast": "サバイバルモードではゴースト・デルタタイムは使えません。",
       "infoAria": "ゴースト・デルタタイムの説明",
       "infoGhost": "記録を出したその盤をもう一度解き、当時の自分と競います。",
-      "infoDelta": "新しい盤で、自己ベストのペースより何秒速いかを表示します。",
+      "infoDelta": "新しい盤面で、自己ベストのペースに対するリードや遅れを秒数で表示します。",
 },
     modes: {
       classic: { badge: 'クラシック', title: 'クラシックシングル', desc: '落ち着いて論理を組み立てる正統派ナンプレ', startBtn: '新規ゲーム' },
       timeAttack: { badge: 'タイムアタック', title: '⚡ タイムアタック', desc: '1秒でも早い最速クリア記録に挑戦！', startBtn: 'タイムアタック開始' },
       timeLimit: { badge: 'サバイバル', title: '⏳ サバイバル', desc: 'Lv.{level} 制限時間 {minutes}分！ 時間内にパズルを完成させよう！', startBtn: 'サバイバル開始' },
-      daily: { title: '本日のデイリー', desc: '毎日新しいパズル＆月間マスターバッジ', badge: 'NEW' },
+      daily: { title: '本日のデイリー', desc: '毎日新しいパズル＆月間マスターバッジ', badge: 'デイリー' },
       battle: { title: '1v1 オンライン対戦', desc: 'リアルタイム1v1対戦' },
-      aiBattle: { title: 'AI ボット対戦', desc: '1:1 AI スピード対決' },
-      academy: { title: 'ナンプレアカデミー', desc: '32の実戦解法テクニックを習得' },
+      aiBattle: { badge: 'VS AI', title: 'AI ボット対戦', desc: '1:1 AI スピード対決' },
+      academy: { title: 'ナンプレアカデミー', desc: '32種類の解法を学ぶ' },
       practice: { title: '自由練習モード', desc: 'ミス無制限でリラックスプレイ' }
     },
     nav: {brain: '分析', stats: '統計', academy: 'アカデミー', settings: '設定' }
@@ -55,13 +55,13 @@ export const screens = {
     missionReward: 'ヒント1個＋カレンダーにクリア記録',
     tiers: { beginner: '初級', intermediate: '中級', advanced: 'マスター' },
     missions: {
-      beginnerLv1Title: '【Lv.1 入門】ナンプレ1回クリア', beginnerLv1Desc: 'Lv.1 入門難易度をクリアして基礎論理力を鍛えましょう。',
+      beginnerLv1Title: '【Lv.1 入門】ナンプレ1回クリア', beginnerLv1Desc: '「Lv.1 入門」のパズルをクリアして基礎論理力を鍛えましょう。',
       beginnerLv2Title: '【Lv.2 初級】ナンプレ1回クリア', beginnerLv2Desc: 'Lv.2 初級パズルをクリアしてナンプレの基本を固めましょう。',
       medLv3Title: '【Lv.3 中級以上】ナンプレ1回クリア', medLv3Desc: 'Lv.3 中級以上のパズルをクリアして本格的な推理力を試しましょう。',
       advLv4Title: '【Lv.4 上級以上】ナンプレ1回クリア', advLv4Desc: 'Lv.4 以上の高難度パズルを撃破しマスター級の論理力を証明しましょう。',
       advLv5Title: '【Lv.5 達人】ナンプレ1回クリア', advLv5Desc: '最高難度の「Lv.5 達人」のパズルをクリアして、最上位ランクに挑戦しましょう。',
       battleTitle: '1v1 オンライン/AI 対戦に1回参加', battleDesc: 'リアルタイム1v1対戦またはAIボット練習マッチに1回参加しましょう。',
-      speedrunTitle: '⚡ タイムアタック1回クリア', speedrunDesc: 'タイムアタックモードでコンボ加速を活かしてクリアしましょう。'
+      speedrunTitle: '⚡ タイムアタック1回クリア', speedrunDesc: 'タイムアタックモードでパズルを1回クリアしましょう。'
     }
   },
   removeAds: {
@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'ロジックスコア',
     scoreHowTitle: "ⓘ ロジックスコアの決まり方",
-    scoreHowBody: "盤面をすべて埋めて勝つと上がります。ヒントなしでクリアした最も難しいレベルが最も大きく反映され、勝利数と勝率も少し反映されます。ゲームオーバーになったり、途中でやめたりすると、勝率が下がり、スコアが少し下がることがあります。ランキングは Play ゲームにログインしているとき、このスコアで決まります。",
+    scoreHowBody: "盤面をすべて埋めて勝つと上がります。ヒントなしでクリアした最も難しいレベルが最も大きく反映され、勝利数と勝率も少し反映されます。1v1対戦とAIボット対戦は勝利数と勝率には含まれず、統計の戦績に別に記録されます。ゲームオーバーになったり、途中でやめたりすると、勝率が下がり、スコアが少し下がることがあります。ランキングは Play ゲームにログインしているとき、このスコアで決まります。",
     shareText: "[ナンプレ プレイ分析]\nロジックスコア: {iq}点\nランク: {tier}\nあなたもナンプレに挑戦してみよう！",
     copiedToast: "分析レポートをクリップボードにコピーしました。",
     focus: "ノーミス度",
@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'あなたのクリア率 {rate}%',
     findOpponentBtn: '対戦相手を探す',
     noOpponentFound: '対戦相手が見つかりませんでした。AIと対戦しますか?',
+    connectFailed: "オンライン対戦に接続できませんでした。しばらくしてからもう一度お試しください。AIと対戦しますか?",
     playAiInstead: 'AIと対戦'
   },
   battleResult: {
@@ -219,6 +220,7 @@ export const screens = {
     declineBtn: '辞退'
   },
   battleHeader: {
+    aiTag: 'AI',
     confirmLeave: '対戦を諦めてホームに戻りますか？',
     emptyCellsLeft: '残り'
   },

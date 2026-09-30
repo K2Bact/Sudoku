@@ -1,44 +1,49 @@
 [앱 이름 (App name - 최대 30자)]
-Sudoku - Puzle de lógica
+Sudoku: Academia de lógica
 
 [간단한 설명 (Short description - 최대 80자)]
-Sudoku clásico, 32 técnicas, informe de Sudoku IQ y desafíos diarios 365.
+5 niveles de dificultad, 32 técnicas para aprender y duelos 1v1 y contra la IA.
 
 [자세한 설명 (Full description - 최대 4000자)]
-Sudoku es un juego de puzles de lógica y entrenamiento cerebral de nueva generación, diseñado para todos los amantes del razonamiento puro, desde principiantes hasta grandes maestros.
+Sudoku para todos, desde quien empieza hasta quien lleva años resolviendo.
 
-Disfruta de la máxima satisfacción deductiva con 32 técnicas auténticas enseñadas paso a paso y un informe cognitivo de Sudoku IQ en tiempo real.
+Juega en 5 niveles de dificultad, aprende 32 técnicas de resolución con diagramas y puzles de práctica, y compite contra otros jugadores en duelos 1v1 online o contra la IA.
 
 ━━━━━━━━━━━━━━━━━━━━━
-🌟 CARACTERÍSTICAS PRINCIPALES
+🌟 LO MÁS DESTACADO
 ━━━━━━━━━━━━━━━━━━━━━
 
-🧩 1. 5 Niveles de Dificultad Equilibrados
-- Desde Principiante hasta Maestro.
-- Tableros 100% únicos garantizados matemáticamente, solubles por pura deducción sin adivinar.
-- 4 elegantes temas visuales diseñados para descansar la vista (Arcilla, Mate Oscuro, Cerámica Pura, Editorial).
+🧩 1. 5 niveles de dificultad
+- Principiante, Fácil, Medio, Difícil y Maestro.
+- Cada puzle se genera para que tenga una única solución.
+- Modos Clásico, Contrarreloj y Supervivencia.
+- 4 temas que cuidan tu vista.
 
-🎓 2. Academia Sudoku en 32 Técnicas
-- Aprende paso a paso con diagramas y práctica interactiva:
-- Nivel Básico: Singles, líneas y bloqueos.
-- Nivel Intermedio: Pares e intersecciones.
-- Nivel Avanzado: Familia Wing (X-Wing, XY-Wing, XYZ-Wing, W-Wing).
-- Nivel Experto: Peces (Swordfish, Jellyfish), coloreado y rectángulo único (UR).
-- Nivel Maestro: Cadenas AIC, conjuntos ALS y Exocet.
+🎓 2. Academia: 32 técnicas de resolución
+- Cada técnica incluye una explicación ilustrada y 2 puzles de práctica en tableros reales.
+- Básica: Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
+- Intermedia: Pointing, Claiming, Naked/Hidden Pairs, Triples y Quads
+- Avanzada: X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
+- Maestría: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
+- Gran Maestro: Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
 
-⚔️ 3. Duelos 1v1 en Tiempo Real y Batallas contra IA
-- Compite en igualdad de condiciones en tableros idénticos con emparejamiento global.
-- Desafía a bots de IA de 5 niveles para entrenar tu velocidad de resolución.
+⚔️ 3. Duelos 1v1 y contra la IA
+- Duelos online en tiempo real: compite con otro jugador en el mismo tablero.
+- Sigue el progreso de tu rival mientras juegas.
+- Duelos contra la IA con 5 niveles de dificultad.
 
-🧠 4. Informe de Sudoku IQ Personalizado
-- Análisis detallado de tus 5 habilidades cognitivas clave: Concentración, Resistencia, Precisión, Lógica y Velocidad.
-- Gráfico radar y percentil global comparativo.
+🏆 4. Logros y análisis de juego
+- 30 logros por desbloquear.
+- Tu juego desglosado en 5 indicadores, como la velocidad y las partidas sin errores.
+- Compite en la clasificación de Logic Score de Google Play Juegos.
 
-📅 5. Desafíos Diarios 365 Días
-- Un nuevo puzle cada día y medallas mensuales coleccionables.
-- Desbloquea fechas pasadas para completar tu calendario anual de logros.
+📅 5. Desafío diario
+- Una misión nueva cada día, registrada en un calendario.
+- ¿Te saltaste un día? Desbloquea los puzles pasados viendo un anuncio corto.
+- Consigue una insignia cada mes.
 
-🏆 6. 30 Logros Mundiales y Clasificaciones
-- Desbloquea hitos especiales, trofeos de maestría y sincroniza tu récord con Google Play Games.
+☁️ 6. Copia en la nube
+- Con la sesión iniciada en Google Play Juegos, tu progreso se guarda automáticamente.
+- En un dispositivo nuevo, puedes recuperarlo.
 
-¡Descarga Sudoku hoy mismo y eleva tu agilidad mental al siguiente nivel!
+Tómate tu tiempo, piénsalo con calma y disfruta del puzle.

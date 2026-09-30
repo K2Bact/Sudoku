@@ -13,7 +13,7 @@ export const screens = {
     hintTooltip: 'تلميحات',
     brainReportTitle: 'تحليل اللعب',
     brainPercentileShort: 'الألغاز المكتملة: {won}',
-    startSelectedLevel: 'بدء مستوى {level} — {name}',
+    startSelectedLevel: 'بدء Lv.{level} — {name}',
     modeTabs: { classic: 'كلاسيكي', timeAttack: 'سباق الزمن', timeLimit: 'النجاة' },
     rivalModes: {
       standard: '🎯 قياسي',
@@ -28,10 +28,10 @@ export const screens = {
     modes: {
       classic: { badge: 'كلاسيكي', title: 'لعب كلاسيكي فردي', desc: 'لغز سودوكو تقليدي يمنحك الهدوء والتركيز العميق', startBtn: 'لعبة جديدة' },
       timeAttack: { badge: 'سباق الزمن', title: '⚡ سباق الزمن', desc: 'تسابق مع عقارب الساعة لتحقيق أسرع رقم قياسي!', startBtn: 'بدء تحدي السرعة' },
-      timeLimit: { badge: 'النجاة', title: '⏳ النجاة', desc: 'مستوى {level} — المهلة: {minutes} دقيقة! البقاء على قيد الحياة قبل انتهاء العد التنازلي.', startBtn: 'بدء تحدي النجاة' },
-      daily: { title: 'التحدي اليومي', desc: 'لغز متجدد كل يوم وشارات شهرية حصرية', badge: 'جديد' },
+      timeLimit: { badge: 'النجاة', title: '⏳ النجاة', desc: 'Lv.{level} — المهلة: {minutes} دقيقة! البقاء على قيد الحياة قبل انتهاء العد التنازلي.', startBtn: 'بدء تحدي النجاة' },
+      daily: { title: 'التحدي اليومي', desc: 'لغز متجدد كل يوم وشارات شهرية حصرية', badge: 'يومي' },
       battle: { title: 'مبارزة 1 ضد 1 عبر الإنترنت', desc: 'مواجهة مباشرة متعددة اللاعبين' },
-      aiBattle: { title: 'مبارزة الذكاء الاصطناعي', desc: 'تحدي سرعة 1:1 ضد الذكاء الاصطناعي' },
+      aiBattle: { badge: 'ضد البوت', title: 'مبارزة الذكاء الاصطناعي', desc: 'تحدي سرعة 1:1 ضد الذكاء الاصطناعي' },
       academy: { title: 'أكاديمية السودوكو', desc: 'تعلّم 32 تقنية احترافية' },
       practice: { title: 'تدريب حر', desc: 'أخطاء غير محدودة ولعب مريح للاسترخاء' }
     },
@@ -55,13 +55,13 @@ export const screens = {
     missionReward: '+1 تلميح وتسجيل حضور',
     tiers: { beginner: 'مبتدئ', intermediate: 'متوسط', advanced: 'أستاذ' },
     missions: {
-      beginnerLv1Title: '[مستوى 1 سهل جداً] حل لغز سودوكو 1', beginnerLv1Desc: 'أكمل لغزاً من المستوى 1 سهل جداً لبناء أساسك المنطقي.',
-      beginnerLv2Title: '[مستوى 2 سهل] حل لغز سودوكو 1', beginnerLv2Desc: 'أكمل لغزاً من المستوى 2 سهل لممارسة التقنيات الأساسية.',
-      medLv3Title: '[مستوى 3+ متوسط] حل لغز سودوكو 1', medLv3Desc: 'أكمل لغزاً من المستوى 3 متوسط أو أعلى لاختبار مهاراتك الاستنتاجية.',
-      advLv4Title: '[مستوى 4+ صعب] حل لغز سودوكو 1', advLv4Desc: 'تغلب على لغز المستوى 4 صعب وأثبت قوة تفكيرك المنطقي.',
-      advLv5Title: '[مستوى 5 أستاذ] حل لغز سودوكو 1', advLv5Desc: 'أكمل أصعب لغز سودوكو من المستوى 5 أستاذ للتصنيف في النخبة.',
+      beginnerLv1Title: '[Lv.1 مبتدئ] حل لغز سودوكو 1', beginnerLv1Desc: 'أكمل لغزاً من Lv.1 مبتدئ لبناء أساسك المنطقي.',
+      beginnerLv2Title: '[Lv.2 سهل] حل لغز سودوكو 1', beginnerLv2Desc: 'أكمل لغزاً من Lv.2 سهل لممارسة التقنيات الأساسية.',
+      medLv3Title: '[Lv.3+ متوسط] حل لغز سودوكو 1', medLv3Desc: 'أكمل لغزاً من Lv.3 متوسط أو أعلى لاختبار مهاراتك الاستنتاجية.',
+      advLv4Title: '[Lv.4+ صعب] حل لغز سودوكو 1', advLv4Desc: 'تغلب على لغز Lv.4 صعب وأثبت قوة تفكيرك المنطقي.',
+      advLv5Title: '[Lv.5 خبير] حل لغز سودوكو 1', advLv5Desc: 'أكمل أصعب لغز سودوكو من Lv.5 خبير للتصنيف في النخبة.',
       battleTitle: 'العب مباراة مبارزة 1 ضد 1 / ذكاء اصطناعي', battleDesc: 'شارك في مباراة واحدة مباشرة عبر الإنترنت أو ضد الذكاء الاصطناعي.',
-      speedrunTitle: '⚡ إكمال لغز في وضع السرعة', speedrunDesc: 'أكمل لغزاً في وضع السرعة باستخدام ميزة تسريع التتالي.'
+      speedrunTitle: '⚡ إكمال لغز في وضع سباق الزمن', speedrunDesc: 'أكمل لغزاً في وضع سباق الزمن.'
     }
   },
   removeAds: {
@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: 'أفضل وقت سرعة',
     survivalTitle: '⏳ الوقت المحدود (وضع النجاة)',
     survivalTotalWins: 'انتصارات النجاة',
-    survivalWinsUnit: '{count} فوز',
+    survivalWinsUnit: '{count}',
     summaryTitle: 'ملخص الأداء',
     pvpRating: "التصنيف",
     pvpRecordLabel: "النتائج",
@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ كيف يُحسب Logic Score؟",
-    scoreHowBody: "يرتفع عندما تملأ اللوحة كاملة وتفوز. أكثر ما يُحتسب هو أصعب مستوى أنهيته دون تلميحات، ويُحتسب عدد مرات الفوز ونسبة الفوز قليلاً. انتهاء اللعبة بالخسارة أو تركها في المنتصف يخفض نسبة الفوز وقد يُنقص بضع نقاط. يعتمد الترتيب على هذه النتيجة عند تسجيل الدخول إلى ألعاب Play.",
+    scoreHowBody: "يرتفع عندما تملأ اللوحة كاملة وتفوز. أكثر ما يُحتسب هو أصعب مستوى أنهيته دون تلميحات، ويُحتسب عدد مرات الفوز ونسبة الفوز قليلاً. لا تُحتسب مبارزات 1 ضد 1 ومبارزات الذكاء الاصطناعي في عدد مرات الفوز أو نسبة الفوز، فلها نتائجها الخاصة في الإحصائيات. انتهاء اللعبة بالخسارة أو تركها في المنتصف يخفض نسبة الفوز وقد يُنقص بضع نقاط. يعتمد الترتيب على هذه النتيجة عند تسجيل الدخول إلى ألعاب Play.",
     shareText: '[تحليل اللعب في Sudoku]\nLogic Score: {iq}\nالمستوى: {tier}\nجرّب Sudoku اليوم!',
     copiedToast: 'تم نسخ تحليل اللعب إلى الحافظة.',
     focus: 'بلا أخطاء',
@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'نسبة إكمالك للألغاز: {rate}%',
     findOpponentBtn: 'ابحث عن منافس',
     noOpponentFound: 'لم يتم العثور على خصم. اللعب ضد الذكاء الاصطناعي؟',
+    connectFailed: "تعذّر الاتصال باللعب عبر الإنترنت. حاول مرة أخرى لاحقاً. اللعب ضد الذكاء الاصطناعي؟",
     playAiInstead: 'اللعب ضد الذكاء الاصطناعي'
   },
   battleResult: {
@@ -197,7 +198,7 @@ export const screens = {
     disqualified: '💀 تم الاستبعاد',
     finalProgress: 'التقدم النهائي',
     ratingChange: 'تغير تصنيف المبارزة (MMR)',
-    aiModeLabel: 'مباراة تدريب ضد الذكاء الاصطناعي (مستوى {level})',
+    aiModeLabel: 'مباراة تدريب ضد الذكاء الاصطناعي (Lv.{level})',
     aiWonBadge: 'فوز في التدريب',
     aiLostBadge: 'اكتمل التدريب',
     you: 'أنت',
@@ -219,6 +220,7 @@ export const screens = {
     declineBtn: 'رفض'
   },
   battleHeader: {
+    aiTag: 'بوت',
     confirmLeave: 'هل ترغب في الانسحاب والعودة إلى الرئيسية؟',
     emptyCellsLeft: 'متبقية'
   },
@@ -231,7 +233,7 @@ export const screens = {
     level3Desc: 'روبوت صعب: إيقاع سريع وأخطاء قليلة.',
     level4Desc: 'روبوت خبير: سريع جداً ونادراً ما يخطئ.',
     level5Desc: 'روبوت الأستاذ الكبير: أسرع روبوت وأقلها أخطاءً.',
-    startBtn: 'بدء مبارزة الذكاء الاصطناعي مستوى {level} {name}'
+    startBtn: 'بدء مبارزة الذكاء الاصطناعي Lv.{level} {name}'
   },
   academy: {
     tabs: { stage1: 'المرحلة 1', stage2: 'المرحلة 2', stage3: 'المرحلة 3', stage4: 'المرحلة 4', stage5: 'المرحلة 5' },

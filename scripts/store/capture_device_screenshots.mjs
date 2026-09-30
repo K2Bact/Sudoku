@@ -99,7 +99,9 @@ const SCENES = [
     `(()=>{const c=${card('xy-chains')}; if(!c) return false; window.__shotIdx=[...document.querySelectorAll('.strategy-item-card')].indexOf(c); c.querySelectorAll('.practice-tab-btn')[1].click(); return true;})()`,
     `(async()=>{for(let i=0;i<5;i++){const c=document.querySelectorAll('.strategy-item-card')[window.__shotIdx]; const p=c&&c.querySelector('.interactive-practice-card'); if(!p) return false; p.scrollIntoView({block:'start', behavior:'instant'}); await new Promise(r=>setTimeout(r,400)); const t=p.getBoundingClientRect().top; if(t>=-2&&t<innerHeight*0.3) return true;} return false;})()`],
   `(()=>{const c=document.querySelectorAll('.strategy-item-card')[window.__shotIdx]; const g=c&&c.querySelector('.practice-guide-box'); if(!g) return false; const r=g.getBoundingClientRect(); return r.top>=0 && r.top<innerHeight*0.6;})()`],
-  ['05_ai_battle', [`(()=>{const e=[...document.querySelectorAll('.home-screen-container *')].find(x=>/^\\s*VS AI/.test(x.textContent)); if(!e) return false; e.click(); return true;})()`],
+  // By the card's class. This used to look for the text "VS AI", which worked only because the badge
+  // was English in every language; it became GEGEN KI in German on 2026-09-30 and the shoot stopped here.
+  ['05_ai_battle', [click('.home-screen-container .ai-card-banner')],
     `!document.querySelector('.home-screen-container')`],
   ['06_daily', [click('.daily-card-banner')], `!document.querySelector('.home-screen-container')`],
   ['07_achievements', [click('.home-bottom-nav .nav-item', 0), `(()=>{const b=document.querySelectorAll('.home-bottom-nav ~ * button, button'); const t=[...b].filter(x=>x.offsetParent)[2]; if(!t) return false; t.click(); return true;})()`],
@@ -144,7 +146,11 @@ function measureUsableArea() {
 function requireOrientation() {
   const want = TABLET ? 'land' : 'port';
   const probe = path.join(TMP, '__orient.png');
-  fs.writeFileSync(probe, execFileSync(ADB, ['-s', serial, 'exec-out', 'screencap', '-p'], { env, maxBuffer: 64 * 1024 * 1024 }));
+  // The display id, as the real captures below pass it. Without it a phone with two
+  // screens (the Flip's cover display) prints "[Warning] Multiple displays were found…"
+  // to stdout ahead of the PNG, and this file stops being an image. The probe was
+  // added on the emulator, which has one display, so it never met a Flip (2026-09-29).
+  fs.writeFileSync(probe, execFileSync(ADB, ['-s', serial, 'exec-out', 'screencap', ...(display ? ['-d', display] : []), '-p'], { env, maxBuffer: 64 * 1024 * 1024 }));
   const dims = execFileSync('python', ['-c',
     `from PIL import Image; im = Image.open(r'${probe}'); print(im.size[0], im.size[1])`]).toString().trim().split(/\s+/).map(Number);
   fs.unlinkSync(probe);
@@ -161,7 +167,10 @@ function requireOrientation() {
   console.log(`device is ${got} ${w}x${h}, as ${TABLET ? 'tablet' : 'phone'} shots require`);
 }
 
-const saved = await evaluate(`(()=>{const s=localStorage.getItem('suidoku_settings_v1'); const r=localStorage.getItem('suidoku_remove_ads_purchased_v1'); const n=JSON.parse(s||'{}'); n.language=${JSON.stringify(LANG)}; n.theme='matte-dark'; localStorage.setItem('suidoku_settings_v1', JSON.stringify(n)); localStorage.setItem('suidoku_remove_ads_purchased_v1','true'); return {s, r};})()`);
+// A game left in progress is put aside for the shoot too. Since quitting counts as a
+// loss (2026-09-19), "new game" over a saved game asks first — the dialog stopped scene
+// 02 on 2026-09-29 — and answering it would record a loss on the phone to take a picture.
+const saved = await evaluate(`(()=>{const s=localStorage.getItem('suidoku_settings_v1'); const r=localStorage.getItem('suidoku_remove_ads_purchased_v1'); const g=localStorage.getItem('suidoku_game_state_v1'); const n=JSON.parse(s||'{}'); n.language=${JSON.stringify(LANG)}; n.theme='matte-dark'; localStorage.setItem('suidoku_settings_v1', JSON.stringify(n)); localStorage.setItem('suidoku_remove_ads_purchased_v1','true'); localStorage.removeItem('suidoku_game_state_v1'); return {s, r, g};})()`);
 try {
   requireOrientation();
   CROP = measureUsableArea();
@@ -189,7 +198,7 @@ try {
   }
 } finally {
   // put the app's own settings back the way they were
-  await evaluate(`(()=>{const o=${JSON.stringify(saved || {})}; if(o.s===null||o.s===undefined) localStorage.removeItem('suidoku_settings_v1'); else localStorage.setItem('suidoku_settings_v1', o.s); if(o.r===null||o.r===undefined) localStorage.removeItem('suidoku_remove_ads_purchased_v1'); else localStorage.setItem('suidoku_remove_ads_purchased_v1', o.r); location.reload(); return true;})()`);
+  await evaluate(`(()=>{const o=${JSON.stringify(saved || {})}; if(o.s===null||o.s===undefined) localStorage.removeItem('suidoku_settings_v1'); else localStorage.setItem('suidoku_settings_v1', o.s); if(o.r===null||o.r===undefined) localStorage.removeItem('suidoku_remove_ads_purchased_v1'); else localStorage.setItem('suidoku_remove_ads_purchased_v1', o.r); if(o.g) localStorage.setItem('suidoku_game_state_v1', o.g); else localStorage.removeItem('suidoku_game_state_v1'); location.reload(); return true;})()`);
   ws.close();
 }
 

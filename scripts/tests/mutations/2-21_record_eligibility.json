@@ -1,0 +1,57 @@
+{
+  "gate": "2-21",
+  "name": "A Best Time Is A Record Only When It Was Played For One",
+  "command": "node scripts/tests/unit/test_record_eligibility.js",
+  "greenMarker": "[2-21] PASSED",
+  "note": "Written 2026-09-28 with BT-1 (duels out of the win rate). The gate had no manifest before; these cover the duel rules and the quit-is-a-loss rule it already claimed. The record-eligibility rule itself (hints, mistake limit) is not mutated here yet.",
+  "mutations": [
+    {
+      "name": "a duel win adds to games played and won again",
+      "why": "Duels could only raise the win rate: a win counted, a loss to a faster opponent never did. The Logic Score on the leaderboard climbs with every 1v1 played.",
+      "file": "src/utils/storage.js",
+      "find": "  if (!isDuelMode(mode)) {",
+      "replace": "  if (true) {",
+      "expectFailure": "must not add to games won"
+    },
+    {
+      "name": "a flawless duel win is counted as a flawless win",
+      "why": "Focus is flawless wins divided by wins. Counting duels on top and not below lets it pass 100% and inflates the play analysis.",
+      "file": "src/utils/storage.js",
+      "find": "  if (typeof extra.comboCount === 'number') {",
+      "replace": "  if (extra.isFlawless && isDuelMode(mode)) stats.flawlessWins = (stats.flawlessWins || 0) + 1;\n  if (typeof extra.comboCount === 'number') {",
+      "expectFailure": "must not add to flawless wins"
+    },
+    {
+      "name": "the game-over path stops saying which mode lost",
+      "why": "A duel lost on mistakes goes back into games played, so duels lower the win rate only through mistakes and raise it through every win — the one-sided count BT-1 removed.",
+      "file": "src/utils/gameMistakeHandler.js",
+      "find": "    recordGameLoss(gameMode);",
+      "replace": "    recordGameLoss();",
+      "expectFailure": "is the duel record's loss"
+    },
+    {
+      "name": "recordGameLoss forgets the duel rule",
+      "why": "Same as above, from the other side: the caller names the mode but the rule is gone.",
+      "file": "src/utils/storage.js",
+      "find": "  if (isDuelMode(mode)) return stats;",
+      "replace": "  if (false) return stats;",
+      "expectFailure": "is the duel record's loss"
+    },
+    {
+      "name": "leaving a duel is counted as quitting a game",
+      "why": "Duels end on their own result screen. Counting them as abandoned games charges a loss to a player who finished a 1v1 and started something else.",
+      "file": "src/utils/abandonedGame.js",
+      "find": "  if (isDuelMode(saved.gameMode)) return null;",
+      "replace": "  if (false) return null;",
+      "expectFailure": "1v1 battles end on their own result screen"
+    },
+    {
+      "name": "a duel time lands in the Classic best-time table",
+      "why": "A 1v1 finished in 30 seconds becomes the player's Classic personal record — a time they never set in Classic.",
+      "file": "src/utils/storage.js",
+      "find": "  } else if (BATTLE_MODES.has(mode)) {",
+      "replace": "  } else if (false) {",
+      "expectFailure": "must not become the Classic best time"
+    }
+  ]
+}

@@ -8,14 +8,14 @@ export const modals = {
       timeLabel: 'Tempo Impiegato',
       timeRemainingLabel: 'Tempo Rimanente',
       mistakesLabel: 'Errori',
-      mistakesCount: '{count} Errori',
+      mistakesCount: '{count}',
       notRecordedHint: "Hai usato dei suggerimenti, quindi questo tempo non conta come record.",
       notRecordedNoLimit: "Hai giocato senza il limite di 3 errori, quindi questo tempo non conta come record.",
       nextGame: 'Prossima Partita',
       leaderboardBtn: "📊 I miei record",
       shareBtn: 'Condividi',
       copiedToast: '🎉 Record copiato negli appunti!',
-      shareText: '🧩 Ho risolto Sudoku {mode} Lv.{level} {name} in [{time}]! Valutazione: {rank} ({mistakes} errori). Riesci a fare meglio?',
+      shareText: '🧩 Ho risolto Sudoku {mode} Lv.{level} {name} in [{time}]! Valutazione: {rank} (errori: {mistakes}). Riesci a fare meglio?',
       ranks: {
         'S+': '👑 S+ (Divino)',
         'S': '⭐️ S (Maestro)',
@@ -43,8 +43,8 @@ export const modals = {
     },
     dailyReward: {
       title: 'Ricompensa Giornaliera!',
-      streakBadge: 'Serie di {days} giorni',
-      desc: 'Serie di {days} giorni raggiunta!\n+{count} suggerimento/i gratuito/i aggiunto/i.',
+      streakBadge: 'Serie di {days} giorno/i',
+      desc: 'Serie di {days} giorno/i raggiunta!\n+{count} suggerimento/i gratuito/i aggiunto/i.',
       confirm: 'Riscatta'
     },
     adReward: {

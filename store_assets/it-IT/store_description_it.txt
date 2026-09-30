@@ -1,43 +1,49 @@
 [앱 이름 (App name - 최대 30자)]
-Sudoku - Rompicapo di logica
+Sudoku: Accademia di logica
 
 [간단한 설명 (Short description - 최대 80자)]
-Sudoku classico, accademia con 32 tecniche, duelli 1v1 e 30 obiettivi.
+5 livelli di difficoltà, 32 tecniche da imparare, duelli 1v1 e contro l’IA.
 
 [자세한 설명 (Full description - 최대 4000자)]
-«Sudoku - Rompicapo di logica» è un gioco di puzzle numerici pensato sia per chi inizia sia per i grandi maestri del ragionamento deduttivo.
-Goditi un'esperienza tattile premium con tasti in ceramica 3D, 4 eleganti temi che rispettano i tuoi occhi e l'esclusiva «Accademia Sudoku», dove imparerai 32 tecniche autentiche spiegate passo dopo passo con diagrammi interattivi.
+Sudoku per tutti, da chi inizia a chi risolve schemi da anni.
+
+Gioca su 5 livelli di difficoltà, impara 32 tecniche di risoluzione con illustrazioni ed esercizi, e sfida altri giocatori nei duelli 1v1 online oppure l’IA.
 
 ━━━━━━━━━━━━━━━━━━━━━
-🌟 Caratteristiche principali
+🌟 IN EVIDENZA
 ━━━━━━━━━━━━━━━━━━━━━
 
-🧩 1. 5 livelli di difficoltà classici
-- Livelli: Molto Facile, Facile, Medio, Difficile e Maestro
-- Algoritmo avanzato con soluzione unica garantita al 100%
-- 4 temi premium: Argilla Calda, Notte Profonda, Ceramica Pura e Carta Classica
+🧩 1. 5 livelli di difficoltà
+- Iniziazione, Facile, Medio, Difficile ed Esperto.
+- Ogni schema viene generato in modo da avere una sola soluzione.
+- Modalità Classico, Cronometro e Sopravvivenza.
+- 4 temi riposanti per la vista.
 
-🎓 2. Accademia Sudoku: 32 tecniche spiegate
-Guide interattive, passo dopo passo, per risolvere qualsiasi schema:
-- Base: Full House, Last Digit, Cross-Hatching, Naked Single, Hidden Single
-- Intermedie: Naked/Hidden Pairs, Pointing Pairs, Claiming Box, terne e quaterne
-- Avanzate: famiglia Wing (X-Wing, XY-Wing, XYZ-Wing, W-Wing, Two-String Kite, Turbot Fish)
-- Esperte: Swordfish, Jellyfish, Simple Colouring, 3D Medusa, Rettangolo Unico (UR)
-- Maestro: Sue de Coq, Exocet e catene AIC e ALS
+🎓 2. Accademia: 32 tecniche di risoluzione
+- Ogni tecnica ha una spiegazione illustrata e 2 esercizi su griglie reali.
+- Principiante: Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
+- Intermedio: Pointing, Claiming, Naked/Hidden Pairs, Triples e Quads
+- Avanzato: X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
+- Maestro: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
+- Gran Maestro: Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
 
-⚔️ 3. Duelli 1v1 in tempo reale e sfide contro l'IA
-- Matchmaking online sullo stesso schema, per una gara equa
-- Modalità allenamento contro bot IA su 5 livelli di difficoltà
+⚔️ 3. Duelli 1v1 e contro l’IA
+- Duelli online in tempo reale: sfida un altro giocatore sulla stessa griglia.
+- Segui i progressi del tuo avversario mentre giochi.
+- Duelli contro l’IA con 5 livelli di difficoltà.
 
-🏆 4. 30 obiettivi globali e Google Play Games
-- Sincronizzazione automatica con un solo tocco tramite Google Play Games
-- Sfide a cronometro, serie di combo, vittorie senza errori e livello Mensa
+🏆 4. Obiettivi e analisi di gioco
+- 30 obiettivi da sbloccare.
+- Il tuo gioco analizzato in 5 indicatori, come la velocità e le partite senza errori.
+- Competi nella classifica Logic Score di Google Play Giochi.
 
-🧠 5. Report QI
-- Un'analisi di 5 capacità cognitive: concentrazione, ragionamento logico, velocità di elaborazione, resistenza mentale e precisione
+📅 5. Sfida giornaliera
+- Una nuova missione ogni giorno, segnata sul calendario.
+- Hai saltato un giorno? Sblocca gli schemi passati guardando un breve annuncio.
+- Ottieni uno stemma ogni mese.
 
-📅 6. Sfida giornaliera e calendario di 365 giorni
-- Ogni giorno uno schema esclusivo per collezionare gli stemmi di maestro mensili
-- Recupera i giorni persi guardando un breve video
+☁️ 6. Backup nel cloud
+- Se hai effettuato l’accesso a Google Play Giochi, i tuoi progressi vengono salvati automaticamente.
+- Su un nuovo dispositivo puoi recuperarli.
 
-Scarica ora «Sudoku - Rompicapo di logica» e allena la tua mente!
+Prenditi il tuo tempo, ragiona con calma e goditi il rompicapo.

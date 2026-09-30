@@ -3,7 +3,7 @@ export const screens = {
     ghost: {
       ahead: '{time} à frente',
       behind: '{time} atrás',
-      ghostHintNotice: '💡 O uso de dicas desqualifica a atualização do recorde PB.'
+      ghostHintNotice: '💡 Dica usada – este tempo não conta como recorde pessoal.'
     }
   },
   home: {
@@ -13,7 +13,7 @@ export const screens = {
     hintTooltip: 'Dicas',
     brainReportTitle: 'Análise de jogo',
     brainPercentileShort: 'Puzzles concluídos: {won}',
-    startSelectedLevel: 'Iniciar Nv.{level} {name}',
+    startSelectedLevel: 'Iniciar Lv.{level} {name}',
     modeTabs: { classic: 'Clássico', timeAttack: 'Contra o Tempo', timeLimit: 'Sobrevivência' },
     rivalModes: {
       standard: '🎯 Padrão',
@@ -28,10 +28,10 @@ export const screens = {
     modes: {
       classic: { badge: 'CLÁSSICO', title: 'Solo Clássico', desc: 'Sudoku tradicional, calmo e envolvente', startBtn: 'Novo Jogo' },
       timeAttack: { badge: 'CONTRA O TEMPO', title: '⚡ Contra o Tempo', desc: 'Corra contra o relógio pelo menor tempo!', startBtn: 'Iniciar' },
-      timeLimit: { badge: 'SOBREVIVÊNCIA', title: '⏳ Sobrevivência', desc: 'Nv.{level} com {minutes} min! Sobreviva antes do tempo acabar.', startBtn: 'Iniciar' },
-      daily: { title: 'Desafio Diário', desc: 'Novo tabuleiro todo dia & insígnias mensais', badge: 'NOVO' },
+      timeLimit: { badge: 'SOBREVIVÊNCIA', title: '⏳ Sobrevivência', desc: 'Lv.{level} com {minutes} min! Sobreviva antes do tempo acabar.', startBtn: 'Iniciar' },
+      daily: { title: 'Desafio Diário', desc: 'Novo tabuleiro todo dia & insígnias mensais', badge: 'DIÁRIO' },
       battle: { title: 'Duelo 1v1 Online', desc: 'Partidas em tempo real' },
-      aiBattle: { title: 'Duelo contra IA', desc: 'Desafio 1:1 de velocidade' },
+      aiBattle: { badge: 'VS IA', title: 'Duelo contra IA', desc: 'Desafio 1:1 de velocidade' },
       academy: { title: 'Academia Sudoku', desc: 'Aprenda 32 técnicas de mestre' },
       practice: { title: 'Treino Livre', desc: 'Erros ilimitados, jogo relaxante' }
     },
@@ -55,13 +55,13 @@ export const screens = {
     missionReward: '+1 Dica & Presença',
     tiers: { beginner: 'Iniciante', intermediate: 'Intermediário', advanced: 'Mestre' },
     missions: {
-      beginnerLv1Title: '[Nv.1 Muito Fácil] 1 Sudoku', beginnerLv1Desc: 'Complete um jogo Nv.1 Muito Fácil para desenvolver a lógica básica.',
-      beginnerLv2Title: '[Nv.2 Fácil] 1 Sudoku', beginnerLv2Desc: 'Complete um jogo Nv.2 Fácil para praticar técnicas fundamentais.',
-      medLv3Title: '[Nv.3+ Médio] 1 Sudoku', medLv3Desc: 'Complete um jogo Nv.3 Médio ou superior para testar suas deduções.',
-      advLv4Title: '[Nv.4+ Difícil] 1 Sudoku', advLv4Desc: 'Supere um jogo Nv.4 Difícil e prove seu raciocínio mestre.',
-      advLv5Title: '[Nv.5 Mestre] 1 Sudoku', advLv5Desc: 'Complete o mais desafiador Nv.5 Mestre para alcançar a elite.',
+      beginnerLv1Title: '[Lv.1 Iniciação] 1 Sudoku', beginnerLv1Desc: 'Complete um jogo Lv.1 Iniciação para desenvolver a lógica básica.',
+      beginnerLv2Title: '[Lv.2 Fácil] 1 Sudoku', beginnerLv2Desc: 'Complete um jogo Lv.2 Fácil para praticar técnicas fundamentais.',
+      medLv3Title: '[Lv.3+ Médio] 1 Sudoku', medLv3Desc: 'Complete um jogo Lv.3 Médio ou superior para testar suas deduções.',
+      advLv4Title: '[Lv.4+ Difícil] 1 Sudoku', advLv4Desc: 'Supere um jogo Lv.4 Difícil e prove seu raciocínio mestre.',
+      advLv5Title: '[Lv.5 Especialista] 1 Sudoku', advLv5Desc: 'Complete o mais desafiador Lv.5 Especialista para alcançar a elite.',
       battleTitle: 'Jogar 1 Duelo 1v1 Online ou IA', battleDesc: 'Participe de 1 duelo em tempo real ou partida contra IA.',
-      speedrunTitle: '⚡ Concluir 1 modo Contra o Tempo', speedrunDesc: 'Complete um puzzle no modo Contra o Tempo aproveitando combos.'
+      speedrunTitle: '⚡ Concluir 1 partida no Contra o Tempo', speedrunDesc: 'Complete um puzzle no modo Contra o Tempo.'
     }
   },
   removeAds: {
@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: 'Melhor Contra o Tempo',
     survivalTitle: '⏳ Modo Sobrevivência',
     survivalTotalWins: 'Vitórias em Sobrevivência',
-    survivalWinsUnit: '{count} Vitórias',
+    survivalWinsUnit: '{count}',
     summaryTitle: 'Resumo de Desempenho',
     pvpRating: "Pontuação",
     pvpRecordLabel: "Histórico",
@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Como o Logic Score é calculado?",
-    scoreHowBody: "Ele sobe quando você preenche todo o tabuleiro e vence. O nível mais difícil vencido sem dicas é o que mais conta; o número de vitórias e a taxa de vitórias contam um pouco. Fim de jogo e partidas abandonadas diminuem a taxa de vitórias e podem tirar alguns pontos. O placar usa essa pontuação quando você está conectado ao Play Games.",
+    scoreHowBody: "Ele sobe quando você preenche todo o tabuleiro e vence. O nível mais difícil vencido sem dicas é o que mais conta; o número de vitórias e a taxa de vitórias contam um pouco. Duelos 1v1 e contra IA não entram no número de vitórias nem na taxa de vitórias: eles têm um histórico próprio em Estatísticas. Fim de jogo e partidas abandonadas diminuem a taxa de vitórias e podem tirar alguns pontos. O placar usa essa pontuação quando você está conectado ao Play Games.",
     shareText: '[Análise de jogo Sudoku]\nLogic Score: {iq}\nNível: {tier}\nExperimente o Sudoku hoje!',
     copiedToast: 'Análise copiada para a área de transferência.',
     focus: 'Sem erros',
@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'Sua taxa de conclusão: {rate}%',
     findOpponentBtn: 'Buscar Oponente',
     noOpponentFound: 'Nenhum oponente encontrado. Jogar contra a IA?',
+    connectFailed: "Não foi possível conectar ao jogo online. Tente novamente mais tarde. Jogar contra a IA?",
     playAiInstead: 'Jogar contra a IA'
   },
   battleResult: {
@@ -197,7 +198,7 @@ export const screens = {
     disqualified: '💀 Fora',
     finalProgress: 'Progresso final',
     ratingChange: 'Variação de Pontuação MMR 1v1',
-    aiModeLabel: 'Partida de Treino com IA (Nv.{level})',
+    aiModeLabel: 'Partida de Treino com IA (Lv.{level})',
     aiWonBadge: 'Treino Vencido',
     aiLostBadge: 'Treino Finalizado',
     you: 'Você',
@@ -219,6 +220,7 @@ export const screens = {
     declineBtn: 'Recusar'
   },
   battleHeader: {
+    aiTag: 'IA',
     confirmLeave: 'Deseja desistir e retornar ao início?',
     emptyCellsLeft: 'restantes'
   },
@@ -231,7 +233,7 @@ export const screens = {
     level3Desc: 'Robô Habilidoso: Ritmo rápido e poucos erros.',
     level4Desc: 'Robô Especialista: Muito rápido e raros erros.',
     level5Desc: 'Robô Grão-Mestre: O robô mais rápido e com menos erros.',
-    startBtn: 'Iniciar Duelo IA Nv.{level} {name}'
+    startBtn: 'Iniciar Duelo IA Lv.{level} {name}'
   },
   academy: {
     tabs: { stage1: 'Etapa 1', stage2: 'Etapa 2', stage3: 'Etapa 3', stage4: 'Etapa 4', stage5: 'Etapa 5' },

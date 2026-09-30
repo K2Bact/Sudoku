@@ -1,0 +1,26 @@
+{
+  "gate": "3-15",
+  "name": "The App Starts When The Network Does Not Answer",
+  "command": "node scripts/tests/ui/test_offline_start.js",
+  "greenMarker": "[3-15] PASSED",
+  "rebuild": true,
+  "note": "Written with the gate on 2026-09-29 (BACKLOG FONT-1). The gate serves dist, so every mutation rebuilds.",
+  "mutations": [
+    {
+      "name": "the fonts go back to Google",
+      "why": "The stylesheet waits on fonts.googleapis.com; on a network that holds the request open the app stays blank for as long as the connection hangs, and every launch tells Google the player's IP.",
+      "file": "src/index.css",
+      "find": "@import '@fontsource/outfit/latin-400.css';",
+      "replace": "@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400&display=swap');\n@import '@fontsource/outfit/latin-400.css';",
+      "expectFailure": "fonts.googleapis.com"
+    },
+    {
+      "name": "one bundled weight is dropped",
+      "why": "Body text at that weight silently falls back to a system face; nothing else notices because the page still renders.",
+      "file": "src/index.css",
+      "find": "@import '@fontsource/outfit/latin-400.css';",
+      "replace": "",
+      "expectFailure": "not bundled: Outfit 400"
+    }
+  ]
+}

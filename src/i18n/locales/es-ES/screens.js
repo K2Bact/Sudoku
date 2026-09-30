@@ -17,7 +17,7 @@ export const screens = {
     modeTabs: { classic: 'Clásico', timeAttack: 'Contrarreloj', timeLimit: 'Supervivencia' },
     rivalModes: {
       standard: "🎯 Estándar",
-      ghost: "👻 Fantasma PB",
+      ghost: "👻 Fantasma",
       delta: "⚡ Ritmo Delta",
       lockedToast: "Supera esta dificultad al menos una vez para desbloquear.",
       timeLimitToast: "Fantasma y Diferencia de tiempo no están disponibles en el modo Supervivencia.",
@@ -29,9 +29,9 @@ export const screens = {
       classic: { badge: 'CLÁSICO', title: 'Clásico individual', desc: 'Puzle de sudoku tradicional tranquilo y concentrado', startBtn: 'Nueva partida' },
       timeAttack: { badge: 'CONTRARRELOJ', title: '⚡ Contrarreloj', desc: '¡Compite contra el reloj para lograr el récord más rápido!', startBtn: 'Iniciar contrarreloj' },
       timeLimit: { badge: 'SUPERVIVENCIA', title: '⏳ Supervivencia', desc: '¡Lv.{level} con límite de {minutes} min! Sobrevive antes de 0s.', startBtn: 'Iniciar supervivencia' },
-      daily: { title: 'Desafío diario', desc: 'Nuevo puzle cada día e insignias mensuales', badge: 'NUEVO' },
+      daily: { title: 'Desafío diario', desc: 'Nuevo puzle cada día e insignias mensuales', badge: 'DIARIO' },
       battle: { title: 'Duelo 1v1 online', desc: 'Multijugador global en tiempo real' },
-      aiBattle: { title: 'Duelo contra IA', desc: 'Duelo de velocidad 1:1 contra bots de IA' },
+      aiBattle: { badge: 'VS IA', title: 'Duelo contra IA', desc: 'Duelo de velocidad 1:1 contra bots de IA' },
       academy: { title: 'Academia Sudoku', desc: 'Aprende 32 técnicas maestras' },
       practice: { title: 'Práctica libre', desc: 'Fallos ilimitados, juego relajante' }
     },
@@ -67,8 +67,8 @@ export const screens = {
       advLv5Desc: 'Resuelve 1 partida en el nivel más alto, Maestro.',
       battleTitle: 'Juega 1 duelo 1v1 online / IA',
       battleDesc: 'Participa en 1 duelo en tiempo real o partida contra bot de IA.',
-      speedrunTitle: '⚡ Supera 1 modo contrarreloj',
-      speedrunDesc: 'Completa una partida en modo contrarreloj usando aceleración de combo.'
+      speedrunTitle: '⚡ Supera 1 partida en Contrarreloj',
+      speedrunDesc: 'Completa una partida en modo Contrarreloj.'
     }
   },
   removeAds: {
@@ -142,7 +142,7 @@ export const screens = {
     speedrunBest: 'Mejor contrarreloj',
     survivalTitle: '⏳ Límite de tiempo (Supervivencia)',
     survivalTotalWins: 'Supervivencias exitosas',
-    survivalWinsUnit: '{count} logrados',
+    survivalWinsUnit: '{count}',
     summaryTitle: 'Resumen de rendimiento',
     pvpRating: "Puntuación",
     pvpRecordLabel: "Historial",
@@ -154,7 +154,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ ¿Cómo se calcula el Logic Score?",
-    scoreHowBody: "Sube cuando completas todo el tablero y ganas. Lo que más cuenta es el nivel más difícil que has superado sin pistas; el número de victorias y tu porcentaje de victorias cuentan un poco. Perder o abandonar una partida baja tu porcentaje de victorias y puede restar algunos puntos. La clasificación usa esta puntuación cuando inicias sesión en Play Juegos.",
+    scoreHowBody: "Sube cuando completas todo el tablero y ganas. Lo que más cuenta es el nivel más difícil que has superado sin pistas; el número de victorias y tu porcentaje de victorias cuentan un poco. Los duelos 1v1 y contra IA no cuentan para las victorias ni para el porcentaje de victorias: tienen su propio historial en Estadísticas. Perder o abandonar una partida baja tu porcentaje de victorias y puede restar algunos puntos. La clasificación usa esta puntuación cuando inicias sesión en Play Juegos.",
     shareText: '[Análisis de juego Sudoku]\nLogic Score: {iq}\nRango: {tier}\n¡Prueba Sudoku hoy!',
     copiedToast: 'Análisis copiado al portapapeles.',
     focus: 'Sin fallos',
@@ -190,6 +190,7 @@ export const screens = {
     mmrBadge: 'Tu tasa de resolución: {rate}%',
     findOpponentBtn: 'Buscar oponente',
     noOpponentFound: 'No se encontró rival. ¿Jugar contra la IA?',
+    connectFailed: "No se pudo conectar al juego online. Inténtalo más tarde. ¿Jugar contra la IA?",
     playAiInstead: 'Jugar contra la IA'
   },
   battleResult: {
@@ -226,6 +227,7 @@ export const screens = {
     declineBtn: 'Rechazar'
   },
   battleHeader: {
+    aiTag: 'IA',
     confirmLeave: '¿Deseas abandonar el duelo y volver al inicio?',
     emptyCellsLeft: 'restantes'
   },
@@ -238,7 +240,7 @@ export const screens = {
     level3Desc: 'Bot Difícil: Ritmo rápido y pocos errores.',
     level4Desc: 'Bot Experto: Ritmo muy rápido y errores escasos.',
     level5Desc: 'Bot Gran Maestro: El bot más rápido y con menos errores.',
-    startBtn: 'Duelo Lv.{level} vs {name}'
+    startBtn: 'Iniciar duelo IA Lv.{level} {name}'
   },
   academy: {
     tabs: { stage1: 'Etapa 1', stage2: 'Etapa 2', stage3: 'Etapa 3', stage4: 'Etapa 4', stage5: 'Etapa 5' },

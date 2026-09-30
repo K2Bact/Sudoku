@@ -12,7 +12,7 @@ export const STAGE1_DIAGRAMS = {
       "zh-TW": "📍 唯餘最後格: 已填入 8 個確定數字，僅剩最後正解 [9]",
       "zh-CN": "📍 唯余最后格: 已填入 8 个确定数字，仅剩最后正解 [9]",
       "es-ES": "📍 Full House: 8 números fijados, solo queda la respuesta [9]",
-      "de": "📍 Full House: 8 feste Zahlen ausgefüllt, nur Antwort [9] bleibt",
+      "de": "📍 Full House: 8 Zahlen sind eingetragen – für das letzte Feld bleibt nur [9]",
       "fr": "📍 Full House : 8 chiffres placés, seule la réponse [9] reste",
       "pt": "📍 Full House: 8 números preenchidos, resta apenas a resposta [9]",
       "it": "📍 Full House: 8 numeri inseriti, resta solo la risposta [9]",
@@ -27,12 +27,12 @@ export const STAGE1_DIAGRAMS = {
       "zh-TW": "當一行、一列或九宮格的 9 個空格中已填滿 8 個數字時，最後的空格將自動成為剩餘的正解數字 [9]。",
       "zh-CN": "当一行、一列或九宫格的 9 个空格中已填满 8 个数字时，最后的空格将自动成为剩余的正解数字 [9]。",
       "es-ES": "Cuando 8 de las 9 casillas de una fila, columna o bloque están llenas, la casilla restante se convierte automáticamente en la respuesta [9].",
-      "de": "Wenn 8 der 9 Felder in einer Zeile, Spalte oder einem Block gefüllt sind, ist das verbleibende Feld automatisch die Antwort [9].",
+      "de": "Wenn 8 der 9 Felder in einer Zeile, Spalte oder einem Block gefüllt sind, bleibt für das letzte leere Feld in diesem Beispiel nur [9].",
       "fr": "Lorsque 8 des 9 cases d’une ligne, colonne ou bloc sont remplies, la case restante est automatiquement la réponse [9].",
       "pt": "Quando 8 das 9 casas em uma linha, coluna ou bloco estão preenchidas, a casa restante é automaticamente a resposta [9].",
       "it": "Quando 8 delle 9 caselle in una riga, colonna o blocco sono piene, la casella rimanente è automaticamente la risposta [9].",
       "ru": "Когда 8 из 9 клеток в строке, столбце или блоке заполнены, оставшаяся клетка автоматически является ответом [9].",
-      "hi": "जब किसी पंक्ति, स्तंभ या बॉक्स में 9 में से 8 सेल भरे हों, तो शेष खाली सेल स्वतः उत्तर [9] बन जाता है।",
+      "hi": "जब किसी पंक्ति, स्तंभ या बॉक्स में 9 में से 8 सेल भरे हों, तो शेष खाली सेल में [9] आएगा।",
       "ar": "عندما تمتلئ 8 من أصل 9 خلايا في صف أو عمود أو مربع، تصبح الخلية المتبقية تلقائياً هي الإجابة [9]."
     }
   },
@@ -59,12 +59,12 @@ export const STAGE1_DIAGRAMS = {
       "zh-TW": "當 3x3 九宮格內已填入 1〜8 的確定數字時，最後的空格將自動成為正解數字 [9]。",
       "zh-CN": "当 3x3 九宫格内已填入 1〜8 的确定数字时，最后的空格将自动成为正解数字 [9]。",
       "es-ES": "Cuando los números del 1 al 8 ya están colocados en un bloque 3x3, la casilla vacía restante debe ser el [9].",
-      "de": "Wenn die Zahlen 1 bis 8 bereits in einem 3x3-Block platziert sind, muss das verbleibende leere Feld die 9 sein.",
+      "de": "Wenn die Zahlen 1 bis 8 bereits in einem 3x3-Block platziert sind, muss in das verbleibende leere Feld die 9 eingetragen werden.",
       "fr": "Lorsque les chiffres de 1 à 8 sont déjà placés dans un bloc 3x3, la case vide restante doit être le [9].",
       "pt": "Quando os números de 1 a 8 já estão colocados em um bloco 3x3, a casa vazia restante deve ser o [9].",
       "it": "Quando i numeri da 1 a 8 sono già inseriti in un blocco 3x3, la casella vuota rimanente deve essere il [9].",
       "ru": "Когда цифры от 1 до 8 уже расставлены в блоке 3x3, оставшаяся пустая клетка обязательно должна быть 9.",
-      "hi": "जब 3x3 बॉक्स के अंदर 1 से 8 तक के अंक पहले से भरे हों, तो बची हुई खाली सेल 9 होनी चाहिए।",
+      "hi": "जब 3x3 बॉक्स के अंदर 1 से 8 तक के अंक पहले से भरे हों, तो बची हुई खाली सेल में 9 आना चाहिए।",
       "ar": "عندما تكون الأرقام من 1 إلى 8 موجودة بالفعل داخل مربع 3x3، يجب أن تكون الخلية المتبقية هي 9."
     }
   },
@@ -155,12 +155,12 @@ export const STAGE1_DIAGRAMS = {
       "zh-TW": "即使筆記中混有其他候選數，若該九宮格內能填入 [7] 的位置僅有一處，該格即確定為 [7]。",
       "zh-CN": "即使笔记中混有其他候选数，若该九宫格内能填入 [7] 的位置仅有一处，该格即确定为 [7]。",
       "es-ES": "Aunque haya varias notas, si el candidato [7] aparece en una sola casilla del bloque 3x3, esa casilla debe ser [7].",
-      "de": "Selbst bei mehreren Bleistiftnotizen: Wenn der Kandidat [7] in nur einem einzigen Feld des 3x3-Blocks vorkommt, muss dieses Feld [7] sein.",
+      "de": "Selbst bei mehreren Bleistiftnotizen: Wenn der Kandidat [7] in nur einem einzigen Feld des 3x3-Blocks vorkommt, muss in dieses Feld [7] eingetragen werden.",
       "fr": "Même avec plusieurs notes, si le candidat [7] n’apparaît que dans une seule case du bloc 3x3, cette case doit être [7].",
       "pt": "Mesmo com várias anotações, se o candidato [7] aparecer em apenas uma casa no bloco 3x3, essa casa deve ser [7].",
       "it": "Anche con più annotazioni, se il candidato [7] compare in una sola casella del blocco 3x3, quella casella deve essere [7].",
       "ru": "Даже при наличии нескольких заметок, если кандидат [7] встречается только в одной клетке блока 3x3, в ней должна быть [7].",
-      "hi": "कई पेंसिल नोट्स होने पर भी, यदि उम्मीदवार [7] 3x3 बॉक्स में केवल एक सेल में आता है, तो वह सेल [7] होना चाहिए।",
+      "hi": "कई पेंसिल नोट्स होने पर भी, यदि उम्मीदवार [7] 3x3 बॉक्स में केवल एक सेल में आता है, तो उस सेल में [7] आना चाहिए।",
       "ar": "حتى مع وجود ملاحظات متعددة، إذا ظهر المرشح [7] في خلية واحدة فقط داخل المربع 3x3، فيجب أن تكون تلك الخلية [7]."
     }
   }

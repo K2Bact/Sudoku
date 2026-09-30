@@ -50,6 +50,8 @@ export const common = {
     undo: 'Annulla',
     erase: 'Cancella',
     notes: 'Note',
+    notesOn: 'Note ON',
+    notesOff: 'Note OFF',
     hint: 'Suggerimento',
     rewardHint: '+1 aiuto',
     fastEntry: 'Modo Rapido'

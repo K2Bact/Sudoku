@@ -16,6 +16,8 @@ export const achievements = {
     statsTab: 'Datos',
     unlockedCount: '{unlocked} / {total} desbloqueados ({pct}%)',
     lockedBadge: 'Bloqueado',
+    pointsTotal: '{count} pts',
+    tiers: { bronze: 'Bronce', silver: 'Plata', gold: 'Oro', diamond: 'Diamante', master: 'Maestro' },
     unlockedAt: 'Conseguido: {date}',
 
     // 1 ~ 7. Partidas y progreso

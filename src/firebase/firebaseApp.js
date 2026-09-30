@@ -68,26 +68,36 @@ export function getDatabase() {
       // an `auth` to require. It is not a login — the player never sees it, and
       // the id lives in the app's own storage.
       //
-      // Failure here is deliberately not fatal. If the provider is not enabled
-      // in the console yet, 1v1 keeps working exactly as it does now against
-      // the current permissive rules; tightening them is the step that makes
-      // this mandatory, and it has to come second.
+      // Failure here does not stop the app, but since the tightened rules were
+      // published (BACKLOG FB-1) it stops 1v1 entirely: every read and write
+      // needs `auth`. The transport asks before a search (canSearch) and the
+      // lobby says it could not connect, instead of searching for twelve seconds
+      // and then claiming nobody was there (BT-2).
       //
       // The uid it returns is carried out of here deliberately. It is the only
       // id the database can vouch for: rules can compare a written value against
       // auth.uid, and against nothing else. Everything the app generates itself
       // — including the player id in localStorage — is a string a peer can type.
       // That is what let a client send a message as somebody else (RT-2).
-      let uid = null;
-      try {
-        const cred = await auth.signInAnonymously(auth.getAuth(app));
-        uid = cred?.user?.uid || auth.getAuth(app)?.currentUser?.uid || null;
-      } catch (e) {
-        console.warn('[Firebase] anonymous sign-in unavailable:', e?.code || e?.message || e);
-      }
+      //
+      // `signIn` is handed out too, because this whole object is cached for the
+      // session. A failed sign-in is often a rate limit or a dropped network that
+      // passes; without a way to try again, one bad moment locked 1v1 out until
+      // the app was restarted.
+      const signIn = async () => {
+        try {
+          const cred = await auth.signInAnonymously(auth.getAuth(app));
+          return cred?.user?.uid || auth.getAuth(app)?.currentUser?.uid || null;
+        } catch (e) {
+          console.warn('[Firebase] anonymous sign-in unavailable:', e?.code || e?.message || e);
+          return null;
+        }
+      };
+      const uid = await signIn();
 
       return {
         uid,
+        signIn,
         db: rtdb.getDatabase(app),
         ref: rtdb.ref,
         onValue: rtdb.onValue,

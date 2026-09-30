@@ -31,26 +31,59 @@ function walk(dir) {
 const koreanRegex = /[가-힯]/;
 
 /**
- * Product names that deliberately stay in English in every locale. Keep this
- * list short: each entry is a string no translator will ever be able to reach.
+ * English that stays English in every locale, each with its reason. Keep this list
+ * short: every entry is a string no translator will ever be able to reach.
+ *
+ * ── Why this is a list of exact strings and not a rule (2026-09-30) ─────────
+ * The scanner used to skip three kinds of English, and each skip hid a label that
+ * every locale saw untranslated (SudokuAITalk DE29-12, found in German screenshots):
+ *
+ *   - SHOUTED LABELS were "decoration" — `VS AI` and `DAILY` on the home cards
+ *   - text next to an expression was never read — `{totalPoints} pts`
+ *   - a quoted word inside an expression was never read — `{on ? 'ON' : 'OFF'}`
+ *
+ * `VS AI` and `DAILY` were also in the old brand list, with no reason written down
+ * and no user decision behind them. A German player read VS AI beside KI-Bot-Duell.
+ * So there are no categories any more: an exemption names the string and says why.
  */
-const BRAND_TERMS = ['Sudoku IQ', 'Sudoku PRO', 'ONLINE PVP', 'VS AI', 'DAILY'];
+const KEPT_ENGLISH = new Map([
+  ['ONLINE PVP', 'gaming abbreviation — the German review kept it (DE29-12)'],
+  ['PVP', 'the same abbreviation, on the 1v1 battle header'],
+  ['VS', 'the versus mark between the two players'],
+  // The dictionaries write it too (header.levelPrefix, missions) — gate 2-24 holds them to Lv.
+  ['Lv.', 'the level mark gamers read in every language (user 2026-09-30, BACKLOG HC-1)'],
+  ['Build', 'version line in settings, read back in bug reports'],
+  // PB (ghost banner) and RP (stats) were here until the user decided on 2026-09-30: the
+  // banner now names the mode, and the rating shows only its number beside its label.
+]);
+
+/** Enough letters to be a word: two catches ON, VS, AI; symbols and arrows have none. */
+const isWordy = (s) => (s.match(/[A-Za-z]/g) || []).length >= 2;
+const kept = (s) => KEPT_ENGLISH.has(s.replace(/^[^A-Za-z]+|[^A-Za-z.]+$/g, ''));
 
 /**
- * Literal prose sitting between JSX tags, e.g. `<p>Watching ad</p>`.
- * `{t('...')}` and every other expression carries braces and is skipped.
+ * English a JSX child would render: `<p>Watching ad</p>`, the ` pts` in
+ * `{n} pts`, and quoted words inside a child expression — `{on ? 'ON' : 'OFF'}`.
+ * Not reported: the key inside t('…'), a fallback after it (`t('x') || 'X'` never
+ * renders — t returns the key when one is missing), and a comparison (`=== 'ghost'`).
  */
 function hardcodedJsxText(line) {
   const found = [];
-  for (const match of line.matchAll(/>([^<>{}]+)</g)) {
-    const text = match[1].trim();
-    if (!text) continue;
-    if (BRAND_TERMS.includes(text)) continue;
-    // Three letters is enough to be a word rather than a symbol, unit or arrow.
-    if ((text.match(/[A-Za-z]/g) || []).length < 3) continue;
-    // SHOUTED LABELS and dotted.identifiers are decoration, not prose.
-    if (/^[A-Z0-9_.\-\s]+$/.test(text)) continue;
-    found.push(text);
+  for (const match of line.matchAll(/>([^<>]*)</g)) {
+    const child = match[1]
+      .replace(/\bt\(\s*(['"`])[^'"`]*\1[^)]*\)(\s*\|\|\s*(['"`])[^'"`]*\3)?/g, ' ')
+      .replace(/[!=]==?\s*(['"`])[^'"`]*\1/g, ' ');
+    // Words written into the expression itself.
+    for (const q of child.matchAll(/(['"`])((?:(?!\1).)*)\1/g)) {
+      const text = q[2].replace(/\$\{[^}]*\}/g, ' ').trim();
+      if (isWordy(text) && !kept(text)) found.push(text);
+    }
+    // Words written between tags and expressions.
+    const bare = child.replace(/(['"`])(?:(?!\1).)*\1/g, ' ').split(/\{[^{}]*\}|[{}]/);
+    for (const piece of bare) {
+      const text = piece.trim();
+      if (isWordy(text) && !kept(text)) found.push(text);
+    }
   }
   return found;
 }

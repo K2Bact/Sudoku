@@ -26,8 +26,8 @@ export const modals = {
     },
     gameOver: {
       title: 'Spiel vorbei',
-      desc: 'Du hast alle 3 Fehler aufgebraucht.\nWerbung ansehen, um wiederzubeleben und fortzufahren!',
-      descNoRevive: 'Du hast alle Fehler aufgebraucht.\n(Wiederbelebungs-Chance bereits genutzt)',
+      desc: 'Du hast 3 Fehler gemacht.\nSieh dir eine Werbung an, um ein weiteres Leben zu erhalten und weiterzuspielen!',
+      descNoRevive: 'Du hast das Fehlerlimit erreicht.\n(Du hast deine Chance zur Wiederbelebung bereits genutzt.)',
       reviveBtn: 'Wiederbeleben (+1)',
       restartBtn: 'Neustart'
     },
@@ -37,14 +37,14 @@ export const modals = {
     },
     storeReview: {
       title: 'Gefällt dir Sudoku?',
-      desc: 'Ihre ehrliche Bewertung hilft uns sehr,\ndas Spiel kontinuierlich zu verbessern! 💙',
+      desc: 'Deine ehrliche Bewertung hilft uns sehr,\ndas Spiel kontinuierlich zu verbessern! 💙',
       submitBtn: 'Bewerten',
       laterBtn: 'Später'
     },
     dailyReward: {
       title: 'Tägliche Belohnung!',
-      streakBadge: '{days} Tage in Folge',
-      desc: '{days} Tage in Folge erreicht!\n+{count} kostenlose Tipps hinzugefügt.',
+      streakBadge: '{days} Tag(e) in Folge',
+      desc: '{days} Tag(e) in Folge erreicht!\nKostenlose Tipps: +{count}',
       confirm: 'Abholen'
     },
     adReward: {

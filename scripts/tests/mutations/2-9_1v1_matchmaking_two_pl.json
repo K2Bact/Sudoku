@@ -15,9 +15,9 @@
     {
       "name": "a host claims the peer's ticket but not its own",
       "why": "The half-fix, and the reason this is two claims rather than one. Taking the peer atomically stops two searchers from grabbing the same waiting player, which is the obvious race — and it is not enough. A host that leaves its own ticket in the queue is still advertising itself as available, so a third searcher claims it a moment later and builds a room against somebody who has already moved on. Withdrawing that advertisement has to happen in the same breath as taking the peer.",
-      "file": "src/firebase/battleService.js",
-      "find": "const mine = await this.channel.claimTicket(this.myPlayerId);\n    if (!mine) return false;                 // 누가 이미 나를 데려갔다",
-      "replace": "const mine = { playerId: this.myPlayerId, playerName: this.myPlayerName, level: this.searchingLevel, timestamp: Date.now() };",
+      "file": "src/firebase/battleMatchmaking.js",
+      "find": "  const mine = await service.channel.claimTicket(service.myPlayerId);",
+      "replace": "  const mine = { playerId: service.myPlayerId, playerName: service.myPlayerName, level: service.searchingLevel, timestamp: Date.now() };",
       "expectFailure": "phantom opponent"
     },
     {
@@ -43,6 +43,46 @@
       "find": "        if (opponentWasFaster) {",
       "replace": "        if (false) {",
       "expectFailure": "devices disagree"
+    },
+    {
+      "name": "the search stops asking whether it can reach the server",
+      "why": "Without a signed-in account every read and write is refused, and the player watches the radar for twelve seconds and is told nobody was found (BT-2).",
+      "file": "src/firebase/battleMatchmaking.js",
+      "find": "  if (typeof service.channel.canSearch === 'function' && !(await service.channel.canSearch())) {",
+      "replace": "  if (false) {",
+      "expectFailure": "must report that it could not connect"
+    },
+    {
+      "name": "a failed sign-in is trusted for the rest of the session",
+      "why": "One rate limit or dropped network at the first search locks 1v1 out until the app is restarted, even after the cause has passed.",
+      "file": "src/firebase/transport/firebaseTransport.js",
+      "find": "    if (!api.uid && typeof api.signIn === 'function') {",
+      "replace": "    if (false) {",
+      "expectFailure": "sign-in is tried again"
+    },
+    {
+      "name": "the /bus listener attaches before sign-in",
+      "why": "The server cancels a listener it will not serve, and a cancelled listener never comes back: a player who signs in on the retry can search but never hears a single message, so every match stalls.",
+      "file": "src/firebase/transport/firebaseTransport.js",
+      "find": "    if (api.uid) {",
+      "replace": "    if (true) {",
+      "expectFailure": "only once signed in"
+    },
+    {
+      "name": "the lobby never learns the search could not start",
+      "why": "The failure is detected and then dropped: the radar keeps spinning until the twelve-second timeout says nobody was found.",
+      "file": "src/hooks/useBattleMultiplayer.js",
+      "find": "      setMatchUnavailable(true);",
+      "replace": "",
+      "expectFailure": "could-not-connect handler"
+    },
+    {
+      "name": "the lobby says \"no opponent found\" for a connection failure",
+      "why": "The player is told nobody is online when the truth is that their phone never reached the server; they keep retrying for someone who may well be there.",
+      "file": "src/components/BattleLobbyScreen.jsx",
+      "find": "                  {matchUnavailable ? t('battleLobby.connectFailed') : t('battleLobby.noOpponentFound')}",
+      "replace": "                  {t('battleLobby.noOpponentFound')}",
+      "expectFailure": "must say it could not connect"
     }
   ],
   "note": "Three simultaneous searchers were added later, after ChatGPT flagged the matchmaking race on review. The id comparison that fixed the two-player case decides who hosts but never checks that either player is still free: with D < E < F all pressing at once, E claims D and hosts while F claims E — which is legitimate, because E's ticket was still in the queue. E already has a room so it drops F's match_created, and F sits against an opponent who never answers. Note that all three DO get a room under the bug, so a gate counting matches would pass it; what the gate asserts is that no room points at an opponent who is in a different room."

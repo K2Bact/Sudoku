@@ -1,36 +1,49 @@
 [앱 이름 (App name - 최대 30자)]
-Sudoku - Casse-tête logique
+Sudoku : Académie de logique
 
 [간단한 설명 (Short description - 최대 80자)]
-Sudoku classique, 32 techniques, rapport de QI et défis quotidiens 365
+5 niveaux de difficulté, 32 techniques à apprendre, duels 1v1 et contre l’IA.
 
 [자세한 설명 (Full description - 최대 4000자)]
-Sudoku Master est un jeu de puzzle et d'entraînement cérébral haut de gamme conçu pour tous les passionnés de logique.
+Le sudoku pour tous, du grand débutant au joueur chevronné.
 
-Découvrez le plaisir de la déduction pure avec 32 techniques authentiques enseignées pas à pas.
+Jouez sur 5 niveaux de difficulté, apprenez 32 techniques de résolution avec schémas et exercices, et affrontez d’autres joueurs en duel 1v1 en ligne ou l’IA.
 
 ━━━━━━━━━━━━━━━━━━━━━
-🌟 LES ATOUTS DE SUDOKU
+🌟 POINTS FORTS
 ━━━━━━━━━━━━━━━━━━━━━
 
-🧩 1. 5 Niveaux de Difficulté Classiques
-- De Très Facile à Maître
-- Grilles 100% uniques et solubles par pure déduction logique
-- 4 thèmes visuels reposants et élégants
+🧩 1. 5 niveaux de difficulté
+- Initiation, Facile, Moyen, Difficile et Expert.
+- Chaque grille est générée pour n’avoir qu’une seule solution.
+- Modes Classique, Contre-la-montre et Survie.
+- 4 thèmes reposants pour les yeux.
 
-🎓 2. Académie Sudoku en 32 Leçons
-- Apprenez toutes les techniques étape par étape
-- Débutant : Hidden Singles, Paires nues
-- Avancé : X-Wing, Swordfish, Jellyfish, XY-Wing
-- Expert : 3D Medusa, Unique Rectangle, chaînes AIC et ALS
+🎓 2. Académie : 32 techniques de résolution
+- Chaque technique s’accompagne d’une explication illustrée et de 2 exercices sur de vraies grilles.
+- Débutant : Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
+- Intermédiaire : Pointing, Claiming, Naked/Hidden Pairs, Triples et Quads
+- Avancé : X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
+- Maître : Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
+- Grand Maître : Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
 
-⚔️ 3. Duel 1v1 en Temps Réel et Matchs IA
-- Défiez des joueurs du monde entier ou affrontez nos robots IA ultra-rapides.
+⚔️ 3. Duels 1v1 et contre l’IA
+- Duels en ligne en temps réel : affrontez un autre joueur sur la même grille.
+- Suivez la progression de votre adversaire pendant la partie.
+- Duels contre l’IA sur 5 niveaux de difficulté.
 
-🧠 4. Rapport de QI Cérébral Personnalisé
-- Analyse précise de vos 5 piliers cognitifs : concentration, logique, vitesse, endurance et précision.
+🏆 4. Succès et analyse de jeu
+- 30 succès à débloquer.
+- Votre jeu détaillé selon 5 indicateurs, comme la vitesse et les grilles réussies sans erreur.
+- Mesurez-vous aux autres dans le classement Logic Score de Google Play Jeux.
 
-📅 5. Défis Quotidiens 365 Jours
-- Un nouveau défi chaque jour et des trophées mensuels à débloquer.
+📅 5. Défi quotidien
+- Une nouvelle mission chaque jour, suivie sur un calendrier.
+- Vous avez manqué un jour ? Débloquez les grilles passées en regardant une courte publicité.
+- Gagnez un badge chaque mois.
 
-Téléchargez Sudoku dès maintenant et boostez votre cerveau au quotidien !
+☁️ 6. Sauvegarde cloud
+- Lorsque vous êtes connecté à Google Play Jeux, votre progression est sauvegardée automatiquement.
+- Sur un nouvel appareil, vous pouvez la récupérer.
+
+Prenez votre temps, réfléchissez et profitez de la grille.

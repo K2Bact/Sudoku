@@ -13,6 +13,8 @@ export const achievements = {
     statsTab: 'Stats',
     unlockedCount: '{unlocked} / {total} Unlocked ({pct}%)',
     lockedBadge: 'Locked',
+    pointsTotal: '{count} pts',
+    tiers: { bronze: 'Bronze', silver: 'Silver', gold: 'Gold', diamond: 'Diamond', master: 'Master' },
     unlockedAt: 'Unlocked: {date}',
 
     // 1 ~ 7. Progression & Wins

@@ -3,7 +3,7 @@ export const screens = {
     ghost: {
       ahead: '{time} Vorsprung',
       behind: '{time} Rückstand',
-      ghostHintNotice: '💡 Durch die Nutzung eines Tipps wird die Aktualisierung der PB-Bestzeit ausgeschlossen.'
+      ghostHintNotice: '💡 Tipp genutzt – diese Zeit zählt nicht als persönliche Bestzeit.'
     }
   },
   home: {
@@ -23,15 +23,15 @@ export const screens = {
       timeLimitToast: "Geist und Zeitabstand sind im Überlebensmodus nicht verfügbar.",
       infoAria: "Über Geist und Zeitabstand",
       infoGhost: "Spielt das Rätsel erneut, auf dem der Rekord entstand — gegen den eigenen Lauf.",
-      infoDelta: "Ein neues Rätsel, mit dem Vorsprung oder Rückstand auf die eigene Bestzeit.",
+      infoDelta: "Ein neues Rätsel. Du siehst, wie weit du vor oder hinter dem Tempo deiner persönlichen Bestzeit liegst.",
     },
     modes: {
       classic: { badge: 'KLASSISCH', title: 'Klassisches Einzelspiel', desc: 'Ruhiges und fokussiertes traditionelles Sudoku-Rätsel', startBtn: 'Neues Spiel' },
       timeAttack: { badge: 'ZEITRENNEN', title: '⚡ Zeitrennen', desc: 'Kämpfe gegen die Uhr um die schnellste Bestzeit!', startBtn: 'Zeitrennen starten' },
       timeLimit: { badge: 'ÜBERLEBEN', title: '⏳ Überleben', desc: 'Lv.{level} mit {minutes} Min. Limit! Überlebe bis zum Schluss.', startBtn: 'Überleben starten' },
-      daily: { title: 'Tages-Challenge', desc: 'Jeden Tag ein neues Rätsel & Monatsabzeichen', badge: 'NEU' },
+      daily: { title: 'Tages-Challenge', desc: 'Jeden Tag ein neues Rätsel & Monatsabzeichen', badge: 'TÄGLICH' },
       battle: { title: '1v1 Online-Duell', desc: 'Echtzeit-Match weltweit' },
-      aiBattle: { title: 'KI-Bot-Duell', desc: '1:1 Zeitrennen gegen KI' },
+      aiBattle: { badge: 'GEGEN KI', title: 'KI-Bot-Duell', desc: '1:1 Zeitrennen gegen KI' },
       academy: { title: 'Sudoku-Akademie', desc: '32 Meistertechniken Schritt für Schritt lernen' },
       practice: { title: 'Freies Training', desc: 'Unbegrenzte Fehler, entspanntes Spielen' }
     },
@@ -39,29 +39,29 @@ export const screens = {
   },
   daily: {
     header: 'Tägliche Herausforderungen ({month})',
-    badgeTitle: '{month} Meister',
+    badgeTitle: 'Meister im {month}',
     badgeDesc: '{completed} / {target} gelöst (Ziel: 15+)',
     unlockingAd: '📺 Altes Rätsel wird freigeschaltet...',
     calendarTitle: '📅 365-Tage-Kalender',
     futureAlert: 'Zukünftige Rätsel sind noch nicht freigeschaltet.',
-    pastUnlockNotice: '💡 Verpasste vergangene Tage (🔒) können jederzeit durch ein kurzes Werbevideo freigeschaltet werden.',
+    pastUnlockNotice: '💡 Einen Tag verpasst (🔒)? Schalte ihn jederzeit mit einem kurzen Werbevideo frei.',
     unlockModalTitle: 'Vergangenes Rätsel freischalten',
     unlockModalDesc: 'Das Rätsel vom {date} ist eine vergangene Challenge.\nKurze Werbung ansehen, um sofort freizuschalten.\nWerbung ansehen?',
     unlockModalConfirmBtn: '📺 Ansehen & freischalten',
     unlockModalCancelBtn: 'Abbrechen',
-    missionCardTitle: '🎯 Heutige individuelle Mission',
+    missionCardTitle: '🎯 Heutige Mission',
     missionCompleted: 'Heutige Mission abgeschlossen! ✅',
     missionStartBtn: 'Mission starten 🚀',
     missionReward: '+1 Tipp & Eintrag',
     tiers: { beginner: 'Anfänger', intermediate: 'Fortgeschritten', advanced: 'Meister' },
     missions: {
-      beginnerLv1Title: '[Lv.1 Sehr Leicht] 1 Sudoku lösen', beginnerLv1Desc: 'Löse ein Lv.1 Sehr Leicht Rätsel für logische Grundlagen.',
-      beginnerLv2Title: '[Lv.2 Leicht] 1 Sudoku lösen', beginnerLv2Desc: 'Löse ein Lv.2 Leicht Rätsel zur Vertiefung der Basistechniken.',
+      beginnerLv1Title: '[Lv.1 Einführung] 1 Sudoku lösen', beginnerLv1Desc: 'Löse ein Rätsel der Stufe Lv.1 Einführung für logische Grundlagen.',
+      beginnerLv2Title: '[Lv.2 Einfach] 1 Sudoku lösen', beginnerLv2Desc: 'Löse ein Rätsel der Stufe Lv.2 Einfach zur Vertiefung der Basistechniken.',
       medLv3Title: '[Lv.3+ Mittel] 1 Sudoku lösen', medLv3Desc: 'Löse ein Lv.3 Mittel oder höheres Rätsel für echte Deduktion.',
-      advLv4Title: '[Lv.4+ Schwer] 1 Sudoku lösen', advLv4Desc: 'Meistere ein Lv.4 Schwer Rätsel und beweise Spitzenlogik.',
-      advLv5Title: '[Lv.5 Meister] 1 Sudoku lösen', advLv5Desc: 'Löse das anspruchsvollste Lv.5 Meister-Rätsel der Eliteklasse.',
-      battleTitle: '1 1v1-Online/KI-Duell spielen', battleDesc: 'Nimm an 1 Echtzeit-1v1-Duell oder KI-Bot-Match teil.',
-      speedrunTitle: '⚡ 1 Zeitrennen-Modus abschließen', speedrunDesc: 'Schließe ein Zeitrennen-Rätsel mit Kombo-Beschleunigung ab.'
+      advLv4Title: '[Lv.4+ Schwer] 1 Sudoku lösen', advLv4Desc: 'Löse ein Rätsel auf Lv.4 Schwer oder höher.',
+      advLv5Title: '[Lv.5 Experte] 1 Sudoku lösen', advLv5Desc: 'Löse ein Rätsel der höchsten Stufe Lv.5 Experte.',
+      battleTitle: 'Ein Online-1v1-Duell oder KI-Duell spielen', battleDesc: 'Spiele ein Online-1v1-Duell oder ein Match gegen die KI.',
+      speedrunTitle: '⚡ 1 Rätsel im Zeitrennen-Modus lösen', speedrunDesc: 'Löse ein Rätsel im Zeitrennen-Modus.'
     }
   },
   removeAds: {
@@ -70,7 +70,7 @@ export const screens = {
     heroDesc: 'Entferne dauerhaft die untere Banner- und die Zwischenwerbung nach dem Spiel.',
     benefitsTitle: '👑 Vorteile des Premium-Zugangs',
     benefit1: 'Alle Banner und Werbeunterbrechungen dauerhaft entfernen',
-    benefit2: 'Maximale Konzentration und Akkuschonung deines Geräts',
+    benefit2: 'Konzentriere dich ganz auf das Rätsel',
     benefit3: 'Unterstütze Indie-Entwickler und zukünftige Updates',
     buyBtn: 'Werbefrei ({price})',
     restoreBtn: 'Wiederherstellen',
@@ -87,7 +87,7 @@ export const screens = {
     step1Title: '🎯 Schritt 1: Feld wählen & Zahl eingeben',
     step1Desc: 'Tippe auf das hervorgehobene Feld [Zeile 1, Spalte 3] und gib [9] ein!',
     step2Title: '✏️ Schritt 2: Bleistift-Notizen (Kandidaten)',
-    step2Desc: 'Aktiviere [Notizen] in der Leiste und notiere Kandidat [3]!',
+    step2Desc: 'Aktiviere [Notizen] in der Leiste und notiere den Kandidaten [3] in diesem Feld!',
     step3Title: '🔒 Schritt 3: Schnellmodus (Zahl-Zuerst)',
     step3Desc: 'Fixiere Zahl [4] und tippe zügig auf leere Felder!',
     step4Title: '🎉 Schritt 4: Tutorial abgeschlossen!',
@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Wie wird der Logic Score bestimmt?",
-    scoreHowBody: "Er steigt, wenn du das ganze Brett füllst und gewinnst. Am meisten zählt die schwierigste Stufe, die du ohne Tipps geschafft hast; Anzahl der Siege und Siegquote zählen ein wenig. Game Over und abgebrochene Spiele senken die Siegquote und können ein paar Punkte kosten. Die Rangliste nutzt diesen Wert, wenn du bei Play Spiele angemeldet bist.",
+    scoreHowBody: "Er steigt, wenn du das ganze Brett füllst und gewinnst. Am meisten zählt die schwierigste Stufe, die du ohne Tipps geschafft hast; Anzahl der Siege und Siegquote zählen ein wenig. 1v1- und KI-Duelle zählen nicht zu Siegen und Siegquote – sie haben eine eigene Bilanz in der Statistik. Game Over und abgebrochene Spiele senken die Siegquote und können ein paar Punkte kosten. Die Rangliste nutzt diesen Wert, wenn du bei Play Spiele angemeldet bist.",
     shareText: '[Sudoku-Spielanalyse]\nLogic Score: {iq}\nRang: {tier}\nProbier Sudoku jetzt aus!',
     copiedToast: 'Spielanalyse in die Zwischenablage kopiert.',
     focus: 'Fehlerfrei',
@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'Deine Lösungsquote: {rate}%',
     findOpponentBtn: 'Gegner suchen',
     noOpponentFound: 'Kein Gegner gefunden. Stattdessen gegen die KI spielen?',
+    connectFailed: "Keine Verbindung zum Online-Spiel. Versuch es später noch einmal. Stattdessen gegen die KI spielen?",
     playAiInstead: 'Gegen die KI'
   },
   battleResult: {
@@ -219,6 +220,7 @@ export const screens = {
     declineBtn: 'Ablehnen'
   },
   battleHeader: {
+    aiTag: 'KI',
     confirmLeave: 'Möchtest du aufgeben und zum Hauptmenü zurückkehren?',
     emptyCellsLeft: 'übrig'
   },
@@ -231,7 +233,7 @@ export const screens = {
     level3Desc: 'Fortgeschritten-Bot: Flottes Tempo, wenige Fehler.',
     level4Desc: 'Experten-Bot: Sehr schnell, selten Fehler.',
     level5Desc: 'Großmeister-Bot: Der schnellste Bot mit den wenigsten Fehlern.',
-    startBtn: 'Duell Lv.{level} vs {name}'
+    startBtn: 'KI-Duell Lv.{level} {name} starten'
   },
   academy: {
     tabs: { stage1: 'Stufe 1', stage2: 'Stufe 2', stage3: 'Stufe 3', stage4: 'Stufe 4', stage5: 'Stufe 5' },
@@ -239,8 +241,8 @@ export const screens = {
       stage1: 'Stufe 1: Grundtechniken (Singles & Linien)',
       stage2: 'Stufe 2: Mittlere Techniken (Paare & Schnittmengen)',
       stage3: 'Stufe 3: Fortgeschrittene Techniken (Wing-Familie)',
-      stage4: 'Stufe 4: Experten-Techniken (Fish, Coloring & Unique Rectangle)',
-      stage5: 'Stufe 5: Meister-Techniken (AIC, ALS & Exocet-Ketten)'
+      stage4: 'Stufe 4: Meister-Techniken (Fish, Coloring & Unique Rectangle)',
+      stage5: 'Stufe 5: Großmeister-Techniken (AIC, ALS & Exocet)'
     },
     title: 'Sudoku-Akademie',
     theoryBoard: {

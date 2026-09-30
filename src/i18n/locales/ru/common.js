@@ -35,7 +35,7 @@ export const common = {
     5: 'Эксперт'
   },
   header: {
-    levelPrefix: 'Ур.{level}',
+    levelPrefix: 'Lv.{level}',
     mistakes: 'Ошибки {count}/{max}',
     mistakesUnlimited: 'Ошибок: {count}',
     timeAttackMistake: 'Ошибка {count} (+10с)',
@@ -50,6 +50,8 @@ export const common = {
     undo: 'Отмена',
     erase: 'Стереть',
     notes: 'Заметки',
+    notesOn: 'Заметки ВКЛ',
+    notesOff: 'Заметки ВЫКЛ',
     hint: 'Подсказка',
     rewardHint: '+1 подсказка',
     fastEntry: 'Быстрый ввод'

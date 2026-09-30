@@ -13,6 +13,8 @@ export const achievements = {
     statsTab: 'Stats',
     unlockedCount: '{unlocked} / {total} débloqué(s) ({pct}%)',
     lockedBadge: 'Verrouillé',
+    pointsTotal: '{count} pts',
+    tiers: { bronze: 'Bronze', silver: 'Argent', gold: 'Or', diamond: 'Diamant', master: 'Maître' },
     unlockedAt: 'Débloqué : {date}',
 
     // 1 ~ 7. Progression & Wins
@@ -28,7 +30,7 @@ export const achievements = {
     flawless_1: { title: 'Maître sans faute', desc: 'Résolvez une grille avec 0 erreur' },
     flawless_5: { title: 'Perfectionniste', desc: 'Résolvez 5 grilles avec 0 erreur chacune' },
     pure_logic_expert: { title: 'Pure logique', desc: 'Terminez Lv.4 Difficile sans utiliser d’indice' },
-    pure_logic_master: { title: 'Esprit ultime', desc: 'Terminez Lv.5 Maître avec 0 erreur et 0 indice' },
+    pure_logic_master: { title: 'Esprit ultime', desc: 'Terminez Lv.5 Expert avec 0 erreur et 0 indice' },
     note_master: { title: 'Maître des notes', desc: 'Utilisez activement les notes au crayon plus de 50 fois' },
     no_notes: { title: 'Œil intuitif', desc: 'Terminez Lv.3 Moyen ou supérieur sans utiliser de notes au crayon' },
     fast_entry_fan: { title: 'Vitesse éclair', desc: 'Terminez une grille en mode Saisie Rapide (Chiffre d’abord)' },
@@ -41,11 +43,11 @@ export const achievements = {
     combo_streak_10: { title: 'Maestro du combo', desc: 'Atteignez un combo de 10 en mode Contre-la-montre' },
 
     // 20 ~ 26. Difficulty & Survival
-    clear_lv1: { title: 'Première conquête', desc: 'Terminez une grille Lv.1 Débutant' },
+    clear_lv1: { title: 'Première conquête', desc: 'Terminez une grille Lv.1 Initiation' },
     clear_lv2: { title: 'Facile maîtrisé', desc: 'Terminez une grille Lv.2 Facile' },
     clear_lv3: { title: 'Moyen maîtrisé', desc: 'Terminez une grille Lv.3 Moyen' },
     clear_lv4: { title: 'Déduction experte', desc: 'Terminez une grille Lv.4 Difficile' },
-    clear_lv5: { title: 'Grand Maître', desc: 'Terminez la difficulté maximale Lv.5 Maître' },
+    clear_lv5: { title: 'Grand Maître', desc: 'Terminez la difficulté maximale Lv.5 Expert' },
     survival_hero: { title: 'Héros de la survie', desc: 'Survivez et terminez avec succès le mode Limite de Temps' },
     survival_clutch: { title: 'Échappée belle', desc: 'Terminez avec 5 secondes ou moins restantes au chrono' },
 

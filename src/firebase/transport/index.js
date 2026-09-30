@@ -15,6 +15,10 @@
  *                        Firebase it is the anonymous account's uid, which is
  *                        the only id the rules can verify; callers must adopt it
  *                        before putting a ticket or a room id on the wire.
+ *   canSearch()          whether a search can go out right now. Over Firebase it
+ *                        is false without a signed-in account, because the rules
+ *                        refuse every read and write without one (BT-2); it
+ *                        retries sign-in before answering.
  *   close()              release listeners/sockets
  *
  * The constructor takes (playerId, onMessage) and delivers every peer message

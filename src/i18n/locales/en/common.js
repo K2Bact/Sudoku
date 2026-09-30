@@ -50,6 +50,8 @@ export const common = {
     undo: 'Undo',
     erase: 'Erase',
     notes: 'Notes',
+    notesOn: 'Notes ON',
+    notesOff: 'Notes OFF',
     hint: 'Hint',
     rewardHint: '+1 Hint',
     fastEntry: 'Fast Entry'

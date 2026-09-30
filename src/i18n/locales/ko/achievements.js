@@ -13,6 +13,8 @@ export const achievements = {
     statsTab: '통계',
     unlockedCount: '{unlocked} / {total} 달성 ({pct}%)',
     lockedBadge: '미달성',
+    pointsTotal: '{count}점',
+    tiers: { bronze: '브론즈', silver: '실버', gold: '골드', diamond: '다이아몬드', master: '마스터' },
     unlockedAt: '달성일: {date}',
 
     // 1 ~ 7. 완주 & 진행
@@ -28,7 +30,7 @@ export const achievements = {
     flawless_1: { title: '무결점 마스터', desc: '단 1번의 실수도 없이(오답 0회) 퍼즐 완주' },
     flawless_5: { title: '완벽주의자', desc: '오답 0회 무결점 퍼즐 5회 달성' },
     pure_logic_expert: { title: '순수 논리의 경지', desc: '힌트를 단 1번도 쓰지 않고 Lv.4 어려움 클리어' },
-    pure_logic_master: { title: '궁극의 마인드', desc: '힌트와 실수 없이 Lv.5 마스터 난이도 클리어' },
+    pure_logic_master: { title: '궁극의 마인드', desc: '힌트와 실수 없이 Lv.5 전문가 난이도 클리어' },
     note_master: { title: '메모의 달인', desc: '메모 기능을 50회 이상 적극 활용' },
     no_notes: { title: '직관의 눈', desc: '메모를 전혀 쓰지 않고 Lv.3 보통 이상 클리어' },
     fast_entry_fan: { title: '신속의 번개', desc: '빠른 숫자 고정 입력 모드로 1판 완주' },
@@ -45,7 +47,7 @@ export const achievements = {
     clear_lv2: { title: '쉬움 마스터', desc: 'Lv.2 쉬움 난이도 완주' },
     clear_lv3: { title: '중급자 등극', desc: 'Lv.3 보통 난이도 완주' },
     clear_lv4: { title: '상급 정복자', desc: 'Lv.4 어려움 난이도 완주' },
-    clear_lv5: { title: '그랜드 마스터', desc: 'Lv.5 마스터 최고 난이도 완주' },
+    clear_lv5: { title: '그랜드 마스터', desc: 'Lv.5 전문가 최고 난이도 완주' },
     survival_hero: { title: '타임 서바이벌', desc: '서바이벌 모드 완주 성공' },
     survival_clutch: { title: '기사회생', desc: '남은 시간 5초 이하 위기를 극복하고 클리어' },
 

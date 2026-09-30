@@ -13,6 +13,8 @@ export const achievements = {
     statsTab: '統計',
     unlockedCount: '{unlocked} / {total} 達成 ({pct}%)',
     lockedBadge: '未達成',
+    pointsTotal: '{count}pt',
+    tiers: { bronze: 'ブロンズ', silver: 'シルバー', gold: 'ゴールド', diamond: 'ダイヤモンド', master: 'マスター' },
     unlockedAt: '達成日: {date}',
 
     // 1 ~ 7. 完走 & 進行
@@ -34,17 +36,17 @@ export const achievements = {
     fast_entry_fan: { title: '電光石火', desc: '連続入力モードで1パズルクリア' },
 
     // 15 ~ 19. スピード & コンボ
-    rank_s_plus: { title: '神速の境地', desc: '最短時間で 👑 S+ ランクを初獲得' },
+    rank_s_plus: { title: '神速の境地', desc: 'タイムアタックで 👑 S+ ランクを初獲得' },
     speed_runner_3m: { title: '3分以内クリア', desc: '3分(180秒)以内にパズルをクリア' },
     speed_runner_2m: { title: '電光石火の速攻', desc: '2分(120秒)以内の超高速クリアを達成' },
     combo_streak_5: { title: 'コンボアーティスト', desc: 'タイムアタックモードで5連続コンボ達成' },
     combo_streak_10: { title: 'コンボマエストロ', desc: 'タイムアタックモードで10連続コンボ達成' },
 
     // 20 ~ 26. 難易度制覇 & サバイバル
-    clear_lv1: { title: '入門制覇', desc: 'Lv.1 入門難易度をクリア' },
-    clear_lv2: { title: '簡単マスター', desc: 'Lv.2 初級難易度をクリア' },
-    clear_lv3: { title: '中級者の仲間入り', desc: 'Lv.3 中級難易度をクリア' },
-    clear_lv4: { title: '上級制覇者', desc: 'Lv.4 上級難易度をクリア' },
+    clear_lv1: { title: '入門制覇', desc: '「Lv.1 入門」のパズルをクリア' },
+    clear_lv2: { title: '簡単マスター', desc: '「Lv.2 初級」のパズルをクリア' },
+    clear_lv3: { title: '中級者の仲間入り', desc: '「Lv.3 中級」のパズルをクリア' },
+    clear_lv4: { title: '上級制覇者', desc: '「Lv.4 上級」のパズルをクリア' },
     clear_lv5: { title: 'グランドマスター', desc: '最高難易度の「Lv.5 達人」をクリア' },
     survival_hero: { title: 'タイムサバイバー', desc: 'タイムリミット(サバイバル)モードをクリア' },
     survival_clutch: { title: '九死に一生', desc: '残り時間5秒以下の危機を乗り越えてクリア' },

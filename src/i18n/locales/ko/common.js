@@ -50,6 +50,8 @@ export const common = {
     undo: '취소',
     erase: '지우개',
     notes: '메모',
+    notesOn: '메모 ON',
+    notesOff: '메모 OFF',
     hint: '힌트',
     rewardHint: '+1 힌트',
     fastEntry: '빠른입력'

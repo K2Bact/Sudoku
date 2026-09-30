@@ -8,14 +8,14 @@ export const modals = {
       timeLabel: 'Tempo Decorrido',
       timeRemainingLabel: 'Tempo Restante',
       mistakesLabel: 'Erros',
-      mistakesCount: '{count} Erros',
+      mistakesCount: '{count}',
       notRecordedHint: "Você usou dicas, então este tempo não conta como recorde.",
       notRecordedNoLimit: "Você jogou sem o limite de 3 erros, então este tempo não conta como recorde.",
       nextGame: 'Próximo Jogo',
       leaderboardBtn: "📊 Meus recordes",
       shareBtn: 'Compartilhar',
       copiedToast: '🎉 Resultado copiado para a área de transferência!',
-      shareText: '🧩 Resolvi o Sudoku {mode} Nv.{level} {name} em [{time}]! Classificação: {rank} ({mistakes} erros). Consegue fazer melhor?',
+      shareText: '🧩 Resolvi o Sudoku {mode} Lv.{level} {name} em [{time}]! Classificação: {rank} (erros: {mistakes}). Consegue fazer melhor?',
       ranks: {
         'S+': '👑 S+ (Divino)',
         'S': '⭐️ S (Mestre)',
@@ -43,8 +43,8 @@ export const modals = {
     },
     dailyReward: {
       title: 'Recompensa Diária!',
-      streakBadge: 'Sequência de {days} dias',
-      desc: 'Sequência de {days} dias atingida!\n+{count} dica(s) gratuita(s) adicionada(s).',
+      streakBadge: 'Sequência de {days} dia(s)',
+      desc: 'Sequência de {days} dia(s) atingida!\n+{count} dica(s) gratuita(s) adicionada(s).',
       confirm: 'Receber'
     },
     adReward: {

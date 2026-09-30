@@ -12,6 +12,7 @@ export function BattleLobbyScreen({
   isSearching: isSearchingProp,
   onCancelSearch: onCancelSearchProp,
   matchTimedOut = false,
+  matchUnavailable = false,
   onPlayAiInstead
 }) {
   const { t } = useTranslation();
@@ -72,15 +73,20 @@ export function BattleLobbyScreen({
 
       {/* Main Full-Screen Scrollable Content Area */}
       <div className="screen-scroll-content">
-        {matchTimedOut && !isSearching ? (
-          /* The search ended with nobody on the other side. Say so and offer the
-             AI match, instead of leaving the player staring at a radar forever. */
+        {(matchTimedOut || matchUnavailable) && !isSearching ? (
+          /* The search ended with nobody on the other side — or could not start,
+             because this phone never reached the server (BT-2). Say which, and
+             offer the AI match, which needs no connection. */
           <div className="match-searching-wrapper">
             <div className="match-radar-card" style={{ gap: '14px', padding: '22px 18px' }}>
               <div className="radar-status-badge">
                 <Globe size={13} className="text-muted flex-shrink-0" />
-                <span style={{ wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
-                  {t('battleLobby.noOpponentFound')}
+                {/* overflowWrap 'anywhere', not 'break-word': keep-all turns a Japanese
+                    sentence (no spaces) into one unbreakable run, and break-word does not
+                    lower the min-content width, so the run pushed 21px past the pill at 360px
+                    (red team 2026-09-29). 'anywhere' breaks inside it only when it must. */}
+                <span style={{ wordBreak: 'keep-all', overflowWrap: 'anywhere' }}>
+                  {matchUnavailable ? t('battleLobby.connectFailed') : t('battleLobby.noOpponentFound')}
                 </span>
               </div>
               <button type="button" className="btn btn-primary w-100" onClick={handlePlayAi}>

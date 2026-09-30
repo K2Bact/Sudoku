@@ -30,11 +30,14 @@ export const common = {
       sat: 'S'
     }
   },
+  // One step off until 2026-09-28 (Fácil…Maestro): Lv.2 was called "Medio" here while
+  // the daily missions and achievements called it "Fácil", and every other locale
+  // calls it Easy. These now match the mission and achievement text (BACKLOG ES-1).
   levels: {
-    1: 'Fácil',
-    2: 'Medio',
-    3: 'Difícil',
-    4: 'Experto',
+    1: 'Principiante',
+    2: 'Fácil',
+    3: 'Medio',
+    4: 'Difícil',
     5: 'Maestro'
   },
   header: {
@@ -53,6 +56,8 @@ export const common = {
     undo: 'Deshacer',
     erase: 'Borrar',
     notes: 'Notas',
+    notesOn: 'Notas ON',
+    notesOff: 'Notas OFF',
     hint: 'Pista',
     rewardHint: '+1 pista',
     fastEntry: 'Entrada rápida'

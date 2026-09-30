@@ -13,7 +13,7 @@ export const screens = {
     hintTooltip: 'संकेत',
     brainReportTitle: 'खेल विश्लेषण',
     brainPercentileShort: 'हल की गई पहेलियां: {won}',
-    startSelectedLevel: 'स्तर {level} {name} शुरू करें',
+    startSelectedLevel: 'Lv.{level} {name} शुरू करें',
     modeTabs: { classic: 'क्लासिक', timeAttack: 'स्पीडरन', timeLimit: 'सर्वाइवल' },
     rivalModes: {
       standard: '🎯 सामान्य',
@@ -28,10 +28,10 @@ export const screens = {
     modes: {
       classic: { badge: 'क्लासिक', title: 'क्लासिक सोलो', desc: 'तार्किक चिंतन का शुद्ध सुडोकू अनुभव', startBtn: 'नया खेल' },
       timeAttack: { badge: 'स्पीडरन', title: '⚡ स्पीडरन', desc: 'समय के खिलाफ दौड़कर अपना सर्वश्रेष्ठ रिकॉर्ड बनाएं!', startBtn: 'स्पीडरन शुरू करें' },
-      timeLimit: { badge: 'सर्वाइवल', title: '⏳ सर्वाइवल', desc: 'स्तर {level} में {minutes} मिनट! समय समाप्त होने से पहले जीतें', startBtn: 'सर्वाइवल शुरू करें' },
-      daily: { title: 'दैनिक चुनौती', desc: 'हर दिन नई पहेलियां और मासिक पदक', badge: 'NEW' },
+      timeLimit: { badge: 'सर्वाइवल', title: '⏳ सर्वाइवल', desc: 'Lv.{level} में {minutes} मिनट! समय समाप्त होने से पहले जीतें', startBtn: 'सर्वाइवल शुरू करें' },
+      daily: { title: 'दैनिक चुनौती', desc: 'हर दिन नई पहेलियां और मासिक पदक', badge: 'दैनिक' },
       battle: { title: '1v1 ऑनलाइन मुकाबला', desc: 'रीयल-टाइम मल्टीप्लेयर' },
-      aiBattle: { title: 'एआई बॉट मुकाबला', desc: 'एआई के खिलाफ 1:1 स्पीड मैच' },
+      aiBattle: { badge: 'VS AI', title: 'एआई बॉट मुकाबला', desc: 'एआई के खिलाफ 1:1 स्पीड मैच' },
       academy: { title: 'सुडोकू अकादमी', desc: 'मास्टर्स की 32 रणनीतियां सीखें' },
       practice: { title: 'मुक्त अभ्यास मोड', desc: 'बिना गलती सीमा के आरामदायक खेल' }
     },
@@ -55,13 +55,13 @@ export const screens = {
     missionReward: '+1 संकेत और उपस्थिति',
     tiers: { beginner: 'शुरुआती', intermediate: 'मध्यम', advanced: 'मास्टर' },
     missions: {
-      beginnerLv1Title: '[स्तर 1 शुरुआती] 1 सुडोकू पूरा करें', beginnerLv1Desc: 'बुनियादी तर्क विकसित करने के लिए स्तर 1 पहेली हल करें।',
-      beginnerLv2Title: '[स्तर 2 सरल] 1 सुडोकू पूरा करें', beginnerLv2Desc: 'बुनियादी तकनीकों के अभ्यास के लिए स्तर 2 पहेली हल करें।',
-      medLv3Title: '[स्तर 3+ मध्यम] 1 सुडोकू पूरा करें', medLv3Desc: 'तार्किक क्षमता जांचने के लिए स्तर 3 मध्यम या उच्चतर हल करें।',
-      advLv4Title: '[स्तर 4+ कठिन] 1 सुडोकू पूरा करें', advLv4Desc: 'स्तर 4 कठिन पहेली हल कर अपनी मास्टर क्षमता साबित करें।',
-      advLv5Title: '[स्तर 5 मास्टर] 1 सुडोकू पूरा करें', advLv5Desc: 'शीर्ष स्तर पर पहुंचने के लिए कठिन स्तर 5 मास्टर पहेली को हल करें।',
+      beginnerLv1Title: '[Lv.1 शुरुआती] 1 सुडोकू पूरा करें', beginnerLv1Desc: 'बुनियादी तर्क विकसित करने के लिए Lv.1 शुरुआती पहेली हल करें।',
+      beginnerLv2Title: '[Lv.2 सरल] 1 सुडोकू पूरा करें', beginnerLv2Desc: 'बुनियादी तकनीकों के अभ्यास के लिए Lv.2 सरल पहेली हल करें।',
+      medLv3Title: '[Lv.3+ मध्यम] 1 सुडोकू पूरा करें', medLv3Desc: 'तार्किक क्षमता जांचने के लिए Lv.3 मध्यम या उच्चतर हल करें।',
+      advLv4Title: '[Lv.4+ कठिन] 1 सुडोकू पूरा करें', advLv4Desc: 'Lv.4 कठिन पहेली हल कर अपनी मास्टर क्षमता साबित करें।',
+      advLv5Title: '[Lv.5 विशेषज्ञ] 1 सुडोकू पूरा करें', advLv5Desc: 'शीर्ष स्तर पर पहुंचने के लिए Lv.5 विशेषज्ञ पहेली को हल करें।',
       battleTitle: '1v1 ऑनलाइन या एआई मुकाबला खेलें', battleDesc: '1 रीयल-टाइम ऑनलाइन या एआई मैच में भाग लें।',
-      speedrunTitle: '⚡ 1 स्पीडरन मोड पूरा करें', speedrunDesc: 'कॉम्बो का उपयोग करके स्पीडरन मोड में पहेली हल करें।'
+      speedrunTitle: '⚡ 1 स्पीडरन पहेली हल करें', speedrunDesc: 'स्पीडरन मोड में एक पहेली हल करें।'
     }
   },
   removeAds: {
@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: 'स्पीडरन सर्वश्रेष्ठ',
     survivalTitle: '⏳ सर्वाइवल मोड',
     survivalTotalWins: 'सर्वाइवल में जीत',
-    survivalWinsUnit: '{count} जीतें',
+    survivalWinsUnit: '{count}',
     summaryTitle: 'प्रदर्शन सारांश',
     pvpRating: "रेटिंग",
     pvpRecordLabel: "रिकॉर्ड",
@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Logic Score कैसे तय होता है?",
-    scoreHowBody: "पूरा बोर्ड भरकर जीतने पर यह बढ़ता है। बिना संकेत के पार किया गया सबसे कठिन स्तर सबसे ज़्यादा गिना जाता है; जीत की संख्या और जीत दर थोड़ा गिने जाते हैं। खेल समाप्त होने या बीच में छोड़ने से जीत दर घटती है और कुछ अंक कम हो सकते हैं। Play Games में साइन इन होने पर रैंकिंग इसी स्कोर से तय होती है।",
+    scoreHowBody: "पूरा बोर्ड भरकर जीतने पर यह बढ़ता है। बिना संकेत के पार किया गया सबसे कठिन स्तर सबसे ज़्यादा गिना जाता है; जीत की संख्या और जीत दर थोड़ा गिने जाते हैं। 1v1 और एआई बॉट मुकाबले जीत की संख्या और जीत दर में नहीं गिने जाते; उनका रिकॉर्ड आंकड़ों में अलग रहता है। खेल हारने या बीच में छोड़ने पर जीत दर घटती है और कुछ अंक कम हो सकते हैं। Play Games में साइन इन होने पर रैंकिंग इसी स्कोर से तय होती है।",
     shareText: '[Sudoku खेल विश्लेषण]\nLogic Score: {iq}\nस्तर: {tier}\nआज ही Sudoku आज़माएं!',
     copiedToast: 'खेल विश्लेषण क्लिपबोर्ड पर कॉपी हो गया।',
     focus: 'बिना गलती',
@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'आपकी पूर्णता दर: {rate}%',
     findOpponentBtn: 'प्रतिद्वंद्वी खोजें',
     noOpponentFound: 'कोई प्रतिद्वंद्वी नहीं मिला। AI से खेलें?',
+    connectFailed: "ऑनलाइन मुकाबले से कनेक्ट नहीं हो सका। थोड़ी देर बाद फिर कोशिश करें। AI से खेलें?",
     playAiInstead: 'AI से खेलें'
   },
   battleResult: {
@@ -197,7 +198,7 @@ export const screens = {
     disqualified: '💀 बाहर',
     finalProgress: 'अंतिम प्रगति',
     ratingChange: '1v1 MMR रेटिंग परिवर्तन',
-    aiModeLabel: 'एआई बॉट अभ्यास मैच (स्तर {level})',
+    aiModeLabel: 'एआई बॉट अभ्यास मैच (Lv.{level})',
     aiWonBadge: 'अभ्यास में जीत',
     aiLostBadge: 'अभ्यास समाप्त',
     you: 'आप',
@@ -219,6 +220,7 @@ export const screens = {
     declineBtn: 'अस्वीकार'
   },
   battleHeader: {
+    aiTag: 'AI',
     confirmLeave: 'क्या आप हार मानकर होम स्क्रीन पर जाना चाहते हैं?',
     emptyCellsLeft: 'शेष'
   },
@@ -231,7 +233,7 @@ export const screens = {
     level3Desc: 'कुशल बॉट: तेज़ गति, कम गलतियां।',
     level4Desc: 'मास्टर बॉट: बहुत तेज़ गति, बहुत कम गलतियां।',
     level5Desc: 'अल्फा सुडोकू: सबसे तेज़ और सबसे कम गलतियों वाला बॉट।',
-    startBtn: 'स्तर {level} {name} मुकाबला शुरू'
+    startBtn: 'Lv.{level} {name} मुकाबला शुरू'
   },
   academy: {
     tabs: { stage1: 'चरण 1', stage2: 'चरण 2', stage3: 'चरण 3', stage4: 'चरण 4', stage5: 'चरण 5' },
@@ -239,8 +241,8 @@ export const screens = {
       stage1: 'चरण 1: बुनियादी तकनीकें (सिंगल्स और पंक्तियां)',
       stage2: 'चरण 2: मध्यम तकनीकें (पेयर्स और इंटरसेक्शन)',
       stage3: 'चरण 3: उन्नत तकनीकें (विंग सीरीज)',
-      stage4: 'चरण 4: विशेषज्ञ तकनीकें (फिश, कलरिंग और यूनीक रेक्टेंगल)',
-      stage5: 'चरण 5: मास्टर तकनीकें (AIC, ALS और Exocet चेन्स)'
+      stage4: 'चरण 4: मास्टर तकनीकें (फिश, कलरिंग और यूनीक रेक्टेंगल)',
+      stage5: 'चरण 5: ग्रैंडमास्टर तकनीकें (AIC, ALS और Exocet चेन्स)'
     },
     title: 'सुडोकू अकादमी',
     theoryBoard: {

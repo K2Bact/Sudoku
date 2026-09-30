@@ -1,0 +1,91 @@
+<en-US>
+• 1v1 and AI duels no longer change your Win Rate — their results are kept separately in Stats.
+• If 1v1 can't connect, the lobby now tells you so instead of saying no opponent was found.
+• Faster start on slow connections: the fonts are now built into the app.
+• Language settings: your phone's language now sits right next to System.
+• Every level has one name everywhere, and many texts were made clearer.
+</en-US>
+<ar>
+• لم تعد مبارزات 1v1 ومبارزات الذكاء الاصطناعي تُحتسب في نسبة الفوز، وتُسجَّل نتائجها بشكل منفصل في الإحصائيات.
+• إذا تعذّر اتصال 1v1، تخبرك الشاشة الآن بذلك بدلاً من القول إنه لم يُعثر على خصم.
+• تشغيل أسرع مع الإنترنت البطيء: أصبحت الخطوط مدمجة في التطبيق.
+• في إعدادات اللغة، تظهر لغة هاتفك الآن بجوار «النظام» مباشرة.
+• أصبح لكل مستوى اسم واحد في كل مكان، وتم توضيح كثير من النصوص.
+</ar>
+<de-DE>
+• 1v1- und KI-Duelle zählen nicht mehr zu deiner Gewinnrate – ihre Ergebnisse stehen separat in der Statistik.
+• Kann 1v1 keine Verbindung herstellen, sagt dir die Lobby das jetzt, statt „kein Gegner gefunden“ zu melden.
+• Schneller Start bei langsamer Verbindung: Die Schriften sind jetzt in der App enthalten.
+• Spracheinstellung: Die Sprache deines Telefons steht jetzt direkt neben „System“.
+• Jede Stufe hat überall denselben Namen, und viele deutsche Texte wurden überarbeitet.
+</de-DE>
+<es-ES>
+• Los duelos 1v1 y contra la IA ya no cuentan en tu tasa de victoria: sus resultados se guardan aparte en Estadísticas.
+• Si el 1v1 no puede conectarse, ahora te lo dice en lugar de indicar que no hay rival.
+• Arranque más rápido con conexión lenta: las fuentes ahora vienen dentro de la app.
+• En Idioma, el idioma de tu teléfono aparece justo al lado de Sistema.
+• Cada nivel tiene un solo nombre en toda la app, y muchos textos son ahora más claros.
+</es-ES>
+<fr-FR>
+• Les duels 1v1 et contre l’IA ne comptent plus dans votre taux de victoire : leurs résultats sont enregistrés à part dans Statistiques.
+• Si le 1v1 ne peut pas se connecter, le lobby vous le dit au lieu d’indiquer qu’aucun adversaire n’a été trouvé.
+• Démarrage plus rapide sur une connexion lente : les polices sont intégrées à l’app.
+• Langue : la langue de votre téléphone apparaît juste à côté de Système.
+• Chaque niveau porte le même nom partout, et de nombreux textes ont été clarifiés.
+</fr-FR>
+<hi-IN>
+• 1v1 और AI मुकाबले अब आपके जीत प्रतिशत में नहीं गिने जाते — उनके नतीजे आंकड़ों में अलग से दर्ज होते हैं।
+• अगर 1v1 कनेक्ट नहीं हो पाता, तो लॉबी अब यही बताती है, न कि यह कि कोई विरोधी नहीं मिला।
+• धीमे इंटरनेट पर भी तेज़ शुरुआत: फ़ॉन्ट अब ऐप में ही शामिल हैं।
+• भाषा सेटिंग में आपके फ़ोन की भाषा अब "सिस्टम" के ठीक बगल में दिखती है।
+• हर कठिनाई स्तर का अब हर जगह एक ही नाम है, और कई जगह हिंदी अनुवाद बेहतर किया गया।
+</hi-IN>
+<it-IT>
+• I duelli 1v1 e contro l’IA non contano più nella tua percentuale di vittorie: i risultati sono registrati a parte nelle Stats.
+• Se l’1v1 non riesce a connettersi, la lobby ora te lo dice invece di segnalare che non c’è nessun avversario.
+• Avvio più rapido con connessioni lente: i font ora sono inclusi nell’app.
+• Nella lingua, la lingua del tuo telefono compare subito accanto a Sistema.
+• Ogni livello ha lo stesso nome ovunque, e molti testi sono più chiari.
+</it-IT>
+<ja-JP>
+• 1v1 対戦と AI 対戦は勝率に含まれなくなり、統計に別に記録されます。
+• 1v1 に接続できないとき、「相手が見つかりません」ではなく、接続できなかったことを表示します。
+• フォントをアプリに内蔵し、回線が遅くてもすぐに起動します。
+• 言語設定で、端末の言語が「システム」のすぐ隣に表示されます。
+• 難易度の名前をすべての画面で統一し、多くの表示をわかりやすくしました。
+</ja-JP>
+<ko-KR>
+• 1v1·AI 대전은 이제 승률에 들어가지 않고, 나의 통계에 따로 기록됩니다.
+• 1v1에 연결하지 못하면 "상대를 찾지 못했습니다" 대신 연결하지 못했다고 알려줍니다.
+• 글꼴을 앱에 넣어서 인터넷이 느려도 바로 켜집니다.
+• 언어 설정에서 폰 언어가 「시스템」 바로 옆에 옵니다.
+• 난이도 이름을 모든 화면에서 하나로 맞추고, 여러 문구를 더 알기 쉽게 다듬었습니다.
+</ko-KR>
+<pt-BR>
+• Os duelos 1v1 e contra a IA não contam mais na sua taxa de vitória: os resultados ficam separados em Estatísticas.
+• Se o 1v1 não conseguir conectar, o lobby agora avisa, em vez de dizer que nenhum adversário foi encontrado.
+• Início mais rápido em conexões lentas: as fontes agora vêm dentro do app.
+• Nas configurações de idioma, o idioma do seu celular aparece logo ao lado de Sistema.
+• Cada nível tem um só nome em todo o app, e vários textos ficaram mais claros.
+</pt-BR>
+<ru-RU>
+• Дуэли 1v1 и дуэли с ИИ больше не влияют на процент побед — их результаты хранятся отдельно в статистике.
+• Если 1v1 не может подключиться, лобби теперь сообщает об этом, а не пишет, что соперник не найден.
+• Быстрый запуск при медленном интернете: шрифты теперь встроены в приложение.
+• В настройках языка язык вашего телефона теперь стоит рядом с пунктом «Системный».
+• У каждого уровня теперь одно название везде, и многие тексты стали понятнее.
+</ru-RU>
+<zh-CN>
+• 1v1 对战和 AI 对战不再计入胜率，而是在个人统计中单独记录。
+• 1v1 无法连接时，大厅会直接告诉你，而不是显示“未找到对手”。
+• 字体已内置到应用中，网络较慢时也能快速启动。
+• 语言设置中，手机的语言现在显示在“系统”旁边。
+• 各难度在所有页面统一名称，并让多处文字更清楚。
+</zh-CN>
+<zh-TW>
+• 1v1 對戰與 AI 對戰不再計入勝率，改在個人統計中另外記錄。
+• 1v1 無法連線時，大廳會直接告訴你，而不是顯示「找不到對手」。
+• 字型已內建於應用程式中，網路較慢時也能快速啟動。
+• 語言設定中，手機的語言現在會顯示在「系統」旁邊。
+• 各難度在所有畫面統一名稱，並讓多處文字更清楚。
+</zh-TW>

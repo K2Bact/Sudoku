@@ -15,7 +15,7 @@ export const modals = {
       leaderboardBtn: "📊 Мои рекорды",
       shareBtn: 'Поделиться',
       copiedToast: '🎉 Результат скопирован в буфер обмена!',
-      shareText: '🧩 Решил Судоку {mode} Ур.{level} {name} за [{time}]! Ранг: {rank} ({mistakes} ошибок). Сможешь быстрее?',
+      shareText: '🧩 Решил Судоку {mode} Lv.{level} {name} за [{time}]! Ранг: {rank} (ошибок: {mistakes}). Сможешь быстрее?',
       ranks: {
         'S+': '👑 S+ (Божественно)',
         'S': '⭐️ S (Мастер)',

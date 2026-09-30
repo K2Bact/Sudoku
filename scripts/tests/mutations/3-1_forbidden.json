@@ -35,6 +35,54 @@
       "find": "  const { t } = useTranslation();",
       "replace": "  const { t } = useTranslation();   // 줄 끝 주석, CRLF 줄에서\r",
       "expectSurvival": true
+    },
+    {
+      "name": "the notes toggle says ON/OFF again",
+      "why": "Found by the German review (SudokuAITalk DE29-12, 2026-09-30): this English rendered to all thirteen locales and the scanner reported 0, because it skipped quoted words inside a JSX expression.",
+      "file": "src/components/Keypad.jsx",
+      "find": "<span>{isNoteMode ? t('keypad.notesOn') : t('keypad.notesOff')}</span>",
+      "replace": "<span>{t('keypad.notes')} {isNoteMode ? 'ON' : 'OFF'}</span>",
+      "expectFailure": "Keypad.jsx"
+    },
+    {
+      "name": "the achievement total says pts again",
+      "why": "Found by the German review (SudokuAITalk DE29-12, 2026-09-30): this English rendered to all thirteen locales and the scanner reported 0, because it skipped text sitting next to an expression.",
+      "file": "src/components/AchievementsView.jsx",
+      "find": "<span>{t('achievements.pointsTotal', { count: totalPoints })}</span>",
+      "replace": "<span>{totalPoints} pts</span>",
+      "expectFailure": "AchievementsView.jsx"
+    },
+    {
+      "name": "the AI card badge says VS AI again",
+      "why": "Found by the German review (SudokuAITalk DE29-12, 2026-09-30): this English rendered to all thirteen locales and the scanner reported 0, because it skipped SHOUTED labels as decoration, and listed VS AI as a brand with no reason written down.",
+      "file": "src/components/home/HomeBottomBanners.jsx",
+      "find": "<Bot size={11} /> {t('home.modes.aiBattle.badge')}</span>",
+      "replace": "<Bot size={11} /> VS AI</span>",
+      "expectFailure": "HomeBottomBanners.jsx"
+    },
+    {
+      "name": "the battle header says AI again",
+      "why": "Found by the German review (SudokuAITalk DE29-12, 2026-09-30): this English rendered to all thirteen locales and the scanner reported 0, because it skipped quoted words inside a JSX expression. German says KI everywhere else on the screen.",
+      "file": "src/components/BattleHeader.jsx",
+      "find": "<span>{isAIBattle ? t('battleHeader.aiTag') : 'PVP'}</span>",
+      "replace": "<span>{isAIBattle ? 'AI' : 'PVP'}</span>",
+      "expectFailure": "BattleHeader.jsx"
+    },
+    {
+      "name": "the delta banner says PB again",
+      "why": "User decision 2026-09-30: the banner names the record the way the mode chip does. PB read as English in all thirteen languages; the German review could not tell what it meant.",
+      "file": "src/components/battle/GhostRivalBanner.jsx",
+      "find": "<span className=\"rival-label\">{rivalLabel}</span>",
+      "replace": "<span className=\"rival-label\">{rivalMode === 'ghost' ? rivalLabel : 'PB'}</span>",
+      "expectFailure": "GhostRivalBanner.jsx"
+    },
+    {
+      "name": "the 1v1 rating says RP again",
+      "why": "User decision 2026-09-30: the label beside it already says rating; the English unit only repeated it untranslated.",
+      "file": "src/components/StatsScreen.jsx",
+      "find": "{battled ? battle.mmr : '--'}",
+      "replace": "{battled ? `${battle.mmr} RP` : '--'}",
+      "expectFailure": "StatsScreen.jsx"
     }
   ],
   "note": "The scanner used to skip only whole-line comments, so a Korean trailing comment on a code line was reported as a hardcoded string. That is noise rather than a miss, but a noisy gate gets muted — or worse, gets quietened by rewriting Korean comments into English, and the comments explaining why each fix was made are the most valuable thing in this repository. Trailing comments are now stripped before scanning. The two mutations below hold both ends: a Korean comment must NOT fail, and a Korean string sitting after code on the same line must still fail."

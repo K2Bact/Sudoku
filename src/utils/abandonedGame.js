@@ -13,16 +13,14 @@
  *   - an untouched board (tapping "new game" twice by mistake)
  *   - 1v1 and AI battles, which end through their own result screen
  */
-import { loadGameState, recordGameLoss } from './storage.js';
+import { loadGameState, recordGameLoss, isDuelMode } from './storage.js';
 import { isResumableGame } from './savedGame.js';
-
-const NOT_COUNTED_MODES = new Set(['battle', 'aiBattle']);
 
 /** The saved game that would count as a loss if thrown away now, or null. */
 export function gameInProgress() {
   const saved = loadGameState();
   if (!isResumableGame(saved)) return null;   // the same test as Home's Resume button
-  if (NOT_COUNTED_MODES.has(saved.gameMode)) return null;
+  if (isDuelMode(saved.gameMode)) return null;
   const moved = saved.board.some((row, r) => row.some((v, c) => v !== saved.initialBoard[r][c]));
   if (!moved && !(saved.mistakes > 0)) return null;
   return saved;

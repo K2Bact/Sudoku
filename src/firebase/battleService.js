@@ -149,7 +149,7 @@ class BattleService {
    * Finding an opponent lives in battleMatchmaking.js — see the header there.
    * These four keep their names so callers and tests do not have to know.
    */
-  startQuickMatch(level = 3, onMatched) { return startQuickMatch(this, level, onMatched); }
+  startQuickMatch(level = 3, onMatched, onUnavailable) { return startQuickMatch(this, level, onMatched, onUnavailable); }
 
   claimBothTickets(peerId) { return claimBothTickets(this, peerId); }
 

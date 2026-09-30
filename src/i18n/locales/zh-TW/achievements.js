@@ -16,6 +16,8 @@ export const achievements = {
     statsTab: '統計',
     unlockedCount: '已達成 {unlocked} / {total} ({pct}%)',
     lockedBadge: '未解鎖',
+    pointsTotal: '{count} 分',
+    tiers: { bronze: '青銅', silver: '白銀', gold: '黃金', diamond: '鑽石', master: '大師' },
     unlockedAt: '達成日：{date}',
 
     // 1 ~ 7. 通關與進度

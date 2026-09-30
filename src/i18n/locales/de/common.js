@@ -50,6 +50,8 @@ export const common = {
     undo: 'Rückgängig',
     erase: 'Löschen',
     notes: 'Notizen',
+    notesOn: 'Notizen AN',
+    notesOff: 'Notizen AUS',
     hint: 'Tipp',
     rewardHint: '+1 Tipp',
     fastEntry: 'Schnellmodus'
@@ -60,16 +62,16 @@ export const common = {
     resumeTooltip: 'Tippen zum Fortsetzen'
   },
   themes: {
-    clay: '🏺 Warme Keramik & Ton',
+    clay: '🏺 Warmer Ton',
     matteDark: '🌌 Mattes Dunkelharz',
-    pureCeramic: '🧊 Reines Claymorphism',
+    pureCeramic: '🧊 Reine Keramik',
     editorial: '📰 Klassisches Zeitungspapier'
   },
   conflicts: {
     boxDuplicate: '⚠️ Zahl {num} existiert bereits im [3x3-Block {box}]! {suffix}',
     rowDuplicate: '⚠️ Zahl {num} existiert bereits in Zeile {row}! {suffix}',
     colDuplicate: '⚠️ Zahl {num} existiert bereits in Spalte {col}! {suffix}',
-    multipleDuplicates: '⚠️ Zahl {num} existiert bereits im selben Block / Zeile / Spalte! {suffix}',
+    multipleDuplicates: '⚠️ Zahl {num} existiert bereits im selben Block, in derselben Zeile oder Spalte! {suffix}',
     notSolution: '⚠️ Zahl {num} ist nicht die Lösung für dieses Feld! {suffix}',
     boardFullHasMistakes: '⚠️ Das Spielfeld ist voll, enthält jedoch noch Fehler. Bitte überprüfen!',
     timeAttackSuffix: '(Fehler {count} | +10s Strafe)',

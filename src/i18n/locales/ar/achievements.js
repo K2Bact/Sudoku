@@ -13,6 +13,8 @@ export const achievements = {
     statsTab: 'الإحصائيات',
     unlockedCount: 'تم فتح {unlocked} / {total} ({pct}%)',
     lockedBadge: 'مغلق',
+    pointsTotal: 'النقاط: {count}',
+    tiers: { bronze: 'برونزي', silver: 'فضي', gold: 'ذهبي', diamond: 'ماسي', master: 'أستاذ' },
     unlockedAt: 'تاريخ الفتح: {date}',
 
     // 1 ~ 7. Progression & Wins
@@ -27,10 +29,10 @@ export const achievements = {
     // 8 ~ 14. Logic & Perfection
     flawless_1: { title: 'خبير بلا أخطاء', desc: 'حل لغز كامل دون ارتكاب أي خطأ (0 أخطاء)' },
     flawless_5: { title: 'المثالي', desc: 'حل 5 ألغاز كاملة دون ارتكاب أي خطأ' },
-    pure_logic_expert: { title: 'منطق خالص', desc: 'حل لغز مستوى 4 الصعب دون استخدام أي تلميحات' },
-    pure_logic_master: { title: 'العقل الخارق', desc: 'حل لغز مستوى 5 الخبير بـ 0 أخطاء و 0 تلميحات' },
+    pure_logic_expert: { title: 'منطق خالص', desc: 'حل لغز Lv.4 الصعب دون استخدام أي تلميحات' },
+    pure_logic_master: { title: 'العقل الخارق', desc: 'حل لغز Lv.5 الخبير بـ 0 أخطاء و 0 تلميحات' },
     note_master: { title: 'سيد الملاحظات', desc: 'استخدام تدوين الملاحظات بالقلم أكثر من 50 مرة' },
-    no_notes: { title: 'عين بديهية', desc: 'حل لغز مستوى 3 متوسط فأعلى دون استخدام أي ملاحظات' },
+    no_notes: { title: 'عين بديهية', desc: 'حل لغز Lv.3 متوسط فأعلى دون استخدام أي ملاحظات' },
     fast_entry_fan: { title: 'سرعة البرق', desc: 'حل لغز باستخدام وضع الإدخال السريع (الرقم أولاً)' },
 
     // 15 ~ 19. Speed & Combos
@@ -41,11 +43,11 @@ export const achievements = {
     combo_streak_10: { title: 'سيد السلاسل', desc: 'تحقيق سلسلة من 10 إدخالات صحيحة متتالية في وضع السرعة' },
 
     // 20 ~ 26. Difficulty & Survival
-    clear_lv1: { title: 'قاهر المبتدئين', desc: 'حل لغز المستوى 1 (مبتدئ)' },
-    clear_lv2: { title: 'متقن المستوى السهل', desc: 'حل لغز المستوى 2 (سهل)' },
-    clear_lv3: { title: 'قاهر المتوسط', desc: 'حل لغز المستوى 3 (متوسط)' },
-    clear_lv4: { title: 'استنتاج احترافي', desc: 'حل لغز المستوى 4 (صعب)' },
-    clear_lv5: { title: 'أستاذ كبير', desc: 'حل لغز المستوى 5 (أستاذ — أعلى صعوبة)' },
+    clear_lv1: { title: 'قاهر المبتدئين', desc: 'حل لغز Lv.1 (مبتدئ)' },
+    clear_lv2: { title: 'متقن المستوى السهل', desc: 'حل لغز Lv.2 (سهل)' },
+    clear_lv3: { title: 'قاهر المتوسط', desc: 'حل لغز Lv.3 (متوسط)' },
+    clear_lv4: { title: 'استنتاج احترافي', desc: 'حل لغز Lv.4 (صعب)' },
+    clear_lv5: { title: 'أستاذ كبير', desc: 'حل لغز Lv.5 (خبير — أعلى صعوبة)' },
     survival_hero: { title: 'بطل التحدي الزمني', desc: 'النجاة وإكمال وضع التحدي الزمني بنجاح' },
     survival_clutch: { title: 'هروب في اللحظة الأخيرة', desc: 'إكمال اللغز مع تبقي 5 ثوانٍ أو أقل على المؤقت' },
 

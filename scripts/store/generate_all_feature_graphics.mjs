@@ -19,8 +19,10 @@ const GRAPHICS_CONFIG = {
     dir: 'ltr',
     badge: '☀ SUDOKU',
     title1: 'सुडोकू',
-    title2: 'लॉजिक पहेली',
-    tagline: 'क्लासिक · 32 तकनीकें · ब्रेन IQ और 1v1 मुकाबला',
+    // Same words as the store title and short description (store_description_hi.txt).
+    // The old tagline sold a "Brain IQ" the app renamed to Logic Score (BACKLOG STORE-2).
+    title2: 'तर्क पहेली अकादमी',
+    tagline: '5 कठिनाई स्तर · 32 तकनीकें · 1v1 व AI मुकाबले',
     font: '"Nirmala UI", "Noto Sans Devanagari", "Segoe UI", sans-serif'
   },
   'ar-SA': {
@@ -55,8 +57,11 @@ const GRAPHICS_CONFIG = {
     dir: 'ltr',
     badge: '☀ SUDOKU',
     title1: '스도쿠',
-    title2: '클래식 정통 로직',
-    tagline: '클래식 · 32가지 아카데미 · 두뇌 IQ 리포트 & 1v1 배틀',
+    // Same words as the store title and short description (store_description_ko.txt).
+    // The old tagline sold a "두뇌 IQ 리포트" the app renamed to Logic Score (BACKLOG STORE-2).
+    title2: '해법을 배우는 논리 퍼즐',
+    title2Size: 44,   // at 48px it ends 20px from the board card
+    tagline: '5단계 난이도 · 32가지 해법 · 1v1·AI 대전',
     font: '"Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
   },
   'en-US': {
@@ -77,7 +82,8 @@ const GRAPHICS_CONFIG = {
     title1: 'ナンプレ',
     title2: '解法が学べるロジックパズル',
     title2Size: 38,
-    tagline: 'クラシック・32の解法アカデミー・1v1対戦',
+    // 32 counts solving techniques, not academies (SudokuAITalk JA29-12, 2026-09-29).
+    tagline: 'クラシック・32種類の解法・1v1対戦',
     font: '"Meiryo", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif'
   },
   'de-DE': {
@@ -85,8 +91,11 @@ const GRAPHICS_CONFIG = {
     dir: 'ltr',
     badge: '☀ SUDOKU',
     title1: 'Sudoku',
-    title2: 'Klassisches Logikspiel',
-    tagline: 'Klassik · 32 Techniken · IQ-Bericht und 1v1-Duell',
+    // Same words as the store title and short description (store_description_de.txt).
+    // The old tagline sold an "IQ-Bericht" the app renamed to Logic Score (SudokuAITalk DE29-11).
+    title2: 'Logikrätsel-Akademie',
+    title2Size: 44,   // at 48px it ends about 25px from the board card, as Korean did at 20px
+    tagline: '5 Stufen · 32 Techniken · 1v1- und KI-Duelle',
     font: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
   },
   'es-ES': {
@@ -128,8 +137,9 @@ const GRAPHICS_CONFIG = {
 };
 
 async function generateAllGraphics() {
-  console.log('🎨 Generating Gold-Standard Feature Graphics across all target locales...');
+  console.log('🎨 Generating feature graphics...');
   const browser = await chromium.launch({ headless: true });
+  let made = 0;
 
   for (const [folder, cfg] of Object.entries(GRAPHICS_CONFIG)) {
 
@@ -314,11 +324,14 @@ async function generateAllGraphics() {
     // same image under two names, which only made people ask which one to upload.
 
     await page.close();
+    made++;
     console.log(`  ✅ [${folder}] Generated: ${prefixedName}`);
   }
 
   await browser.close();
-  console.log('\n🎉 ALL 13 LOCALES FEATURE GRAPHICS GENERATED AT GOLD-STANDARD QUALITY!');
+  // Count what was made. It used to announce all 13 locales even when one was asked for.
+  if (made === 0) throw new Error(`no locale matched "${process.argv[2]}"`);
+  console.log(`\n🎉 ${made} feature graphic(s) generated.`);
 }
 
 generateAllGraphics().catch(err => {

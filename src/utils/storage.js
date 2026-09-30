@@ -98,18 +98,37 @@ export function loadStats() {
 }
 
 // Record completed game stats
-// Modes played against an opponent. Their times never reach a best-time table.
+// Modes played against an opponent. Their times never reach a best-time table, and
+// their results are counted in the duel record (battleRating.js), not in these counts.
 const BATTLE_MODES = new Set(['battle', 'aiBattle']);
+export const isDuelMode = (mode) => BATTLE_MODES.has(mode);
 
 export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}) {
   const stats = loadStats();
-  stats.gamesPlayed = (stats.gamesPlayed || 0) + 1;
-  stats.gamesWon = (stats.gamesWon || 0) + 1;
 
-  // Cumulative counters the achievement engine reads. Without these written here
-  // it fell back to single-game context and could never exceed 1, so every
-  // "N flawless wins" / "combo N" badge above the first was unreachable.
-  if (extra.isFlawless) stats.flawlessWins = (stats.flawlessWins || 0) + 1;
+  /*
+   * A duel does not enter the games played / won counts (BT-1, user 2026-09-28).
+   *
+   * Those two make the win rate, and the win rate is part of the Logic Score that
+   * goes to the Play Games leaderboard. A duel only reached one side of it: winning
+   * came through here, but losing because the opponent finished first ends on the
+   * result screen and never called recordGameLoss. Every duel could raise the rate
+   * and none could lower it. A duel already has its own record — wins, losses and
+   * a rating — so it is taken out of these counts rather than half put in.
+   *
+   * Flawless wins go with them: Focus is flawless ÷ won, and a numerator that counts
+   * duels over a denominator that does not can pass 100%. Peaks that are not ratios —
+   * the hardest level cleared, the longest combo — still take a duel; the board was
+   * solved either way.
+   */
+  if (!isDuelMode(mode)) {
+    stats.gamesPlayed = (stats.gamesPlayed || 0) + 1;
+    stats.gamesWon = (stats.gamesWon || 0) + 1;
+    // Cumulative counter the achievement engine reads. Without it written here it
+    // fell back to single-game context and could never exceed 1, so every
+    // "N flawless wins" badge above the first was unreachable.
+    if (extra.isFlawless) stats.flawlessWins = (stats.flawlessWins || 0) + 1;
+  }
   if (typeof extra.comboCount === 'number') {
     stats.maxCombo = Math.max(stats.maxCombo || 0, extra.comboCount);
   }
@@ -153,9 +172,7 @@ export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}
      * you. Those seconds are not comparable with a Classic run, and they were
      * landing in the same table the player reads as their personal record.
      *
-     * The win itself still counts — it is a real game played and won. Only the
-     * clock is dropped. Whether a duel should count toward the win RATE, which
-     * is part of the Logic Score, is a separate question left in BACKLOG BT-1.
+     * Only the clock is dropped here; the counts above already left the duel out.
      */
   } else {
     if (!stats.bestTimes) stats.bestTimes = {};
@@ -174,9 +191,11 @@ export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}
   return { stats, isNewRecord };
 }
 
-// Record lost / game over stats
-export function recordGameLoss() {
+// Record lost / game over stats. A duel lost on mistakes is the duel record's to
+// count, like a duel won (see recordGameWin, BT-1).
+export function recordGameLoss(mode) {
   const stats = loadStats();
+  if (isDuelMode(mode)) return stats;
   stats.gamesPlayed = (stats.gamesPlayed || 0) + 1;
 
   try {

@@ -21,6 +21,8 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
   const handledRematchRef = useRef('idle');
   const searchTimeoutRef = useRef(null);
   const [matchTimedOut, setMatchTimedOut] = useState(false);
+  // The search could not start: no signed-in account, so the rules refuse it (BT-2).
+  const [matchUnavailable, setMatchUnavailable] = useState(false);
   const [lastRatingChange, setLastRatingChange] = useState(null);
 
   useEffect(() => {
@@ -120,6 +122,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
     setIsRematchWaiting(false);
     setIncomingRematchRequest(null);
     setMatchTimedOut(false);
+    setMatchUnavailable(false);
 
     // The transport contract says to branch on this rather than assume (see
     // firebase/transport/index.js). A build without Firebase config falls back
@@ -151,6 +154,13 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
       setActiveBattleRoom({ ...room });
       startNewGame(lvl, 'battle', { board: room.puzzle, solution: room.solution });
       setActiveScreen('game');
+    }, () => {
+      // This phone could not reach the server — not the same as nobody coming, so
+      // it is not reported as a timeout (BT-2).
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+      setIsMatchSearching(false);
+      setMatchUnavailable(true);
+      if (onComplete) onComplete();
     });
   };
 
@@ -158,6 +168,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
     soundHaptic.playSelectSound();
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     setMatchTimedOut(false);
+    setMatchUnavailable(false);
     setIsMatchSearching(false);
     try {
       battleService.leaveRoom();
@@ -216,6 +227,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
     if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     setMatchTimedOut(false);
+    setMatchUnavailable(false);
     setIsRematchWaiting(false);
     setIsMatchSearching(false);
     setIncomingRematchRequest(null);
@@ -245,6 +257,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
     isMatchSearching,
     lastRatingChange,
     matchTimedOut,
+    matchUnavailable,
     startAIFallback,
     handleStartQuickMatch,
     handleCancelQuickMatch,

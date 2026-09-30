@@ -28,6 +28,11 @@ export function GhostRivalBanner({
 
   const pbTimeStr = formatSecs(ghostRecord.bestSeconds || 0);
 
+  // The record being raced, named as the mode chip names it. Delta used to say "PB" in every
+  // language (user 2026-09-30: use the mode's own name). The chip label starts with its emoji;
+  // the icon beside it already says that, so the emoji is dropped.
+  const rivalLabel = t(`home.rivalModes.${rivalMode}`).replace(/^\p{Extended_Pictographic}\uFE0F?\s*/u, '');
+
   return (
     <div className={`ghost-rival-banner-container ${pace.isAhead ? 'ahead' : 'behind'}`}>
       <div className="ghost-rival-top-row">
@@ -46,10 +51,9 @@ export function GhostRivalBanner({
           </span>
         </div>
 
-        {/* Ghost PB Stats */}
         <div className="rival-col ghost-col">
-          <Ghost size={13} className="rival-icon ghost-icon" />
-          <span className="rival-label">{rivalMode === 'ghost' ? (t('home.rivalModes.ghost') || 'GHOST') : 'PB'}</span>
+          {rivalMode === 'ghost' ? <Ghost size={13} className="rival-icon ghost-icon" /> : <Zap size={13} className="rival-icon ghost-icon" />}
+          <span className="rival-label">{rivalLabel}</span>
           <span className="rival-count">{pace.ghostFilledCount}/{totalEmptyCount}</span>
         </div>
       </div>
@@ -65,7 +69,7 @@ export function GhostRivalBanner({
         <div
           className="ghost-indicator-pin"
           style={{ left: `${pace.ghostPct}%` }}
-          title={`Ghost PB (${pbTimeStr})`}
+          title={`${rivalLabel} (${pbTimeStr})`}
         >
           <Ghost size={10} className="pin-ghost-icon" />
         </div>

@@ -1,36 +1,49 @@
 [앱 이름 (App name - 최대 30자)]
-Sudoku - Logik-Rätsel & Gehirn
+Sudoku: Logikrätsel-Akademie
 
 [간단한 설명 (Short description - 최대 80자)]
-Klassisches Sudoku, 32 Meister-Techniken, Gehirn-IQ & tägliche Herausforderungen
+5 Schwierigkeitsstufen, 32 Lösungstechniken zum Lernen, 1v1- und KI-Duelle.
 
 [자세한 설명 (Full description - 최대 4000자)]
-Sudoku Master ist ein erstklassiges Logik- und Gehirntrainingsspiel für Anfänger und Profis gleichermaßen.
+Sudoku für alle – vom Anfänger bis zum erfahrenen Profi.
 
-Genießen Sie den puren Denkspaß, intuitive haptische Rückmeldung und eine integrierte Sudoku-Akademie mit 32 echten Meister-Techniken.
+Spiele auf 5 Schwierigkeitsstufen, lerne 32 Lösungstechniken mit Abbildungen und Übungsrätseln und miss dich in Online-1v1-Duellen mit anderen Spielern oder mit der KI.
 
 ━━━━━━━━━━━━━━━━━━━━━
 🌟 HIGHLIGHTS
 ━━━━━━━━━━━━━━━━━━━━━
 
-🧩 1. 5 Klassische Schwierigkeitsstufen
-- Von Sehr Einfach (Very Easy) bis Meister (Expert)
-- 100% mathematisch garantierte eindeutige Lösungen
-- 4 augenfreundliche Premium-Themes (Clay, Dark, Ceramic, Paper)
+🧩 1. 5 Schwierigkeitsstufen
+- Einführung, Einfach, Mittel, Schwer und Experte.
+- Jedes Rätsel wird so erzeugt, dass es genau eine Lösung hat.
+- Die Modi Klassik, Zeitrennen und Überleben.
+- 4 augenschonende Designs.
 
-🎓 2. Sudoku-Akademie mit 32 Techniken
-- Schritt-für-Schritt visuelles Training für Anfänger bis Großmeister
-- Singles, Naked/Hidden Pairs, Pointing Lines
-- Wings, X-Wing, Swordfish, Jellyfish, XY-Wing, XYZ-Wing
-- Profi: 3D Medusa, Unique Rectangle, AIC & ALS Chains
+🎓 2. Akademie: 32 Lösungstechniken
+- Zu jeder Technik gibt es eine bebilderte Erklärung und 2 Übungsrätsel auf echten Spielfeldern.
+- Anfänger: Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
+- Mittel: Pointing, Claiming, Naked/Hidden Pairs, Triples und Quads
+- Fortgeschritten: X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
+- Meister: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
+- Großmeister: Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
 
-⚔️ 3. Echtzeit 1v1 Battle & AI Bot Duell
-- Lösen Sie dasselbe Board gleichzeitig gegen weltweite Spieler oder smarte KI-Gegner!
+⚔️ 3. 1v1- und KI-Duelle
+- Online-Duelle in Echtzeit: Löse dasselbe Spielfeld schneller als dein Gegner.
+- Verfolge beim Spielen den Fortschritt deines Gegners.
+- KI-Duelle in 5 Schwierigkeitsstufen.
 
-🧠 4. Detaillierter Gehirn-IQ-Bericht
-- Messen Sie Ihre 5 kognitiven Fähigkeiten: Fokus, Logik, Geschwindigkeit, Ausdauer und Genauigkeit.
+🏆 4. Erfolge und Spielanalyse
+- 30 Erfolge zum Freischalten.
+- Dein Spiel, aufgeschlüsselt in 5 Kennzahlen – etwa Tempo und fehlerfreie Lösungen.
+- Tritt in der Logic-Score-Bestenliste von Google Play Games an.
 
-📅 5. 365 Tage Tägliche Herausforderungen
-- Jeden Tag ein neues Rätsel, Monatsabzeichen und lückenlose Kalender-Stempel.
+📅 5. Tages-Challenge
+- Jeden Tag eine neue Mission, festgehalten im Kalender.
+- Einen Tag verpasst? Schalte vergangene Rätsel mit einer kurzen Werbung frei.
+- Hol dir jeden Monat ein Abzeichen.
 
-Laden Sie Sudoku Master jetzt herunter und trainieren Sie Ihr Gehirn jeden Tag aufs Neue!
+☁️ 6. Cloud-Sicherung
+- Wenn du bei Google Play Games angemeldet bist, wird dein Fortschritt automatisch gesichert.
+- Auf einem neuen Gerät kannst du ihn wiederherstellen.
+
+Nimm dir Zeit, denk in Ruhe nach und genieß das Rätsel.

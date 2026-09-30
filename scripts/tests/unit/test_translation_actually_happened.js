@@ -42,10 +42,15 @@ const LOCALES_DIR = path.join(ROOT, 'src/i18n/locales');
 const INTENTIONALLY_ENGLISH = new Set([
   'home.title',                       // the app is called Sudoku everywhere
   'home.badge',                       // PRO — brand tier label
-  'home.modes.daily.badge',           // NEW
   'home.modes.timeAttack.badge',      // SPEEDRUN
   'header.levelPrefix',               // "Lv.{level}" — abbreviation + token
   'rematchToast.countdown',           // "{seconds}s"
+  // Just the number: the victory card shows it next to its own label (mistakesLabel).
+  // English was always "{count}"; hi joined it on 2026-09-29 so "1 गलतियां" stopped appearing.
+  'modals.victory.mistakesCount',     // "{count}"
+  // Same reason: the stats row shows it beside survivalTotalWins. "{count} Clears" read
+  // "1 Clears" and the app has no plural rules (BACKLOG PL-1, 2026-09-29).
+  'stats.survivalWinsUnit',           // "{count}"
   'brainReport.percentilePrefix',     // "Top " — followed by a number
   'common.confirm',                   // OK
   // One score name in every language, the same as the Play Games leaderboard, so the
@@ -75,6 +80,27 @@ const COINCIDENTAL = new Set([
   'it|battleResult.homeBtn',          // Home
   'pt|settings.privacy.sec2Title',     // Google Play Games is the product's own name in pt-BR and hi
   'hi|settings.privacy.sec2Title',     // idem
+  // Labels that were English literals in components until 2026-09-30 (SudokuAITalk DE29-12).
+  // They are keys now; these locales write them the English way on purpose.
+  'de|achievements.tiers.bronze',      // Bronze ist deutsch
+  'de|achievements.tiers.gold',        // Gold ist deutsch
+  'fr|achievements.tiers.bronze',      // bronze est français
+  'pt|achievements.tiers.bronze',      // bronze é português
+  'es-ES|achievements.pointsTotal',    // pts = puntos
+  'fr|achievements.pointsTotal',       // pts = points
+  'pt|achievements.pointsTotal',       // pts = pontos
+  'fr|keypad.notesOn',                 // Notes is French (keypad.notes above); ON/OFF is the switch loanword
+  'fr|keypad.notesOff',                // idem
+  // AI is how these languages write it — the mode titles already say AI 봇 대전, AI ボット対戦,
+  // AI 机器人对战, AI 機器人對戰. German, the Romance languages and Russian use KI / IA / ИИ.
+  'ko|home.modes.aiBattle.badge',      // VS AI
+  'ja|home.modes.aiBattle.badge',      // VS AI
+  'hi|home.modes.aiBattle.badge',      // VS AI — "vs" is everyday in India (IND vs AUS)
+  'ko|battleHeader.aiTag',             // AI
+  'ja|battleHeader.aiTag',             // AI
+  'zh-CN|battleHeader.aiTag',          // AI
+  'zh-TW|battleHeader.aiTag',          // AI
+  'hi|battleHeader.aiTag',             // AI
 ]);
 
 function flatten(obj, prefix = '', out = {}) {
@@ -120,7 +146,12 @@ const TRADEMARKS = /mensa(?![a-z])|멘사|メンサ|门萨|門薩|менс[аы]
 // included. Elsewhere "sudoku" is used generically, so this is per locale.
 const MARKS_BY_LOCALE = { ja: /数独|sudoku/i };
 
-const problems = { hangul: [], empty: [], sameAsEn: [], trademark: [] };
+// "PB" — personal best — is an English abbreviation that no locale explained. The German review
+// could not tell what it meant; the user took it out on 2026-09-30 (BACKLOG HC-1): the ghost banner
+// names the mode, and the hint notice says "personal best" in words.
+const PB = /(^|[^A-Za-z])PB([^A-Za-z]|$)/;
+
+const problems = { hangul: [], empty: [], sameAsEn: [], trademark: [], pb: [] };
 
 for (const loc of LOCALES) {
   for (const k of keys) {
@@ -129,6 +160,7 @@ for (const loc of LOCALES) {
 
     if (!v.trim()) { problems.empty.push(`[${loc}] ${k}`); continue; }
 
+    if (PB.test(v)) problems.pb.push(`[${loc}] ${k} = "${v.slice(0, 50)}"`);
     if (TRADEMARKS.test(v)) problems.trademark.push(`[${loc}] ${k} = "${v.slice(0, 50)}"`);
     if (MARKS_BY_LOCALE[loc]?.test(v)) problems.trademark.push(`[${loc}] ${k} = "${v.slice(0, 50)}" (local mark)`);
 
@@ -169,6 +201,8 @@ function report(name, list, advice) {
 
 report('비한국어 로케일에 한글이 없다', problems.hangul,
   '원문을 복사하고 번역하지 않은 자리입니다. 해당 언어로 옮기십시오.');
+report('PB 라는 약자가 없다', problems.pb,
+  '개인 최고 기록은 그 언어의 말로 씁니다(사용자 2026-09-30, BACKLOG HC-1). 배너는 모드 이름을 씁니다.');
 report('남의 상표 이름이 없다', problems.trademark,
   '1인 개발에 법률 자문이 없다. 다른 단체·제품의 등록 상표를 등급이나 업적 이름으로 쓰지 않는다.');
 report('빈 문자열이 없다', problems.empty,

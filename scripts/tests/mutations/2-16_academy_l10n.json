@@ -36,6 +36,14 @@
       "find": "最後の空きマスに入る数字は、残った [9] に決まります。",
       "replace": "最後の空きマスは自動的に残りの正解数字 [9] になります。",
       "expectFailure": "JA cell is confused with the digit placed in it (J-06)"
+    },
+    {
+      "name": "a Hangul syllable left inside a Hindi academy title",
+      "why": "The ChatGPT review of 2026-09-28 found नेके드 क्वाड — the last syllable Korean — in Hindi academy data that no gate read for Hangul. Gate 4 looked at ja only.",
+      "file": "src/data/academy/stage2.js",
+      "find": "नेकेड क्वाड",
+      "replace": "नेके드 क्वाड",
+      "expectFailure": "Korean character"
     }
   ]
 }

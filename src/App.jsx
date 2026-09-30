@@ -49,6 +49,7 @@ export function App() {
     isOpponentLeft,
     isMatchSearching,
     matchTimedOut,
+    matchUnavailable,
     startAIFallback,
     lastRatingChange,
     handleStartQuickMatch,
@@ -164,6 +165,7 @@ export function App() {
         onStartQuickMatch={handleStartQuickMatch}
         isMatchSearching={isMatchSearching}
         matchTimedOut={matchTimedOut}
+        matchUnavailable={matchUnavailable}
         onPlayAiInstead={startAIFallback}
         onCancelQuickMatch={handleCancelQuickMatch}
         setAdRefreshTrigger={setAdRefreshTrigger}

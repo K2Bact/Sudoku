@@ -47,7 +47,7 @@ export function Keypad({
           title={t('keypad.notes')}
         >
           <Pencil size={20} />
-          <span>{t('keypad.notes')} {isNoteMode ? 'ON' : 'OFF'}</span>
+          <span>{isNoteMode ? t('keypad.notesOn') : t('keypad.notesOff')}</span>
         </button>
 
         <button type="button"

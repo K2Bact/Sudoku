@@ -2,12 +2,14 @@
  * 30 Core Sudoku Achievements Registry
  * Categorized and calibrated from global benchmark titles (Easybrain, Microsoft, Good Sudoku).
  */
+// The tier's name is translated (achievements.tiers.*). It used to be an English label
+// here, so every locale read "Silver" and "Diamond" (SudokuAITalk DE29-12, 2026-09-30).
 export const ACHIEVEMENT_TIERS = {
-  BRONZE: { id: 'bronze', label: '🥉 Bronze', color: '#cd7f32', points: 10 },
-  SILVER: { id: 'silver', label: '🥈 Silver', color: '#94a3b8', points: 25 },
-  GOLD: { id: 'gold', label: '🥇 Gold', color: '#f59e0b', points: 50 },
-  DIAMOND: { id: 'diamond', label: '💎 Diamond', color: '#38bdf8', points: 100 },
-  MASTER: { id: 'master', label: '👑 Master', color: '#a855f7', points: 200 }
+  BRONZE: { id: 'bronze', emoji: '🥉', labelKey: 'achievements.tiers.bronze', color: '#cd7f32', points: 10 },
+  SILVER: { id: 'silver', emoji: '🥈', labelKey: 'achievements.tiers.silver', color: '#94a3b8', points: 25 },
+  GOLD: { id: 'gold', emoji: '🥇', labelKey: 'achievements.tiers.gold', color: '#f59e0b', points: 50 },
+  DIAMOND: { id: 'diamond', emoji: '💎', labelKey: 'achievements.tiers.diamond', color: '#38bdf8', points: 100 },
+  MASTER: { id: 'master', emoji: '👑', labelKey: 'achievements.tiers.master', color: '#a855f7', points: 200 }
 };
 
 export const ACHIEVEMENTS_LIST = [

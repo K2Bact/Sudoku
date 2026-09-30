@@ -119,12 +119,50 @@ console.log('  ✅ 3. old saves keep their credit; cloud merge keeps cleared lev
 
   recordGameWin(3, 25, 'aiBattle', { hintsUsed: 0, countsAsRecord: true });
   assert.strictEqual(loadStats().bestTimes[3], 200, 'the AI match is a duel too');
-
-  const after = loadStats();
-  assert.strictEqual(after.gamesWon, 3, 'the duels are still wins — only the clock is dropped');
-  assert.strictEqual(after.gamesPlayed, 3, 'and still games played');
   localStorage.clear();
-  console.log('  ✅ 3b. duel times stay out of the Classic record table, but the wins still count');
+  console.log('  ✅ 3b. duel times stay out of the Classic record table');
+}
+
+// 3c. A duel stays out of the win rate (BT-1, user 2026-09-28)
+//
+// Winning a duel came through the win path and counted; losing one because the
+// opponent finished first never called recordGameLoss. Every duel could raise the
+// win rate — part of the Logic Score — and none could lower it. Duels have their
+// own record (battleRating.js), so they leave games played / won alone, and the
+// flawless count with them (Focus = flawless ÷ won). Driven through the real win
+// and game-over paths: the rule in storage.js proves nothing if they do not reach it.
+{
+  const { handleMistakeLogic } = await import('../../../src/utils/gameMistakeHandler.js');
+  localStorage.clear();
+  win({ level: 3, time: 200, mode: 'classic' });
+  const base = loadStats();
+  assert.strictEqual(base.gamesWon, 1, 'a Classic win counts');
+
+  for (const mode of ['battle', 'aiBattle']) {
+    const s = win({ level: 5, time: 90, mode });
+    assert.strictEqual(s.gamesWon, 1, `a ${mode} win must not add to games won — it would lift the win rate on the leaderboard (BT-1)`);
+    assert.strictEqual(s.gamesPlayed, 1, `a ${mode} win must not add to games played either`);
+    assert.strictEqual(s.flawlessWins, base.flawlessWins, `a flawless ${mode} win must not add to flawless wins — Focus is flawless ÷ won`);
+    assert.ok(s.clearedLevels?.[5], `a ${mode} board solved without a hint still clears its level`);
+  }
+
+  const board = Array.from({ length: 9 }, () => Array(9).fill(0));
+  for (const mode of ['battle', 'aiBattle']) {
+    handleMistakeLogic({
+      nextBoard: board, r: 0, c: 1, num: 3, mistakes: 2, setMistakes: () => {}, gameMode: mode,
+      handleTimePenalty: () => {}, setConflictInfo: () => {}, conflictTimeoutRef: { current: null },
+      limitMistakes: true, setIsGameOver: () => {}, t: (k) => k,
+    });
+    assert.strictEqual(loadStats().gamesPlayed, 1, `a ${mode} lost on mistakes is the duel record's loss, not a game in the win rate (BT-1)`);
+  }
+  handleMistakeLogic({
+    nextBoard: board, r: 0, c: 1, num: 3, mistakes: 2, setMistakes: () => {}, gameMode: 'classic',
+    handleTimePenalty: () => {}, setConflictInfo: () => {}, conflictTimeoutRef: { current: null },
+    limitMistakes: true, setIsGameOver: () => {}, t: (k) => k,
+  });
+  assert.strictEqual(loadStats().gamesPlayed, 2, 'a Classic game over still counts as a game played');
+  localStorage.clear();
+  console.log('  ✅ 3c. duels stay out of games played / won / flawless, won or lost; they still clear levels');
 }
 
 // 4. Quitting counts as losing (abandonedGame.js)

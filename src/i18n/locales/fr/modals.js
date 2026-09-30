@@ -15,7 +15,7 @@ export const modals = {
       leaderboardBtn: "📊 Mes records",
       shareBtn: 'Partager',
       copiedToast: '🎉 Record copié dans le presse-papiers !',
-      shareText: '🧩 Sudoku {mode} Lv.{level} {name} résolu en [{time}] ! Rang : {rank} ({mistakes} erreurs). Saurez-vous faire mieux ?',
+      shareText: '🧩 Sudoku {mode} Lv.{level} {name} résolu en [{time}] ! Rang : {rank} (erreurs : {mistakes}). Saurez-vous faire mieux ?',
       ranks: {
         'S+': '👑 S+ (Divin)',
         'S': '⭐️ S (Maître)',

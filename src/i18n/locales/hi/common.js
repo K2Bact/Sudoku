@@ -35,7 +35,7 @@ export const common = {
     5: 'विशेषज्ञ'
   },
   header: {
-    levelPrefix: 'स्तर {level}',
+    levelPrefix: 'Lv.{level}',
     mistakes: 'गलतियां {count}/{max}',
     mistakesUnlimited: 'गलतियां {count}',
     timeAttackMistake: 'गलती {count} (+10s)',
@@ -50,6 +50,8 @@ export const common = {
     undo: 'पूर्ववत',
     erase: 'मिटाएं',
     notes: 'नोट्स',
+    notesOn: 'नोट्स ON',
+    notesOff: 'नोट्स OFF',
     hint: 'संकेत',
     rewardHint: '+1 संकेत',
     fastEntry: 'फास्ट एंट्री'
