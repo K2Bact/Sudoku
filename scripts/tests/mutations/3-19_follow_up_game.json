@@ -1,0 +1,50 @@
+{
+  "gate": "3-19",
+  "name": "A Game Started From Inside A Game Keeps Its Mode And Leaves The Daily (restart, next, level picker)",
+  "command": "node scripts/tests/ui/test_follow_up_game.js",
+  "greenMarker": "[3-19] PASSED",
+  "rebuild": true,
+  "note": "Written with the gate on 2026-10-06. The first three put back, one button at a time, the bug both halves of the gate were written for; the last two break the follow-up itself.",
+  "mutations": [
+    {
+      "name": "Restart on the game-over card goes back to starting with a level only",
+      "why": "The original shape: a Survival player who ran out of mistakes and pressed Restart got a Classic game with a clock counting up.",
+      "file": "src/App.jsx",
+      "find": "        onRestartGame={startFollowUpGame}",
+      "replace": "        onRestartGame={startNewGame}",
+      "expectFailure": "Restart turned Survival into classic"
+    },
+    {
+      "name": "Next puzzle on the victory card goes back to starting with a level only",
+      "why": "The original shape of both bugs: Speedrun's next puzzle is Classic, and after the daily every win pays the daily hint again.",
+      "file": "src/App.jsx",
+      "find": "        onNextGame={startFollowUpGame}",
+      "replace": "        onNextGame={startNewGame}",
+      "expectFailure": "Next puzzle turned Speedrun into classic"
+    },
+    {
+      "name": "the level picker behind New game goes back to starting with a level only",
+      "why": "A Survival player who picks another level from the header gets Classic at that level.",
+      "file": "src/App.jsx",
+      "find": "          if (await confirmAbandon()) startFollowUpGame(lvl);",
+      "replace": "          if (await confirmAbandon()) startNewGame(lvl);",
+      "expectFailure": "the level picker turned Survival into classic"
+    },
+    {
+      "name": "a follow-up is always Classic",
+      "why": "The mode is the half of the fix that is easy to drop when the function is tidied: every button would still start a game, just the wrong kind.",
+      "file": "src/hooks/useGameStarters.js",
+      "find": "    startNewGame(level, isDuelMode(gameMode) ? 'classic' : gameMode);",
+      "replace": "    startNewGame(level, 'classic');",
+      "expectFailure": "turned Survival into classic"
+    },
+    {
+      "name": "a follow-up keeps the daily key",
+      "why": "The other half: the mode is right, but the puzzle after the daily still pays the daily hint and rewrites the daily record.",
+      "file": "src/hooks/useGameStarters.js",
+      "find": "    setActiveDailyDateKey(null);   // a follow-up is never the daily puzzle",
+      "replace": "    // daily key left on",
+      "expectFailure": "granted the daily hint again"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import { getDailyPuzzle } from '../utils/dailyChallenge';
 import { getGhostForModeLevel } from '../utils/ghostManager';
 import { useConfirm } from '../components/common/ConfirmProvider';
 import { gameInProgress } from '../utils/abandonedGame';
+import { isDuelMode } from '../utils/storage';
 
 /**
  * Every way of starting a game — Home, the daily puzzle and missions, the tutorial,
@@ -13,7 +14,7 @@ import { gameInProgress } from '../utils/abandonedGame';
 export function useGameStarters({
   t, activeScreen, setActiveScreen, setPreviousScreen, cleanupBattleSession,
   setHomeSelectedMode, setActiveDailyDateKey, setIsGuidedTutorial, setGuidedStep,
-  startNewGame, resumeSavedGame
+  startNewGame, resumeSavedGame, gameMode
 }) {
   // Starting another game throws away the one in progress, and that counts as a loss
   // (abandonedGame.js). Every way of starting one asks first — the player should learn
@@ -97,6 +98,19 @@ export function useGameStarters({
     }
   };
 
+  // Restart after a game over, "next puzzle" after a win and the level picker in the
+  // game start a fresh puzzle of the kind being played: the same mode, and through
+  // puzzleSetup.js the same puzzle type. None of them is the daily puzzle or the
+  // tutorial any more. Until 2026-10-06 they passed only a level, so Speedrun and
+  // Survival turned into Classic, and the daily key stayed on: every later win granted
+  // the daily hint again and wrote a random puzzle's time over the daily record (both
+  // reproduced in the browser). A duel has no follow-up of its own here; it stays Classic.
+  const startFollowUpGame = (level) => {
+    setActiveDailyDateKey(null);   // a follow-up is never the daily puzzle
+    setIsGuidedTutorial(false);
+    startNewGame(level, isDuelMode(gameMode) ? 'classic' : gameMode);
+  };
+
   const startLiveGuidedTutorial = async () => {
     if (!(await confirmAbandon())) return;
     soundHaptic.playSelectSound();
@@ -111,6 +125,6 @@ export function useGameStarters({
 
   return {
     confirmAbandon, navigateToScreen, handleStartSingleGame,
-    handleStartDailyPuzzle, handleStartDailyMission, startLiveGuidedTutorial
+    handleStartDailyPuzzle, handleStartDailyMission, startLiveGuidedTutorial, startFollowUpGame
   };
 }

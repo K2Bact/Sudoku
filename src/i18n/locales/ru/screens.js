@@ -16,7 +16,7 @@ export const screens = {
     startSelectedLevel: 'Начать Lv.{level} {name}',
     modeTabs: { classic: 'Классика', timeAttack: 'Спидран', timeLimit: 'Выживание' },
     rivalModes: {
-      standard: '🎯 Стандарт',
+      standard: '🎯 Обычный',
       ghost: '👻 Призрак',
       delta: '⚡ Отрыв',
       lockedToast: 'Пройдите эту сложность хотя бы 1 раз для разблокировки.',

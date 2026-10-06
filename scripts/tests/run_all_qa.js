@@ -156,6 +156,7 @@ runStep('3-15. The App Starts When The Network Does Not Answer (no startup reque
 runStep('3-16. The Game Header Fits (13 languages × 3 modes + killer × 360/320px × font 1/1.3)', 'node scripts/tests/ui/test_game_header_fit.js');
 runStep('3-17. The 1v1 Replay Screen (opens, ends on its moves, says why, fits; 13 languages)', 'node scripts/tests/ui/test_match_replay_screen.js');
 runStep('3-18. A Killer Game On The Screen (home switch, cages drawn, killer record only; 13 languages)', 'node scripts/tests/ui/test_killer_screens.js');
+runStep('3-19. A Game Started From Inside A Game Keeps Its Mode And Leaves The Daily (restart, next, level picker)', 'node scripts/tests/ui/test_follow_up_game.js');
 
 console.log('======================================================');
 summary('pass');

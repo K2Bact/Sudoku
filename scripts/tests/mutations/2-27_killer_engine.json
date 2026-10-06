@@ -100,6 +100,14 @@
       "find": "    solution,",
       "replace": "    solution: solution.map((row, r) => row.map((d, c) => (r * 9 + c === cages[0].cells[1] ? solution[0][0] : d))),",
       "expectFailure": "a digit twice"
+    },
+    {
+      "name": "a cut that decayed into one-cell cages is shipped",
+      "why": "Added 2026-10-06. Lv.4-5 are cages only, but splitting pairs can leave a dozen or more one-cell cages, each a given drawn as a cage: 13 in 300 Lv.5 puzzles went past 12, up to 18. The generator cuts again; without that the gate's fixed decayed seed fails.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "    if (oneCellCages(made.cages) <= MAX_ONE_CELL_CAGES) break;",
+      "replace": "    break;",
+      "expectFailure": "a decayed cut was shipped instead of cut again"
     }
   ]
 }

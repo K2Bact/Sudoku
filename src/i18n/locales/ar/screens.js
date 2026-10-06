@@ -16,7 +16,7 @@ export const screens = {
     startSelectedLevel: 'بدء Lv.{level} — {name}',
     modeTabs: { classic: 'كلاسيكي', timeAttack: 'سباق الزمن', timeLimit: 'النجاة' },
     rivalModes: {
-      standard: '🎯 قياسي',
+      standard: '🎯 عادي',
       ghost: '👻 شبح الرقم القياسي',
       delta: '⚡ فارق الوقت',
       lockedToast: 'أكمل هذا المستوى مرة واحدة على الأقل لفتح الوضع.',

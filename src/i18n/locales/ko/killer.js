@@ -4,7 +4,7 @@
 export const killer = {
   variants: {
     switchLabel: '퍼즐 종류',
-    classic: '정통',
+    classic: '표준',
     killer: '킬러',
     comingSoon: '킬러에서는 아직 개발 중이에요.',
     classicRules: {

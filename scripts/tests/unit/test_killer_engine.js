@@ -20,6 +20,7 @@
  *      needed more wrong turns than its level allows. That last number is the
  *      generator's own report; nothing outside it can grade difficulty yet
  *      (BACKLOG I-9), so it catches the cap being dropped, not a wrong cap.
+ *   4b. a seed whose first cut decays into one-cell cages comes back cut again
  *   5. the same seed gives the same puzzle, another seed another one
  */
 import assert from 'assert';
@@ -179,6 +180,20 @@ for (let level = 1; level <= 5; level++) {
     assert.ok(p.guesses <= KILLER_CONFIG[level].guesses, `${name}: the solver took ${p.guesses} wrong turns, the level allows ${KILLER_CONFIG[level].guesses}`);
   }
   console.log(`  ✓ Lv.${level}: ${SEEDS_PER_LEVEL} puzzles well formed, each with exactly one solution (counted by brute force), shaped like the level`);
+}
+
+// ── 4b. A cut that decayed is cut again ─────────────────────────────────────
+// The seeds above never reach the limit: measured 2026-10-06, 2 in 300 Lv.4 and
+// 13 in 300 Lv.5 went past it, and none of the 8 fixed seeds was one of them, so
+// this gate passed while the generator did not keep the limit. This seed's first
+// cut ends with 17 one-cell cages; the generator must not ship it.
+{
+  const seed = 'gate-2-27-decay-5-244';
+  const p = generateKillerPuzzle(5, seed);
+  const oneCell = p.cages.filter((cage) => cage.cells.length === 1).length;
+  assert.ok(oneCell <= MAX_ONE_CELL_CAGES, `Lv.5 seed ${seed}: ${oneCell} one-cell cages — a decayed cut was shipped instead of cut again`);
+  assert.strictEqual(bruteCount(p.cages, p.board).length, 1, `Lv.5 seed ${seed}: the cut made again does not have exactly one solution — a killer must have exactly one solution`);
+  console.log(`  ✓ a cut that decayed into one-cell cages is cut again (seed ${seed}: ${oneCell} left)`);
 }
 
 // ── 5. The same seed, the same puzzle ───────────────────────────────────────

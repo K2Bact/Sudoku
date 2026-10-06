@@ -4,7 +4,7 @@
 export const killer = {
   variants: {
     switchLabel: 'Тип головоломки',
-    classic: 'Обычный',
+    classic: 'Стандарт',
     killer: 'Киллер',
     comingSoon: 'Для «Киллера» пока в разработке.',
     classicRules: {

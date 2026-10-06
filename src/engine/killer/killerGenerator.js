@@ -202,12 +202,28 @@ function makeUnique(cages, solution, config, rng) {
   }
 }
 
+// A one-cell cage is a given drawn as a cage. Lv.4-5 repair by splitting, and
+// splitting pairs leaves them behind: measured 2026-10-06, 300 puzzles per level,
+// Lv.4 went past 12 in 2 and Lv.5 in 13 (up to 18) — a "no givens" level holding
+// more known digits than Lv.3. Such a cut is thrown away and the grid cut again.
+// Gate 2-27 checked this limit on 8 fixed seeds, none of them in that 4%.
+const MAX_ONE_CELL_CAGES = 12;
+const MAX_CUTS = 10;
+const oneCellCages = (cages) => cages.filter((cage) => cage.cells.length === 1).length;
+
 export function generateKillerPuzzle(level = 3, seed = null) {
   const rng = seed ? createPRNG(seed) : Math.random;
   const lv = KILLER_CONFIG[level] ? Number(level) : 3;
   const config = KILLER_CONFIG[lv];
   const solution = generateFullSolution(rng);
-  const { cages, givens, guesses } = makeUnique(cutIntoCages(solution, config.sizes, rng), solution, config, rng);
+  // Ten cuts all past the limit has not been seen; keep the least decayed if it happens.
+  let made = null;
+  for (let cut = 0; cut < MAX_CUTS; cut++) {
+    const next = makeUnique(cutIntoCages(solution, config.sizes, rng), solution, config, rng);
+    if (!made || oneCellCages(next.cages) < oneCellCages(made.cages)) made = next;
+    if (oneCellCages(made.cages) <= MAX_ONE_CELL_CAGES) break;
+  }
+  const { cages, givens, guesses } = made;
 
   return {
     solution,

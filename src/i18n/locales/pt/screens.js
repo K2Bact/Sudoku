@@ -16,7 +16,7 @@ export const screens = {
     startSelectedLevel: 'Iniciar Lv.{level} {name}',
     modeTabs: { classic: 'Clássico', timeAttack: 'Contra o Tempo', timeLimit: 'Sobrevivência' },
     rivalModes: {
-      standard: '🎯 Padrão',
+      standard: '🎯 Normal',
       ghost: '👻 Fantasma',
       delta: '⚡ Diferença',
       lockedToast: 'Conclua esta dificuldade pelo menos 1 vez para desbloquear.',

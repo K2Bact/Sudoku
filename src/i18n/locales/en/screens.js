@@ -16,7 +16,7 @@ export const screens = {
     startSelectedLevel: 'Start Lv.{level} {name}',
     modeTabs: { classic: 'Classic', timeAttack: 'Speedrun', timeLimit: 'Survival' },
     rivalModes: {
-      "standard": "🎯 Standard",
+      "standard": "🎯 Normal",
       "ghost": "👻 Ghost",
       "delta": "⚡ Time Gap",
       "lockedToast": "Clear this difficulty at least once to unlock.",

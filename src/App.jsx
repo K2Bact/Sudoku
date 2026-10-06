@@ -94,11 +94,11 @@ export function App() {
 
   const {
     confirmAbandon, navigateToScreen, handleStartSingleGame,
-    handleStartDailyPuzzle, handleStartDailyMission, startLiveGuidedTutorial
+    handleStartDailyPuzzle, handleStartDailyMission, startLiveGuidedTutorial, startFollowUpGame
   } = useGameStarters({
     t, activeScreen, setActiveScreen, setPreviousScreen, cleanupBattleSession,
     setHomeSelectedMode, setActiveDailyDateKey, setIsGuidedTutorial, setGuidedStep,
-    startNewGame, resumeSavedGame
+    startNewGame, resumeSavedGame, gameMode
   });
 
   const handleReturnHome = () => {
@@ -189,7 +189,7 @@ export function App() {
           if (gameMode === 'timeLimit') setTimerSeconds(prev => Math.max(prev, 60));
           setIsGameOver(false);
         }}
-        onRestartGame={startNewGame}
+        onRestartGame={startFollowUpGame}
         onReturnHome={handleReturnHome}
         level={level}
         gameMode={gameMode}
@@ -198,7 +198,7 @@ export function App() {
         timerSeconds={timerSeconds}
         mistakes={mistakes}
         hintsUsed={hintsUsedCount}
-        onNextGame={startNewGame}
+        onNextGame={startFollowUpGame}
         onOpenLeaderboard={() => {
           setStatsInitialTab('stats');
           game.setIsVictory(false);
@@ -223,7 +223,7 @@ export function App() {
         onCloseNewGameModal={() => setShowNewGameModal(false)}
         onSelectNewGameLevel={async (lvl) => {
           setShowNewGameModal(false);
-          if (await confirmAbandon()) startNewGame(lvl);
+          if (await confirmAbandon()) startFollowUpGame(lvl);
         }}
         showStoreReviewModal={showStoreReviewModal}
         onCloseStoreReviewModal={() => setShowStoreReviewModal(false)}

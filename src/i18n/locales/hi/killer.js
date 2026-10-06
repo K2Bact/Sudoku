@@ -4,7 +4,7 @@
 export const killer = {
   variants: {
     switchLabel: 'पहेली का प्रकार',
-    classic: 'सामान्य',
+    classic: 'मानक',
     killer: 'किलर',
     comingSoon: 'किलर के लिए अभी विकास में है।',
     classicRules: {
