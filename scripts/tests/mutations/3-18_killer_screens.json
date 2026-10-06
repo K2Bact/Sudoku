@@ -1,0 +1,98 @@
+{
+  "gate": "3-18",
+  "name": "A Killer Game On The Screen (home switch, cages drawn, killer record only; 13 languages)",
+  "command": "node scripts/tests/ui/test_killer_screens.js",
+  "greenMarker": "[3-18] PASSED",
+  "rebuild": true,
+  "note": "Written with the gate on 2026-10-01. Each mutation breaks one thing a killer player sees.",
+  "mutations": [
+    {
+      "name": "a killer's Speedrun tab switches instead of saying it is coming",
+      "why": "The tab sets the home mode silently. On the killer card nothing seems to happen — the card still plays Classic, because a kind without the mode plays its first one — so the player taps a tab that does nothing visible and is never told why. First written expecting \"changed the mode\"; that cannot happen here for the reason just given, and the gate failed on the missing note instead.",
+      "file": "src/components/HomeScreen.jsx",
+      "find": "    if (modes.includes(m)) {",
+      "replace": "    if (true) {",
+      "expectFailure": "said nothing"
+    },
+    {
+      "name": "the ⓘ shows for killer only again",
+      "why": "The user's complaint: with the ⓘ on one kind only, the switch changed width when the kind changed and the layout broke. First written with the hidden attribute, which changed nothing: .rival-info-btn sets display: flex, and an author display beats the browser's [hidden] rule — it survived for that reason.",
+      "file": "src/components/home/VariantSwitch.jsx",
+      "find": "        <button type=\"button\" className=\"rival-info-btn variant-rules-btn\"",
+      "replace": "        <button type=\"button\" style={{ display: variant === 'killer' ? undefined : 'none' }} className=\"rival-info-btn variant-rules-btn\"",
+      "expectFailure": "no ⓘ on the standard switch"
+    },
+    {
+      "name": "the killer card drops the mode tabs",
+      "why": "How the first version did it: the card lost a row on killer and jumped in height every time the kind changed. First written with the hidden attribute, which .mode-tab-group's display: grid overrides; it survived for that reason.",
+      "file": "src/components/HomeScreen.jsx",
+      "find": "          <div className=\"mode-tab-group\">",
+      "replace": "          <div className=\"mode-tab-group\" style={{ display: variant === 'classic' ? undefined : 'none' }}>",
+      "expectFailure": "the layout jumps"
+    },
+    {
+      "name": "the Ghost chip on killer shows its own note",
+      "why": "Two notes stacked in the same place at the bottom of the screen, one saying the rival is locked until a level is cleared — which is not the reason on killer.",
+      "file": "src/components/home/RivalModeChips.jsx",
+      "find": "    if (comingSoon) {",
+      "replace": "    if (false) {",
+      "expectFailure": "one note, the same one"
+    },
+    {
+      "name": "a cell stops drawing the right side of its cage",
+      "why": "Two cages side by side merge into one dashed shape; the player reads the wrong cells into a sum.",
+      "file": "src/components/KillerCage.jsx",
+      "find": "  if (!right) lines.push([b, up ? 0 : a, b, down ? 100 : b]);",
+      "replace": "",
+      "expectFailure": "no line against the next cage"
+    },
+    {
+      "name": "the sums are not drawn",
+      "why": "Without the number in the corner a killer is a classic puzzle with almost no givens — unsolvable.",
+      "file": "src/components/SudokuBoard.jsx",
+      "find": "                  {cageSum !== undefined && <span className=\"cage-sum\">{cageSum}</span>}",
+      "replace": "",
+      "expectFailure": "sums on the board for"
+    },
+    {
+      "name": "Resume ignores the kind of the saved game",
+      "why": "The standard switch offers to resume a killer, and the player lands in a killer they did not ask for.",
+      "file": "src/components/HomeScreen.jsx",
+      "find": "  const isCurrentTabSaved = hasSavedGame && (savedGame.gameMode || 'classic') === mode && variantOf(savedGame) === variant;",
+      "replace": "  const isCurrentTabSaved = hasSavedGame && (savedGame.gameMode || 'classic') === mode;",
+      "expectFailure": "the standard switch offers to resume a killer"
+    },
+    {
+      "name": "the first killer starts without its rules",
+      "why": "A classic player meets dashed cages and small numbers and has nothing to say the numbers are sums.",
+      "file": "src/components/HomeScreen.jsx",
+      "find": "                onClick={() => (loadSettings().killerRulesSeen ? startKiller() : setShowKillerRules(true))}",
+      "replace": "                onClick={() => startKiller()}",
+      "expectFailure": "the first killer started without its rules"
+    },
+    {
+      "name": "a killer win shows the classic grade",
+      "why": "The grade's times are set for classic puzzles; a killer takes longer by design and would be graded C every time.",
+      "file": "src/components/VictoryModal.jsx",
+      "find": "        {variant !== 'killer' && (",
+      "replace": "        {true && (",
+      "expectFailure": "a killer win shows the classic grade"
+    },
+    {
+      "name": "the switch's names are set too large to fit",
+      "why": "Proves the 13-language sweep measures the switch: at this size the longer names no longer fit their half.",
+      "file": "src/styles/killer.css",
+      "find": "  font-size: 12px;",
+      "replace": "  font-size: 34px;",
+      "expectFailure": "switch —"
+    },
+    {
+      "name": "the rules lines do not wrap",
+      "why": "Proves the sweep measures the rules card: an unwrapped rule widens the card past the screen in every language. First written without !important, and it changed nothing — `text-wrap: pretty` further down the same rule sets the wrap mode back (both are shorthands for text-wrap-mode, the later one wins) — so it survived for that reason, not for a gap in the gate.",
+      "file": "src/styles/killer.css",
+      "find": "  padding-inline-start: 20px;",
+      "replace": "  padding-inline-start: 20px;\n  white-space: nowrap !important;",
+      "expectFailure": "rules —"
+    }
+  ]
+}

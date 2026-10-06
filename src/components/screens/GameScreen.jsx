@@ -15,6 +15,8 @@ export function GameScreen({
   onLeaveBattle,
   level,
   gameMode,
+  variant,
+  cages,
   mistakes,
   comboCount,
   timeFloatingText,
@@ -78,6 +80,7 @@ export function GameScreen({
         <Header
           level={level}
           gameMode={gameMode}
+          variant={variant}
           mistakes={mistakes}
           limitMistakes={loadSettings().limitMistakes ?? true}
           timerSeconds={timerSeconds}
@@ -131,6 +134,7 @@ export function GameScreen({
           onResume={onResume}
           conflictInfo={conflictInfo}
           flashCell={flashCell}
+          cages={cages}
         />
         </div>
 

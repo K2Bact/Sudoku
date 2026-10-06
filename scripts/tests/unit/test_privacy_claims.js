@@ -56,7 +56,7 @@
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const SRC = path.join(ROOT, 'src');
@@ -487,6 +487,12 @@ const FLOWS = [
     inCode: () => Boolean(nicknamePrefix),
     hosted: [nicknamePrefix],
     inApp: { ko: nicknamePrefix, en: nicknamePrefix, ja: nicknamePrefix } },
+  // I-1 (2026-09-30): after a 1v1, each side's moves go to the other when both
+  // agreed. Before this the only thing an opponent received was progress.
+  { what: 'after a 1v1 the moves are sent to the opponent when both players share',
+    inCode: () => /type:\s*'match_log'/.test(readSrc('src/firebase/replayExchange.js')),
+    hosted: ['둔 수와 시각', 'moves and their timing', '手と時刻'],
+    inApp: { ko: '둔 수와 시각', en: 'moves and their timing', ja: '手と時刻' } },
   { what: 'the Remove Ads purchase goes through Google Play Billing',
     inCode: () => /store\.purchase\(/.test(readSrc('src/billing/playBillingProvider.js')),
     hosted: ['Google Play 결제', 'Google Play Billing', 'Google Play の決済'],
@@ -569,14 +575,18 @@ assert(actualAchievements > 0, 'ACHIEVEMENTS_LIST is empty — the data shape ch
 // 화면이 그리는 건 achievements.unlockedCount 이고 개수를 보간한다. 그래서
 // 오늘의 숫자를 고정하는 대신 종류를 금지한다 — 개수는 문장에 적지 말 것.
 // 아래 보상 문구 검사와 같은 모양이다.
+//
+// The sentence is read as the app reads it — the imported string — not as file
+// text. Read as text, an escape is digits: Arabic isolates the count with
+// ⁦…⁩ so it is not drawn backwards, and the text check called that
+// "a bare number 2066" (2026-10-06).
 const wrongCount = [];
 for (const loc of locales) {
   const file = path.join(LOCALES, loc, 'achievements.js');
   if (!fs.existsSync(file)) continue;
-  const text = fs.readFileSync(file, 'utf8');
-  const m = text.match(/unlockedCount:\s*['"`]([^'"`]*)['"`]/);
-  if (!m) { wrongCount.push(`${loc}: unlockedCount missing — the achievements screen has no counter`); continue; }
-  const line = m[1];
+  const mod = await import(pathToFileURL(file).href);
+  const line = mod.achievements?.achievements?.unlockedCount;
+  if (typeof line !== 'string') { wrongCount.push(`${loc}: unlockedCount missing — the achievements screen has no counter`); continue; }
   if (!line.includes('{total}')) {
     wrongCount.push(`${loc}: names the total instead of interpolating {total} — "${line}"`);
   }

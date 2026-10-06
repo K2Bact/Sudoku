@@ -2,7 +2,9 @@
  * test_game_header_fit.js — gate 3-16
  *
  * The game header fits: every language × every mode, at 360px and 320px, at the
- * normal font and at the 1.3x text zoom MainActivity allows.
+ * normal font and at the 1.3x text zoom MainActivity allows. Since 2026-10-01 a
+ * killer game is the fourth case: its badge says KILLER / КИЛЛЕР / 杀手数独
+ * where the mode name was.
  *
  * ── Why (2026-09-30) ──────────────────────────────────────────────────────
  * Measuring something else, a German speedrun header came up overflowing at
@@ -41,7 +43,8 @@ import { LOCALES } from '../../lib/locales.js';
 
 const PORT = 5213;
 const URL = `http://localhost:${PORT}`;
-const MODES = [['classic', 1], ['timeAttack', 2], ['timeLimit', 3]];
+// [name, mode tab]; killer has no tab — it is chosen with the puzzle switch above them.
+const MODES = [['classic', 1], ['timeAttack', 2], ['timeLimit', 3], ['killer', null]];
 const CASES = [[360, 1], [320, 1], [360, 1.3], [320, 1.3]];
 
 function waitForServer(timeout = 20000) {
@@ -107,11 +110,14 @@ function readHeader() {
 async function openGame(page, lang, tab) {
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto(URL);
-  await page.evaluate((l) => {
+  await page.evaluate(({ l, killer }) => {
     localStorage.clear();
-    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: l, theme: 'matte-dark' }));
+    const settings = { language: l, theme: 'matte-dark' };
+    // Home opens on the killer switch, and the first-killer rules card is already seen.
+    if (killer) Object.assign(settings, { homeVariant: 'killer', killerRulesSeen: true });
+    localStorage.setItem('suidoku_settings_v1', JSON.stringify(settings));
     localStorage.setItem('suidoku_review_prompted', '1');
-  }, lang);
+  }, { l: lang, killer: tab === null });
   await page.reload();
   await page.waitForSelector('.home-bottom-nav');
   for (let i = 0; i < 3; i++) {
@@ -119,14 +125,18 @@ async function openGame(page, lang, tab) {
     await page.locator('.modal-overlay button').last().click({ timeout: 2000 }).catch(() => {});
     await page.waitForTimeout(200);
   }
-  await page.click(`.mode-tab-btn:nth-child(${tab})`, { timeout: 5000 });
+  if (tab !== null) await page.click(`.mode-tab-btn:nth-child(${tab})`, { timeout: 5000 });
   await page.click('.home-screen-container .btn-play-new', { timeout: 6000 });
   await page.waitForSelector('.game-header', { timeout: 8000 });
+  if (tab === null && !(await page.locator('.killer-board').count())) {
+    throw new Error(`${lang}: the killer case opened a game that is not a killer`);
+  }
+  return (await page.locator('.game-header .version-tag').innerText()).trim();
 }
 
 async function run() {
   console.log('======================================================');
-  console.log('📐 Gate 3-16: the game header fits (13 languages × 3 modes × 360/320px × font 1/1.3)');
+  console.log('📐 Gate 3-16: the game header fits (13 languages × 3 modes + killer × 360/320px × font 1/1.3)');
   console.log('======================================================');
 
   const vite = spawn('cmd', ['/c', `npx vite preview --port ${PORT} --strictPort`], { stdio: 'ignore' });
@@ -139,8 +149,13 @@ async function run() {
     await waitForServer();
     const page = await browser.newPage({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true });
     for (const lang of LOCALES) {
+      let classicBadge = null;
       for (const [mode, tab] of MODES) {
-        await openGame(page, lang, tab);
+        const badge = await openGame(page, lang, tab);
+        if (mode === 'classic') classicBadge = badge;
+        // The killer badge is the one string this case adds; measuring a header that
+        // still says the mode name would measure the classic header a fourth time.
+        if (mode === 'killer' && badge === classicBadge) failures.push(`${lang} killer: the header says "${badge}", the classic badge — not its own`);
         let scaled = false;
         for (const [width, scale] of CASES) {
           expected++;

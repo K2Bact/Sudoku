@@ -1,17 +1,75 @@
 import { execSync } from 'child_process';
+import fs from 'fs';
+
+/*
+ * Two runs, not one (2026-09-30, after measuring every step).
+ *
+ *   npm run qa:quick   every change — about 75 seconds (measured 2026-09-30)
+ *   npm run qa         before an AAB, and after touching layout, CSS or a gate — ~10 min
+ *
+ * The full run took 18 minutes and 93% of it was Tier 3: browser gates that
+ * start a preview server and tap through screens in 13 languages. Every logic,
+ * data, translation and static check — Tiers 0 to 2, 37 of them — took 35
+ * seconds together. Quick runs all of those, the build, the static Tier 3
+ * checks, and one real play-through (3-8), and skips the other browser sweeps.
+ * It says so at the end: a quick pass is not a release check.
+ */
+const QUICK = process.argv.includes('--quick');
+const QUICK_TIER3 = new Set(['3-0', '3-0b', '3-1', '3-2', '3-3', '3-8']);
+const skipped = [];
+
+/*
+ * Every step says when it started and how long it took, and the run ends with
+ * the slowest steps and a TSV under test_output/qa_runs/ (git-ignored). Until
+ * 2026-09-30 there was no timing at all, and "QA takes tens of minutes" could
+ * only be answered by timing every step by hand — which showed one gate was 61%.
+ * The TSVs let the next "why is it slow" be read, not re-measured.
+ */
+const RUN_START = new Date();
+const times = [];
+const clock = (d = new Date()) => d.toTimeString().slice(0, 8);
+const secs = (ms) => `${(ms / 1000).toFixed(1)}s`;
+
+function summary(outcome) {
+  const total = Date.now() - RUN_START.getTime();
+  const slowest = [...times].sort((a, b) => b.ms - a.ms).slice(0, 8);
+  console.log(`⏱  ${clock(RUN_START)} → ${clock()} · ${times.length} step(s) · ${secs(total)}`);
+  slowest.forEach((t) => console.log(`     ${secs(t.ms).padStart(7)}  ${t.name}`));
+  try {
+    const p = (n) => String(n).padStart(2, '0');
+    const d = RUN_START;
+    const stamp = `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`; // local, like the console
+    fs.mkdirSync('test_output/qa_runs', { recursive: true });
+    fs.writeFileSync(`test_output/qa_runs/qa-${stamp}${QUICK ? '-quick' : ''}.tsv`,
+      ['start\tseconds\tresult\tstep', ...times.map((t) => `${t.start}\t${(t.ms / 1000).toFixed(1)}\t${t.result}\t${t.name}`),
+        `total\t${(total / 1000).toFixed(1)}\t${outcome}\t`].join('\n') + '\n');
+  } catch { /* the log is a convenience; the run's verdict does not depend on it */ }
+}
 
 console.log('======================================================');
-console.log('🚀 [QA MASTER PIPELINE] Running Unified 3-Tier Audit...');
+console.log(`🚀 [QA MASTER PIPELINE] Running Unified 3-Tier Audit${QUICK ? ' — QUICK (browser sweeps skipped)' : ''}... (${clock(RUN_START)})`);
 console.log('======================================================\n');
 
 function runStep(name, cmd) {
-  console.log(`▶️ STEP: ${name}`);
+  const id = name.split('. ')[0];
+  if (QUICK && id.startsWith('3-') && !QUICK_TIER3.has(id)) {
+    skipped.push(id);
+    console.log(`⏭  STEP: ${name} — skipped in quick mode\n`);
+    return true;
+  }
+  const start = new Date();
+  console.log(`▶️ STEP: ${name}   [${clock(start)}]`);
   try {
     execSync(cmd, { stdio: 'inherit', encoding: 'utf8' });
-    console.log(`✅ ${name} PASSED!\n`);
+    const ms = Date.now() - start.getTime();
+    times.push({ name, ms, start: clock(start), result: 'pass' });
+    console.log(`✅ ${name} PASSED! (${secs(ms)})\n`);
     return true;
   } catch (err) {
-    console.error(`\n❌ ${name} FAILED!\n`);
+    const ms = Date.now() - start.getTime();
+    times.push({ name, ms, start: clock(start), result: 'FAIL' });
+    console.error(`\n❌ ${name} FAILED! (${secs(ms)})\n`);
+    summary('FAIL');
     process.exit(1);
   }
 }
@@ -21,7 +79,7 @@ function runStep(name, cmd) {
 // -----------------------------------------------------------------------------
 runStep('0-1. File Size & Responsibility Separation', 'node scripts/tests/unit/test_file_responsibility.js');
 
-runStep('0-2. Oxlint Static Code Analysis', 'npx oxlint');
+runStep('0-2. ESLint Static Analysis (files parse, React hook rules)', 'npx eslint .');
 runStep('0-3. Node ESM Import Extension Compliance', 'node scripts/tests/unit/test_esm_import_extensions.js');
 runStep('0-4. No Committed Secrets or Signing Material', 'node scripts/tests/unit/test_no_committed_secrets.js');
 runStep('0-4b. The Secrets Gate Catches Planted Material', 'node scripts/tests/unit/test_secrets_gate_catches_bait.js');
@@ -62,6 +120,9 @@ runStep('2-22. A Game Still Being Played Can Be Resumed', 'node scripts/tests/un
 runStep('2-23. The Win Screen Does Not Ask For A Full-Screen Canvas', 'node scripts/tests/unit/test_victory_effects.js');
 runStep('2-24. A Level Has One Name (buttons, missions, achievements, store)', 'node scripts/tests/unit/test_level_names.js');
 runStep('2-25. Language Picker Order (System, device language, then A-Z by English name)', 'node scripts/tests/unit/test_language_order.js');
+runStep('2-26. 1v1 Replays (recorded, stored, exchanged only by agreement)', 'node scripts/tests/unit/test_match_replay.js');
+runStep('2-27. Killer Sudoku Puzzles Are Sound (cages, sums, one solution, levels)', 'node scripts/tests/unit/test_killer_engine.js');
+runStep('2-28. A Killer Game Plays And Counts As A Killer (notes, mistakes, records, merge)', 'node scripts/tests/unit/test_killer_play.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests
@@ -92,8 +153,16 @@ runStep('3-12. The Game Screen Fits the Phone (sizes × font scale, banner gap)'
 runStep('3-13. Each Academy Card Is As Tall As Its Tallest Tab', 'node scripts/tests/ui/test_academy_card_height.js');
 runStep('3-14. The 1v1 Lobby Says When It Cannot Connect (blocked sign-in, 13 languages)', 'node scripts/tests/ui/test_battle_connect_failure.js');
 runStep('3-15. The App Starts When The Network Does Not Answer (no startup requests, fonts bundled)', 'node scripts/tests/ui/test_offline_start.js');
-runStep('3-16. The Game Header Fits (13 languages × 3 modes × 360/320px × font 1/1.3)', 'node scripts/tests/ui/test_game_header_fit.js');
+runStep('3-16. The Game Header Fits (13 languages × 3 modes + killer × 360/320px × font 1/1.3)', 'node scripts/tests/ui/test_game_header_fit.js');
+runStep('3-17. The 1v1 Replay Screen (opens, ends on its moves, says why, fits; 13 languages)', 'node scripts/tests/ui/test_match_replay_screen.js');
+runStep('3-18. A Killer Game On The Screen (home switch, cages drawn, killer record only; 13 languages)', 'node scripts/tests/ui/test_killer_screens.js');
 
 console.log('======================================================');
-console.log('🎉 [QA MASTER PIPELINE] 100% PERFECT! ALL TIERS & GATES PASSED.');
+summary('pass');
+if (QUICK) {
+  console.log(`✅ [QA QUICK] Every step it ran passed — ${skipped.length} browser sweep(s) skipped: ${skipped.join(', ')}`);
+  console.log('   This is not a release check. Run `npm run qa` before building an AAB.');
+} else {
+  console.log('🎉 [QA MASTER PIPELINE] 100% PERFECT! ALL TIERS & GATES PASSED.');
+}
 console.log('======================================================\n');

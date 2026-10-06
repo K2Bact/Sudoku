@@ -73,6 +73,8 @@ export const common = {
     colDuplicate: '⚠️ Il numero {num} esiste già nella colonna {col}! {suffix}',
     multipleDuplicates: '⚠️ Il numero {num} esiste già nello stesso quadrante / riga / colonna! {suffix}',
     notSolution: '⚠️ Il numero {num} non è la soluzione di questa casella! {suffix}',
+    cageDuplicate: '⚠️ Il numero {num} è già in questa gabbia! {suffix}',
+    cageSum: '⚠️ Questa gabbia non somma più {sum}! {suffix}',
     boardFullHasMistakes: '⚠️ Lo schema è completo ma contiene degli errori. Ricontrolla!',
     timeAttackSuffix: '(Errore {count} | penalità +10s)',
     classicSuffix: '(Errori {count}/3)'

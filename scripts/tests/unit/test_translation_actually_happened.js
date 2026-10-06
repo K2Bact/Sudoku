@@ -91,6 +91,9 @@ const COINCIDENTAL = new Set([
   'pt|achievements.pointsTotal',       // pts = pontos
   'fr|keypad.notesOn',                 // Notes is French (keypad.notes above); ON/OFF is the switch loanword
   'fr|keypad.notesOff',                // idem
+  'de|replay.pause',                   // Pause ist deutsch (as common.pause)
+  'fr|replay.pause',                   // pause est français (as common.pause)
+  'fr|replay.sumNotes',                // Notes (as keypad.notes)
   // AI is how these languages write it — the mode titles already say AI 봇 대전, AI ボット対戦,
   // AI 机器人对战, AI 機器人對戰. German, the Romance languages and Russian use KI / IA / ИИ.
   'ko|home.modes.aiBattle.badge',      // VS AI
@@ -101,6 +104,27 @@ const COINCIDENTAL = new Set([
   'zh-CN|battleHeader.aiTag',          // AI
   'zh-TW|battleHeader.aiTag',          // AI
   'hi|battleHeader.aiTag',             // AI
+  // Killer Sudoku (2026-10-01). The puzzle is sold under the English word in these
+  // languages — Killer-Sudoku, Sudoku Killer — and Standard is German, French and
+  // Italian as it is English. es-ES and pt say Estándar / Padrão and are not listed for it.
+  'de|variants.classic',               // Standard
+  'fr|variants.classic',               // Standard
+  'it|variants.classic',               // Standard
+  'de|variants.killer',                // Killer
+  'de|killer.badge',                   // KILLER
+  'de|killer.stats.title',             // Killer
+  'fr|variants.killer',                // Killer
+  'fr|killer.badge',                   // KILLER
+  'fr|killer.stats.title',             // Killer
+  'it|variants.killer',                // Killer
+  'it|killer.badge',                   // KILLER
+  'it|killer.stats.title',             // Killer
+  'es-ES|variants.killer',             // Killer
+  'es-ES|killer.badge',                // KILLER
+  'es-ES|killer.stats.title',          // Killer
+  'pt|variants.killer',                // Killer
+  'pt|killer.badge',                   // KILLER
+  'pt|killer.stats.title',             // Killer
 ]);
 
 function flatten(obj, prefix = '', out = {}) {

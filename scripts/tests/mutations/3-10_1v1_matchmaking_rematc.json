@@ -12,6 +12,22 @@
       "find": "requestRematch",
       "replace": "requestRematchRenamed",
       "expectFailure": "rematch"
+    },
+    {
+      "name": "the game stops feeding the replay recorder",
+      "why": "Replays keep only the values sendProgress reports: no notes, no undo, nothing the player did between reports.",
+      "file": "src/hooks/useSudokuGame.js",
+      "find": "    observeForReplay(activeBattleRoom, board, notes);",
+      "replace": "",
+      "expectFailure": "missing the note B wrote"
+    },
+    {
+      "name": "undo is recorded as a move",
+      "why": "The replay shows the player typing where they took a move back, and its undo count is always 0.",
+      "file": "src/hooks/useGameHistory.js",
+      "find": "    markCause('u'); // the replay records these cells as undone, not typed (I-1)",
+      "replace": "",
+      "expectFailure": "does not mark the undo"
     }
   ],
   "rebuild": true

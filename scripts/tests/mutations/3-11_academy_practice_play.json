@@ -44,6 +44,14 @@
       "find": "  color: #ffffff;\n  text-decoration: line-through;\n  font-weight: 900;\n  background: #dc2626;",
       "replace": "  color: #ef4444;\n  text-decoration: line-through;\n  font-weight: 900;\n  background: rgba(239, 68, 68, 0.18);",
       "expectFailure": "erased text contrast"
+    },
+    {
+      "name": "one sampled language shows the English guide",
+      "why": "Added when the pass was trimmed (2026-09-30): eleven languages now play a sample of seven missions, not all 64. The sample still has to read each language from the screen — here German quietly falls back to English, a fault only a German pass can see.",
+      "file": "src/components/academy/practice/InteractivePracticeSection.jsx",
+      "find": "          {pickLocale(mission.guide, lang)}",
+      "replace": "          {pickLocale(mission.guide, lang === 'de' ? 'en' : lang)}",
+      "expectFailure": "[de · text"
     }
   ]
 }

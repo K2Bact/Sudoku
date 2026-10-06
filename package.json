@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "lint": "oxlint",
+    "lint": "eslint .",
     "qa": "node scripts/tests/run_all_qa.js",
+    "qa:quick": "node scripts/tests/run_all_qa.js --quick",
     "test:ui": "node scripts/tests/ui/check_ui_overflow.js",
     "build:aab": "node scripts/store/build_release_aab.js",
     "preview": "vite preview"
@@ -33,7 +34,9 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
-    "oxlint": "^1.75.0",
+    "eslint": "^10.11.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
     "playwright": "^1.62.1",
     "vite": "^8.2.0"
   }

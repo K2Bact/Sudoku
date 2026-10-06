@@ -1,0 +1,48 @@
+/**
+ * 1v1 replays (I-1, 2026-09-30).
+ */
+export const replay = {
+  replay: {
+    title: '복기',
+    missing: '이 복기는 이 기기에 더 이상 없어요.',
+    won: '승리',
+    lost: '패배',
+    vs: '상대 {name}',
+    myBoard: '내 판',
+    theirBoard: '상대 판',
+    share: {
+      shared: '상대의 수도 받았어요. 복기에서 상대 판을 볼 수 있어요.',
+      pending: '상대의 수를 기다리는 중이에요…',
+      declined: '상대가 대전 기록 공유를 꺼 두었어요. 상대는 진행률만 보여요.',
+      off: '대전 기록 공유를 꺼 두어서 상대의 수는 받지 않았어요. 설정에서 켤 수 있어요.',
+      unsupported: '상대의 답이 오지 않았어요. 상대 앱이 옛 버전이거나 연결이 끊겼을 수 있어요. 상대는 진행률만 보여요.',
+      invalid: '받은 상대 기록이 이 판과 맞지 않아 쓰지 않았어요. 상대는 진행률만 보여요.',
+      agreed: '상대도 공유를 켜 두었어요. 상대의 수를 받는 중이에요…',
+      missed: '상대의 수가 오기 전에 연결이 끝나 받지 못했어요. 상대는 진행률만 보여요.',
+    },
+    truncated: '기록이 길어서 처음 {count}개 동작까지만 남았어요.',
+    timeline: '경기 시간',
+    play: '재생',
+    pause: '일시 정지',
+    prevMove: '이전 수',
+    nextMove: '다음 수',
+    speed: '재생 속도',
+    pin: '즐겨찾기에 고정',
+    unpin: '즐겨찾기 해제',
+    pinFull: '즐겨찾기는 {count}개까지예요. 하나를 해제하고 다시 해 주세요.',
+    sumTime: '소요 시간',
+    sumMistakes: '실수',
+    sumMoves: '넣은 숫자',
+    sumPace: '분당 숫자',
+    sumLongestPause: '가장 긴 고민',
+    sumNotes: '메모',
+    sumUndos: '취소',
+    listTitle: '대전 복기',
+    listEmpty: '아직 복기가 없어요. 1v1 대전을 마치면 여기에 남아요.',
+    open: '복기 보기',
+    settingTitle: '대전 기록 공유',
+    settingDesc: '1v1이 끝나면 이 판의 수와 시각을 상대와 주고받아 서로의 판을 복기해요. 끄면 내 수를 보내지 않고 상대의 수도 받지 않아요.',
+    lobbyNoteOn: '경기가 끝나면 서로의 수를 주고받아 복기할 수 있어요. 설정에서 끌 수 있어요.',
+    lobbyNoteOff: '대전 기록 공유가 꺼져 있어요. 복기에는 내 수와 상대 진행률만 남아요.',
+  }
+};

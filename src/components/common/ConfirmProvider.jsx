@@ -96,7 +96,7 @@ export function ConfirmProvider({ children }) {
     <ConfirmContext.Provider value={api}>
       {children}
       {request && (
-        <div className="modal-overlay">
+        <div className="modal-overlay confirm-overlay">
           <div className="modal-card confirm-modal-card">
             <div className="modal-icon-header" style={{ backgroundColor: '#fef3c7', color: '#d97706' }}>
               <AlertTriangle size={40} />

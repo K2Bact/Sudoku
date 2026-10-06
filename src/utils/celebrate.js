@@ -14,7 +14,7 @@ import confetti from 'canvas-confetti';
  *
  * Every failed frame left a tile of the dialog unpainted — the "flashing" a player
  * reported, with the board showing through a torn corner of the win card
- * (gemini/flicker_captured_screenshot.png, SudokuDiary ㉜).
+ * (then in gemini/flicker_captured_screenshot.png, deleted 2026-09-30; SudokuDiary ㉜).
  *
  * So: one canvas, reused, at half resolution (a quarter of the pixels), stretched by
  * CSS. Confetti is a blur of moving dots; the lower resolution does not read as

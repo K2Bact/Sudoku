@@ -22,7 +22,7 @@
   font-size: 12px;
   font-weight: 800;
   color: var(--text-main);
-  text-align: left;
+  text-align: start;
   line-height: 1.45;
   word-break: keep-all;
   width: 100%;
@@ -32,7 +32,7 @@
 .diagram-caption {
   font-size: 12px;
   color: var(--text-main);
-  text-align: left;
+  text-align: start;
   line-height: 1.55;
   margin-top: 6px;
   word-break: keep-all;
@@ -41,7 +41,7 @@
   background: var(--bg-surface);
   padding: 8px 12px;
   border-radius: 6px;
-  border-left: 3.5px solid #3b82f6;
+  border-inline-start: 3.5px solid #3b82f6;
 }
 .diagram-caption strong { color: #3b82f6; font-weight: 800; }
 
@@ -54,7 +54,7 @@
   padding: 3px 8px;
   border-radius: 4px;
   margin: 3px 0;
-  text-align: left;
+  text-align: start;
   width: 100%;
   box-sizing: border-box;
 }

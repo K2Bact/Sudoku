@@ -7,13 +7,17 @@ import { screens } from './ru/screens.js';
 import { modals } from './ru/modals.js';
 import { achievements } from './ru/achievements.js';
 import { leaderboard } from './ru/leaderboard.js';
+import { replay } from './ru/replay.js';
+import { killer } from './ru/killer.js';
 
 export const ru = {
   ...common,
   ...screens,
   ...modals,
   ...achievements,
-  ...leaderboard
+  ...leaderboard,
+  ...replay,
+  ...killer
 };
 
 export default ru;

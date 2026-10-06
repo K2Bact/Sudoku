@@ -1,0 +1,33 @@
+{
+  "gate": "2-22",
+  "name": "A Game Still Being Played Can Be Resumed",
+  "command": "node scripts/tests/unit/test_saved_game_resume.js",
+  "greenMarker": "[2-22] PASSED",
+  "note": "Started 2026-10-01 with the killer section (5); the older sections had no manifest and still have none.",
+  "mutations": [
+    {
+      "name": "a killer save is offered without its cages",
+      "why": "Resumed, the board is a near-empty grid with no cages and no rule that pins it down; the player is handed an unsolvable classic puzzle.",
+      "file": "src/utils/savedGame.js",
+      "find": "  if (saved.variant === 'killer' && !isValidCageSet(saved.cages)) return false;",
+      "replace": "",
+      "expectFailure": "a killer save without its cages must not be offered"
+    },
+    {
+      "name": "a cage set that leaves cells out passes",
+      "why": "Cells outside every cage get no outline and no sum; the puzzle the player sees is not the one that was generated.",
+      "file": "src/engine/variants.js",
+      "find": "  return seen.size === 81;",
+      "replace": "  return true;",
+      "expectFailure": "cages that leave cells out are not a killer"
+    },
+    {
+      "name": "a cell may sit in two cages",
+      "why": "Two outlines claim the same cell; the sums no longer describe one grid.",
+      "file": "src/engine/variants.js",
+      "find": "      if (!Number.isInteger(cell) || cell < 0 || cell > 80 || seen.has(cell)) return false;",
+      "replace": "      if (!Number.isInteger(cell) || cell < 0 || cell > 80) return false;",
+      "expectFailure": "a cell in two places is not a cage set"
+    }
+  ]
+}

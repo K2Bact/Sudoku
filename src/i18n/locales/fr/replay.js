@@ -1,0 +1,48 @@
+/**
+ * 1v1 replays (I-1, 2026-09-30).
+ */
+export const replay = {
+  replay: {
+    title: 'Revoir la partie',
+    missing: 'Cette partie n\'est plus sur cet appareil.',
+    won: 'Victoire',
+    lost: 'Défaite',
+    vs: 'contre {name}',
+    myBoard: 'Ma grille',
+    theirBoard: 'Grille adverse',
+    share: {
+      shared: 'Vous avez aussi les coups de votre adversaire. Passez à sa grille pour les revoir.',
+      pending: 'En attente des coups de votre adversaire…',
+      declined: 'Votre adversaire a désactivé le partage des coups. Seule sa progression est affichée.',
+      off: 'Le partage des coups est désactivé, ceux de votre adversaire n\'ont donc pas été reçus. Vous pouvez l\'activer dans les Paramètres.',
+      unsupported: 'Aucune réponse de votre adversaire : son application est peut-être ancienne, ou la connexion a été coupée. Seule sa progression est affichée.',
+      invalid: 'Les coups reçus ne correspondent pas à cette grille et n\'ont pas été utilisés. Seule sa progression est affichée.',
+      agreed: 'Votre adversaire partage aussi. Réception de ses coups…',
+      missed: 'La connexion s\'est terminée avant l\'arrivée des coups de votre adversaire. Seule sa progression est affichée.',
+    },
+    truncated: 'La partie était longue : seules ses {count} premières actions ont été gardées.',
+    timeline: 'Temps de la partie',
+    play: 'Lecture',
+    pause: 'Pause',
+    prevMove: 'Coup précédent',
+    nextMove: 'Coup suivant',
+    speed: 'Vitesse',
+    pin: 'Ajouter aux favoris',
+    unpin: 'Retirer des favoris',
+    pinFull: 'Vous pouvez garder jusqu\'à {count} favoris. Retirez-en un et réessayez.',
+    sumTime: 'Temps',
+    sumMistakes: 'Erreurs',
+    sumMoves: 'Chiffres placés',
+    sumPace: 'Par minute',
+    sumLongestPause: 'Plus longue réflexion',
+    sumNotes: 'Notes',
+    sumUndos: 'Annuler',
+    listTitle: 'Revoir les duels',
+    listEmpty: 'Aucune partie à revoir. Terminez un duel 1v1 et elle apparaîtra ici.',
+    open: 'Revoir la partie',
+    settingTitle: 'Partage des coups',
+    settingDesc: 'Après un 1v1, vous échangez avec votre adversaire les coups de la partie et leur moment, pour revoir chacun la grille de l\'autre. Désactivé : vos coups ne sont pas envoyés et vous ne recevez pas les siens.',
+    lobbyNoteOn: 'À la fin du duel, vous et votre adversaire échangez vos coups pour revoir la partie. Désactivable dans les Paramètres.',
+    lobbyNoteOff: 'Le partage des coups est désactivé. La partie revue ne garde que vos coups et la progression adverse.',
+  }
+};

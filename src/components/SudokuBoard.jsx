@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from '../i18n/i18nContext';
+import { CageOutline } from './KillerCage';
+import { cageLayout } from '../engine/killer/cageLayout';
 
 export function SudokuBoard({
   board,
@@ -12,9 +14,12 @@ export function SudokuBoard({
   isPaused,
   onResume,
   conflictInfo,
-  flashCell
+  flashCell,
+  cages = null
 }) {
   const { t } = useTranslation();
+  // A killer's cages; null for classic, which then draws exactly as before.
+  const killer = useMemo(() => (cages ? cageLayout(cages) : null), [cages]);
   const selectedRow = selectedCell ? selectedCell[0] : null;
   const selectedCol = selectedCell ? selectedCell[1] : null;
   const selectedValue = (selectedRow !== null && selectedCol !== null && board?.[selectedRow])
@@ -44,7 +49,7 @@ export function SudokuBoard({
   }
 
   return (
-    <div className="sudoku-board-container">
+    <div className={`sudoku-board-container ${killer ? 'killer-board' : ''}`}>
       <div className="sudoku-grid">
         {(board || []).map((rowArr, r) => (
           <div key={r} className="sudoku-row">
@@ -58,7 +63,11 @@ export function SudokuBoard({
               const isSameBox = selectedRow !== null && selectedCol !== null &&
                 Math.floor(r / 3) === Math.floor(selectedRow / 3) &&
                 Math.floor(c / 3) === Math.floor(selectedCol / 3);
-              const isRelatedArea = (isSameRow || isSameCol || isSameBox) && !isSelected;
+              const cell = r * 9 + c;
+              const isSameCage = Boolean(killer) && selectedRow !== null && selectedCol !== null &&
+                killer.cageOf[cell] === killer.cageOf[selectedRow * 9 + selectedCol];
+              const isRelatedArea = (isSameRow || isSameCol || isSameBox || isSameCage) && !isSelected;
+              const cageSum = killer?.sumAt.get(cell);
 
               const isSameValue = highlightNumber && highlightNumber !== 0 && value === highlightNumber;
               
@@ -97,9 +106,12 @@ export function SudokuBoard({
                     ${value !== 0 && !isInitial ? 'pop-anim' : ''}
                     ${(c + 1) % 3 === 0 && c < 8 ? 'border-right-thick' : ''}
                     ${(r + 1) % 3 === 0 && r < 8 ? 'border-bottom-thick' : ''}
+                    ${cageSum !== undefined ? 'has-cage-sum' : ''}
                   `}
                   onClick={() => onSelectCell(r, c)}
                 >
+                  {killer && <CageOutline cell={cell} cageOf={killer.cageOf} />}
+                  {cageSum !== undefined && <span className="cage-sum">{cageSum}</span>}
                   {value !== 0 ? (
                     <span className="cell-number">{value}</span>
                   ) : cellNotes.length > 0 ? (

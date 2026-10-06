@@ -1,0 +1,48 @@
+/**
+ * 1v1 replays (I-1, 2026-09-30).
+ */
+export const replay = {
+  replay: {
+    title: 'Rückblick',
+    missing: 'Dieser Rückblick ist nicht mehr auf diesem Gerät.',
+    won: 'Gewonnen',
+    lost: 'Verloren',
+    vs: 'gegen {name}',
+    myBoard: 'Mein Spielfeld',
+    theirBoard: 'Gegner-Spielfeld',
+    share: {
+      shared: 'Du hast auch die Züge deines Gegners. Wechsle im Rückblick auf sein Spielfeld.',
+      pending: 'Warte auf die Züge deines Gegners …',
+      declined: 'Dein Gegner hat „Züge teilen“ ausgeschaltet. Nur sein Fortschritt wird gezeigt.',
+      off: '„Züge teilen“ ist aus, daher kamen die Züge deines Gegners nicht an. Du kannst es in den Einstellungen einschalten.',
+      unsupported: 'Dein Gegner hat nicht geantwortet – vielleicht ist seine App älter oder die Verbindung brach ab. Nur sein Fortschritt wird gezeigt.',
+      invalid: 'Die empfangenen Züge passen nicht zu diesem Rätsel und wurden nicht verwendet. Nur sein Fortschritt wird gezeigt.',
+      agreed: 'Dein Gegner teilt auch. Seine Züge werden empfangen …',
+      missed: 'Die Verbindung endete, bevor die Züge deines Gegners ankamen. Nur sein Fortschritt wird gezeigt.',
+    },
+    truncated: 'Die Partie war lang, daher wurden nur die ersten {count} Aktionen gespeichert.',
+    timeline: 'Spielzeit',
+    play: 'Abspielen',
+    pause: 'Pause',
+    prevMove: 'Vorheriger Zug',
+    nextMove: 'Nächster Zug',
+    speed: 'Geschwindigkeit',
+    pin: 'Als Favorit behalten',
+    unpin: 'Favorit entfernen',
+    pinFull: 'Du kannst bis zu {count} Favoriten behalten. Entferne einen und versuche es erneut.',
+    sumTime: 'Zeit',
+    sumMistakes: 'Fehler',
+    sumMoves: 'Gesetzte Ziffern',
+    sumPace: 'Pro Minute',
+    sumLongestPause: 'Längste Denkpause',
+    sumNotes: 'Notizen',
+    sumUndos: 'Rückgängig',
+    listTitle: 'Duell-Rückblicke',
+    listEmpty: 'Noch keine Rückblicke. Beende ein 1v1-Duell, dann erscheint es hier.',
+    open: 'Rückblick ansehen',
+    settingTitle: 'Züge teilen',
+    settingDesc: 'Nach einem 1v1 tauschst du die Züge dieser Partie samt Zeitpunkt mit deinem Gegner, damit ihr das Spielfeld des anderen nachverfolgen könnt. Aus: Deine Züge werden nicht gesendet, und du erhältst seine nicht.',
+    lobbyNoteOn: 'Nach dem Duell tauscht ihr eure Züge für den Rückblick aus. In den Einstellungen abschaltbar.',
+    lobbyNoteOff: '„Züge teilen“ ist aus. Der Rückblick zeigt nur deine Züge und den Fortschritt des Gegners.',
+  }
+};

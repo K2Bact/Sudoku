@@ -79,6 +79,8 @@ export const common = {
     colDuplicate: '⚠️ ¡El número {num} ya existe en la columna {col}! {suffix}',
     multipleDuplicates: '⚠️ ¡El número {num} coincide en fila, columna y cuadrante! {suffix}',
     notSolution: '⚠️ ¡El número {num} no es correcto para esta casilla! {suffix}',
+    cageDuplicate: '⚠️ ¡El número {num} ya está en esta jaula! {suffix}',
+    cageSum: '⚠️ ¡Esta jaula ya no suma {sum}! {suffix}',
     boardFullHasMistakes: '⚠️ El tablero está completo pero hay casillas erróneas.',
     timeAttackSuffix: '(Fallo {count} | +10s penalización)',
     classicSuffix: '(Fallos {count}/3)'

@@ -2,7 +2,7 @@
 
 - 수집 일자: 2026-09-19
 - 수집 도구: `google-play-scraper` (Python 1.2.7)
-- 수집 스크립트: `Suidoku/gemini/run_task_b.py`
+- 수집 스크립트: `Suidoku/gemini/run_task_b.py` (gemini/ 는 2026-09-30 삭제. 리뷰 원문 raw/ 도 같은 날 저장소에서 삭제)
 - 선정 기준: Google Play 스토어 미국(en-US) 및 한국(ko-KR) 스도쿠 카테고리 최상위 전용 스도쿠 앱 10종
 
 | # | 앱 이름 | 패키지 ID | 개발사 | 설치 수 | 평점 | 스토어 URL |

@@ -7,6 +7,7 @@ import { useConfirm } from './common/ConfirmProvider';
 export function Header({
   level,
   gameMode = 'classic',
+  variant = 'classic',
   timerSeconds,
   comboCount = 0,
   timeFloatingText,
@@ -73,8 +74,8 @@ export function Header({
             </button>
           )}
           <h1 className="app-title">{t('home.title')}</h1>
-          <span className="version-tag">
-            {t(`home.modes.${gameMode}.badge`) || t('home.badge')}
+          <span className="version-tag" data-variant={variant}>
+            {variant === 'killer' ? t('killer.badge') : (t(`home.modes.${gameMode}.badge`) || t('home.badge'))}
           </span>
         </div>
 

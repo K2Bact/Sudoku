@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { BarChart3, Clock, Zap, Hourglass, Swords, Trophy } from 'lucide-react';
+import { BarChart3, Clock, Zap, Hourglass, Swords, Trophy, Film } from 'lucide-react';
+import { RecentMatchesList } from './replay/RecentMatchesList';
+import { KillerStatsCard } from './stats/KillerStatsCard';
 import { ScreenHeader } from './common/ScreenHeader';
 import { loadStats } from '../utils/storage';
 import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine';
@@ -203,6 +205,9 @@ export function StatsScreen({ onBack, initialTab = 'stats' }) {
               </div>
             </div>
 
+            {/* 3b. Killer — its own games, wins and best times (killerStats.js) */}
+            <KillerStatsCard formatTime={formatTime} />
+
             {/* 4. 1v1 battles — rating and record, kept on this phone only */}
             <div className="stats-card stats-pvp-card">
               <h4 className="fw-bold mb-3">
@@ -220,6 +225,14 @@ export function StatsScreen({ onBack, initialTab = 'stats' }) {
                   </span>
                 </div>
               </div>
+            </div>
+
+            {/* 5. 1v1 replays — the last twenty matches and the starred ones */}
+            <div className="stats-card">
+              <h4 className="fw-bold mb-3">
+                <Film size={18} className="text-blue inline-icon" /> {t('replay.listTitle')}
+              </h4>
+              <RecentMatchesList />
             </div>
           </>
         )}

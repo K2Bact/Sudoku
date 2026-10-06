@@ -1,0 +1,25 @@
+{
+  "gate": "0-2",
+  "name": "ESLint Static Analysis (files parse, React hook rules)",
+  "command": "npx eslint .",
+  "greenBy": "exit",
+  "note": "ESLint prints one line per finding and nothing when clean, so there is no sentence that means \"passed\". It also has no case structure, which is the only reason judging by exit code is safe here — see isGreen() in the runner. oxlint until 2026-10-01; replaced because Smart App Control blocks its unsigned native binary on some days (SudokuDiary 85).",
+  "mutations": [
+    {
+      "name": "source that does not parse",
+      "why": "A build can still succeed from a stale bundle while the source in the tree is broken. The linter is the first thing that should notice.",
+      "file": "src/utils/wallet.js",
+      "find": "export function consumeHint() {",
+      "replace": "export function consumeHint( {",
+      "expectFailure": "wallet.js"
+    },
+    {
+      "name": "a hook called conditionally",
+      "why": "It builds, and at runtime React pairs this hook with another one's state; the replay screen shows the wrong record or throws. Nothing else reads for this.",
+      "file": "src/hooks/useReplay.js",
+      "find": "  const [, redraw] = useState(0);",
+      "replace": "  const [, redraw] = id ? useState(0) : [0, () => {}];",
+      "expectFailure": "rules-of-hooks"
+    }
+  ]
+}

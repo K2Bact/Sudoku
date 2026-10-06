@@ -73,6 +73,8 @@ export const common = {
     colDuplicate: '⚠️ Le chiffre {num} existe déjà dans la colonne {col} ! {suffix}',
     multipleDuplicates: '⚠️ Le chiffre {num} existe déjà dans le même bloc / ligne / colonne ! {suffix}',
     notSolution: '⚠️ Le chiffre {num} n’est pas la solution de cette case ! {suffix}',
+    cageDuplicate: '⚠️ Le chiffre {num} est déjà dans cette cage ! {suffix}',
+    cageSum: '⚠️ Cette cage ne fait plus {sum} ! {suffix}',
     boardFullHasMistakes: '⚠️ La grille est pleine mais contient des erreurs. Veuillez vérifier !',
     timeAttackSuffix: '(Erreur {count} | +10s de pénalité)',
     classicSuffix: '(Erreurs {count}/3)'

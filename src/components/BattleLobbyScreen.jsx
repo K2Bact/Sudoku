@@ -4,6 +4,7 @@ import { ScreenHeader } from './common/ScreenHeader';
 import { loadStats } from '../utils/storage';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
+import { sharesMoves } from '../firebase/replayExchange';
 
 export function BattleLobbyScreen({
   onOpen,
@@ -166,6 +167,9 @@ export function BattleLobbyScreen({
                 <Swords size={18} />
                 <span>{t('battleLobby.findOpponentBtn')}</span>
               </button>
+
+              {/* Said before the match, not after: the moves go to the opponent once it ends. */}
+              <p className="battle-replay-note">{sharesMoves() ? t('replay.lobbyNoteOn') : t('replay.lobbyNoteOff')}</p>
             </div>
           </div>
         )}

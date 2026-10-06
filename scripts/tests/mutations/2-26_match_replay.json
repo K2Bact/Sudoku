@@ -1,0 +1,209 @@
+{
+  "gate": "2-26",
+  "name": "1v1 Replays (recorded, stored, exchanged only by agreement)",
+  "command": "node scripts/tests/unit/test_match_replay.js",
+  "greenMarker": "[2-26] PASSED",
+  "note": "Written with the gate on 2026-09-30 (I-1: 1v1 only, last 20 + pinned, mutual sharing on by default).",
+  "mutations": [
+    {
+      "name": "the final move is left to the render",
+      "why": "Every replay of a won match stops one move short of the solved board — the match is over before the render that would have recorded it.",
+      "file": "src/firebase/battleService.js",
+      "find": "if (board) observeValues(this.currentRoom, board);",
+      "replace": "if (false) observeValues(this.currentRoom, board);",
+      "expectFailure": "the last move is reported before any render"
+    },
+    {
+      "name": "a \"no\" is treated like a \"yes\"",
+      "why": "A player who turned sharing off still receives the other side's moves — the one promise the setting makes.",
+      "file": "src/firebase/replayExchange.js",
+      "find": "if (!rp || !rp.share || rp.theirShare !== true || rp.logSent) return;",
+      "replace": "if (!rp || !rp.share || rp.theirShare === null || rp.logSent) return;",
+      "expectFailure": "must not send moves to a player who does not share"
+    },
+    {
+      "name": "a player who does not share keeps moves pushed at them",
+      "why": "Turning sharing off stops costing anything: a modified app can still hand you the opponent's moves.",
+      "file": "src/firebase/replayExchange.js",
+      "find": "if (!rp || !rp.share || rp.id !== replayKeyFor(room)) return;",
+      "replace": "if (!rp || rp.id !== replayKeyFor(room)) return;",
+      "expectFailure": "moves pushed to a player who did not agree are not kept"
+    },
+    {
+      "name": "a received log is kept without being played on the puzzle",
+      "why": "An opponent's replay can show a win that never reached the solution, and the player studies a game that did not happen.",
+      "file": "src/firebase/replayExchange.js",
+      "find": "        const events = isPlausibleOpponentLog(parsed?.events, r, { truncated });",
+      "replace": "        const events = parsed?.events;",
+      "expectFailure": "must be marked invalid, not shown"
+    },
+    {
+      "name": "an answer that arrives before this side finished is dropped",
+      "why": "Whichever player finishes second never learns the first one agreed, so the exchange silently never happens. The harness delivers answers before the other side has finished in every case, so the plain both-share case is the one that goes red.",
+      "file": "src/firebase/replayExchange.js",
+      "find": "room.earlyShare = theirs;",
+      "replace": "room.earlyShare = undefined;",
+      "expectFailure": "both share: A has B's moves"
+    },
+    {
+      "name": "a refusal is not recorded as a refusal",
+      "why": "The replay waits and then says the opponent's app does not support replays, when the opponent simply chose not to share.",
+      "file": "src/firebase/replayExchange.js",
+      "find": "      if (room.replay.share) markShare(room.replay.id, theirs ? 'agreed' : 'declined', ['pending']);",
+      "replace": "      if (room.replay.share && theirs) markShare(room.replay.id, 'agreed', ['pending']);",
+      "expectFailure": "A is told B declined"
+    },
+    {
+      "name": "silence is shown as waiting forever",
+      "why": "Against an older app the replay says it is waiting for an answer that will never come.",
+      "file": "src/utils/replay/replayRecord.js",
+      "find": "  if (s === 'pending' && late) return 'unsupported';",
+      "replace": "",
+      "expectFailure": "silence becomes"
+    },
+    {
+      "name": "AI matches are recorded",
+      "why": "An AI match overwrites the recording of the 1v1 before it, and the user limited replays to 1v1.",
+      "file": "src/utils/replay/matchRecorder.js",
+      "find": "!room.isAiMatch && Array.isArray(room.puzzle)",
+      "replace": "Array.isArray(room.puzzle)",
+      "expectFailure": "an AI match must not be recorded"
+    },
+    {
+      "name": "an undo is recorded as ordinary input",
+      "why": "The replay shows a move being played where the player took one back, and the undo count is always zero.",
+      "file": "src/utils/replay/matchRecorder.js",
+      "find": "recording.cause = cause;",
+      "replace": "recording.cause = null;",
+      "expectFailure": "the undo must be recorded as an undo"
+    },
+    {
+      "name": "notes cleared by a placement are recorded as the player's",
+      "why": "Every placement looks like the player erased a handful of notes by hand, and the note count in the summary is inflated.",
+      "file": "src/utils/replay/matchRecorder.js",
+      "find": "const why = cause || (removed && afterPlacement ? 'a' : null);",
+      "replace": "const why = cause;",
+      "expectFailure": "notes cleared by a placement must be marked automatic"
+    },
+    {
+      "name": "a log may overwrite a given",
+      "why": "A received log can change the printed digits, and the replay shows a board that is not the puzzle both players had.",
+      "file": "src/utils/replay/replayRecord.js",
+      "find": "if (!isInt(cell) || cell < 0 || cell > 80 || puzzle[cell] !== '0') return null;",
+      "replace": "if (!isInt(cell) || cell < 0 || cell > 80) return null;",
+      "expectFailure": "must refuse: a given overwritten"
+    },
+    {
+      "name": "a record from a newer app is thrown away",
+      "why": "After a downgrade or a restored backup, every replay a newer version wrote disappears.",
+      "file": "src/utils/replay/replayRecord.js",
+      "find": "r = { ...r, v: REPLAY_VERSION };",
+      "replace": "return null;",
+      "expectFailure": "a record from a newer version is still read"
+    },
+    {
+      "name": "pinned replays fall off with the rest",
+      "why": "The star does nothing: a pinned match is gone after twenty more.",
+      "file": "src/utils/replay/replayStore.js",
+      "find": "const pinned = sorted.filter((r) => r.pinned).slice(0, KEEP_PINNED);",
+      "replace": "const pinned = [];",
+      "expectFailure": "a pinned replay survives twenty newer ones"
+    },
+    {
+      "name": "a full storage gives up instead of making room",
+      "why": "Once storage is full no new match is ever saved again, silently.",
+      "file": "src/utils/replay/replayStore.js",
+      "find": "if (!unpinned.length) return false;",
+      "replace": "return false;",
+      "expectFailure": "a full storage sheds old replays"
+    },
+    {
+      "name": "time in the match stops at the last move",
+      "why": "A player who lost a two-minute match after seven seconds of moves reads \"0:07, 38 a minute\" — a pace they never had (seen on a Flip5).",
+      "file": "src/firebase/replayExchange.js",
+      "find": "        me: { name: service.myPlayerName, elapsedMs: endedAt, mistakes: room.myMistakes, events, truncated: snap?.truncated === true },",
+      "replace": "        me: { name: service.myPlayerName, elapsedMs: room.myElapsedMs ?? (events.length ? events[events.length - 1][0] : null), mistakes: room.myMistakes, events, truncated: snap?.truncated === true },",
+      "expectFailure": "whole length"
+    },
+    {
+      "name": "leaving early leaves the replay waiting",
+      "why": "Twenty seconds later it says the opponent's app has no replays — when the player simply left the result first.",
+      "file": "src/firebase/replayExchange.js",
+      "find": "        return s === 'agreed' || (s === 'pending' && early) ? { ...r, opp: { ...r.opp, shareState: 'missed' } } : r;",
+      "replace": "        return r;",
+      "expectFailure": "leaving before the answer must read as missed"
+    },
+    {
+      "name": "a yes whose moves never came reads as unsupported",
+      "why": "The replay blames the opponent's app for moves that were lost on the way.",
+      "file": "src/utils/replay/replayRecord.js",
+      "find": "  if (s === 'agreed' && late) return 'missed';",
+      "replace": "",
+      "expectFailure": "a yes whose moves never came must read as missed"
+    },
+    {
+      "name": "the recording grows past its limit",
+      "why": "A very long game builds a record the store refuses whole: the replay disappears without a word.",
+      "file": "src/utils/replay/matchRecorder.js",
+      "find": "  if (recording.events.length >= MAX_EVENTS) { recording.truncated = true; return; }",
+      "replace": "",
+      "expectFailure": "the recording stops at"
+    },
+    {
+      "name": "a cut log of a win is held to the solution",
+      "why": "The start of a long winning game is thrown away as \"invalid\" because it does not end solved.",
+      "file": "src/utils/replay/replayRecord.js",
+      "find": "  if (opponentFinished && !truncated) {",
+      "replace": "  if (opponentFinished) {",
+      "expectFailure": "a cut log of the winner is accepted"
+    },
+    {
+      "name": "any log may call itself cut",
+      "why": "A log that never reached the end can claim to be cut and skip the check that a win ends on the solution.",
+      "file": "src/utils/replay/replayRecord.js",
+      "find": "  if (truncated && clean.length < MAX_EVENTS) return null;",
+      "replace": "",
+      "expectFailure": "a short log claiming to be cut is refused"
+    },
+    {
+      "name": "leaving the room does not settle the replay",
+      "why": "The real service leaves the record waiting, and it later reads as an app without replays.",
+      "file": "src/firebase/battleService.js",
+      "find": "      abandonReplay(this); // the replay's last answer or moves will not reach a player who has left",
+      "replace": "",
+      "expectFailure": "leaving the room before the answer"
+    },
+    {
+      "name": "a second log replaces the first",
+      "why": "A resent or forged log turns moves already shown into \"invalid\", or swaps them for others.",
+      "file": "src/firebase/replayExchange.js",
+      "find": "        if (settled(r)) return r;",
+      "replace": "",
+      "expectFailure": "a second log must not"
+    },
+    {
+      "name": "notes cleared by a placement count as notes written",
+      "why": "The summary says the player wrote notes they never wrote (4 for 2 on the Flip5).",
+      "file": "src/utils/replay/replayRecord.js",
+      "find": "    if (kind === 'n') { if (!cause) noteToggles++; continue; }",
+      "replace": "    if (kind === 'n') { noteToggles++; continue; }",
+      "expectFailure": "notes written by the player"
+    },
+    {
+      "name": "undo counts the cells it changed",
+      "why": "One undo press reads as two when it put back a digit and a note together.",
+      "file": "src/utils/replay/replayRecord.js",
+      "find": "    if (cause === 'u') { undoTimes.add(t); continue; }",
+      "replace": "    if (cause === 'u') { undoTimes.add(undoTimes.size); continue; }",
+      "expectFailure": "undo presses"
+    },
+    {
+      "name": "replays have no size budget",
+      "why": "Forty long games fill localStorage and the saved game in progress can no longer be written.",
+      "file": "src/utils/replay/replayStore.js",
+      "find": "  while (size > REPLAY_BUDGET_CHARS) {",
+      "replace": "  while (false) {",
+      "expectFailure": "stay within"
+    }
+  ]
+}

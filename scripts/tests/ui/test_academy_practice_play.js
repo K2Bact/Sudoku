@@ -11,14 +11,27 @@
  * The boards and answers are the same data in every language, so the exhaustive
  * part runs once; what changes per language, theme and screen is checked per pass:
  *
- *   ko · dark · 360px     all nine digits on every mission: eight refused (and the
- *                         refusal clears), the answer accepted and shown, retry resets
- *   12 languages · 360px  text on screen = data, board drawn left-to-right, answer accepted
+ *   ko · dark · 360px     every mission: a wrong digit refused (and the refusal
+ *                         clears), the answer accepted and shown, retry resets.
+ *                         All eight wrong digits on one mission of each layout.
+ *   ar · 360px            every mission: text = data, board drawn left-to-right
  *                         (Arabic sets dir=rtl on the page — a mirrored grid would put
- *                         r1c1 on the right and every coordinate in the guide would lie)
- *   ko · 3 other themes   answer accepted; candidates, struck-out candidates and plain
+ *                         r1c1 on the right and every coordinate in the guide would lie).
+ *                         Every layout mirrors differently, so every mission.
+ *   11 languages · 360px  one mission of each layout and each stage: that language's
+ *                         text and prompt on screen, left-to-right, answer accepted
+ *   ko · 3 other themes   every mission: candidates, struck-out candidates and plain
  *                         cells readable against their background (contrast ≥ 3:1)
- *   ko · 884px wide       tablet width: board fits, nine cells a row, answer accepted
+ *   ko · 884px wide       tablet width, one mission of each layout and each stage
+ *
+ * Trimmed 2026-09-30 (11 minutes of 18 for the whole QA). It used to play all 64
+ * missions in every language and tap all nine digits on every mission — 1,000+
+ * plays for what changes in five places. What a language changes is its text,
+ * which is the same component reading a different key, and — for Arabic only —
+ * direction, which does depend on the layout. Refusal is one comparison with the
+ * answer, the same for every mission; one wrong digit per mission shows it still
+ * runs, all eight on each layout shows it runs for all of them. The mutations in
+ * the manifest are the proof that nothing they guard was given up.
  *
  * Every pass also checks: cell count, one target, cells per row for the layout, the
  * board inside the screen, the prompt for the mission type, and no page errors.
@@ -63,11 +76,24 @@ const PLAN = ACADEMY_STAGES.map((stage, si) => ({
 }));
 const TOTAL = PLAN.reduce((n, s) => n + s.strategies.reduce((m, st) => m + st.missions.length, 0), 0);
 
+// One mission for each layout / question kind, and the first of each stage — every
+// layout drawn and every stage tab opened, in a handful of missions.
+const SAMPLE = new Set();
+{
+  const seen = new Set();
+  for (const stage of PLAN) {
+    stage.strategies.forEach((s, k) => s.missions.forEach((m, e) => {
+      const kind = `${m.layoutType}/${m.asks || 'value'}`;
+      if (!seen.has(kind) || (k === 0 && e === 0)) { seen.add(kind); SAMPLE.add(m.id); }
+    }));
+  }
+}
+
 const errors = [];
 let plays = 0;
 let taps = 0;
 
-async function pass(browser, { lang, theme, viewport, allDigits = false, contrast = false, label }) {
+async function pass(browser, { lang, theme, viewport, only = null, wrongDigits = 'none', contrast = false, label }) {
   const context = await browser.newContext({ viewport, isMobile: true, hasTouch: true });
   const page = await context.newPage();
   const pageErrors = [];
@@ -83,6 +109,7 @@ async function pass(browser, { lang, theme, viewport, allDigits = false, contras
   let n = 0;
 
   for (const stage of PLAN) {
+    if (only && !stage.strategies.some((s) => s.missions.some((m) => only.has(m.id)))) continue;
     await page.locator('.academy-tab-bar .seg-tab-btn').nth(stage.si).click();
     await page.waitForTimeout(150);
     const cards = page.locator('.strategy-item-card');
@@ -92,6 +119,7 @@ async function pass(browser, { lang, theme, viewport, allDigits = false, contras
       const tabs = card.locator('.practice-tab-btn');
       for (let e = 0; e < stage.strategies[k].missions.length; e++) {
         const m = stage.strategies[k].missions[e];
+        if (only && !only.has(m.id)) continue;
         const where = `[${label}] ${m.id}`;
         await tabs.nth(e + 1).click();
         await page.waitForTimeout(60);
@@ -139,9 +167,11 @@ async function pass(browser, { lang, theme, viewport, allDigits = false, contras
         if (contrast) for (const [kind, r] of Object.entries(shown.contrast)) if (r !== null && r < 3) errors.push(`${where}: ${kind} text contrast ${r}:1 on ${theme}`);
 
         const keys = card.locator('.practice-keypad-grid .practice-key-btn');
-        if (allDigits) {
-          for (let d = 1; d <= 9; d++) {
-            if (d === m.correctVal) continue;
+        const wrong = wrongDigits === 'none' ? []
+          : [1, 2, 3, 4, 5, 6, 7, 8, 9].filter((d) => d !== m.correctVal)
+            .slice(0, wrongDigits === 'one' && !SAMPLE.has(m.id) ? 1 : 8);
+        if (wrong.length) {
+          for (const d of wrong) {
             await keys.nth(d - 1).click();
             taps++;
             if (!(await card.locator('.practice-error-badge').count())) errors.push(`${where}: digit ${d} was not refused`);
@@ -152,7 +182,7 @@ async function pass(browser, { lang, theme, viewport, allDigits = false, contras
         await keys.nth(m.correctVal - 1).click();
         taps++;
         if (!(await card.locator('.practice-success-badge').count())) errors.push(`${where}: the answer ${m.correctVal} was not accepted`);
-        if (allDigits) {
+        if (wrongDigits !== 'none') {
           const solved = await card.locator('.target-solved').first().textContent().catch(() => '');
           if (!String(solved).includes(String(m.correctVal))) errors.push(`${where}: target does not show ${m.correctVal} once solved`);
           await card.locator('.practice-retry-btn').click();
@@ -176,10 +206,11 @@ const vite = spawn('npx.cmd', ['vite', 'preview', '--port', String(PORT), '--str
 try {
   await waitForServer(URL);
   const browser = await chromium.launch({ headless: true });
-  await pass(browser, { lang: 'ko', theme: 'matte-dark', viewport: PHONE, allDigits: true, contrast: true, label: 'ko · all nine digits' });
-  for (const lang of LOCALES.filter((l) => l !== 'ko')) await pass(browser, { lang, theme: 'matte-dark', viewport: PHONE, label: `${lang} · text + direction` });
+  await pass(browser, { lang: 'ko', theme: 'matte-dark', viewport: PHONE, wrongDigits: 'one', contrast: true, label: 'ko · every mission, refusals' });
+  await pass(browser, { lang: 'ar', theme: 'matte-dark', viewport: PHONE, label: 'ar · every mission, direction' });
+  for (const lang of LOCALES.filter((l) => l !== 'ko' && l !== 'ar')) await pass(browser, { lang, theme: 'matte-dark', viewport: PHONE, only: SAMPLE, label: `${lang} · text (${SAMPLE.size} missions)` });
   for (const theme of THEMES) await pass(browser, { lang: 'ko', theme, viewport: PHONE, contrast: true, label: `ko · theme ${theme}` });
-  await pass(browser, { lang: 'ko', theme: 'matte-dark', viewport: UNFOLDED, label: 'ko · tablet width 884px' });
+  await pass(browser, { lang: 'ko', theme: 'matte-dark', viewport: UNFOLDED, only: SAMPLE, label: 'ko · tablet width 884px' });
   await browser.close();
 } catch (e) {
   errors.push(`harness: ${e.message}`);

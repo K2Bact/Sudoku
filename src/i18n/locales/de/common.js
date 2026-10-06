@@ -73,6 +73,8 @@ export const common = {
     colDuplicate: '⚠️ Zahl {num} existiert bereits in Spalte {col}! {suffix}',
     multipleDuplicates: '⚠️ Zahl {num} existiert bereits im selben Block, in derselben Zeile oder Spalte! {suffix}',
     notSolution: '⚠️ Zahl {num} ist nicht die Lösung für dieses Feld! {suffix}',
+    cageDuplicate: '⚠️ Zahl {num} ist bereits in diesem Käfig! {suffix}',
+    cageSum: '⚠️ Dieser Käfig ergibt nicht mehr {sum}! {suffix}',
     boardFullHasMistakes: '⚠️ Das Spielfeld ist voll, enthält jedoch noch Fehler. Bitte überprüfen!',
     timeAttackSuffix: '(Fehler {count} | +10s Strafe)',
     classicSuffix: '(Fehler {count}/3)'

@@ -1,9 +1,10 @@
 /**
  * conflictDetector.js
  * Pure utility function to diagnose Sudoku rule violations across Box, Row, and Column simultaneously.
+ * In a killer (`cages` given) also the cage: a digit it already holds, or a sum it can no longer make.
  */
 
-export function detectSudokuConflict(board, r, c, num, newMistakes, isUnlimited = false, t = null) {
+export function detectSudokuConflict(board, r, c, num, newMistakes, isUnlimited = false, t = null, cages = null) {
   const tr = typeof t === 'function' ? t : (k, p = {}) => {
     if (k === 'conflicts.timeAttackSuffix') return `(Mistake ${p.count} | +10s)`;
     if (k === 'conflicts.classicSuffix') return `(Mistakes ${p.count}/3)`;
@@ -12,6 +13,8 @@ export function detectSudokuConflict(board, r, c, num, newMistakes, isUnlimited 
     if (k === 'conflicts.colDuplicate') return `⚠️ Number ${p.num} already exists in column ${p.col}! ${p.suffix}`;
     if (k === 'conflicts.multipleDuplicates') return `⚠️ Number ${p.num} already exists in the same box/row/col! ${p.suffix}`;
     if (k === 'conflicts.notSolution') return `⚠️ Number ${p.num} is not the solution for this cell! ${p.suffix}`;
+    if (k === 'conflicts.cageDuplicate') return `⚠️ Number ${p.num} is already in this cage! ${p.suffix}`;
+    if (k === 'conflicts.cageSum') return `⚠️ This cage no longer adds up to ${p.sum}! ${p.suffix}`;
     return k;
   };
 
@@ -65,12 +68,36 @@ export function detectSudokuConflict(board, r, c, num, newMistakes, isUnlimited 
     }
   }
 
+  // 4. Killer cage: the same digit already inside it, or a total that has gone
+  //    past its sum (or, with every cell filled, missed it).
+  let hasCageConflict = false;
+  let brokenSum = null;
+  const cage = cages?.find((k) => k.cells.includes(r * 9 + c));
+  if (cage) {
+    let total = 0;
+    let filled = 0;
+    for (const cell of cage.cells) {
+      const cr = Math.floor(cell / 9);
+      const cc = cell % 9;
+      const v = cr === r && cc === c ? num : board[cr][cc];
+      if (v) { total += v; filled++; }
+      if ((cr !== r || cc !== c) && board[cr][cc] === num) {
+        addConflict(cr, cc);
+        hasCageConflict = true;
+      }
+    }
+    if (total > cage.sum || (filled === cage.cells.length && total !== cage.sum)) brokenSum = cage.sum;
+  }
+
   if (conflictingCells.length > 0) {
     let type = 'box';
     let message = '';
 
-    const conflictCount = (hasBoxConflict ? 1 : 0) + (hasRowConflict ? 1 : 0) + (hasColConflict ? 1 : 0);
-    if (conflictCount > 1) {
+    const conflictCount = (hasBoxConflict ? 1 : 0) + (hasRowConflict ? 1 : 0) + (hasColConflict ? 1 : 0) + (hasCageConflict ? 1 : 0);
+    if (hasCageConflict && conflictCount === 1) {
+      type = 'cage';
+      message = tr('conflicts.cageDuplicate', { num, suffix: mistakeSuffix });
+    } else if (conflictCount > 1) {
       type = 'multiple';
       message = tr('conflicts.multipleDuplicates', { num, suffix: mistakeSuffix });
     } else if (hasBoxConflict) {
@@ -94,7 +121,20 @@ export function detectSudokuConflict(board, r, c, num, newMistakes, isUnlimited 
     };
   }
 
-  // 4. Mismatch Solution Rule (Logic / Candidate mismatch)
+  if (brokenSum !== null) {
+    return {
+      type: 'cageSum',
+      num,
+      targetCell: [r, c],
+      conflictingCells: cage.cells
+        .filter((cell) => cell !== r * 9 + c && board[Math.floor(cell / 9)][cell % 9])
+        .map((cell) => [Math.floor(cell / 9), cell % 9]),
+      conflictingCell: null,
+      message: tr('conflicts.cageSum', { sum: brokenSum, suffix: mistakeSuffix })
+    };
+  }
+
+  // 5. Mismatch Solution Rule (Logic / Candidate mismatch)
   return {
     type: 'logic',
     num,

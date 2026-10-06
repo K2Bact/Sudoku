@@ -5,6 +5,20 @@ import { PracticeBoardRenderer } from './PracticeBoardRenderer.jsx';
 import { PracticeKeypad } from './PracticeKeypad.jsx';
 import { useTranslation } from '../../../i18n/i18nContext.jsx';
 import { pickLocale } from '../langHelper.js';
+import { splitLeadingNotation } from '../../../utils/bidi.js';
+
+// The guide, with its opening solver notation kept as one left-to-right run (utils/bidi.js).
+function GuideText({ text }) {
+  const parts = splitLeadingNotation(text);
+  if (!parts) return text;
+  return (
+    <>
+      <bdi dir="ltr">{parts[0]}</bdi>
+      {parts[1]}
+      {parts[2]}
+    </>
+  );
+}
 
 export function InteractivePracticeSection({
   strategyId,
@@ -67,7 +81,7 @@ export function InteractivePracticeSection({
       <div className="practice-guide-box">
         <strong>{pickLocale(mission.title, lang)}</strong>
         <p style={{ marginTop: '4px', margin: 0 }}>
-          {pickLocale(mission.guide, lang)}
+          <GuideText text={pickLocale(mission.guide, lang)} />
         </p>
       </div>
 

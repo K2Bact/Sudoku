@@ -1,0 +1,48 @@
+/**
+ * 1v1 replays (I-1, 2026-09-30).
+ */
+export const replay = {
+  replay: {
+    title: 'Replay',
+    missing: 'This replay is no longer on this device.',
+    won: 'Won',
+    lost: 'Lost',
+    vs: 'vs {name}',
+    myBoard: 'My board',
+    theirBoard: 'Their board',
+    share: {
+      shared: 'You also have your opponent\'s moves. Switch to their board in the replay.',
+      pending: 'Waiting for your opponent\'s moves…',
+      declined: 'Your opponent turned off Share match moves. Only their progress is shown.',
+      off: 'Share match moves is off, so your opponent\'s moves were not received. You can turn it on in Settings.',
+      unsupported: 'No answer came from your opponent — their app may be an older version, or the connection dropped. Only their progress is shown.',
+      invalid: 'The moves received do not fit this puzzle and were not used. Only their progress is shown.',
+      agreed: 'Your opponent shares too. Receiving their moves…',
+      missed: 'The connection ended before your opponent\'s moves arrived. Only their progress is shown.',
+    },
+    truncated: 'This game was long, so only its first {count} actions were kept.',
+    timeline: 'Match time',
+    play: 'Play',
+    pause: 'Pause',
+    prevMove: 'Previous move',
+    nextMove: 'Next move',
+    speed: 'Playback speed',
+    pin: 'Star',
+    unpin: 'Unstar',
+    pinFull: 'You can star up to {count} replays. Unstar one and try again.',
+    sumTime: 'Time',
+    sumMistakes: 'Mistakes',
+    sumMoves: 'Digits placed',
+    sumPace: 'Per minute',
+    sumLongestPause: 'Longest think',
+    sumNotes: 'Notes',
+    sumUndos: 'Undo',
+    listTitle: 'Match replays',
+    listEmpty: 'No replays yet. Finish a 1v1 match and it appears here.',
+    open: 'Watch replay',
+    settingTitle: 'Share match moves',
+    settingDesc: 'After a 1v1, swap this match\'s moves and their timing with your opponent so each of you can replay the other\'s board. Off: your moves are not sent, and you do not receive theirs.',
+    lobbyNoteOn: 'When the match ends, you and your opponent swap moves for the replay. You can turn this off in Settings.',
+    lobbyNoteOff: 'Share match moves is off. Replays keep your moves and only your opponent\'s progress.',
+  }
+};

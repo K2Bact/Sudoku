@@ -73,6 +73,8 @@ export const common = {
     colDuplicate: '⚠️ {col}列目にすでに{num}があります！ {suffix}',
     multipleDuplicates: '⚠️ 同じ3x3ブロック・行・列にすでに{num}があります！ {suffix}',
     notSolution: '⚠️ {num}はこのマスの正解ではありません！ {suffix}',
+    cageDuplicate: '⚠️ このケージにはすでに{num}があります！ {suffix}',
+    cageSum: '⚠️ このケージの合計が{sum}になりません！ {suffix}',
     boardFullHasMistakes: '⚠️ ボードが埋まりましたが、間違いがあります。もう一度確認してください！',
     timeAttackSuffix: '(不正解 {count}回 | +10秒ペナルティ)',
     classicSuffix: '(ミス {count}/3)'

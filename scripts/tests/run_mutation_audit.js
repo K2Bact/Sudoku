@@ -142,8 +142,9 @@ function expandBait(text) {
  * caught.
  *
  * `greenBy: "exit"` is the exception, and it is narrow. It is for a third-party
- * tool that has no case structure and no stable summary line — oxlint prints one
- * line per finding and nothing else, so there is no sentence that means "passed".
+ * tool that has no case structure and no stable summary line — ESLint (gate 0-2,
+ * oxlint until 2026-10-01) prints one line per finding and nothing at all when
+ * clean, so there is no sentence that means "passed".
  * With a single verdict and nothing to misattribute, the exit code is the whole
  * contract. Do not reach for this on a gate of our own: those have cases, and
  * cases are exactly what gets confused.

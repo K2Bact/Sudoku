@@ -9,7 +9,7 @@ import {
   cloneGrid
 } from '../../../src/engine/SudokuEngine.js';
 import { detectSudokuConflict } from '../../../src/engine/conflictDetector.js';
-import { ensureValidSolution } from '../../../src/hooks/useGameInput.js';
+import { ensureValidSolution } from '../../../src/engine/puzzleSetup.js';
 
 console.log('======================================================');
 console.log('🧪 Testing Sudoku Mathematical Integrity & Puzzle Solvability');

@@ -9,7 +9,8 @@ import {
   Info,
   ChevronRight,
   AlertTriangle,
-  Eye
+  Eye,
+  Film
 } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
 import { PrivacyPolicyModal } from './modals/PrivacyPolicyModal';
@@ -37,6 +38,7 @@ export function SettingsScreen({
   const [hapticEnabled, setHapticEnabled] = useState(soundHaptic.hapticEnabled);
   const [limitMistakes, setLimitMistakes] = useState(currentSettings.limitMistakes ?? true);
   const [autoCheckMistakes, setAutoCheckMistakes] = useState(currentSettings.autoCheckMistakes ?? true);
+  const [shareReplay, setShareReplay] = useState(currentSettings.shareMatchReplay !== false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   // Google requires a way back into the consent choice for anyone who was shown
@@ -79,6 +81,15 @@ export function SettingsScreen({
     const next = !autoCheckMistakes;
     setAutoCheckMistakes(next);
     saveSettings({ ...loadSettings(), autoCheckMistakes: next });
+  };
+
+  // Off: this phone's 1v1 moves are not sent, and the opponent's are not received
+  // either — the exchange is mutual (replayExchange.js).
+  const handleToggleShareReplay = () => {
+    soundHaptic.playSelectSound();
+    const next = !shareReplay;
+    setShareReplay(next);
+    saveSettings({ ...loadSettings(), shareMatchReplay: next });
   };
 
 
@@ -209,6 +220,21 @@ export function SettingsScreen({
                 </div>
               </div>
               <ChevronRight size={18} className="text-muted" />
+            </div>
+
+            <div className="settings-row clickable" onClick={handleToggleShareReplay}>
+              <div className="settings-row-left">
+                <div className="settings-icon-badge purple">
+                  <Film size={18} />
+                </div>
+                <div className="settings-text-col">
+                  <span className="settings-title">{t('replay.settingTitle')}</span>
+                  <p className="settings-subtitle">{t('replay.settingDesc')}</p>
+                </div>
+              </div>
+              <div className={`settings-toggle-pill ${shareReplay ? 'on' : 'off'}`}>
+                {shareReplay ? 'ON' : 'OFF'}
+              </div>
             </div>
 
             {/* Only where a way back into the consent choice actually exists.

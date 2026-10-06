@@ -1,0 +1,48 @@
+/**
+ * 1v1 replays (I-1, 2026-09-30).
+ */
+export const replay = {
+  replay: {
+    title: 'Rever partida',
+    missing: 'Esta partida não está mais neste dispositivo.',
+    won: 'Vitória',
+    lost: 'Derrota',
+    vs: 'contra {name}',
+    myBoard: 'Meu tabuleiro',
+    theirBoard: 'Tabuleiro rival',
+    share: {
+      shared: 'Você também tem as jogadas do oponente. Troque para o tabuleiro dele para revê-las.',
+      pending: 'Aguardando as jogadas do oponente…',
+      declined: 'O oponente desativou o compartilhamento de jogadas. Só o progresso dele aparece.',
+      off: 'O compartilhamento de jogadas está desativado, então as jogadas do oponente não foram recebidas. Você pode ativá-lo em Configurações.',
+      unsupported: 'O oponente não respondeu: o app dele pode ser uma versão antiga ou a conexão caiu. Só o progresso dele aparece.',
+      invalid: 'As jogadas recebidas não batem com este sudoku e não foram usadas. Só o progresso dele aparece.',
+      agreed: 'O oponente também compartilha. Recebendo as jogadas dele…',
+      missed: 'A conexão terminou antes de as jogadas do oponente chegarem. Só o progresso dele aparece.',
+    },
+    truncated: 'A partida foi longa, então só as primeiras {count} ações foram guardadas.',
+    timeline: 'Tempo da partida',
+    play: 'Reproduzir',
+    pause: 'Pausar',
+    prevMove: 'Jogada anterior',
+    nextMove: 'Próxima jogada',
+    speed: 'Velocidade',
+    pin: 'Favoritar',
+    unpin: 'Remover dos favoritos',
+    pinFull: 'Você pode ter até {count} favoritas. Remova uma e tente de novo.',
+    sumTime: 'Tempo',
+    sumMistakes: 'Erros',
+    sumMoves: 'Números colocados',
+    sumPace: 'Por minuto',
+    sumLongestPause: 'Maior pausa',
+    sumNotes: 'Anotações',
+    sumUndos: 'Desfazer',
+    listTitle: 'Rever duelos',
+    listEmpty: 'Nenhuma partida para rever ainda. Termine um duelo 1v1 e ela aparece aqui.',
+    open: 'Rever partida',
+    settingTitle: 'Compartilhar jogadas',
+    settingDesc: 'Depois de um 1v1, você e o oponente trocam as jogadas da partida e seus tempos para cada um rever o tabuleiro do outro. Desativado: suas jogadas não são enviadas e você não recebe as dele.',
+    lobbyNoteOn: 'No fim da partida, vocês trocam as jogadas para rever. Você pode desativar isso em Configurações.',
+    lobbyNoteOff: 'O compartilhamento de jogadas está desativado. A revisão guarda só suas jogadas e o progresso do oponente.',
+  }
+};

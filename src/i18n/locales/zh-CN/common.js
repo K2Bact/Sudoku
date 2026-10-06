@@ -76,6 +76,8 @@ export const common = {
     colDuplicate: '⚠️ 第 {col} 列已存在数字 {num}！{suffix}',
     multipleDuplicates: '⚠️ 相同九宫格与行列中已存在数字 {num}！{suffix}',
     notSolution: '⚠️ 数字 {num} 不是此格的正确答案！{suffix}',
+    cageDuplicate: '⚠️ 这个笼子里已有数字 {num}！{suffix}',
+    cageSum: '⚠️ 这个笼子的和已对不上 {sum}！{suffix}',
     boardFullHasMistakes: '⚠️ 盘面已填满但有错误，请重新检查！',
     timeAttackSuffix: '(错误 {count}次 | +10秒惩罚)',
     classicSuffix: '(失误 {count}/3)'

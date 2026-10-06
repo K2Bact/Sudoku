@@ -73,6 +73,8 @@ export const common = {
     colDuplicate: '⚠️ {col}번째 세로줄에 이미 숫자 {num}이(가) 있습니다! {suffix}',
     multipleDuplicates: '⚠️ 같은 3x3 박스 및 가로/세로줄에 이미 숫자 {num}이(가) 있습니다! {suffix}',
     notSolution: '⚠️ 숫자 {num}은(는) 이 칸의 정답이 아닙니다! {suffix}',
+    cageDuplicate: '⚠️ 이 묶음에 이미 숫자 {num}이(가) 있습니다! {suffix}',
+    cageSum: '⚠️ 이 묶음의 합이 맞지 않습니다 (합: {sum})! {suffix}',
     boardFullHasMistakes: '⚠️ 보드가 모두 채워졌으나 오답 칸이 있습니다. 다시 확인해 보세요!',
     timeAttackSuffix: '(오답 {count}회 | +10초 패널티)',
     classicSuffix: '(실수 {count}/3)'

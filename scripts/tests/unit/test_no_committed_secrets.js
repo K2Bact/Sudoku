@@ -87,10 +87,16 @@ checkPaths('tracked file', lines(sh('git ls-files')));
 checkPaths('staged file', lines(sh('git diff --cached --name-only')));
 
 // 3. Every path that has ever existed in reachable history
-const historyPaths = new Set();
-for (const commit of lines(sh('git rev-list --all'))) {
-  for (const p of lines(sh(`git ls-tree -r --name-only ${commit}`))) historyPaths.add(p);
-}
+//
+// One `git log` over every commit's changes, not one `git ls-tree` per commit.
+// A path that ever existed was added by some commit, so it appears in that
+// commit's change list: --root shows the first commit's files, -m shows what a
+// merge brought in, --no-renames names both sides of a move. The per-commit
+// loop spawned a process per commit and grew with every commit (7.4s at 62;
+// this is 0.4s) — 2026-09-30, when QA's run time was measured step by step.
+const historyPaths = new Set(lines(sh('git log --all --root -m --no-renames --name-only --pretty=format:')));
+const commitCount = lines(sh('git rev-list --all')).length;
+assert(commitCount === 0 || historyPaths.size > 0, 'history has commits but no path was read from it — the history scan did not run');
 checkPaths('history file', [...historyPaths]);
 
 // 4. Secret-looking content in the working tree, so it is caught before it is
@@ -135,19 +141,38 @@ for (const { name, re } of SECRET_CONTENT_PATTERNS) {
 }
 
 // 5. Secret-looking content anywhere in reachable history
+//
+// Every line that was ever committed was ADDED by some commit, so it is a "+"
+// line in that commit's patch (--root for the first commit, -m for merges). One
+// `git log -p` pass reads each change once. The grep this replaced searched every
+// commit's whole tree, once per pattern — the same unchanged files 62 times over,
+// three times (15s; this is about 2s). -G only narrows which commits to print;
+// the patterns below decide, on added lines, with the same exclusions as before.
 console.log('');
-const commits = lines(sh('git rev-list --all'));
-for (const { name, re } of SECRET_CONTENT_PATTERNS) {
-  // -I skips binary blobs; -e is required or a pattern starting with '-' is read as an option
-  const res = gitAllowExit1(['grep', '-I', '-n', '-E', '-e', re.source, ...commits, '--']);
-  if (!res.ok) {
-    violations.push(`scanner failed to run for "${name}" (${res.error}) — cannot certify history as clean`);
-    console.log(`  ❌ history content — ${name}: SCANNER ERROR`);
-    continue;
+const PICKAXE = '(storePassword|keyPassword)|BEGIN [A-Z ]*PRIVATE KEY|AIza[0-9A-Za-z_-]{30,}';
+const logRes = gitAllowExit1(['log', '--all', '--root', '-m', '--no-renames', '-p', '--no-color', '-G', PICKAXE, '--pretty=format:@@COMMIT %H']);
+if (!logRes.ok) {
+  violations.push(`history scan failed to run (${logRes.error}) — cannot certify history as clean`);
+  console.log('  ❌ history content: SCANNER ERROR');
+} else {
+  const hitsByName = new Map(SECRET_CONTENT_PATTERNS.map((p) => [p.name, []]));
+  let commit = '';
+  let file = '';
+  let added = 0;
+  for (const line of logRes.out.split('\n')) {
+    if (line.startsWith('@@COMMIT ')) { commit = line.slice(9, 17); continue; }
+    if (line.startsWith('+++ ')) { file = line.replace(/^\+\+\+ (b\/)?/, ''); continue; }
+    if (!line.startsWith('+') || line.startsWith('+++')) continue;
+    added++;
+    const shown = `${commit}:${file}:${line.slice(1)}`;
+    if (CONTENT_EXCLUSIONS.test(shown) || /\.example:/i.test(shown)) continue;
+    for (const { name, re } of SECRET_CONTENT_PATTERNS) if (re.test(line)) hitsByName.get(name).push(shown);
   }
-  const hits = lines(res.out).filter((l) => !CONTENT_EXCLUSIONS.test(l) && !/\.example:/i.test(l));
-  hits.slice(0, 5).forEach((h) => violations.push(`history content (${name}): ${h.slice(0, 160)}`));
-  console.log(`  ${hits.length === 0 ? '✅' : '❌'} history content — ${name}: ${hits.length} hit(s)`);
+  for (const [name, hits] of hitsByName) {
+    hits.slice(0, 5).forEach((h) => violations.push(`history content (${name}): ${h.slice(0, 160)}`));
+    console.log(`  ${hits.length === 0 ? '✅' : '❌'} history content — ${name}: ${hits.length} hit(s)`);
+  }
+  console.log(`     (${added} added line(s) read in the commits the pickaxe flagged)`);
 }
 
 // 5. Objects `git add` left behind without a commit
@@ -160,20 +185,33 @@ if (!fsckRes.ok) {
 }
 const unreachable = lines(fsckRes.out).filter((l) => l.startsWith('unreachable blob'));
 let leakedBlobs = 0;
-for (const line of unreachable) {
-  const sha = line.split(/\s+/)[2];
+// Read every object in one `git cat-file --batch` instead of three processes per
+// object (78 objects took ~20s; this is well under one). --batch prints
+// "<sha> <type> <size>\n<content>\n" per object; a missing one is "<sha> missing".
+const shas = unreachable.map((l) => l.split(/\s+/)[2]).filter(Boolean);
+if (shas.length) {
+  let raw = Buffer.alloc(0);
   try {
-    const type = sh(`git cat-file -t ${sha}`);
-    if (type !== 'blob') continue;
-    const size = Number(sh(`git cat-file -s ${sha}`));
-    if (size > 2 * 1024 * 1024) continue;
-    const body = sh(`git cat-file -p ${sha}`);
-    if (/-----BEGIN [A-Z ]*PRIVATE KEY-----/.test(body) || /(storePassword|keyPassword)\s*[=:]/i.test(body)) {
+    raw = execFileSync('git', ['cat-file', '--batch'], { input: shas.join('\n') + '\n', maxBuffer: 512 * 1024 * 1024, stdio: ['pipe', 'pipe', 'ignore'] });
+  } catch (err) {
+    violations.push(`git cat-file failed to read unreachable objects (exit ${err.status}) — cannot certify them as clean`);
+  }
+  let at = 0;
+  while (at < raw.length) {
+    const nl = raw.indexOf(0x0a, at);
+    if (nl < 0) break;
+    const [sha, type, sizeText] = raw.subarray(at, nl).toString('utf8').split(' ');
+    at = nl + 1;
+    if (type === 'missing' || sizeText === undefined) continue;
+    const size = Number(sizeText);
+    const body = raw.subarray(at, at + size);
+    at += size + 1;
+    if (type !== 'blob' || size > 2 * 1024 * 1024) continue;
+    const text = body.toString('utf8');
+    if (/-----BEGIN [A-Z ]*PRIVATE KEY-----/.test(text) || /(storePassword|keyPassword)\s*[=:]/i.test(text)) {
       violations.push(`unreachable object ${sha} contains credential material — run: git reflog expire --expire=now --all && git gc --prune=now`);
       leakedBlobs++;
     }
-  } catch {
-    /* unreadable object: ignore */
   }
 }
 console.log(`  ${leakedBlobs === 0 ? '✅' : '❌'} unreachable objects: ${unreachable.length} scanned, ${leakedBlobs} carrying secrets`);

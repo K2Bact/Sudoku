@@ -29,7 +29,9 @@ export function useGameStarters({
     setActiveScreen(screenName);
   };
 
-  const handleStartSingleGame = async (selectedLevel, isResume = false, mode = 'classic', rivalMode = 'standard') => {
+  // variant: the kind of puzzle Home asked for (engine/variants.js). Always passed on,
+  // so a new standard game is standard even right after a killer.
+  const handleStartSingleGame = async (selectedLevel, isResume = false, mode = 'classic', rivalMode = 'standard', variant = 'classic') => {
     if (!isResume && !(await confirmAbandon())) return;
     soundHaptic.playSelectSound();
     cleanupBattleSession();
@@ -37,12 +39,12 @@ export function useGameStarters({
     setActiveDailyDateKey(null);
     setIsGuidedTutorial(false);
 
-    if (isResume && resumeSavedGame(selectedLevel)) {
+    if (isResume && resumeSavedGame(selectedLevel, variant)) {
       setActiveScreen('game');
       return;
     }
 
-    if (rivalMode === 'ghost') {
+    if (rivalMode === 'ghost' && variant === 'classic') {
       const ghost = getGhostForModeLevel(mode, selectedLevel);
       if (ghost && (ghost.puzzle || ghost.board)) {
         startNewGame(selectedLevel, mode, {
@@ -57,8 +59,9 @@ export function useGameStarters({
       }
     }
 
-    const ghost = (rivalMode === 'delta' || rivalMode === 'ghost') ? getGhostForModeLevel(mode, selectedLevel) : null;
-    startNewGame(selectedLevel, mode, ghost ? { rivalMode, ghostRecord: ghost } : null);
+    const racesGhost = variant === 'classic' && (rivalMode === 'delta' || rivalMode === 'ghost');
+    const ghost = racesGhost ? getGhostForModeLevel(mode, selectedLevel) : null;
+    startNewGame(selectedLevel, mode, ghost ? { rivalMode, ghostRecord: ghost, variant } : { variant });
     setActiveScreen('game');
   };
 
@@ -100,7 +103,9 @@ export function useGameStarters({
     cleanupBattleSession();
     setIsGuidedTutorial(true);
     setGuidedStep(0);
-    startNewGame(1, 'classic');
+    // The tutorial teaches standard sudoku. Without a kind named, a new game takes the
+    // one being played (puzzleSetup.js) — right after a killer, the tutorial would be one.
+    startNewGame(1, 'classic', { variant: 'classic' });
     setActiveScreen('game');
   };
 

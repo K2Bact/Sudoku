@@ -125,4 +125,56 @@ assert.strictEqual(
 );
 console.log('  ✅ C. credential staged but not in the working tree is caught (exit 1)');
 
+// D–F: history only. Added 2026-09-30 when 0-4's history scans were rewritten as
+// single passes (one `git log -p`, one `git log --name-only`) to cut 41s to 5s.
+// Cases A–C never reached history, so nothing here proved the rewrite could see it.
+
+// D. Committed, then removed — clean working tree and index, bait in history only.
+const erased = scenario((dir) => {
+  write(dir, BAIT);
+  git(dir, 'add', 'build-config.txt');
+  git(dir, 'commit', '-q', '-m', 'oops');
+  write(dir, SAFE);
+  git(dir, 'add', 'build-config.txt');
+  git(dir, 'commit', '-q', '-m', 'clean up');
+});
+assert.strictEqual(erased.inIndex || erased.inWorkingTree, false, 'case D must leave only history holding the bait');
+assert.strictEqual(erased.exit, 1, 'a credential that was committed and later removed must fail the gate — it is still in history');
+console.log('  ✅ D. credential committed then removed is caught in history (exit 1)');
+
+// E. Added by a merge commit itself (an "evil merge"), then removed. The patch
+//    that adds it exists only as a merge's diff, which `git log -p` shows only with -m.
+const merged = scenario((dir) => {
+  write(dir, SAFE);
+  git(dir, 'add', 'build-config.txt');
+  git(dir, 'commit', '-q', '-m', 'config');
+  const base = git(dir, 'rev-parse', '--abbrev-ref', 'HEAD').trim();
+  git(dir, 'checkout', '-q', '-b', 'side');
+  fs.writeFileSync(path.join(dir, 'side.txt'), 'side\n');
+  git(dir, 'add', 'side.txt');
+  git(dir, 'commit', '-q', '-m', 'side');
+  git(dir, 'checkout', '-q', base);
+  git(dir, 'merge', '-q', '--no-ff', '--no-commit', 'side');
+  write(dir, BAIT);
+  git(dir, 'add', 'build-config.txt');
+  git(dir, 'commit', '-q', '-m', 'merge side');
+  write(dir, SAFE);
+  git(dir, 'add', 'build-config.txt');
+  git(dir, 'commit', '-q', '-m', 'clean up');
+});
+assert.strictEqual(merged.inIndex || merged.inWorkingTree, false, 'case E must leave only the merge commit holding the bait');
+assert.strictEqual(merged.exit, 1, 'a credential added inside a merge commit must fail the gate');
+console.log('  ✅ E. credential added by a merge commit is caught (exit 1)');
+
+// F. A keystore FILE committed then deleted — the path check over history.
+const keyfile = scenario((dir) => {
+  fs.writeFileSync(path.join(dir, 'release.jks'), 'not a real keystore\n');
+  git(dir, 'add', 'release.jks');
+  git(dir, 'commit', '-q', '-m', 'oops');
+  git(dir, 'rm', '-q', 'release.jks');
+  git(dir, 'commit', '-q', '-m', 'remove');
+});
+assert.strictEqual(keyfile.exit, 1, 'a keystore file that was ever committed must fail the gate, even after deletion');
+console.log('  ✅ F. keystore file committed then deleted is caught in history (exit 1)');
+
 console.log('\n🎉 [PASS] The secrets gate objects to planted material and stays quiet without it.\n');

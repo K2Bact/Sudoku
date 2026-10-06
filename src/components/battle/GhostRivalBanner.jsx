@@ -68,7 +68,10 @@ export function GhostRivalBanner({
         {/* Ghost bar indicator mark */}
         <div
           className="ghost-indicator-pin"
-          style={{ left: `${pace.ghostPct}%` }}
+          // From the start of the reading direction, like the bar it marks: in
+          // Arabic the bar grows from the right, and a pin measured from the left
+          // pointed at the wrong end of the track (SA-RTL03).
+          style={{ insetInlineStart: `${pace.ghostPct}%` }}
           title={`${rivalLabel} (${pbTimeStr})`}
         >
           <Ghost size={10} className="pin-ghost-icon" />

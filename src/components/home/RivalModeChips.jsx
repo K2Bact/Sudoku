@@ -15,8 +15,13 @@ import { useTranslation } from '../../i18n/i18nContext';
  * not always the chip that looks selected. Ghost and Time Gap fall back to
  * Standard whenever they are unavailable, so `onChange` is given the EFFECTIVE
  * mode — never a value the game cannot honour.
+ *
+ * comingSoon: the puzzle kind has no rivals yet (killer, 2026-10-01). The chips
+ * stay, so the card keeps its shape, and tapping one asks the parent to show its
+ * own "coming" note (onComingSoon) — one note for the tabs and the chips, not two
+ * stacked in the same place.
  */
-export function RivalModeChips({ selectedMode, selectedLevel, onChange }) {
+export function RivalModeChips({ selectedMode, selectedLevel, onChange, comingSoon = false, onComingSoon }) {
   const { t } = useTranslation();
   const [rivalMode, setRivalMode] = useState('standard');
   const [lockedToast, setLockedToast] = useState(null);
@@ -27,7 +32,7 @@ export function RivalModeChips({ selectedMode, selectedLevel, onChange }) {
   const isTimeLimit = selectedMode === 'timeLimit';
   const ghost = getGhostForModeLevel(isTimeLimit ? 'timeAttack' : selectedMode, selectedLevel);
   const isGhostAvailable = Boolean(ghost && typeof ghost.bestSeconds === 'number' && ghost.bestSeconds > 0);
-  const canSelectGhost = !isTimeLimit && isGhostAvailable;
+  const canSelectGhost = !isTimeLimit && !comingSoon && isGhostAvailable;
   const effectiveRivalMode = canSelectGhost ? rivalMode : 'standard';
 
   // The parent has to follow even when nothing was clicked. Pick Ghost in
@@ -61,6 +66,10 @@ export function RivalModeChips({ selectedMode, selectedLevel, onChange }) {
    */
   const triggerLockedToast = () => {
     soundHaptic.playErrorSound();
+    if (comingSoon) {
+      if (onComingSoon) onComingSoon();
+      return;
+    }
     setLockedToast(t(isTimeLimit ? 'home.rivalModes.timeLimitToast' : 'home.rivalModes.lockedToast'));
   };
 

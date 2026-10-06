@@ -11,7 +11,7 @@ export const achievements = {
     unlockedToast: 'تم فتح إنجاز جديد!',
     tabTitle: 'الإنجازات',
     statsTab: 'الإحصائيات',
-    unlockedCount: 'تم فتح {unlocked} / {total} ({pct}%)',
+    unlockedCount: 'تم فتح \u2066{unlocked} / {total}\u2069 ({pct}%)',
     lockedBadge: 'مغلق',
     pointsTotal: 'النقاط: {count}',
     tiers: { bronze: 'برونزي', silver: 'فضي', gold: 'ذهبي', diamond: 'ماسي', master: 'أستاذ' },

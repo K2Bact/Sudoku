@@ -26,6 +26,11 @@
   box-sizing: border-box;
 }
 
+/* The app's own questions and notices (ConfirmProvider) sit above every layer —
+   the replay (3000) and the rematch toast (3500) included. A question asked
+   under a layer is a button that seems to do nothing. */
+.modal-overlay.confirm-overlay { z-index: 4000; }
+
 .modal-card {
   width: 100%;
   max-width: 380px;

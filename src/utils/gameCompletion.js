@@ -8,11 +8,21 @@ import { iqStatsService } from '../services/iqStatsService.js';
 import { playGamesService } from '../services/playGamesService.js';
 import { cloudSyncService } from '../services/cloudSyncService.js';
 import { speedrunRankFor } from './speedrunRank.js';
+import { recordKillerWin } from './killerStats.js';
+
+// Cloud backup last, after everything has been written locally, so the upload
+// carries this win. Not awaited: the victory sequence must not wait on the network.
+function backUpToCloud() {
+  Promise.resolve()
+    .then(() => cloudSyncService.saveToCloud())
+    .catch((e) => console.warn('[GameCompletion] cloud save failed:', e?.message || e));
+}
 
 export function handleGameWinLogic({
   level,
   timerSeconds,
   gameMode,
+  variant = 'classic',
   mistakes,
   activeDailyDateKey,
   clearGameState,
@@ -36,6 +46,17 @@ export function handleGameWinLogic({
     limitMistakes: loadSettings().limitMistakes ?? true,
     mistakes
   });
+
+  // A killer keeps its own record and nothing else (user decision 2026-10-01):
+  // the ghost, the daily mission, the achievements and the Logic Score on the
+  // leaderboard are all measured on classic puzzles, and a killer's times would
+  // not compare with them.
+  if (variant === 'killer') {
+    recordKillerWin(level, timerSeconds, { countsAsRecord: eligibility.counts });
+    backUpToCloud();
+    return;
+  }
+
   recordGameWin(level, timerSeconds, gameMode, {
     isFlawless: mistakes === 0,
     comboCount,
@@ -111,10 +132,6 @@ export function handleGameWinLogic({
     console.warn('[GameCompletion] Play Games submission failed:', e?.message || e);
   }
 
-  // Cloud backup last, after everything above has been written locally, so the
-  // upload carries this win. Not awaited: the victory sequence must not wait on
-  // the network. Moved here from VictoryModal for the same reason as the grade.
-  Promise.resolve()
-    .then(() => cloudSyncService.saveToCloud())
-    .catch((e) => console.warn('[GameCompletion] cloud save failed:', e?.message || e));
+  // Moved here from VictoryModal for the same reason as the grade.
+  backUpToCloud();
 }

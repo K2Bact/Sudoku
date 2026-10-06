@@ -15,9 +15,9 @@ export const modals = {
       leaderboardBtn: "📊 سجلاتي",
       shareBtn: 'مشاركة',
       copiedToast: '🎉 تم نسخ سجل الفوز إلى الحافظة بنجاح!',
-      shareText: '🧩 سودوكو {mode} Lv.{level} {name} أكملته في [{time}]! التقييم: {rank} (عدد الأخطاء: {mistakes}). هل يمكنك التفوق علي؟',
+      shareText: '🧩 سودوكو {mode} Lv.{level} {name} أكملته في [{time}]! التقييم: \u2066{rank}\u2069 (عدد الأخطاء: {mistakes}). هل يمكنك التفوق علي؟',
       ranks: {
-        'S+': '👑 S+ (السرعة الإلهية)',
+        'S+': '👑 \u2066S+\u2069 (السرعة الإلهية)',
         'S': '⭐️ S (أستاذ)',
         'A': '🥇 A (محترف)',
         'B': '🥈 B (ماهر)',

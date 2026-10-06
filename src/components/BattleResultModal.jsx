@@ -7,6 +7,7 @@ import { recordDailyCompletion, getDailyMission, getTodayDateKey, loadDailyRecor
 import { addHints } from '../utils/wallet';
 
 import { ratingDeltaFor } from '../utils/battleRating';
+import { ReplayEntry } from './replay/ReplayEntry';
 
 export function BattleResultModal({
   lastRatingChange,
@@ -149,6 +150,8 @@ export function BattleResultModal({
             <span className="comp-badge opp-comp">{actualOpponentProgress}%</span>
           </div>
         </div>
+
+        {!isAIBattle && <ReplayEntry room={room} />}
 
         <div className="modal-actions-vertical w-100 mt-2">
           <div className="modal-actions">

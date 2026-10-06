@@ -13,8 +13,9 @@
  *   - an untouched board (tapping "new game" twice by mistake)
  *   - 1v1 and AI battles, which end through their own result screen
  */
-import { loadGameState, recordGameLoss, isDuelMode } from './storage.js';
+import { loadGameState, isDuelMode } from './storage.js';
 import { isResumableGame } from './savedGame.js';
+import { recordLoss } from './killerStats.js';
 
 /** The saved game that would count as a loss if thrown away now, or null. */
 export function gameInProgress() {
@@ -28,7 +29,8 @@ export function gameInProgress() {
 
 /** Record the game in progress as a loss before it is thrown away. Returns true if one was. */
 export function recordAbandonedGame() {
-  if (!gameInProgress()) return false;
-  recordGameLoss();
+  const saved = gameInProgress();
+  if (!saved) return false;
+  recordLoss(saved.variant);   // a thrown-away killer counts against the killer record only
   return true;
 }

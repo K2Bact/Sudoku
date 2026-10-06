@@ -1,6 +1,6 @@
 // Export every Japanese string a player can see, next to its English source, for a
 // native-level review by another model (ChatGPT does the final Japanese check).
-//   node scripts/review/export_ja_review.mjs  →  docs/review/ja_review.md
+//   node scripts/archive/export_ja_review.mjs  →  docs/archive/ja_review.md
 // Only live text: the theory drawings replaced by TheoryBoardDiagram are skipped,
 // so the reviewer does not spend time on strings no screen shows.
 import fs from 'fs';
@@ -64,5 +64,5 @@ const jaPart = html.slice(jaStart, html.indexOf('</section>', jaStart));
 out.push('## 4. プライバシーポリシー 日本語節 (docs/privacy.html)', '', '```', jaPart.replace(/<[^>]+>/g, '').replace(/\n\s*\n+/g, '\n').trim(), '```', '');
 
 fs.mkdirSync(path.join(ROOT, 'docs/review'), { recursive: true });
-fs.writeFileSync(path.join(ROOT, 'docs/review/ja_review.md'), out.join('\n'));
-console.log('wrote docs/review/ja_review.md', out.length, 'lines');
+fs.writeFileSync(path.join(ROOT, 'docs/archive/ja_review.md'), out.join('\n'));
+console.log('wrote docs/archive/ja_review.md', out.length, 'lines');

@@ -255,7 +255,8 @@ export function findNextIncompleteNumber(currentNum, remainingCounts) {
 }
 
 // Automatically remove entered number from notes in same row, column, and 3x3 box
-export function autoRemoveNotes(notesGrid, row, col, num) {
+// — and, in a killer, its cage, where a digit cannot repeat either.
+export function autoRemoveNotes(notesGrid, row, col, num, cages = null) {
   const updatedNotes = notesGrid.map(r => r.map(cellNotes => [...cellNotes]));
   
   for (let i = 0; i < 9; i++) {
@@ -267,6 +268,13 @@ export function autoRemoveNotes(notesGrid, row, col, num) {
     const bRow = 3 * Math.floor(row / 3) + Math.floor(i / 3);
     const bCol = 3 * Math.floor(col / 3) + (i % 3);
     updatedNotes[bRow][bCol] = updatedNotes[bRow][bCol].filter(n => n !== num);
+  }
+
+  const cage = cages?.find(k => k.cells.includes(row * 9 + col));
+  for (const cell of cage?.cells || []) {
+    const r = Math.floor(cell / 9);
+    const c = cell % 9;
+    updatedNotes[r][c] = updatedNotes[r][c].filter(n => n !== num);
   }
   
   return updatedNotes;

@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { App as CapacitorApp } from '@capacitor/app';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useConfirm } from '../components/common/ConfirmProvider';
+import { openReplayId, closeReplay } from '../components/replay/replayViewer';
 
 /**
  * 4-Tier Hardware Back Button & Popstate Navigation Stack
@@ -18,6 +19,12 @@ export function useBackStack(props) {
   confirmRef.current = confirmFn;
 
   const lastBackPressTimeRef = useRef(0);
+  // When back was last pressed ON THE HOME SCREEN — the first press there only
+  // says "press again", the second within 2s closes the app. It cannot be
+  // lastBackPressTimeRef: that is set to `now` before any branch runs, so
+  // comparing against it always gave 0 and the first press closed the app
+  // (seen on a Flip5, 2026-10-01; the prompt had never once been shown).
+  const homeBackAtRef = useRef(0);
   const isHandlingBackRef = useRef(false);
 
   const handleGlobalBackNavigation = useCallback(() => {
@@ -36,7 +43,7 @@ export function useBackStack(props) {
         previousScreen,
         setActiveScreen,
         showBattleResultModal,
-        setShowBattleResultModal,
+        onCloseBattleResult,
         showHintRewardModal,
         setShowHintRewardModal,
         showNewGameModal,
@@ -56,6 +63,14 @@ export function useBackStack(props) {
         t
       } = stateRef.current;
 
+      // 0. A replay lies over everything, the 1v1 result included. Back closes
+      // only the replay: the room under it stays, rematch and all.
+      if (openReplayId()) {
+        soundHaptic.playSelectSound();
+        closeReplay();
+        return true;
+      }
+
       // 1. Priority 1: Open Modals / Dialogs / Matchmaking Search
       if (isMatchSearching) {
         if (onCancelQuickMatch) {
@@ -63,12 +78,15 @@ export function useBackStack(props) {
         }
         return true;
       }
+      // Back on a battle result = its own lobby button. That button's handler is
+      // what clears showBattleResultModal; App used to hand this hook a no-op
+      // setter instead, so after one back the flag stayed on and every later back
+      // came into this branch again — the player was stuck in the lobby, and a
+      // dialog on top of it (the review prompt) could not be closed with back
+      // (Flip5, 2026-10-01).
       if (showBattleResultModal) {
-        setShowBattleResultModal(false);
-        const isAIBattle = activeBattleRoom?.isAIBattle || activeBattleRoom?.opponentName?.includes('AI') || activeBattleRoom?.opponentName?.toLowerCase().includes('bot');
-        battleService.leaveRoom();
+        onCloseBattleResult();
         aiBotService.stopMatch();
-        setActiveScreen(isAIBattle ? 'aiBattle' : 'battleLobby');
         return true;
       }
       if (showHintRewardModal) {
@@ -134,18 +152,17 @@ export function useBackStack(props) {
 
       // 4. Priority 4: Main Home Screen (activeScreen === 'home')
       if (activeScreen === 'home') {
-        if (now - lastBackPressTimeRef.current < 2000) {
+        if (now - homeBackAtRef.current < 2000) {
           try {
             CapacitorApp.exitApp();
           } catch (e) {}
           return false;
-        } else {
-          lastBackPressTimeRef.current = now;
-          if (showExitToast) {
-            showExitToast(t('common.exitAppPrompt'));
-          }
-          return true;
         }
+        homeBackAtRef.current = now;
+        if (showExitToast) {
+          showExitToast(t('common.exitAppPrompt'));
+        }
+        return true;
       }
 
       return false;

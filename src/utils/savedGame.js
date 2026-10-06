@@ -11,7 +11,12 @@
  * The board is also checked for shape: a save whose board was not a 9x9 grid of
  * digits made Resume throw and blank the whole screen (RT-6, F13). Such a save is
  * not offered, rather than half-loaded.
+ *
+ * A killer must also bring its cages: without them the board is a near-empty grid
+ * that no rule pins down, so a killer save that lost them is not offered either.
+ * A save from before puzzle kinds existed has no `variant` and is classic.
  */
+import { isValidCageSet } from '../engine/variants.js';
 
 const isGrid = (g, min, max) =>
   Array.isArray(g) && g.length === 9 &&
@@ -26,5 +31,6 @@ export function isResumableGame(saved) {
   if (saved.notes != null && !(Array.isArray(saved.notes) && saved.notes.length === 9 &&
     saved.notes.every((row) => Array.isArray(row) && row.length === 9 && row.every(Array.isArray)))) return false;
   if (saved.mistakes != null && !(Number.isFinite(saved.mistakes) && saved.mistakes >= 0)) return false;
+  if (saved.variant === 'killer' && !isValidCageSet(saved.cages)) return false;
   return true;
 }

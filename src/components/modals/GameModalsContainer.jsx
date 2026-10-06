@@ -29,6 +29,7 @@ export function GameModalsContainer({
   // Victory
   isVictory,
   gameMode = 'classic',
+  variant = 'classic',
   timerSeconds,
   mistakes,
   hintsUsed = 0,
@@ -93,12 +94,13 @@ export function GameModalsContainer({
         <VictoryModal
           timerSeconds={timerSeconds}
           gameMode={gameMode}
+          variant={variant}
           mistakes={mistakes}
           hintsUsed={hintsUsed}
           level={level}
           onNextGame={() => onNextGame(level)}
           onReturnHome={onReturnHome}
-          onOpenLeaderboard={onOpenLeaderboard}
+          onOpenLeaderboard={variant === 'killer' ? null : onOpenLeaderboard}
         />
       )}
 

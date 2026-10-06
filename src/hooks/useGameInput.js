@@ -3,8 +3,7 @@ import {
   cloneGrid,
   calculateRemainingCounts,
   findNextIncompleteNumber,
-  autoRemoveNotes,
-  solveSudoku
+  autoRemoveNotes
 } from '../engine/SudokuEngine.js';
 import { soundHaptic } from '../utils/soundHaptic.js';
 import { loadSettings } from '../utils/storage.js';
@@ -12,20 +11,7 @@ import { battleService } from '../firebase/battleService.js';
 import { handleGameWinLogic } from '../utils/gameCompletion.js';
 import { handleMistakeLogic } from '../utils/gameMistakeHandler.js';
 import { useKeypadActions } from './useKeypadActions.js';
-
-export function ensureValidSolution(initialGrid, existingSolution) {
-  if (
-    existingSolution &&
-    existingSolution.length === 9 &&
-    existingSolution.every(row => row && row.length === 9 && row.every(val => val >= 1 && val <= 9))
-  ) {
-    return existingSolution;
-  }
-  // solveSudoku fills the grid in place and returns a boolean, so solve a copy
-  // and hand back that copy — never the boolean, and never the caller's grid.
-  const candidate = cloneGrid(initialGrid);
-  return solveSudoku(candidate) ? candidate : existingSolution;
-}
+import { ensureValidSolution } from '../engine/puzzleSetup.js';
 
 export function useGameInput({
   board,
@@ -69,6 +55,8 @@ export function useGameInput({
   showToast,
   runTimelineRef,
   comboCount = 0,
+  variant = 'classic',
+  cages = null,
   t
 }) {
   const conflictTimeoutRef = useRef(null);
@@ -79,7 +67,7 @@ export function useGameInput({
     setSelectedCell([r, c]);
 
     const cellVal = board[r][c];
-    const validSolution = ensureValidSolution(initialBoard, solutionBoard);
+    const validSolution = ensureValidSolution(initialBoard, solutionBoard, cages);
     const isErrorCell = cellVal !== 0 && cellVal !== validSolution[r][c];
 
     if (!isFastEntryMode) {
@@ -114,7 +102,7 @@ export function useGameInput({
     const [r, c] = targetCell;
     if (initialBoard[r][c] !== 0) return;
 
-    const validSolution = ensureValidSolution(initialBoard, solutionBoard);
+    const validSolution = ensureValidSolution(initialBoard, solutionBoard, cages);
     const isCorrectCell = board[r][c] !== 0 && board[r][c] === validSolution[r][c];
     if (!isNoteMode && isCorrectCell && board[r][c] !== num) return;
 
@@ -172,7 +160,7 @@ export function useGameInput({
 
     if (num !== validSolution[r][c] && autoCheckMistakes) {
       if (activeBattleRoom) {
-        battleService.sendProgress(calculateRemainingCounts(nextBoard), mistakes + 1);
+        battleService.sendProgress(calculateRemainingCounts(nextBoard), mistakes + 1, nextBoard);
       }
       handleMistakeLogic({
         nextBoard,
@@ -187,7 +175,9 @@ export function useGameInput({
         conflictTimeoutRef,
         limitMistakes,
         setIsGameOver,
-        t
+        t,
+        variant,
+        cages
       });
       return;
     }
@@ -211,11 +201,11 @@ export function useGameInput({
     }
 
     if (settings.autoRemoveNotes ?? true) {
-      setNotes(prev => autoRemoveNotes(prev, r, c, num));
+      setNotes(prev => autoRemoveNotes(prev, r, c, num, cages));
     }
 
     if (activeBattleRoom) {
-      battleService.sendProgress(calculateRemainingCounts(nextBoard), mistakes);
+      battleService.sendProgress(calculateRemainingCounts(nextBoard), mistakes, nextBoard);
     }
 
     const isComplete = nextBoard.every((row, rIdx) =>
@@ -228,6 +218,7 @@ export function useGameInput({
         level,
         timerSeconds,
         gameMode,
+        variant,
         mistakes,
         activeDailyDateKey,
         clearGameState,

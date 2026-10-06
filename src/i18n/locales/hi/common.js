@@ -73,6 +73,8 @@ export const common = {
     colDuplicate: '⚠️ स्तंभ {col} में संख्या {num} पहले से मौजूद है! {suffix}',
     multipleDuplicates: '⚠️ इस वर्ग/पंक्ति/स्तंभ में संख्या {num} पहले से मौजूद है! {suffix}',
     notSolution: '⚠️ संख्या {num} इस सेल का सही उत्तर नहीं है! {suffix}',
+    cageDuplicate: '⚠️ इस समूह में संख्या {num} पहले से मौजूद है! {suffix}',
+    cageSum: '⚠️ इस समूह का जोड़ अब {sum} नहीं बनता! {suffix}',
     boardFullHasMistakes: '⚠️ बोर्ड भरा है लेकिन कुछ गलतियां हैं। पुनः जांचें!',
     timeAttackSuffix: '(गलती {count} | +10 सेकंड दंड)',
     classicSuffix: '(गलतियां {count}/3)'

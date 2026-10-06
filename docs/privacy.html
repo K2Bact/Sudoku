@@ -179,6 +179,7 @@
       <p>클리어 기록, 승률, Logic Score, 업적, 보유 힌트 수량, 테마 등 설정은 기기의 로컬 저장소(localStorage)에 저장됩니다.</p>
       <ul>
         <li><strong>안드로이드 자동 백업(Google 드라이브)은 사용하지 않습니다</strong>(1.2.7부터). 기기 밖에 남는 사본은 3절의 Google Play 게임즈 백업뿐이며, Play 게임즈에 로그인하지 않으면 기록은 이 기기에만 남습니다. 일부 제조사의 기기 간 데이터 이전 기능은 운영체제가 앱 설정과 관계없이 데이터를 옮길 수 있습니다.</li>
+        <li><strong>1v1 대전 복기</strong>(최근 20판과 즐겨찾기한 판의 수와 시각)도 로컬 저장소에 저장되며, 3절의 클라우드 백업에는 포함되지 않습니다.</li>
       </ul>
     </div>
 
@@ -200,8 +201,9 @@
         <li>그 ID로 만든 자동 닉네임(Player_xxxx)</li>
         <li>퍼즐 진행률 등 대전 상태</li>
         <li>Firebase 익명 인증이 발급하는 무작위 식별자</li>
+        <li>경기가 끝난 뒤, 두 사람 모두 [설정]의 <strong>대전 기록 공유</strong>를 켜 두었을 때만: 복기를 위해 그 판에서 둔 수와 시각(어느 칸에 어떤 숫자·메모를 언제 넣고 지웠는지). 기본은 켜짐이며, 끄면 내 수를 보내지 않고 상대의 수도 받지 않습니다.</li>
       </ul>
-      <p>이 정보는 이름이나 Google 계정과 연결되지 않으며, 대전 상대에게 닉네임과 진행률이 표시됩니다.</p>
+      <p>이 정보는 이름이나 Google 계정과 연결되지 않으며, 대전 상대에게 닉네임과 진행률이, 두 사람 모두 공유했다면 둔 수와 시각이 표시됩니다.</p>
     </div>
 
     <div class="card">
@@ -263,6 +265,7 @@
       <p>Clear records, win rate, Logic Score, achievements, hint balance and settings such as your theme are kept in the device's local storage (localStorage).</p>
       <ul>
         <li><strong>Android Auto Backup (Google Drive) is not used</strong> (from version 1.2.7). The only copy kept off the device is the Google Play Games backup in section 3; if you are not signed in to Play Games, your records stay only on this device. Some manufacturers' device-to-device transfer tools may still copy data between phones regardless of this app setting.</li>
+        <li><strong>1v1 replays</strong> (the moves and their timing for your last 20 matches and the ones you star) are also kept in local storage, and are not included in the cloud backup in section 3.</li>
       </ul>
     </div>
 
@@ -284,8 +287,9 @@
         <li>an automatic nickname derived from it (Player_xxxx)</li>
         <li>match state such as your puzzle progress</li>
         <li>a random identifier issued by Firebase Anonymous Authentication</li>
+        <li>after the match, and only if both players have <strong>Share match moves</strong> on in Settings: for the replay, the moves and their timing in that match (which digit or note went into which cell, and when, and what was erased). It is on by default; turn it off and your moves are not sent, and you do not receive your opponent's.</li>
       </ul>
-      <p>None of this is linked to your name or your Google account. Your opponent sees your nickname and progress.</p>
+      <p>None of this is linked to your name or your Google account. Your opponent sees your nickname and progress, and, if you both share, your moves and their timing.</p>
     </div>
 
     <div class="card">
@@ -347,6 +351,7 @@
       <p>クリア記録、勝率、ロジックスコア、実績、所持ヒント数、テーマなどの設定は、端末のローカルストレージ（localStorage）に保存されます。</p>
       <ul>
         <li><strong>Android の自動バックアップ（Google ドライブ）は使用しません</strong>（1.2.7 以降）。端末の外に残るコピーは第3節に記載する Google Play ゲームのバックアップのみで、Play ゲームにログインしていない場合、記録はこの端末にのみ残ります。一部のメーカーの端末間データ移行機能は、このアプリの設定に関係なくデータを移すことがあります。</li>
+        <li><strong>1v1対戦の振り返り</strong>（直近20試合とお気に入りにした試合の手と時刻）もローカルストレージに保存され、第3節のクラウドバックアップには含まれません。</li>
       </ul>
     </div>
 
@@ -368,8 +373,9 @@
         <li>そのIDから作られる自動ニックネーム（Player_xxxx）</li>
         <li>パズルの進行状況などの対戦状態</li>
         <li>Firebase 匿名認証が発行するランダムな識別子</li>
+        <li>試合の終了後、双方が［設定］の<strong>対戦記録の共有</strong>をオンにしている場合のみ：振り返りのため、その試合の手と時刻（どのマスにどの数字・メモをいつ入れ、消したか）。初期設定はオンで、オフにすると自分の手は送信されず、相手の手も受け取りません。</li>
       </ul>
-      <p>これらは氏名や Google アカウントとは結び付きません。対戦相手にはニックネームと進行状況が表示されます。</p>
+      <p>これらは氏名や Google アカウントとは結び付きません。対戦相手にはニックネームと進行状況が、双方が共有している場合は手と時刻が表示されます。</p>
     </div>
 
     <div class="card">

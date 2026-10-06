@@ -73,6 +73,8 @@ export const common = {
     colDuplicate: '⚠️ الرقم {num} موجود بالفعل في العمود {col}! {suffix}',
     multipleDuplicates: '⚠️ الرقم {num} موجود بالفعل في نفس المربع أو الصف أو العمود! {suffix}',
     notSolution: '⚠️ الرقم {num} ليس هو الحل الصحيح لهذه الخلية! {suffix}',
+    cageDuplicate: '⚠️ الرقم {num} موجود بالفعل في هذا القفص! {suffix}',
+    cageSum: '⚠️ مجموع هذا القفص لم يعد {sum}! {suffix}',
     boardFullHasMistakes: '⚠️ اللوحة ممتلئة ولكن بها بعض الأخطاء. يُرجى المراجعة!',
     timeAttackSuffix: '(خطأ {count} | عقوبة +10 ث)',
     classicSuffix: '(الأخطاء {count}/3)'

@@ -108,6 +108,26 @@ async function run() {
     await pageB.waitForSelector('.game-screen-wrapper', { timeout: PAIRING_MS });
     console.log('✅ Real Match Paired! Both Player A & B are actively in 1v1 Game!');
 
+    // Replays (I-1): B plays through the real board — a digit, a second digit
+    // undone, a note — so the recorder is fed by the game itself. Gate 2-26 calls
+    // the recorder directly and 3-17 opens stored replays; neither would notice if
+    // the game stopped feeding it (review, 2026-10-01).
+    console.log('🎬 3a. Player B plays a digit, undoes a second one, writes a note...');
+    const bRoom = await pageB.evaluate(() => ({ p: window.suidokuBattle.currentRoom.puzzle, s: window.suidokuBattle.currentRoom.solution }));
+    const bEmpty = [];
+    for (let i = 0; i < 81; i++) if (!bRoom.p[Math.floor(i / 9)][i % 9]) bEmpty.push(i);
+    const digitAt = (i) => bRoom.s[Math.floor(i / 9)][i % 9];
+    const tapB = async (sel, n) => { await pageB.locator(sel).nth(n).click(); await pageB.waitForTimeout(150); };
+    await tapB('.game-screen-wrapper .sudoku-cell', bEmpty[0]);
+    await tapB('.number-pad .num-btn', digitAt(bEmpty[0]) - 1);
+    await tapB('.game-screen-wrapper .sudoku-cell', bEmpty[1]);
+    await tapB('.number-pad .num-btn', digitAt(bEmpty[1]) - 1);
+    await tapB('.action-toolbar .action-btn', 0); // undo
+    await tapB('.action-toolbar .action-btn', 2); // notes on
+    await tapB('.game-screen-wrapper .sudoku-cell', bEmpty[2]);
+    await tapB('.number-pad .num-btn', 0);
+    await tapB('.action-toolbar .action-btn', 2); // notes off
+
     // Player A wins
     console.log('🏆 3. Player A completes puzzle (100%)...');
     await pageA.evaluate(() => {
@@ -119,6 +139,21 @@ async function run() {
     await pageA.waitForSelector('.battle-result-card', { timeout: 5000 });
     await pageB.waitForSelector('.battle-result-card', { timeout: 5000 });
     console.log('✅ Battle Result modal displayed on both screens!');
+
+    // Both share by default: B's moves, recorded from its own board, reach A.
+    const replayOf = (page) => page.evaluate(() => JSON.parse(localStorage.getItem('suidoku_replays_v1') || '[]')[0] || null);
+    let ra = null;
+    for (let i = 0; i < 40 && ra?.opp?.shareState !== 'shared'; i++) { await pageA.waitForTimeout(200); ra = await replayOf(pageA); }
+    const rb = await replayOf(pageB);
+    if (!rb) throw new Error('Player B has no replay of the match it played');
+    const bEvents = rb.me.events;
+    if (!bEvents.some((e) => e[1] === 'v' && e[2] === bEmpty[0] && e[3] === digitAt(bEmpty[0]))) throw new Error("B's replay is missing the digit B placed on the board");
+    if (!bEvents.some((e) => e[1] === 'n' && e[2] === bEmpty[2] && !e[4])) throw new Error("B's replay is missing the note B wrote — the board is no longer recorded as it renders");
+    if (!bEvents.some((e) => e[4] === 'u')) throw new Error("B's replay does not mark the undo as an undo");
+    if (ra?.opp?.shareState !== 'shared' || ra.opp.events?.length !== bEvents.length) {
+      throw new Error(`Player A did not receive B's moves (${ra?.opp?.shareState}, ${ra?.opp?.events?.length} of ${bEvents.length})`);
+    }
+    console.log(`✅ 3b. Replays: B recorded ${bEvents.length} events from its own board (digit, undo, note) and A received all of them`);
 
     // Player A requests Rematch
     console.log('⚔️ 4. Player A clicks [재대결 신청]...');

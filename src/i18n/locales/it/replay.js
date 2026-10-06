@@ -1,0 +1,48 @@
+/**
+ * 1v1 replays (I-1, 2026-09-30).
+ */
+export const replay = {
+  replay: {
+    title: 'Rivedi partita',
+    missing: 'Questa partita non è più su questo dispositivo.',
+    won: 'Vittoria',
+    lost: 'Sconfitta',
+    vs: 'contro {name}',
+    myBoard: 'La mia griglia',
+    theirBoard: 'Griglia avversaria',
+    share: {
+      shared: 'Hai anche le mosse dell\'avversario. Passa alla sua griglia per rivederle.',
+      pending: 'In attesa delle mosse dell\'avversario…',
+      declined: 'L\'avversario ha disattivato la condivisione delle mosse. Si vedono solo i suoi progressi.',
+      off: 'La condivisione delle mosse è disattivata, quindi quelle dell\'avversario non sono arrivate. Puoi attivarla nelle Impostazioni.',
+      unsupported: 'L\'avversario non ha risposto: forse la sua app è una versione precedente o la connessione si è interrotta. Si vedono solo i suoi progressi.',
+      invalid: 'Le mosse ricevute non corrispondono a questo sudoku e non sono state usate. Si vedono solo i suoi progressi.',
+      agreed: 'Anche l\'avversario condivide. Ricezione delle sue mosse…',
+      missed: 'La connessione è terminata prima che arrivassero le mosse dell\'avversario. Si vedono solo i suoi progressi.',
+    },
+    truncated: 'La partita era lunga: sono state salvate solo le prime {count} azioni.',
+    timeline: 'Tempo di gioco',
+    play: 'Riproduci',
+    pause: 'Pausa',
+    prevMove: 'Mossa precedente',
+    nextMove: 'Mossa successiva',
+    speed: 'Velocità',
+    pin: 'Aggiungi ai preferiti',
+    unpin: 'Rimuovi dai preferiti',
+    pinFull: 'Puoi tenere fino a {count} preferiti. Rimuovine uno e riprova.',
+    sumTime: 'Tempo',
+    sumMistakes: 'Errori',
+    sumMoves: 'Cifre inserite',
+    sumPace: 'Al minuto',
+    sumLongestPause: 'Pausa più lunga',
+    sumNotes: 'Note',
+    sumUndos: 'Annulla',
+    listTitle: 'Rivedi i duelli',
+    listEmpty: 'Ancora nessuna partita da rivedere. Finisci un duello 1v1 e comparirà qui.',
+    open: 'Rivedi partita',
+    settingTitle: 'Condividi le mosse',
+    settingDesc: 'Dopo un 1v1 scambi con l\'avversario le mosse della partita e i loro tempi, per rivedere ciascuno la griglia dell\'altro. Disattivato: le tue mosse non vengono inviate e non ricevi le sue.',
+    lobbyNoteOn: 'A fine partita tu e l\'avversario vi scambiate le mosse per rivederla. Puoi disattivarlo nelle Impostazioni.',
+    lobbyNoteOff: 'La condivisione delle mosse è disattivata. Si rivedono solo le tue mosse e i progressi dell\'avversario.',
+  }
+};

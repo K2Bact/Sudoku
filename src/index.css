@@ -351,8 +351,11 @@ html[dir="rtl"] .keypad-grid,
 /* Academy grids too. They were missing from this list, so in Arabic every practice
    and diagram board drew mirrored: r1c1 on the right, while the guide text names
    cells as rXcY counted from the left. Candidate marks follow the same 1-9 layout
-   as the game board, so they stay left-to-right as well. */
-html[dir="rtl"] .academy-screen-container [class*="-board"],
+   as the game board, so they stay left-to-right as well.
+   Not .theory-board-diagram: it also matches "-board", but it is the frame around a
+   board — its tabs and Arabic caption turned left-to-right with it (SA-RTL04,
+   2026-10-01). The board inside it is a .mini-9x9-full-board and still matches. */
+html[dir="rtl"] .academy-screen-container [class*="-board"]:not(.theory-board-diagram),
 html[dir="rtl"] .academy-screen-container .mini-row-grid,
 html[dir="rtl"] .academy-screen-container .mini-note-grid,
 html[dir="rtl"] .academy-screen-container .practice-keypad-grid {

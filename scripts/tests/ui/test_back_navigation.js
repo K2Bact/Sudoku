@@ -2,6 +2,9 @@ import { chromium } from 'playwright';
 import { spawn, execSync } from 'child_process';
 import http from 'http';
 
+const { en } = await import('../../../src/i18n/locales/en.js');
+const EXIT_PROMPT = en.common.exitAppPrompt;
+
 const PORT = 5197;
 const PREVIEW_URL = 'http://localhost:' + PORT;
 
@@ -74,6 +77,7 @@ async function run() {
     await page.goto(PREVIEW_URL);
     await page.evaluate(() => {
       localStorage.setItem('suidoku_review_prompted', 'done');
+      localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en' }));
       localStorage.setItem('suidoku_daily_reward_v1', JSON.stringify({ claimedDate: new Date().toISOString().slice(0, 10) }));
     });
     await page.reload();
@@ -112,6 +116,38 @@ async function run() {
 
     const backInHome = await page.waitForSelector('.battle-card-banner', { timeout: 2000 }).catch(() => null);
     assert(backInHome !== null, 'User returned to Home screen on second Back press');
+
+    // 2026-10-01, both found on a Flip5 — neither had ever worked.
+    console.log('\nSTEP 5: One Back on Home says "press again" and stays...');
+    await page.waitForTimeout(700); // past the 600ms debounce
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(300);
+    const toast = await page.locator('.theme-toast-banner').textContent({ timeout: 1000 }).catch(() => null);
+    assert(toast === EXIT_PROMPT, `The first Back on Home shows the exit prompt ("${toast}")`);
+    assert(await page.locator('.battle-card-banner').count() === 1, 'The first Back on Home keeps the app on Home');
+
+    console.log('\nSTEP 6: After a battle result is closed with Back, Back still works...');
+    await page.waitForTimeout(2200); // let the exit window close, so this Back cannot exit
+    await page.click('.ai-card-banner');
+    await page.click('.btn-battle-action', { timeout: 3000 });
+    await page.waitForSelector('.game-screen-wrapper', { timeout: 5000 });
+    const room = await page.evaluate(() => ({ p: window.suidokuBattle.currentRoom.puzzle, s: window.suidokuBattle.currentRoom.solution }));
+    const empties = [];
+    for (let i = 0; i < 81; i++) if (!room.p[Math.floor(i / 9)][i % 9]) empties.push(i);
+    for (const cell of empties.slice(0, 3)) {
+      await page.locator('.game-screen-wrapper .sudoku-cell').nth(cell).click();
+      await page.locator('.number-pad .num-btn').nth(room.s[Math.floor(cell / 9)][cell % 9] % 9).click();
+      await page.waitForTimeout(150);
+    }
+    const result = await page.waitForSelector('.battle-result-card', { timeout: 8000 }).catch(() => null);
+    assert(result !== null, 'Three wrong digits end the AI match on its result screen');
+    await page.waitForTimeout(700);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(700);
+    assert(await page.locator('.battle-result-card').count() === 0, 'Back on the battle result closes it');
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(700);
+    assert(await page.locator('.battle-card-banner').count() === 1, 'The next Back goes Home — not stuck on the battle screen');
 
     await browser.close();
 

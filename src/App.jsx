@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AppScreenRouter } from './components/screens/AppScreenRouter';
 import { GameModalsContainer } from './components/modals/GameModalsContainer';
 import { RematchToastBanner } from './components/battle/RematchToastBanner';
+import { ReplayHost } from './components/replay/ReplayHost';
 import { soundHaptic } from './utils/soundHaptic';
 import { battleService } from './firebase/battleService';
 import { aiBotService } from './engine/aiBotService';
@@ -64,7 +65,7 @@ export function App() {
   useCloudAutoSync();
   const game = useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey, showToast);
   const {
-    level, gameMode, mistakes, setMistakes, hintsUsedCount,
+    level, gameMode, variant, mistakes, setMistakes, hintsUsedCount,
     hasRevived, setHasRevived, timerSeconds, setTimerSeconds,
     isGameOver, setIsGameOver, isVictory,
     startNewGame, resumeSavedGame, handleRewardHint
@@ -80,7 +81,7 @@ export function App() {
   useBackStack({
     activeScreen, previousScreen, setActiveScreen,
     isMatchSearching, onCancelQuickMatch: handleCancelQuickMatch,
-    showBattleResultModal, setShowBattleResultModal: () => {},
+    showBattleResultModal, onCloseBattleResult: handleCloseBattleResult,
     showHintRewardModal: game.showHintRewardModal,
     setShowHintRewardModal: game.setShowHintRewardModal,
     showNewGameModal, setShowNewGameModal,
@@ -192,6 +193,7 @@ export function App() {
         onReturnHome={handleReturnHome}
         level={level}
         gameMode={gameMode}
+        variant={variant}
         isVictory={isVictory}
         timerSeconds={timerSeconds}
         mistakes={mistakes}
@@ -227,6 +229,9 @@ export function App() {
         onCloseStoreReviewModal={() => setShowStoreReviewModal(false)}
         achievementToast={achievementToast}
       />
+
+      {/* A 1v1 replay, over whatever is showing (replayViewer.js). */}
+      <ReplayHost matchLive={activeBattleRoom?.status === 'playing'} />
     </div>
   );
 }

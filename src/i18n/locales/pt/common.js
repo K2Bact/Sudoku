@@ -73,6 +73,8 @@ export const common = {
     colDuplicate: '⚠️ O número {num} já existe na coluna {col}! {suffix}',
     multipleDuplicates: '⚠️ O número {num} já existe no mesmo bloco / linha / coluna! {suffix}',
     notSolution: '⚠️ O número {num} não é a solução correta para esta célula! {suffix}',
+    cageDuplicate: '⚠️ O número {num} já está nesta gaiola! {suffix}',
+    cageSum: '⚠️ Esta gaiola não soma mais {sum}! {suffix}',
     boardFullHasMistakes: '⚠️ O tabuleiro está cheio, mas contém erros. Verifique novamente!',
     timeAttackSuffix: '(Erro {count} | penalidade de +10s)',
     classicSuffix: '(Erros {count}/3)'

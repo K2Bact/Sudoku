@@ -1,0 +1,48 @@
+/**
+ * 1v1 replays (I-1, 2026-09-30).
+ */
+export const replay = {
+  replay: {
+    title: '复盘',
+    missing: '此复盘已不在本设备上。',
+    won: '胜利',
+    lost: '失败',
+    vs: '对手 {name}',
+    myBoard: '我的盘面',
+    theirBoard: '对手盘面',
+    share: {
+      shared: '已收到对手的步骤，可在复盘中查看对手盘面。',
+      pending: '正在等待对手的步骤…',
+      declined: '对手关闭了对战记录共享，仅显示其进度。',
+      off: '您关闭了对战记录共享，因此未接收对手的步骤。可在设置中开启。',
+      unsupported: '未收到对手的回应，可能是对手的应用版本较旧或连接已中断。仅显示其进度。',
+      invalid: '收到的对手记录与本题不符，未予使用，仅显示其进度。',
+      agreed: '对手也开启了共享，正在接收对手的步骤…',
+      missed: '对手的步骤送达前连接已结束，未能接收，仅显示其进度。',
+    },
+    truncated: '记录过长，仅保留了前 {count} 个操作。',
+    timeline: '对战时间',
+    play: '播放',
+    pause: '暂停',
+    prevMove: '上一步',
+    nextMove: '下一步',
+    speed: '播放速度',
+    pin: '收藏',
+    unpin: '取消收藏',
+    pinFull: '最多可收藏 {count} 个复盘。请先取消收藏一个再试。',
+    sumTime: '用时',
+    sumMistakes: '失误',
+    sumMoves: '填入数字',
+    sumPace: '每分钟',
+    sumLongestPause: '最长思考',
+    sumNotes: '笔记',
+    sumUndos: '撤销',
+    listTitle: '对战复盘',
+    listEmpty: '还没有复盘。完成一场 1v1 对决后会保存在这里。',
+    open: '查看复盘',
+    settingTitle: '对战记录共享',
+    settingDesc: '1v1 结束后，与对手互换本局的步骤和时间，彼此复盘对方的盘面。关闭后不发送您的步骤，也不接收对手的步骤。',
+    lobbyNoteOn: '对战结束后，双方互换步骤以便复盘。可在设置中关闭。',
+    lobbyNoteOff: '对战记录共享已关闭。复盘中只保留您的步骤和对手的进度。',
+  }
+};

@@ -11,6 +11,7 @@ import { loadSettings } from '../utils/storage';
 export function VictoryModal({
   level = 3,
   gameMode = 'classic',
+  variant = 'classic',
   timerSeconds,
   timeSeconds,
   mistakes = 0,
@@ -50,14 +51,9 @@ export function VictoryModal({
   const handleShare = async () => {
     soundHaptic.playSelectSound();
     const modeLabel = gameMode === 'timeAttack' ? '[⚡Time Attack]' : gameMode === 'timeLimit' ? '[⏳Survival]' : '[Classic]';
-    const shareText = t('modals.victory.shareText', {
-      mode: modeLabel,
-      level,
-      name: t(`levels.${level}`),
-      time: formatTime(actualSeconds),
-      rank: rankInfo.rank,
-      mistakes
-    });
+    const shared = { mode: modeLabel, level, name: t(`levels.${level}`), time: formatTime(actualSeconds), rank: rankInfo.rank, mistakes };
+    // A killer has no grade (see the banner below), so its line leaves the grade out.
+    const shareText = variant === 'killer' ? t('killer.shareText', shared) : t('modals.victory.shareText', shared);
     const res = await shareContent({
       title: t('modals.victory.title'),
       text: shareText,
@@ -83,8 +79,10 @@ export function VictoryModal({
         <h2>{t('modals.victory.title')}</h2>
         <p className="modal-desc" style={{ marginBottom: '12px' }}>{t('modals.victory.desc')}</p>
 
-        {/* Speedrun Rank Banner */}
-        <div style={{
+        {/* Speedrun Rank Banner. Its times are set for classic puzzles; a killer
+            takes longer by design and would always get the lowest grade. */}
+        {variant !== 'killer' && (
+        <div className="victory-rank-banner" style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -103,6 +101,7 @@ export function VictoryModal({
           <Medal size={18} />
           <span>{t('modals.victory.rankLabel', { title: t(`modals.victory.ranks.${rankInfo.rank}`) })}</span>
         </div>
+        )}
 
         <div className="stats-grid">
           <div className="stat-box">

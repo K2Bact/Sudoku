@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { cloneGrid } from '../engine/SudokuEngine';
 import { soundHaptic } from '../utils/soundHaptic';
+import { markCause } from '../utils/replay/matchRecorder.js';
 
 /**
  * useGameHistory.js
@@ -45,6 +46,7 @@ export function useGameHistory({
 
     const lastState = history[history.length - 1];
     setHistory(prev => prev.slice(0, prev.length - 1));
+    markCause('u'); // the replay records these cells as undone, not typed (I-1)
     setBoard(cloneGrid(lastState.board));
     setNotes(lastState.notes.map(row => row.map(col => [...col])));
     setActiveNumber(lastState.activeNumber);

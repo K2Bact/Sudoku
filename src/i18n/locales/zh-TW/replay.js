@@ -1,0 +1,48 @@
+/**
+ * 1v1 replays (I-1, 2026-09-30).
+ */
+export const replay = {
+  replay: {
+    title: '復盤',
+    missing: '此復盤已不在本裝置上。',
+    won: '勝利',
+    lost: '落敗',
+    vs: '對手 {name}',
+    myBoard: '我的盤面',
+    theirBoard: '對手盤面',
+    share: {
+      shared: '已收到對手的步驟，可在復盤中查看對手盤面。',
+      pending: '正在等待對手的步驟…',
+      declined: '對手關閉了對戰紀錄分享，僅顯示其進度。',
+      off: '您關閉了對戰紀錄分享，因此未接收對手的步驟。可在設定中開啟。',
+      unsupported: '未收到對手的回應，可能是對手的應用程式版本較舊或連線已中斷。僅顯示其進度。',
+      invalid: '收到的對手紀錄與本題不符，未予使用，僅顯示其進度。',
+      agreed: '對手也開啟了分享，正在接收對手的步驟…',
+      missed: '對手的步驟送達前連線已結束，未能接收，僅顯示其進度。',
+    },
+    truncated: '紀錄過長，僅保留了前 {count} 個操作。',
+    timeline: '對戰時間',
+    play: '播放',
+    pause: '暫停',
+    prevMove: '上一步',
+    nextMove: '下一步',
+    speed: '播放速度',
+    pin: '加入最愛',
+    unpin: '移除最愛',
+    pinFull: '最多可加入 {count} 個最愛。請先移除一個再試。',
+    sumTime: '用時',
+    sumMistakes: '失誤',
+    sumMoves: '填入數字',
+    sumPace: '每分鐘',
+    sumLongestPause: '最長思考',
+    sumNotes: '筆記',
+    sumUndos: '復原',
+    listTitle: '對戰復盤',
+    listEmpty: '還沒有復盤。完成一場 1v1 對決後會保存在這裡。',
+    open: '查看復盤',
+    settingTitle: '對戰紀錄分享',
+    settingDesc: '1v1 結束後，與對手互換本局的步驟和時間，彼此復盤對方的盤面。關閉後不傳送您的步驟，也不接收對手的步驟。',
+    lobbyNoteOn: '對戰結束後，雙方互換步驟以便復盤。可在設定中關閉。',
+    lobbyNoteOff: '對戰紀錄分享已關閉。復盤中只保留您的步驟和對手的進度。',
+  }
+};

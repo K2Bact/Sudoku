@@ -7,6 +7,20 @@ import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
 import { ACADEMY_STAGES } from '../data/academyStrategies';
 import { pickLocale } from './academy/langHelper';
+import { splitTrailingId } from '../utils/bidi';
+
+// The badge with its stage number (2-1) kept left-to-right in Arabic (utils/bidi.js).
+function BadgeText({ text }) {
+  const parts = splitTrailingId(text);
+  if (!parts) return text;
+  return (
+    <>
+      {parts[0]}
+      {parts[1]}
+      <bdi dir="ltr">{parts[2]}</bdi>
+    </>
+  );
+}
 
 export function AcademyScreen({ onBack }) {
   const { t, activeLanguage } = useTranslation();
@@ -87,7 +101,7 @@ export function AcademyScreen({ onBack }) {
                       return <h4 className="strategy-title"><span className="strat-main-name">{fullTitle}</span></h4>;
                     })()}
                     <span className={`strategy-badge ${currentStage.badgeClass || 'beginner'}`}>
-                      {pickLocale(strat.badge, lang)}
+                      <BadgeText text={pickLocale(strat.badge, lang)} />
                     </span>
                   </div>
                   <p className="strategy-desc">{pickLocale(strat.desc, lang)}</p>

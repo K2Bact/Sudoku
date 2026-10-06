@@ -1,0 +1,105 @@
+{
+  "gate": "2-27",
+  "name": "Killer Sudoku Puzzles Are Sound (cages, sums, one solution, levels)",
+  "command": "node scripts/tests/unit/test_killer_engine.js",
+  "greenMarker": "[2-27] PASSED",
+  "note": "Written with the gate on 2026-10-01, with the killer engine itself. Each mutation breaks one promise a killer puzzle makes to the player.",
+  "mutations": [
+    {
+      "name": "the generator ships the first cut without asking if it has one answer",
+      "why": "The promise itself. A cut with two answers is accepted, and a player who fills in the other answer is told they are wrong. The gate counts answers with its own brute force, so the generator cannot mark its own work.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "    if (result.count === 1 && !result.aborted && guesses <= config.guesses) return { cages, givens, guesses };",
+      "replace": "    if (true) return { cages, givens, guesses };",
+      "expectFailure": "a killer must have exactly one solution"
+    },
+    {
+      "name": "the level's limit on wrong turns is dropped",
+      "why": "Puzzles stay unique but any of them may need a long chain of guesses; a Lv.4 measured at 1,902 wrong turns before the cap. The level stops meaning anything.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "    if (result.count === 1 && !result.aborted && guesses <= config.guesses) return { cages, givens, guesses };",
+      "replace": "    if (result.count === 1 && !result.aborted) return { cages, givens, guesses };",
+      "expectFailure": "wrong turns, the level allows"
+    },
+    {
+      "name": "a cage may take a cell whose digit it already holds",
+      "why": "The rule of a cage: no digit twice. Such a cage contradicts the grid it was cut from, so the solver finds no answer and the generator refuses to ship it — that refusal is what this proves. The gate's own digit check is proven by faking the shipped solution, below.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "          if (cageOf[n] < 0 && !(used & (1 << digit[n])) && !options.includes(n)) options.push(n);",
+      "replace": "          if (cageOf[n] < 0 && !options.includes(n)) options.push(n);",
+      "expectFailure": "lost the solution it was cut from"
+    },
+    {
+      "name": "a cage's sum is one more than its digits",
+      "why": "The number in the corner is the whole puzzle. Off by one, the grid it was cut from no longer solves it, and the generator refuses to ship it. The gate's own sum check is proven by faking the shipped sums, below.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "      return { cells: sorted, sum: sorted.reduce((sum, c) => sum + digit[c], 0) };",
+      "replace": "      return { cells: sorted, sum: sorted.reduce((sum, c) => sum + digit[c], 1) };",
+      "expectFailure": "lost the solution it was cut from"
+    },
+    {
+      "name": "a split cage keeps its far-apart leftovers as one cage",
+      "why": "Splitting can leave cells of a cage that no longer touch. Kept together, one dashed outline is drawn around two islands and the player cannot tell which cells it means.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "      for (const n of neighbours(piece[i])) if (left.delete(n)) piece.push(n);",
+      "replace": "      for (const n of [...left]) if (left.delete(n)) piece.push(n);",
+      "expectFailure": "is in pieces"
+    },
+    {
+      "name": "the seed is ignored",
+      "why": "Two players given the same seed get different puzzles; a daily killer would differ from phone to phone.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "  const rng = seed ? createPRNG(seed) : Math.random;",
+      "replace": "  const rng = Math.random;",
+      "expectFailure": "the same seed gave two different puzzles"
+    },
+    {
+      "name": "Lv.4 starts with digits on the grid",
+      "why": "Lv.4 and Lv.5 are cages only; given digits make them a classic puzzle with sums drawn on it.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "  4: { sizes: [[2, 25], [3, 35], [4, 25], [5, 15]], givens: 0, repair: 'split', guesses: 100 },",
+      "replace": "  4: { sizes: [[2, 25], [3, 35], [4, 25], [5, 15]], givens: 3, repair: 'split', guesses: 100 },",
+      "expectFailure": "Lv.4 and Lv.5 are cages only"
+    },
+    {
+      "name": "the 45 rule adds up to 44",
+      "why": "The solver's 45 rule is how it narrows a killer with no digits given; adding wrongly, it throws out the real answer and proves the wrong things.",
+      "file": "src/engine/killer/killerSolver.js",
+      "find": "    if (rest.size > 0 && rest.size < 9) out.push({ cells: [...rest], sum: 45 - covered });",
+      "replace": "    if (rest.size > 0 && rest.size < 9) out.push({ cells: [...rest], sum: 44 - covered });",
+      "expectFailure": "45 - 6 - 22 is 17"
+    },
+    {
+      "name": "the solver takes a digit seen twice in a row for one with a single place",
+      "why": "An unsound narrowing step: the solver throws out digits that belong. The gate's open puzzle — a whole row in each cage, which every sudoku fits — comes back with no solution at all. (The first version of this mutation set lone = once, which changes nothing — every candidate of a cell is in `once` — and survived for that reason.)",
+      "file": "src/engine/killer/killerSolver.js",
+      "find": "        const lone = once & ~twice;",
+      "replace": "        const lone = twice;",
+      "expectFailure": "it throws away real answers"
+    },
+    {
+      "name": "the solver never reports more than one solution",
+      "why": "A solver that stops at the first answer calls every puzzle unique. The gate gives it a puzzle with a whole row in each cage, which fits every sudoku there is.",
+      "file": "src/engine/killer/killerSolver.js",
+      "find": "  return { count, solutions, aborted, nodes };",
+      "replace": "  return { count: Math.min(count, 1), solutions, aborted, nodes };",
+      "expectFailure": "would call an open puzzle unique"
+    },
+    {
+      "name": "the shipped puzzle says one more on its first cage",
+      "why": "A wrong number in a corner that the generator never checked — written after the work was done. The gate reads every sum against the solution itself.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "    cages,",
+      "replace": "    cages: cages.map((cage, i) => (i ? cage : { ...cage, sum: cage.sum + 1 })),",
+      "expectFailure": "its digits add up to"
+    },
+    {
+      "name": "the shipped solution repeats a digit in the first cage",
+      "why": "The solution the hint button and the mistake check read from has the same digit twice in one cage; the player is told a correct cage is wrong. The gate reads every cage against the solution itself.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "    solution,",
+      "replace": "    solution: solution.map((row, r) => row.map((d, c) => (r * 9 + c === cages[0].cells[1] ? solution[0][0] : d))),",
+      "expectFailure": "a digit twice"
+    }
+  ]
+}

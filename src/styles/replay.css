@@ -1,0 +1,326 @@
+/* 1v1 replay (I-1). A layer over everything: the 1v1 result stays under it,
+   the rematch toast (3500) stays above it. */
+.replay-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background-color: var(--bg-primary);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.replay-screen {
+  width: 100%;
+  max-width: 620px;
+  min-height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  /* Opened from the 1v1 result, the replay lies over the game screen, whose
+     AdMob banner is a native overlay pinned to the bottom — it covered the last
+     rows of the summary on a Flip5 (2026-10-01). Leave the banner's height free
+     at the end, as the game screen's ad slot does. */
+  padding-bottom: calc(var(--ad-banner-h, 0px) + env(safe-area-inset-bottom, 0px));
+}
+
+.replay-body {
+  padding: 10px 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.replay-match-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.replay-match-text {
+  min-width: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+/* White on these clears 4.5:1 in every theme; the lighter 500 shades do not. */
+.replay-result {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.replay-result.won { background: #15803d; }
+.replay-result.lost { background: #b91c1c; }
+
+.replay-sides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.replay-sides .seg-tab-btn {
+  min-width: 0;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 8px;
+  border: 1px solid var(--board-grid-line);
+  background: var(--btn-bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.replay-sides .seg-tab-btn.active {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+}
+.replay-sides .seg-tab-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* text-wrap: pretty keeps a last syllable from sitting alone on its own line
+   (「…켤 수 있어 / 요.」 on a Flip5). keep-all would do it too, and would also
+   stop Chinese and Japanese from breaking at all. */
+.replay-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+/* Small enough that the bars and the controls fit under it on a phone. */
+.replay-board {
+  width: min(100%, 50vh);
+  margin: 0 auto;
+}
+
+.replay-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.replay-bar-row {
+  display: grid;
+  grid-template-columns: minmax(0, 7em) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.replay-bar-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.replay-bar-track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--btn-bg);
+  overflow: hidden;
+}
+.replay-bar-fill {
+  display: block;
+  height: 100%;
+  background: #2563eb;
+  transition: width 0.1s linear;
+}
+.replay-bar-row.opp .replay-bar-fill { background: #dc2626; }
+.replay-bar-pct {
+  min-width: 3.2em;
+  text-align: end;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-main);
+}
+
+/* Time runs left to right in every language, and the marks are placed by left:%,
+   so the slider must not flip under dir="rtl". */
+.replay-timeline {
+  position: relative;
+  direction: ltr;
+}
+.replay-timeline input[type='range'] {
+  width: 100%;
+  margin: 0;
+  accent-color: #2563eb;
+}
+.replay-marks {
+  position: relative;
+  height: 6px;
+  margin: 0 8px;
+}
+.replay-marks span {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 6px;
+  background: #dc2626;
+  transform: translateX(-1px);
+}
+
+/* Playback controls are not mirrored in RTL either (as media players do): the
+   "next move" arrow has to point the way the time bar runs. */
+.replay-controls {
+  direction: ltr;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.replay-controls .replay-play {
+  background: #2563eb;
+  color: #ffffff;
+}
+.replay-speed {
+  min-width: 44px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--board-grid-line);
+  background: var(--btn-bg);
+  color: var(--text-main);
+  font-weight: 800;
+  cursor: pointer;
+}
+.replay-clock {
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.replay-summary { padding: 12px; }
+.replay-sum-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 12.5px;
+  border-bottom: 1px solid var(--board-grid-line);
+}
+.replay-sum-row:last-child { border-bottom: none; }
+.replay-sum-head { font-weight: 800; color: var(--text-muted); }
+.replay-sum-head span,
+.replay-sum-val {
+  text-align: end;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.replay-sum-label {
+  color: var(--text-main);
+  overflow-wrap: anywhere;
+}
+.replay-sum-val {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-main);
+}
+
+.replay-pin { color: var(--text-muted); }
+.replay-pin.on { color: #d97706; }
+
+/* Records screen: the kept matches */
+.replay-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.replay-list-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.replay-list-row .replay-pin {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+}
+.replay-list-open {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--board-grid-line);
+  background: var(--btn-bg);
+  color: var(--text-main);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.replay-list-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 700;
+}
+.replay-list-meta {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+.replay-list-empty {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+/* 1v1 result: the way in */
+.replay-entry {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+.replay-entry-btn { width: 100%; }
+.replay-entry-note {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.35;
+  text-align: center;
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+/* Battle lobby: said before the match */
+.battle-replay-note {
+  margin: 10px 0 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--text-muted);
+}

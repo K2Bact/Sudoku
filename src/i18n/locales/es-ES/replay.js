@@ -1,0 +1,48 @@
+/**
+ * 1v1 replays (I-1, 2026-09-30).
+ */
+export const replay = {
+  replay: {
+    title: 'Repetición',
+    missing: 'Esta repetición ya no está en este dispositivo.',
+    won: 'Victoria',
+    lost: 'Derrota',
+    vs: 'contra {name}',
+    myBoard: 'Mi tablero',
+    theirBoard: 'Tablero rival',
+    share: {
+      shared: 'También tienes las jugadas de tu oponente. Puedes ver su tablero en la repetición.',
+      pending: 'Esperando las jugadas de tu oponente…',
+      declined: 'Tu oponente desactivó Compartir jugadas. Solo se muestra su progreso.',
+      off: 'Compartir jugadas está desactivado, así que no recibiste las jugadas de tu oponente. Puedes activarlo en Ajustes.',
+      unsupported: 'Tu oponente no respondió: puede que su app sea una versión antigua o que se cortara la conexión. Solo se muestra su progreso.',
+      invalid: 'Las jugadas recibidas no encajan con este sudoku y no se usaron. Solo se muestra su progreso.',
+      agreed: 'Tu oponente también comparte. Recibiendo sus jugadas…',
+      missed: 'La conexión terminó antes de que llegaran las jugadas de tu oponente. Solo se muestra su progreso.',
+    },
+    truncated: 'La partida fue larga: solo se guardaron sus primeras {count} acciones.',
+    timeline: 'Tiempo de la partida',
+    play: 'Reproducir',
+    pause: 'Pausa',
+    prevMove: 'Jugada anterior',
+    nextMove: 'Jugada siguiente',
+    speed: 'Velocidad',
+    pin: 'Marcar como favorita',
+    unpin: 'Quitar de favoritas',
+    pinFull: 'Puedes tener hasta {count} favoritas. Quita una y vuelve a intentarlo.',
+    sumTime: 'Tiempo',
+    sumMistakes: 'Fallos',
+    sumMoves: 'Números puestos',
+    sumPace: 'Por minuto',
+    sumLongestPause: 'Pausa más larga',
+    sumNotes: 'Notas',
+    sumUndos: 'Deshacer',
+    listTitle: 'Repeticiones de batallas',
+    listEmpty: 'Aún no hay repeticiones. Termina una batalla 1v1 y aparecerá aquí.',
+    open: 'Ver repetición',
+    settingTitle: 'Compartir jugadas',
+    settingDesc: 'Al terminar un 1v1, intercambias con tu oponente las jugadas de la partida y sus tiempos para revisar cada uno el tablero del otro. Desactivado: tus jugadas no se envían y no recibes las suyas.',
+    lobbyNoteOn: 'Al terminar, tú y tu oponente intercambiáis las jugadas para la repetición. Puedes desactivarlo en Ajustes.',
+    lobbyNoteOff: 'Compartir jugadas está desactivado. Las repeticiones guardan tus jugadas y solo el progreso de tu oponente.',
+  }
+};

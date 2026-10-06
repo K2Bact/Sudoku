@@ -1,0 +1,89 @@
+{
+  "gate": "2-28",
+  "name": "A Killer Game Plays And Counts As A Killer (notes, mistakes, records, merge)",
+  "command": "node scripts/tests/unit/test_killer_play.js",
+  "greenMarker": "[2-28] PASSED",
+  "note": "Written with the gate on 2026-10-01. Each mutation is a place where killer play meets code written for classic sudoku and could fall back to it.",
+  "mutations": [
+    {
+      "name": "a placed digit stays in the notes of its cage",
+      "why": "The cage forbids the digit there as surely as the row does; leaving it in the notes is a pencil mark the game itself should have erased.",
+      "file": "src/engine/SudokuEngine.js",
+      "find": "  for (const cell of cage?.cells || []) {",
+      "replace": "  for (const cell of []) {",
+      "expectFailure": "the cage forbids it there"
+    },
+    {
+      "name": "a repeat inside the cage is not reported",
+      "why": "A 5 placed where its cage already holds a 5 is told only \"not the solution\" — the one reason a killer player most needs to hear goes unsaid.",
+      "file": "src/engine/conflictDetector.js",
+      "find": "      if ((cr !== r || cc !== c) && board[cr][cc] === num) {",
+      "replace": "      if (false) {",
+      "expectFailure": "not as a cage repeat"
+    },
+    {
+      "name": "a cage past its sum is not reported",
+      "why": "The sum is the killer's own rule; going past it is the mistake a player makes most, and it is reported as an unexplained wrong digit.",
+      "file": "src/engine/conflictDetector.js",
+      "find": "    if (total > cage.sum || (filled === cage.cells.length && total !== cage.sum)) brokenSum = cage.sum;",
+      "replace": "    if (false) brokenSum = cage.sum;",
+      "expectFailure": "not as past its sum"
+    },
+    {
+      "name": "a killer win goes through the classic win path",
+      "why": "Killer wins and times land in the classic record, the Logic Score and the leaderboard — the separation the user decided on is gone.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "  if (variant === 'killer') {",
+      "replace": "  if (false) {",
+      "expectFailure": "a killer win must count in the killer record"
+    },
+    {
+      "name": "every loss counts against the classic record",
+      "why": "A killer lost or walked away from lowers the classic win rate — the number the Logic Score is built on.",
+      "file": "src/utils/killerStats.js",
+      "find": "  if (variant !== 'killer') return recordGameLoss(mode);",
+      "replace": "  return recordGameLoss(mode);",
+      "expectFailure": "a killer lost on mistakes must count as a killer played"
+    },
+    {
+      "name": "the mistake handler forgets which puzzle was lost",
+      "why": "The game over on a third mistake records a classic loss for a killer game.",
+      "file": "src/utils/gameMistakeHandler.js",
+      "find": "    recordLoss(variant, gameMode);",
+      "replace": "    recordLoss('classic', gameMode);",
+      "expectFailure": "a killer lost on mistakes must count as a killer played"
+    },
+    {
+      "name": "a thrown-away killer counts as a classic loss",
+      "why": "Starting a new game over a killer in progress takes from the classic record.",
+      "file": "src/utils/abandonedGame.js",
+      "find": "  recordLoss(saved.variant);   // a thrown-away killer counts against the killer record only",
+      "replace": "  recordLoss();",
+      "expectFailure": "counted in the killer record"
+    },
+    {
+      "name": "\"next game\" after a killer is a classic game",
+      "why": "The victory card's next game and the in-game new game call startNewGame with only a level; without the kind carried over, a killer player is dropped into classic sudoku.",
+      "file": "src/engine/puzzleSetup.js",
+      "find": "  const kind = customData?.variant ?? (handedIn ? 'classic' : currentVariant);",
+      "replace": "  const kind = customData?.variant ?? 'classic';",
+      "expectFailure": "\"next game\" after a killer must be a killer"
+    },
+    {
+      "name": "a killer save without its solution is solved as a classic puzzle",
+      "why": "A killer's givens fit thousands of grids; solving them classically picks one of them, and every right answer the player enters is marked wrong.",
+      "file": "src/engine/puzzleSetup.js",
+      "find": "  if (cages) return solveKillerFromGivens(cages, initialGrid) || existingSolution;",
+      "replace": "  if (false) return solveKillerFromGivens(cages, initialGrid) || existingSolution;",
+      "expectFailure": "must get it back from its cages"
+    },
+    {
+      "name": "the cloud merge keeps one phone's killer record whole",
+      "why": "As an unknown field the killer record comes through from the local side only; a killer won on the other phone disappears the next time this one saves.",
+      "file": "src/services/progressMerge.js",
+      "find": "  if (isObject(cloud.killer) || isObject(local.killer)) {",
+      "replace": "  if (false) {",
+      "expectFailure": "the other phone's 3 were lost"
+    }
+  ]
+}

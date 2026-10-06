@@ -21,6 +21,8 @@
  *   survival wins                         larger
  *   best times, per level                 faster
  *   levels cleared without a hint         union
+ *   killer record (stats.killer)          the same rules: its games together,
+ *                                         its best times the faster per level
  *   other stats fields                    local wins, cloud fills gaps
  *   achievements                          union, cloud wins a shared key
  *   wallet                                hints / streak / ads watched: larger
@@ -108,6 +110,21 @@ function cloudGaps(cloudStats, localStats) {
   return out;
 }
 
+/** Two best-time tables, level by level: the faster time, or whichever side has one. */
+function mergeTimes(cloudTable, localTable) {
+  const c = isObject(cloudTable) ? cloudTable : {};
+  const l = isObject(localTable) ? localTable : {};
+  const out = { ...l };
+  LEVELS.forEach((lv) => {
+    const ct = seconds(c[lv]);
+    const lt = seconds(l[lv]);
+    if (ct !== null && lt !== null) out[lv] = Math.min(ct, lt);
+    else if (ct !== null || lt !== null) out[lv] = ct ?? lt;
+    else if (lv in out) out[lv] = null;
+  });
+  return out;
+}
+
 export function mergeStats(cloudStats = {}, localStats = {}) {
   const cloud = isObject(cloudStats) ? cloudStats : {};
   const local = isObject(localStats) ? localStats : {};
@@ -126,18 +143,17 @@ export function mergeStats(cloudStats = {}, localStats = {}) {
     else merged[k] = v;
   }
   for (const table of BEST_TIME_TABLES) {
-    const c = isObject(cloud[table]) ? cloud[table] : {};
-    const l = isObject(local[table]) ? local[table] : {};
-    const out = { ...l };
-    LEVELS.forEach((lv) => {
-      const ct = seconds(c[lv]);
-      const lt = seconds(l[lv]);
-      if (ct !== null && lt !== null) out[lv] = Math.min(ct, lt);
-      else if (ct !== null || lt !== null) out[lv] = ct ?? lt;
-      else if (lv in out) out[lv] = null;
-    });
+    const out = mergeTimes(cloud[table], local[table]);
     if (Object.keys(out).length > 0) merged[table] = out;
     else delete merged[table];
+  }
+  // The killer record sits inside stats as one object. Spread as an unknown
+  // field it would come through whole from the local side, and a killer won on
+  // the other phone would be lost the next time this phone saved.
+  if (isObject(cloud.killer) || isObject(local.killer)) {
+    const c = isObject(cloud.killer) ? cloud.killer : {};
+    const l = isObject(local.killer) ? local.killer : {};
+    merged.killer = { ...mergeGameCounts(c, l), bestTimes: mergeTimes(c.bestTimes, l.bestTimes) };
   }
   // Levels cleared without a hint: a level cleared on either device stays cleared.
   // The app writes `true`; nothing else counts as cleared.

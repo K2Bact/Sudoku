@@ -1,0 +1,90 @@
+{
+  "gate": "3-17",
+  "name": "The 1v1 Replay Screen (13 languages, 360px, font 1/1.3)",
+  "command": "node scripts/tests/ui/test_match_replay_screen.js",
+  "greenMarker": "[3-17] PASSED",
+  "rebuild": true,
+  "note": "Written with the gate on 2026-10-01 (I-1).",
+  "mutations": [
+    {
+      "name": "the opponent's board draws this player's moves",
+      "why": "The one thing the replay is for — how the opponent played — shows the player's own game under the opponent's name.",
+      "file": "src/components/replay/ReplayScreen.jsx",
+      "find": "const events = record[viewing].events;",
+      "replace": "const events = record.me.events;",
+      "expectFailure": "the opponent's board at the end is not the board their moves make"
+    },
+    {
+      "name": "the board ignores the time bar",
+      "why": "Dragging the time bar changes the clock and nothing else; the board stays on the finished game.",
+      "file": "src/components/replay/ReplayScreen.jsx",
+      "find": "const { board, notes, last } = gridsAt(record.puzzle, events, at);",
+      "replace": "const { board, notes, last } = gridsAt(record.puzzle, events, 0);",
+      "expectFailure": "my board at the end is not the board my moves make"
+    },
+    {
+      "name": "the opponent's board opens when there are no moves for it",
+      "why": "A player whose opponent declined taps into an empty board, or one that silently shows their own.",
+      "file": "src/components/replay/ReplayScreen.jsx",
+      "find": "onClick={() => setSide('opp')} disabled={!hasOpp}>",
+      "replace": "onClick={() => setSide('opp')}>",
+      "expectFailure": "can be opened although they declined"
+    },
+    {
+      "name": "no reason is given for a missing opponent board",
+      "why": "The player cannot tell a declined opponent from a bug.",
+      "file": "src/components/replay/ReplayScreen.jsx",
+      "find": "{!hasOpp && <p className=\"replay-note\">{t(`replay.share.${shareState}`)}</p>}",
+      "replace": "",
+      "expectFailure": "no reason is given"
+    },
+    {
+      "name": "mistakes are not marked on the time bar",
+      "why": "The player has to play the whole replay to find the moment it went wrong.",
+      "file": "src/components/replay/ReplayScreen.jsx",
+      "find": "{wrongAt.map((mt, i) => <span key={i} style={{ left: `${(mt / duration) * 100}%` }} />)}",
+      "replace": "",
+      "expectFailure": "my mistake is not marked"
+    },
+    {
+      "name": "play does not advance",
+      "why": "The play button shows pause and nothing moves.",
+      "file": "src/hooks/useReplayPlayback.js",
+      "find": "setAt((cur) => Math.min(duration, cur + TICK_MS * speed));",
+      "replace": "setAt((cur) => cur);",
+      "expectFailure": "pressing play did not move the replay"
+    },
+    {
+      "name": "back skips the replay",
+      "why": "Back leaves the records screen for home while the replay stays on top of it — or, over a 1v1 result, leaves the room.",
+      "file": "src/hooks/useBackStack.js",
+      "find": "if (openReplayId()) {",
+      "replace": "if (false) {",
+      "expectFailure": "back did not close the replay"
+    },
+    {
+      "name": "the summary does not fit a phone",
+      "why": "Columns wider than the screen push the opponent's numbers off the edge.",
+      "file": "src/styles/replay.css",
+      "find": "  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);",
+      "replace": "  grid-template-columns: 170px 110px 110px;",
+      "expectFailure": "off the screen"
+    },
+    {
+      "name": "a notice raised over the replay opens under it",
+      "why": "Starring a 21st replay from inside the replay shows the limit message behind the replay; the star looks broken.",
+      "file": "src/components/common/ConfirmProvider.jsx",
+      "find": "<div className=\"modal-overlay confirm-overlay\">",
+      "replace": "<div className=\"modal-overlay\">",
+      "expectFailure": "the star-limit message is not visible over the replay"
+    },
+    {
+      "name": "the replay leaves no room for the banner",
+      "why": "Opened from the 1v1 result, the last summary rows sit under the AdMob banner and cannot be scrolled into view.",
+      "file": "src/styles/replay.css",
+      "find": "  padding-bottom: calc(var(--ad-banner-h, 0px) + env(safe-area-inset-bottom, 0px));",
+      "replace": "  padding-bottom: env(safe-area-inset-bottom, 0px);",
+      "expectFailure": "stays"
+    }
+  ]
+}

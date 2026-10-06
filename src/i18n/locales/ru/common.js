@@ -73,6 +73,8 @@ export const common = {
     colDuplicate: '⚠️ Число {num} уже есть в столбце {col}! {suffix}',
     multipleDuplicates: '⚠️ Число {num} уже есть в этом блоке/строке/столбце! {suffix}',
     notSolution: '⚠️ Число {num} не подходит для этой клетки! {suffix}',
+    cageDuplicate: '⚠️ Число {num} уже есть в этой области! {suffix}',
+    cageSum: '⚠️ Сумма этой области уже не равна {sum}! {suffix}',
     boardFullHasMistakes: '⚠️ Поле заполнено, но содержит ошибки. Проверьте еще раз!',
     timeAttackSuffix: '(Ошибка {count} | штраф +10с)',
     classicSuffix: '(Ошибки {count}/3)'

@@ -7,13 +7,17 @@ import { screens } from './it/screens.js';
 import { modals } from './it/modals.js';
 import { achievements } from './it/achievements.js';
 import { leaderboard } from './it/leaderboard.js';
+import { replay } from './it/replay.js';
+import { killer } from './it/killer.js';
 
 export const it = {
   ...common,
   ...screens,
   ...modals,
   ...achievements,
-  ...leaderboard
+  ...leaderboard,
+  ...replay,
+  ...killer
 };
 
 export default it;

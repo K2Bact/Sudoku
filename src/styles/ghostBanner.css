@@ -94,8 +94,14 @@
   color: #ffffff;
   border-radius: 50%;
   box-shadow: 0 0 6px rgba(168, 85, 247, 0.8);
-  transition: left 0.5s linear;
+  transition: inset-inline-start 0.5s linear;
   z-index: 2;
+}
+
+/* Placed from the reading start (GhostRivalBanner.jsx); centring on that point
+   pulls the other way when the start is the right edge. */
+html[dir="rtl"] .ghost-indicator-pin {
+  transform: translateX(50%);
 }
 
 /* Rival Mode Chip Group (Row 3 in Home Card) */

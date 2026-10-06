@@ -74,14 +74,14 @@
 
 .theory-diagram-container .mini-grid-label {
   background: var(--btn-bg);
-  border-left: 4px solid #64748b;
+  border-inline-start: 4px solid #64748b;
   border-radius: 6px;
   padding: 8px 12px;
   font-size: 12px;
   font-weight: 800;
   line-height: 1.45;
   color: var(--text-main);
-  text-align: left;
+  text-align: start;
   width: 100%;
   box-sizing: border-box;
 }
@@ -89,7 +89,7 @@
 /* Practice Prompt & Guide Banner */
 .practice-guide-box {
   background: var(--btn-bg);
-  border-left: 4px solid #3b82f6;
+  border-inline-start: 4px solid #3b82f6;
   border-radius: 6px;
   padding: 8px 12px;
   font-size: 12px;

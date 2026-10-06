@@ -57,6 +57,9 @@ export function loadSettings() {
     soundEnabled: true,
     hapticEnabled: true,
     autoRemoveNotes: true,
+    // 1v1: exchange moves with the opponent after a match, for the replay. Mutual —
+    // off means neither side's moves are shown to the other (I-1, 2026-09-30).
+    shareMatchReplay: true,
     fastEntryMode: false,
     limitMistakes: true,
     autoCheckMistakes: true

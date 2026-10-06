@@ -1,16 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 import {
-  generatePuzzle,
   cloneGrid,
   calculateRemainingCounts,
   createEmptyGrid
 } from '../engine/SudokuEngine.js';
+import { startingPuzzle, savedPuzzle } from '../engine/puzzleSetup.js';
 import { soundHaptic } from '../utils/soundHaptic.js';
 import {
   loadGameState,
-  clearGameState,
-  recordGameLoss
+  clearGameState
 } from '../utils/storage.js';
+import { recordLoss } from '../utils/killerStats.js';
 import { recordAbandonedGame } from '../utils/abandonedGame';
 import { isResumableGame } from '../utils/savedGame';
 import { loadWallet, addHints, subscribeToWallet } from '../utils/wallet.js';
@@ -18,12 +18,16 @@ import { useTranslation } from '../i18n/i18nContext.jsx';
 import { useGameTimer } from './useGameTimer.js';
 import { useGameHistory } from './useGameHistory.js';
 import { useGameLifecycle } from './useGameLifecycle.js';
-import { useGameInput, ensureValidSolution } from './useGameInput.js';
+import { useGameInput } from './useGameInput.js';
+import { observe as observeForReplay } from '../utils/replay/matchRecorder.js';
 
 export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey, showToast) {
   const { t } = useTranslation();
   const [level, setLevel] = useState(3);
   const [gameMode, setGameMode] = useState('classic');
+  // The kind of puzzle (engine/variants.js) and, for a killer, its cages.
+  const [variant, setVariant] = useState('classic');
+  const [cages, setCages] = useState(null);
   const [board, setBoard] = useState(() => createEmptyGrid());
   const [initialBoard, setInitialBoard] = useState(() => createEmptyGrid());
   const [solutionBoard, setSolutionBoard] = useState(() => createEmptyGrid());
@@ -76,7 +80,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     onTimeLimitExpire: () => {
       soundHaptic.playErrorSound();
       setIsGameOver(true);
-      recordGameLoss();
+      recordLoss(variant);
       clearGameState();   // same reason as gameMistakeHandler: a lost game is not resumable
     }
   });
@@ -109,6 +113,8 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     timerSeconds,
     level,
     gameMode,
+    variant,
+    cages,
     isFastEntryMode,
     lockedNumber,
     adHintsUsedThisGame,
@@ -124,6 +130,12 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
   // replay this to race the player against their own past self, but nothing ever
   // recorded it, so Ghost mode fell back to a flat average-pace approximation.
   const runTimelineRef = useRef([]);
+
+  // 1v1 replay (I-1): record what changed on the board and in the notes. The
+  // recorder decides whether this is a live 1v1 and ignores everything else.
+  useEffect(() => {
+    observeForReplay(activeBattleRoom, board, notes);
+  }, [activeBattleRoom, board, notes]);
 
   const resetGameState = () => {
     runTimelineRef.current = [];
@@ -146,18 +158,18 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
   };
 
   // Start fresh new game. A game in progress that this throws away counts as a loss.
+  // Which puzzle — handed in or new, classic or killer — is puzzleSetup.js's call.
   const startNewGame = (newLevel = level, mode = 'classic', customData = null) => {
     recordAbandonedGame();
-    const hasCustomBoard = customData && (customData.board || customData.puzzle);
-    const puzzle = hasCustomBoard ? customData : generatePuzzle(newLevel);
-    const boardGrid = puzzle.board || puzzle.puzzle;
-    const safeSolution = ensureValidSolution(boardGrid, puzzle.solution);
+    const puzzle = startingPuzzle(newLevel, customData, variant);
 
+    setVariant(puzzle.variant);
+    setCages(puzzle.cages);
     setGameMode(mode);
     setLevel(newLevel);
-    setBoard(cloneGrid(boardGrid));
-    setInitialBoard(cloneGrid(boardGrid));
-    setSolutionBoard(safeSolution);
+    setBoard(cloneGrid(puzzle.board));
+    setInitialBoard(cloneGrid(puzzle.board));
+    setSolutionBoard(puzzle.solution);
     setNotes(Array(9).fill(null).map(() => Array(9).fill([])));
 
     if (customData?.rivalMode) {
@@ -179,13 +191,15 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     resetTimer(level, gameMode);
   };
 
-  const resumeSavedGame = (requestedLevel) => {
+  const resumeSavedGame = (requestedLevel, requestedVariant = null) => {
     const saved = loadGameState();
     if (isResumableGame(saved)) {
-      const safeSolution = ensureValidSolution(saved.initialBoard || saved.board, saved.solutionBoard);
+      const puzzle = savedPuzzle(saved);
+      setVariant(puzzle.variant);
+      setCages(puzzle.cages);
       setBoard(saved.board);
       setInitialBoard(saved.initialBoard);
-      setSolutionBoard(safeSolution);
+      setSolutionBoard(puzzle.solution);
       setNotes(saved.notes || Array(9).fill(null).map(() => Array(9).fill([])));
       setMistakes(saved.mistakes || 0);
       setTimerSeconds(saved.timerSeconds || 0);
@@ -201,7 +215,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
       setIsPaused(false);
       return true;
     }
-    startNewGame(requestedLevel || level);
+    startNewGame(requestedLevel || level, 'classic', requestedVariant ? { variant: requestedVariant } : null);
     return false;
   };
 
@@ -256,6 +270,8 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     showToast,
     runTimelineRef,
     comboCount,
+    variant,
+    cages,
     t
   });
 
@@ -282,7 +298,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
   );
 
   return {
-    level, setLevel, gameMode, setGameMode,
+    level, setLevel, gameMode, setGameMode, variant, cages,
     board, initialBoard, solutionBoard, notes,
     selectedCell, activeNumber, lockedNumber,
     isNoteMode, setIsNoteMode,

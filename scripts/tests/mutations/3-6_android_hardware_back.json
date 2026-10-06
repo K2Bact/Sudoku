@@ -12,6 +12,22 @@
       "find": "      if (isMatchSearching) {",
       "replace": "      if (false) {",
       "expectFailure": "radar"
+    },
+    {
+      "name": "the first Back on Home closes the app (the original bug)",
+      "why": "One press of back on the home screen quits the game with no warning; \"press again to exit\" is never shown.",
+      "file": "src/hooks/useBackStack.js",
+      "find": "        if (now - homeBackAtRef.current < 2000) {",
+      "replace": "        if (now - lastBackPressTimeRef.current < 2000) {",
+      "expectFailure": "shows the exit prompt"
+    },
+    {
+      "name": "Back leaves the battle result without clearing it (the original bug)",
+      "why": "After one back from a battle result, every later back lands in the lobby again: the player cannot leave it with back, nor close a dialog over it.",
+      "file": "src/hooks/useBackStack.js",
+      "find": "        onCloseBattleResult();",
+      "replace": "        setActiveScreen(activeBattleRoom?.isAiMatch ? 'aiBattle' : 'battleLobby');",
+      "expectFailure": "not stuck on the battle screen"
     }
   ],
   "rebuild": true

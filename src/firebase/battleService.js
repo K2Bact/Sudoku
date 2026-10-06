@@ -14,6 +14,10 @@ import {
 import {
   startQuickMatch, claimBothTickets, handleMatchTicket, handleMatchCreated
 } from './battleMatchmaking.js';
+import { observeValues } from '../utils/replay/matchRecorder.js';
+import {
+  noteOpponentProgress, finishReplay, handleReplayShare, handleMatchLog, refreshReplayResult, abandonReplay
+} from './replayExchange.js';
 
 class BattleService {
   constructor() {
@@ -125,6 +129,9 @@ class BattleService {
     if (!isForThisMatch(data, room)) return;
 
     if (data.type === 'player_progress') this.handlePlayerProgress(data);
+    // After a match: the move exchange for replays (replayExchange.js, I-1).
+    else if (data.type === 'replay_share') handleReplayShare(this, data);
+    else if (data.type === 'match_log') handleMatchLog(this, data);
     else if (data.type === 'rematch_request') {
       // Remember that they asked. Without this the acceptance below has nothing
       // to check itself against.
@@ -188,8 +195,10 @@ class BattleService {
     this.notifyListeners();
   }
 
-  sendProgress(remainingCounts, mistakes) {
+  sendProgress(remainingCounts, mistakes, board = null) {
     if (!this.currentRoom || this.currentRoom.status !== 'playing') return;
+    // Record the move before the match can end on it (matchRecorder header).
+    if (board) observeValues(this.currentRoom, board);
     // Share of initially-empty cells now filled — same scale BattleHeader uses locally.
     const remainingEmpty = Object.values(remainingCounts || {}).reduce((acc, c) => acc + c, 0);
     const totalEmpty = this.currentRoom.initialEmptyCount || 0;
@@ -218,6 +227,7 @@ class BattleService {
       status: this.currentRoom.status, winner: this.currentRoom.winner,
       elapsedMs: this.currentRoom.myElapsedMs
     });
+    if (this.currentRoom.status === 'finished') finishReplay(this);
     this.notifyListeners();
   }
 
@@ -225,6 +235,7 @@ class BattleService {
     // Range-check before trusting: a peer must not be able to report 900% or -5.
     if (!this.currentRoom || !isValidProgress(data)) return;
     const room = this.currentRoom;
+    noteOpponentProgress(room, data);
     room.opponentProgress = data.progressPct;
     room.opponentMistakes = data.mistakes;
 
@@ -275,6 +286,10 @@ class BattleService {
       room.winnerReason = 'opponent_mistakes';
       if (room.isAiMatch) aiBotService.stopMatch();
     }
+    if (room.status === 'finished') {
+      if (room.replay) refreshReplayResult(this);
+      else finishReplay(this);
+    }
     this.notifyListeners();
   }
 
@@ -315,6 +330,8 @@ class BattleService {
     // The level is this room's, not the one in the message: a rematch cannot
     // quietly change the difficulty both players agreed to.
     if (!this.currentRoom || !isValidBoardPayload(data, this.currentRoom.level)) return;
+    // Messages for the match before are dropped from here on (matchSeq).
+    abandonReplay(this);
     Object.assign(this.currentRoom, {
       puzzle: data.puzzle, solution: data.solution, initialEmptyCount: data.initialEmptyCount,
       status: 'playing', myProgress: 0, myMistakes: 0, opponentProgress: 0, opponentMistakes: 0,
@@ -327,7 +344,9 @@ class BattleService {
       // And a new clock. These decide the photo finish when both players fill the
       // last cell at once; carried over from the previous match they would hand
       // the win to whoever won last time (RT-3 / F07).
-      startedAt: Date.now(), myElapsedMs: null, opponentElapsedMs: null
+      startedAt: Date.now(), myElapsedMs: null, opponentElapsedMs: null,
+      // The replay of the match before is saved; this one starts empty (I-1).
+      replay: null, earlyShare: undefined, oppProgress: []
     });
     this.notifyListeners();
   }
@@ -361,6 +380,7 @@ class BattleService {
       this.searchingLevel = null;
     }
     if (this.currentRoom) {
+      abandonReplay(this); // the replay's last answer or moves will not reach a player who has left
       if (!this.currentRoom.isAiMatch) {
         // Leave the room only once the goodbye is out: the rules let only members
         // write there, so releasing first would refuse the last message.
