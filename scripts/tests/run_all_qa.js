@@ -123,6 +123,7 @@ runStep('2-25. Language Picker Order (System, device language, then A-Z by Engli
 runStep('2-26. 1v1 Replays (recorded, stored, exchanged only by agreement)', 'node scripts/tests/unit/test_match_replay.js');
 runStep('2-27. Killer Sudoku Puzzles Are Sound (cages, sums, one solution, levels)', 'node scripts/tests/unit/test_killer_engine.js');
 runStep('2-28. A Killer Game Plays And Counts As A Killer (notes, mistakes, records, merge)', 'node scripts/tests/unit/test_killer_play.js');
+runStep('2-29. Signed Latin Tokens In RTL Text Are Isolated (+10, S+, Lv.4+ drawn as written)', 'node scripts/tests/unit/test_rtl_signed_tokens.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests

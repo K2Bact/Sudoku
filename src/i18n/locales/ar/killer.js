@@ -6,7 +6,7 @@ export const killer = {
     switchLabel: 'نوع اللغز',
     classic: 'قياسي',
     killer: 'كيلر',
-    comingSoon: 'ما زال قيد التطوير في كيلر.',
+    comingSoon: 'غير متاح في كيلر بعد — ما زال قيد التطوير.',
     classicRules: {
       title: 'قواعد السودوكو',
       grid: 'املأ كل صف وعمود ومربع 3×3 بالأرقام من 1 إلى 9، كل رقم مرة واحدة.',

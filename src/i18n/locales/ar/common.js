@@ -38,7 +38,7 @@ export const common = {
     levelPrefix: 'Lv.{level}',
     mistakes: 'الأخطاء {count}/{max}',
     mistakesUnlimited: 'الأخطاء {count}',
-    timeAttackMistake: 'خطأ {count} (+10 ث)',
+    timeAttackMistake: 'خطأ {count} (\u2066+10\u2069 ث)',
     combo: '🔥 سلسلة متتالية: {count}!',
     restartShort: 'إعادة',
     newGameShort: 'لعبة جديدة',
@@ -53,7 +53,7 @@ export const common = {
     notesOn: 'الملاحظات: مفعّلة',
     notesOff: 'الملاحظات: معطّلة',
     hint: 'تلميح',
-    rewardHint: '+1 تلميح',
+    rewardHint: '\u2066+1\u2069 تلميح',
     fastEntry: 'الوضع السريع'
   },
   board: {
@@ -76,7 +76,7 @@ export const common = {
     cageDuplicate: '⚠️ الرقم {num} موجود بالفعل في هذا القفص! {suffix}',
     cageSum: '⚠️ مجموع هذا القفص لم يعد {sum}! {suffix}',
     boardFullHasMistakes: '⚠️ اللوحة ممتلئة ولكن بها بعض الأخطاء. يُرجى المراجعة!',
-    timeAttackSuffix: '(خطأ {count} | عقوبة +10 ث)',
+    timeAttackSuffix: '(خطأ {count} | عقوبة \u2066+10\u2069 ث)',
     classicSuffix: '(الأخطاء {count}/3)'
   },
   tiers: {

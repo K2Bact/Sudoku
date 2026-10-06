@@ -40,7 +40,7 @@ export const screens = {
   daily: {
     header: 'التحديات اليومية — {month}',
     badgeTitle: 'شارة التفوق لشهر {month}',
-    badgeDesc: 'تم إكمال {completed} / {target} (الهدف: 15+)',
+    badgeDesc: 'تم إكمال {completed} / {target} (الهدف: \u206615+\u2069)',
     unlockingAd: '📺 جارٍ فتح اللغز السابق...',
     calendarTitle: '📅 تقويم الـ 365 يوماً',
     futureAlert: 'الألغاز المستقبلية لم تُفتح بعد.',
@@ -52,13 +52,13 @@ export const screens = {
     missionCardTitle: '🎯 مهمة اليوم المخصصة',
     missionCompleted: 'تم إكمال مهمة اليوم بنجاح! ✅',
     missionStartBtn: 'بدء المهمة 🚀',
-    missionReward: '+1 تلميح وتسجيل حضور',
+    missionReward: '\u2066+1\u2069 تلميح وتسجيل حضور',
     tiers: { beginner: 'مبتدئ', intermediate: 'متوسط', advanced: 'أستاذ' },
     missions: {
       beginnerLv1Title: '[Lv.1 مبتدئ] حل لغز سودوكو واحد', beginnerLv1Desc: 'أكمل لغزاً من Lv.1 مبتدئ لبناء أساسك المنطقي.',
       beginnerLv2Title: '[Lv.2 سهل] حل لغز سودوكو واحد', beginnerLv2Desc: 'أكمل لغزاً من Lv.2 سهل لممارسة التقنيات الأساسية.',
-      medLv3Title: '[Lv.3+ متوسط] حل لغز سودوكو واحد', medLv3Desc: 'أكمل لغزاً من Lv.3 متوسط أو أعلى لاختبار مهاراتك الاستنتاجية.',
-      advLv4Title: '[Lv.4+ صعب] حل لغز سودوكو واحد', advLv4Desc: 'أكمل لغزاً من Lv.4 صعب أو أعلى.',
+      medLv3Title: '[\u2066Lv.3+\u2069 متوسط] حل لغز سودوكو واحد', medLv3Desc: 'أكمل لغزاً من Lv.3 متوسط أو أعلى لاختبار مهاراتك الاستنتاجية.',
+      advLv4Title: '[\u2066Lv.4+\u2069 صعب] حل لغز سودوكو واحد', advLv4Desc: 'أكمل لغزاً من Lv.4 صعب أو أعلى.',
       advLv5Title: '[Lv.5 خبير] حل لغز سودوكو واحد', advLv5Desc: 'تحدَّ أصعب مستوى، Lv.5 خبير.',
       battleTitle: 'العب مباراة مبارزة 1 ضد 1 / ذكاء اصطناعي', battleDesc: 'شارك في مباراة واحدة مباشرة عبر الإنترنت أو ضد الذكاء الاصطناعي.',
       speedrunTitle: '⚡ إكمال لغز في وضع سباق الزمن', speedrunDesc: 'أكمل لغزاً في وضع سباق الزمن.'

@@ -1,0 +1,42 @@
+{
+  "gate": "2-29",
+  "name": "Signed Latin Tokens In RTL Text Are Isolated (+10, S+, Lv.4+ drawn as written)",
+  "command": "node scripts/tests/unit/test_rtl_signed_tokens.js",
+  "greenMarker": "[2-29] PASSED",
+  "rebuild": false,
+  "note": "Written with the gate on 2026-10-06 for the Saudi launch. Each mutation takes the isolate off one kind of token the browser measured flipping.",
+  "mutations": [
+    {
+      "name": "the Lv.4+ mission title loses its isolate",
+      "why": "A trailing sign after a level: drawn +Lv.4 on the daily mission card.",
+      "file": "src/i18n/locales/ar/screens.js",
+      "find": "[\\u2066Lv.4+\\u2069 صعب]",
+      "replace": "[Lv.4+ صعب]",
+      "expectFailure": "\"Lv.4+\" is drawn reversed"
+    },
+    {
+      "name": "the time-attack penalty loses its isolate",
+      "why": "A leading sign on a number: +10 drawn 10+ in the header during Speedrun.",
+      "file": "src/i18n/locales/ar/common.js",
+      "find": "(\\u2066+10\\u2069 ث)",
+      "replace": "(+10 ث)",
+      "expectFailure": "\"+10\" is drawn reversed"
+    },
+    {
+      "name": "the S+ achievement loses its isolate",
+      "why": "A grade letter with a sign: S+ drawn +S, the shape Diary 92 fixed on the victory screen but not in this achievement.",
+      "file": "src/i18n/locales/ar/achievements.js",
+      "find": "👑 \\u2066S+\\u2069",
+      "replace": "👑 S+",
+      "expectFailure": "\"S+\" is drawn reversed"
+    },
+    {
+      "name": "the achievement points lose their <bdi>",
+      "why": "The component glues the sign itself: the Arabic store screenshot showed (10+) next to every tier (2026-10-07). The dictionary scan cannot see it.",
+      "file": "src/components/AchievementsView.jsx",
+      "find": "(<bdi dir=\"ltr\">+{tierObj.points}</bdi>)",
+      "replace": "(+{tierObj.points})",
+      "expectFailure": "in JSX is drawn after the number"
+    }
+  ]
+}

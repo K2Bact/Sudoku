@@ -1,0 +1,91 @@
+<en-US>
+• New: Killer Sudoku — the digits in each dashed cage add up to its small number. Switch on Home: 5 levels, its own records.
+• 1v1 Replay: watch both boards move by move after a match. You can turn off “Share match moves” in Settings.
+• Restart, Next Puzzle and New Game now keep Speedrun and Survival.
+• Top buttons stay on screen with large text, and the Back button is fixed.
+• Safer cloud restore, clearer texts, and a smaller app.
+</en-US>
+<ar>
+• جديد: سودوكو كيلر — مجموع الأرقام في كل قفص منقّط يساوي رقمه الصغير. بدّل من الصفحة الرئيسية: 5 مستويات وسجلات خاصة بها.
+• إعادة عرض المباراة 1 ضد 1: شاهد اللوحتين نقلةً بنقلة بعد المباراة. يمكنك إيقاف «مشاركة النقلات» من الإعدادات.
+• «إعادة البدء» و«اللغز التالي» و«لعبة جديدة» تُبقي الآن «سباق الزمن» و«النجاة».
+• تبقى الأزرار العلوية ظاهرة مع الخط الكبير، وأُصلح زر الرجوع.
+• استعادة أكثر أمانًا من السحابة، ونصوص عربية أوضح، وتطبيق أصغر.
+</ar>
+<de-DE>
+• Neu: Killer-Sudoku – die Ziffern jedes gestrichelten Käfigs ergeben seine kleine Zahl. Umschalten auf dem Startbildschirm: 5 Stufen, eigene Rekorde.
+• 1v1-Rückblick: beide Spielfelder Zug für Zug ansehen. „Züge teilen“ ist in den Einstellungen abschaltbar.
+• „Neustart“, „Nächstes Rätsel“ und „Neues Spiel“ behalten jetzt Zeitrennen und Überleben bei.
+• Obere Tasten bleiben bei großer Schrift sichtbar; Zurück-Taste repariert.
+• Sichereres Cloud-Wiederherstellen, klarere Texte, kleinere App.
+</de-DE>
+<es-ES>
+• Nuevo: Sudoku Killer — los números de cada jaula punteada suman su cifra pequeña. Cámbialo en Inicio: 5 niveles y récords propios.
+• Repetición 1v1: ambos tableros jugada a jugada. «Compartir jugadas» se desactiva en Ajustes.
+• «Reiniciar», «Siguiente partida» y «Nueva partida» mantienen ahora Contrarreloj y Supervivencia.
+• Los botones de arriba siguen visibles con letra grande, y el botón Atrás está arreglado.
+• Restauración en la nube más segura, textos más claros y una app más ligera.
+</es-ES>
+<fr-FR>
+• Nouveau : Sudoku Killer — les chiffres de chaque cage en pointillés ont pour somme son petit nombre. Sur l’accueil : 5 niveaux, records à part.
+• Revoir la partie (1v1) : les deux grilles coup par coup. « Partage des coups » se désactive dans les Paramètres.
+• « Recommencer », « Grille suivante » et « Nouvelle partie » gardent Contre-la-montre et Survie.
+• Boutons du haut visibles en grande police ; bouton Retour corrigé.
+• Restauration cloud plus sûre, textes plus clairs, app plus légère.
+</fr-FR>
+<hi-IN>
+• नया: किलर सुडोकू — बिंदीदार रेखा से घिरे हर समूह की संख्याओं का जोड़ उसकी छोटी संख्या के बराबर होता है। होम पर बदलें: 5 स्तर, अलग रिकॉर्ड।
+• 1v1 रीप्ले: मैच के बाद दोनों बोर्ड चाल-दर-चाल देखें। "चालें साझा करें" सेटिंग्स में बंद कर सकते हैं।
+• "पुनः आरंभ", "अगला खेल" और "नया खेल" अब स्पीडरन और सर्वाइवल बनाए रखते हैं।
+• बड़े फ़ॉन्ट में भी ऊपर के बटन दिखते हैं, और बैक बटन ठीक किया गया।
+• सुरक्षित क्लाउड बहाली, साफ़ पाठ और छोटा ऐप।
+</hi-IN>
+<it-IT>
+• Novità: Sudoku Killer — la somma dei numeri di ogni gabbia tratteggiata è il suo numero piccolo. Si sceglie nella Home: 5 livelli, record propri.
+• Rivedi partita (1v1): le due griglie mossa per mossa. «Condividi le mosse» si disattiva nelle Impostazioni.
+• «Ricomincia», «Prossima Partita» e «Nuova Partita» ora mantengono Cronometro e Sopravvivenza.
+• Pulsanti in alto visibili con testo grande; tasto Indietro corretto.
+• Ripristino cloud più sicuro, testi più chiari, app più leggera.
+</it-IT>
+<ja-JP>
+• 新登場：キラーナンプレ。点線で囲まれたケージ内の数字を足すと、ケージの小さな数字になります。ホームで切り替え、5つのレベルと専用の記録。
+• 1v1 の振り返り：対戦後、両方の盤面を一手ずつ見返せます。「対戦記録の共有」は設定でオフにできます。
+• 「最初からやり直す」「次のパズルに挑戦」「新しいゲーム」でも、タイムアタックとサバイバルのままになりました。
+• 文字を大きくしても上部のボタンがはみ出さず、戻るボタンも直りました。
+• クラウド復元をより安全にし、表示をわかりやすくし、アプリも軽くなりました。
+</ja-JP>
+<ko-KR>
+• 새 기능: 킬러 스도쿠. 점선으로 묶인 칸들의 숫자를 모두 더하면 묶음의 작은 숫자가 돼요. 홈에서 「표준」과 「킬러」를 골라요. 5단계, 기록은 따로 남아요.
+• 1v1 복기: 대전이 끝나면 두 판을 한 수씩 다시 볼 수 있어요. 「대전 기록 공유」는 설정에서 끌 수 있어요.
+• 「처음부터 다시하기」「다음 퍼즐 도전」「새 게임」을 눌러도 스피드런·서바이벌이 그대로 이어져요.
+• 글자를 크게 해도 위쪽 버튼이 화면 밖으로 밀리지 않고, 뒤로가기도 고쳤어요.
+• 클라우드 복원이 더 안전해졌고, 문구를 다듬었고, 앱이 가벼워졌어요.
+</ko-KR>
+<pt-BR>
+• Novo: Sudoku Killer — os números de cada gaiola pontilhada somam o número pequeno dela. Escolha no início: 5 níveis, recordes próprios.
+• Rever partida (1v1): veja os dois tabuleiros jogada por jogada. Dá para desativar «Compartilhar jogadas» nas Configurações.
+• «Reiniciar», «Próximo Jogo» e «Novo Jogo» agora mantêm Contra o Tempo e Sobrevivência.
+• Botões de cima ficam na tela com fonte grande; botão Voltar corrigido.
+• Restauração da nuvem mais segura, textos mais claros e app mais leve.
+</pt-BR>
+<ru-RU>
+• Новое: судоку «Киллер» — сумма цифр в каждой пунктирной области равна её маленькому числу. Переключение на главном экране: 5 уровней, свои рекорды.
+• Разбор партии 1v1: обе доски ход за ходом. «Обмен ходами» можно отключить в настройках.
+• «Начать заново», «Следующая игра» и «Новая игра» теперь сохраняют Спидран и Выживание.
+• Верхние кнопки не уходят за экран при крупном шрифте, кнопка «Назад» исправлена.
+• Надёжнее восстановление из облака, понятнее тексты, легче приложение.
+</ru-RU>
+<zh-CN>
+• 新增：杀手数独。虚线围成的笼子里，数字之和等于笼子的小数字。在首页切换“标准”和“杀手”：5 个难度，单独记录成绩。
+• 1v1 复盘：对战结束后，可逐步回看双方棋盘。可在设置中关闭“对战记录共享”。
+• “重新开始本局”“挑战下一局”“新游戏”现在会保留计时竞速和极限生存。
+• 字体放大时顶部按钮也不会超出屏幕，返回键已修复。
+• 云端恢复更安全，文字更清楚，应用更小。
+</zh-CN>
+<zh-TW>
+• 新增：殺手數獨。虛線圍成的籠子裡，數字總和等於籠子的小數字。在首頁切換「標準」與「殺手」：5 個難度，另外記錄成績。
+• 1v1 復盤：對戰結束後，可逐步回看雙方盤面。可在設定中關閉「對戰紀錄分享」。
+• 「重新開始本局」「挑戰下一局」「新遊戲」現在會保留計時競速與極限生存。
+• 字體放大時頂部按鈕也不會超出畫面，返回鍵已修正。
+• 雲端還原更安全，文字更清楚，應用程式更小。
+</zh-TW>

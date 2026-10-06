@@ -24,7 +24,7 @@ export function AchievementToast({ achievement }) {
         </div>
         <div className="ach-toast-points-badge">
           <Award size={12} />
-          <span>+{tierObj.points}</span>
+          <span><bdi dir="ltr">+{tierObj.points}</bdi></span>
         </div>
       </div>
     </div>

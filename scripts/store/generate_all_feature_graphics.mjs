@@ -30,8 +30,12 @@ const GRAPHICS_CONFIG = {
     dir: 'rtl',
     badge: 'SUDOKU ☀',
     title1: 'سودوكو',
-    title2: 'لغز المنطق',
-    tagline: 'كلاسيكي · 32 تقنية · تقرير معدل الذكاء ومبارزة 1 ضد 1',
+    // Store title and short description words (store_description_ar.txt). The old tagline
+    // sold an "IQ report" the app renamed to Logic Score; this one is the Saudi review's
+    // proposal (SudokuAITalk AR30-17), made for the Saudi launch 2026-10-07.
+    title2: 'أكاديمية المنطق',
+    tagline: '5 مستويات · 32 تقنية · مبارزات 1 ضد 1 وضد الذكاء الاصطناعي',
+    taglineSize: 19,  // at 22px the last word went to a second line on its own (AGENTS §4.4: one line)
     font: '"Segoe UI", "Tahoma", "Noto Sans Arabic", sans-serif'
   },
   'zh-CN': {
@@ -218,7 +222,7 @@ async function generateAllGraphics() {
           ${cfg.title2Size ? `font-size: ${cfg.title2Size}px;` : ''}
         }
         .tagline {
-          font-size: 22px;
+          font-size: ${cfg.taglineSize || 22}px;
           color: #e2e8f0;
           line-height: 1.5;
           font-weight: 600;

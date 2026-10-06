@@ -114,7 +114,8 @@ export function AchievementsView() {
                 <div className="ach-title-row">
                   <h4 className="ach-title">{t(ach.titleKey)}</h4>
                   <span className={`ach-tier-tag ${ach.tier}`}>
-                    {tierObj.emoji} {t(tierObj.labelKey)} (+{tierObj.points})
+                    {/* +10 as one left-to-right run: in Arabic the bare sign was drawn after the number, "(10+)" (2026-10-07). */}
+                    {tierObj.emoji} {t(tierObj.labelKey)} (<bdi dir="ltr">+{tierObj.points}</bdi>)
                   </span>
                 </div>
                 <p className="ach-desc">{t(ach.descKey)}</p>
