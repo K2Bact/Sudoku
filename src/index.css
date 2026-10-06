@@ -366,3 +366,10 @@ html[dir="rtl"] .icon-btn svg.lucide-arrow-left,
 html[dir="rtl"] .icon-btn svg.lucide-chevron-left {
   transform: scaleX(-1);
 }
+/* "Go on" chevrons point the way the text reads. Only the back button was flipped,
+   so in Arabic the settings rows sat on the left yet still pointed right (seen on the
+   Flip5, 2026-10-06). The two home arrows that are placed absolutely flip in
+   homeCards.css, where their translateY lives. */
+html[dir="rtl"] svg.lucide-chevron-right {
+  transform: scaleX(-1);
+}

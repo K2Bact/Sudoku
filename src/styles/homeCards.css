@@ -273,3 +273,12 @@
   color: var(--text-muted);
   opacity: 0.6;
 }
+
+/* RTL: both arrows move to the reading end and point that way. `right` alone did not
+   follow dir="rtl", so in Arabic they stayed on the right pointing right (2026-10-06). */
+html[dir="rtl"] .btn-modern svg.arrow-icon,
+html[dir="rtl"] .daily-card-banner svg.daily-arrow-icon {
+  right: auto;
+  left: 16px;
+  transform: translateY(-50%) scaleX(-1);
+}
