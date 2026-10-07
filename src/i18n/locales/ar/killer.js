@@ -26,9 +26,7 @@ export const killer = {
     },
     stats: {
       title: 'كيلر',
-      played: 'عدد الألعاب: {count}',
-      won: 'مرات الفوز: {count}'
     },
-    shareText: '🧩 سودوكو كيلر Lv.{level} {name} أكملته في [{time}]! (عدد الأخطاء: {mistakes}). هل يمكنك التفوق علي؟'
+    shareText: '🧩 سودوكو كيلر Lv.{level} {name} أكملته في [{time}]! التقييم: \u2066{rank}\u2069 (عدد الأخطاء: {mistakes}). هل يمكنك التفوق علي؟'
   }
 };

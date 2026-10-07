@@ -7,12 +7,28 @@
   "note": "Written with the gate on 2026-10-01. Each mutation breaks one thing a killer player sees.",
   "mutations": [
     {
-      "name": "a killer's Speedrun tab switches instead of saying it is coming",
-      "why": "The tab sets the home mode silently. On the killer card nothing seems to happen — the card still plays Classic, because a kind without the mode plays its first one — so the player taps a tab that does nothing visible and is never told why. First written expecting \"changed the mode\"; that cannot happen here for the reason just given, and the gate failed on the missing note instead.",
+      "name": "a killer's Survival tab switches instead of saying it is coming",
+      "why": "The tab sets the home mode silently. Killer has Speedrun since 2026-10-07 but no Survival yet; on the killer card the tab would seem to do nothing — a kind without the mode plays its first one — so the player is never told why. (Written for the Speedrun tab, which was the missing mode until 2026-10-07.)",
       "file": "src/components/HomeScreen.jsx",
       "find": "    if (modes.includes(m)) {",
       "replace": "    if (true) {",
       "expectFailure": "said nothing"
+    },
+    {
+      "name": "killer has no Speedrun again",
+      "why": "The killer's modes list loses Speedrun; the tab goes back to \"coming soon\" and the killer speedrun is gone without anything else failing.",
+      "file": "src/engine/variants.js",
+      "find": "  { id: 'killer', modes: ['classic', 'timeAttack'] },",
+      "replace": "  { id: 'killer', modes: ['classic'] },",
+      "expectFailure": "did not switch to Speedrun"
+    },
+    {
+      "name": "a new killer from the Speedrun tab starts as Classic",
+      "why": "Home's killer button used to start Classic whatever tab was chosen. With the tab open the player sees the speedrun button and gets a classic game: no ⚡, no +10 s, hints back, the time in the wrong table.",
+      "file": "src/components/HomeScreen.jsx",
+      "find": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, 'standard', 'killer');",
+      "replace": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, 'classic', 'standard', 'killer');",
+      "expectFailure": "started without ⚡"
     },
     {
       "name": "the ⓘ shows for killer only again",
@@ -71,12 +87,12 @@
       "expectFailure": "the first killer started without its rules"
     },
     {
-      "name": "a killer win shows the classic grade",
-      "why": "The grade's times are set for classic puzzles; a killer takes longer by design and would be graded C every time.",
+      "name": "a killer is graded on classic times",
+      "why": "Until 2026-10-07 a killer showed no grade because the only times were classic ones, on which a killer always came out C. With killer times in speedrunRank.js, the victory screen must pass the kind; without it a killer in 105 s at Lv.1 reads A instead of S+.",
       "file": "src/components/VictoryModal.jsx",
-      "find": "        {variant !== 'killer' && (",
-      "replace": "        {true && (",
-      "expectFailure": "a killer win shows the classic grade"
+      "find": "  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds, variant);",
+      "replace": "  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds);",
+      "expectFailure": "graded on classic times, not the killer ones"
     },
     {
       "name": "the switch's names are set too large to fit",
@@ -93,6 +109,14 @@
       "find": "  padding-inline-start: 20px;",
       "replace": "  padding-inline-start: 20px;\n  white-space: nowrap !important;",
       "expectFailure": "rules —"
+    },
+    {
+      "name": "a killer win hides the leaderboard again",
+      "why": "Until 2026-10-08 the victory screen dropped the leaderboard button for a killer, whose wins did not reach the Logic Score. They do now; hiding it leaves a killer player no way to the board their win just moved.",
+      "file": "src/components/modals/GameModalsContainer.jsx",
+      "find": "          onOpenLeaderboard={onOpenLeaderboard}",
+      "replace": "          onOpenLeaderboard={variant === 'killer' ? null : onOpenLeaderboard}",
+      "expectFailure": "a killer win offers no leaderboard"
     }
   ]
 }

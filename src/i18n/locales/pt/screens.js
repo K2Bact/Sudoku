@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Como o Logic Score é calculado?",
-    scoreHowBody: "Ele sobe quando você preenche todo o tabuleiro e vence. O nível mais difícil vencido sem dicas é o que mais conta; o número de vitórias e a taxa de vitórias contam um pouco. Duelos 1v1 e contra IA não entram no número de vitórias nem na taxa de vitórias: eles têm um histórico próprio em Estatísticas. Fim de jogo e partidas abandonadas diminuem a taxa de vitórias e podem tirar alguns pontos. O placar usa essa pontuação quando você está conectado ao Play Games.",
+    scoreHowBody: "Ele sobe quando você preenche todo o tabuleiro e vence. Contam tanto as partidas Padrão quanto as Killer. O nível mais difícil vencido sem dicas é o que mais conta; o número de vitórias e a taxa de vitórias contam um pouco. Duelos 1v1 e contra IA não entram no número de vitórias nem na taxa de vitórias: eles têm um histórico próprio em Estatísticas. Fim de jogo e partidas abandonadas diminuem a taxa de vitórias e podem tirar alguns pontos. O placar usa essa pontuação quando você está conectado ao Play Games.",
     shareText: '[Análise de jogo Sudoku]\nLogic Score: {iq}\nNível: {tier}\nExperimente o Sudoku hoje!',
     copiedToast: 'Análise copiada para a área de transferência.',
     focus: 'Sem erros',
@@ -182,7 +182,7 @@ export const screens = {
     autoMatchDesc: 'Matchmaking ágil com jogadores de todo o mundo',
     mmrBadge: 'Sua taxa de conclusão: {rate}%',
     findOpponentBtn: 'Buscar Oponente',
-    noOpponentFound: 'Nenhum oponente encontrado. Jogar contra a IA?',
+    noOpponentFound: 'Nenhum oponente encontrado.',
     searchAgain: 'Procurar de novo',
     connectFailed: "Não foi possível conectar ao jogo online. Tente novamente mais tarde. Jogar contra a IA?",
     playAiInstead: 'Jogar contra a IA'

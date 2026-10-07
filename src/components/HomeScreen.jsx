@@ -5,7 +5,7 @@ import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine';
 import { loadStats, loadGameState, loadSettings, saveSettings } from '../utils/storage';
 import { modesOf, variantOf } from '../engine/variants';
 import { loadWallet } from '../utils/wallet';
-import { iqStatsService } from '../services/iqStatsService';
+import { iqStatsService, combinedRecord } from '../services/iqStatsService';
 import { useTranslation } from '../i18n/i18nContext';
 import { soundHaptic } from '../utils/soundHaptic';
 import { HomeTopHeader } from './home/HomeTopHeader';
@@ -57,7 +57,7 @@ export function HomeScreen({
     setComingSoon(false);
     saveSettings({ ...loadSettings(), homeVariant: v });
   };
-  // A kind without the chosen mode plays its first one: a killer is Classic only for now.
+  // A kind without the chosen mode plays its first one: a killer has no Survival yet.
   const modes = modesOf(variant);
   const mode = modes.includes(currentSelectedMode) ? currentSelectedMode : modes[0];
   const [showKillerRules, setShowKillerRules] = useState(false);
@@ -74,14 +74,15 @@ export function HomeScreen({
       setComingSoon(true);
     }
   };
-  const startKiller = () => handleStart && handleStart(selectedLevel, false, 'classic', 'standard', 'killer');
+  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, 'standard', 'killer');
 
   const savedGame = loadGameState();
   const hasSavedGame = isResumableGame(savedGame);
   const isCurrentTabSaved = hasSavedGame && (savedGame.gameMode || 'classic') === mode && variantOf(savedGame) === variant;
 
   const stats = loadStats();
-  const won = stats.gamesWon || 0;
+  // Puzzles cleared, either kind — the count beside the Logic Score, which counts both.
+  const won = combinedRecord(stats).gamesWon;
   const brainIQ = iqStatsService.calculateBrainIQ(stats);
   const iqReport = iqStatsService.getPercentileReport(brainIQ);
 
@@ -174,12 +175,14 @@ export function HomeScreen({
             )}
 
             {variant === 'killer' ? (
+              /* A killer speedrun starts from the same button the standard one does. */
               <button type="button"
-                className="btn-modern btn-play-new btn-play-killer"
+                className={`btn-modern btn-play-new ${mode === 'timeAttack' ? '' : 'btn-play-killer'}`}
                 onClick={() => (loadSettings().killerRulesSeen ? startKiller() : setShowKillerRules(true))}
+                style={mode === 'timeAttack' ? { background: 'linear-gradient(135deg, #f59e0b, #d97706)' } : undefined}
               >
-                <Play size={16} />
-                <span>{t('common.newGame')}</span>
+                {mode === 'timeAttack' ? <Zap size={16} /> : <Play size={16} />}
+                <span>{mode === 'timeAttack' ? t('home.modes.timeAttack.startBtn') : t('common.newGame')}</span>
                 <ChevronRight size={16} className="arrow-icon" />
               </button>
             ) : currentSelectedMode === 'classic' ? (

@@ -8,8 +8,12 @@
  * stats screen and the saved game all read this list, so a new kind is one entry
  * here plus its generator, not a hunt through the screens.
  *
- * modes: the modes a kind can be played in. Killer starts with Classic only
- * (user decision 2026-10-01); Speedrun and Survival need their own time limits.
+ * modes: the modes a kind can be played in. Killer started with Classic only
+ * (user decision 2026-10-01) and gained Speedrun on 2026-10-07 (user: "킬러 스도쿠에
+ * 일단은 스피드런 적용해봐"): its rules — +10 s a mistake, no limit on
+ * mistakes, no hints, combos — need no killer numbers. Its grade does (the S+
+ * times are classic times, KP-8), so a killer speedrun shows none yet. Survival
+ * needs a killer time limit for each level.
  */
 import { generatePuzzle } from './SudokuEngine.js';
 import { generateKillerPuzzle } from './killer/killerGenerator.js';
@@ -17,7 +21,7 @@ import { solveKiller } from './killer/killerSolver.js';
 
 export const VARIANTS = [
   { id: 'classic', modes: ['classic', 'timeAttack', 'timeLimit'] },
-  { id: 'killer', modes: ['classic'] },
+  { id: 'killer', modes: ['classic', 'timeAttack'] },
 ];
 
 export const isKnownVariant = (id) => VARIANTS.some((v) => v.id === id);

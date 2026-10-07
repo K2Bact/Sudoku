@@ -7,7 +7,48 @@
  * - True Gaussian Normal Distribution (Mean 100, SD 15) & Global Quantile Aggregation
  */
 
+import { killerSeconds } from '../engine/killer/killerTimes.js';
+
 const ANON_UID_KEY = 'suidoku_anon_uid_v1';
+
+// Par time per level for the SPEED metric — a classic puzzle's; a killer's is the
+// same effort in killer time (killerTimes.js).
+const PAR = { 1: 240, 2: 360, 3: 480, 4: 720, 5: 1080 };
+const LEVELS = [1, 2, 3, 4, 5];
+
+/**
+ * The play the Logic Score is measured on: classic and killer together (user,
+ * 2026-10-08 — one app, one score; the kinds differ in the puzzle only). Counts
+ * are added, the longest combo is the longer one, a level is cleared if it was
+ * cleared in either kind, and each level's speed is the better of the two, each
+ * against its own par. With no killer record this is exactly the classic record,
+ * so a classic-only player's score does not move.
+ */
+export function combinedRecord(stats = {}) {
+  const k = stats.killer && typeof stats.killer === 'object' ? stats.killer : {};
+  const n = (v) => Number(v) || 0;
+  const clearedIn = (rec, lv) => Boolean((rec.clearedLevels || {})[lv] || (rec.bestTimes || {})[lv] > 0);
+  const clearedLevels = {};
+  const speedRatios = {};
+  for (const lv of LEVELS) {
+    if (clearedIn(stats, lv) || clearedIn(k, lv)) clearedLevels[lv] = true;
+    const ratios = [];
+    const c = (stats.bestTimes || {})[lv];
+    const kt = (k.bestTimes || {})[lv];
+    if (c > 0) ratios.push(c / PAR[lv]);
+    if (kt > 0) ratios.push(kt / killerSeconds(PAR[lv], lv));
+    if (ratios.length) speedRatios[lv] = Math.min(...ratios);
+  }
+  return {
+    gamesPlayed: n(stats.gamesPlayed) + n(k.gamesPlayed),
+    gamesWon: n(stats.gamesWon) + n(k.gamesWon),
+    flawlessWins: n(stats.flawlessWins) + n(k.flawlessWins),
+    timeLimitSurvivalWins: n(stats.timeLimitSurvivalWins) + n(k.timeLimitSurvivalWins),
+    maxCombo: Math.max(n(stats.maxCombo), n(k.maxCombo)),
+    clearedLevels,
+    speedRatios,
+  };
+}
 
 // Mathematical error function approximation (Abramowitz and Stegun 7.1.26)
 function erf(x) {
@@ -61,12 +102,12 @@ class IQStatsService {
    * @returns {number} Brain IQ (bounded 95~150)
    */
   calculateBrainIQ(stats = {}) {
-    const played = Number(stats.gamesPlayed) || 0;
-    const won = Number(stats.gamesWon) || 0;
+    const rec = combinedRecord(stats);
+    const played = rec.gamesPlayed;
+    const won = rec.gamesWon;
     if (won <= 0) return 100;
 
     const winRate = played > 0 ? (won / played) : 0;
-    const bestTimes = stats.bestTimes || {};
 
     let iq = 100;
 
@@ -74,11 +115,10 @@ class IQStatsService {
     const volumeBonus = Math.min(6, Math.log2(won + 1) * 1.5);
     iq += volumeBonus;
 
-    // 2. Highest level cleared without a hint (older saves: best times)
-    const clearedLevels = stats.clearedLevels || {};
+    // 2. Highest level cleared without a hint (older saves: best times), either kind
     let maxLevelCleared = 1;
     for (let lv = 5; lv >= 1; lv--) {
-      if (clearedLevels[lv] || (bestTimes[lv] && bestTimes[lv] > 0)) {
+      if (rec.clearedLevels[lv]) {
         maxLevelCleared = lv;
         break;
       }
@@ -162,30 +202,25 @@ class IQStatsService {
    */
   calculateCognitiveProfile(stats = {}) {
     const clamp = (n) => Math.max(15, Math.min(99, Math.round(n)));
-    const played = Number(stats.gamesPlayed) || 0;
-    const won = Number(stats.gamesWon) || 0;
-    const bestTimes = stats.bestTimes || {};
-    const flawless = Number(stats.flawlessWins) || 0;
-    const survival = Number(stats.timeLimitSurvivalWins) || 0;
-    const maxCombo = Number(stats.maxCombo) || 0;
+    const rec = combinedRecord(stats);
+    const played = rec.gamesPlayed;
+    const won = rec.gamesWon;
+    const flawless = rec.flawlessWins;
+    const survival = rec.timeLimitSurvivalWins;
+    const maxCombo = rec.maxCombo;
 
-    // SPEED — clear time measured against each level's own par time
-    const PAR = { 1: 240, 2: 360, 3: 480, 4: 720, 5: 1080 };
-    const ratios = [];
-    for (let lv = 1; lv <= 5; lv++) {
-      const t = bestTimes[lv];
-      if (t > 0) ratios.push(t / PAR[lv]);
-    }
+    // SPEED — clear time measured against each level's own par time (a killer's
+    // against killer par), the better kind at each level
+    const ratios = Object.values(rec.speedRatios);
     const avgRatio = ratios.length ? ratios.reduce((a, b) => a + b, 0) / ratios.length : null;
     const speed = avgRatio === null ? 15 : clamp(100 - avgRatio * 55);
 
     // LOGIC — hardest level cleared without a hint, plus how much of the ladder is
     // covered. Saves from before clearedLevels existed only have best times.
-    const clearedLevels = stats.clearedLevels || {};
     let maxLevel = 0;
     let levelsCleared = 0;
     for (let lv = 1; lv <= 5; lv++) {
-      if (clearedLevels[lv] || bestTimes[lv] > 0) {
+      if (rec.clearedLevels[lv]) {
         levelsCleared++;
         maxLevel = lv;
       }

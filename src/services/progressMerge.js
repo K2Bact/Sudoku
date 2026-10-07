@@ -125,9 +125,8 @@ function mergeTimes(cloudTable, localTable) {
   return out;
 }
 
-export function mergeStats(cloudStats = {}, localStats = {}) {
-  const cloud = isObject(cloudStats) ? cloudStats : {};
-  const local = isObject(localStats) ? localStats : {};
+/** One kind's record — the classic one, or the killer one inside it. */
+function mergeRecord(cloud, local) {
   // Spread both sides first so any field this does not know about survives —
   // rebuilding from a fixed list used to delete timeLimitBestTimes on restore.
   const merged = {
@@ -147,14 +146,6 @@ export function mergeStats(cloudStats = {}, localStats = {}) {
     if (Object.keys(out).length > 0) merged[table] = out;
     else delete merged[table];
   }
-  // The killer record sits inside stats as one object. Spread as an unknown
-  // field it would come through whole from the local side, and a killer won on
-  // the other phone would be lost the next time this phone saved.
-  if (isObject(cloud.killer) || isObject(local.killer)) {
-    const c = isObject(cloud.killer) ? cloud.killer : {};
-    const l = isObject(local.killer) ? local.killer : {};
-    merged.killer = { ...mergeGameCounts(c, l), bestTimes: mergeTimes(c.bestTimes, l.bestTimes) };
-  }
   // Levels cleared without a hint: a level cleared on either device stays cleared.
   // The app writes `true`; nothing else counts as cleared.
   const cleared = {};
@@ -164,6 +155,22 @@ export function mergeStats(cloudStats = {}, localStats = {}) {
   }
   if (Object.keys(cleared).length > 0) merged.clearedLevels = cleared;
   else delete merged.clearedLevels;
+  return merged;
+}
+
+export function mergeStats(cloudStats = {}, localStats = {}) {
+  const cloud = isObject(cloudStats) ? cloudStats : {};
+  const local = isObject(localStats) ? localStats : {};
+  const merged = mergeRecord(cloud, local);
+  // The killer record sits inside stats as one object and holds what the classic
+  // one holds (storage.js recordOf), so it merges by the same rules. Spread as an
+  // unknown field it would come through whole from the local side, and a killer
+  // won on the other phone would be lost the next time this phone saved.
+  if (isObject(cloud.killer) || isObject(local.killer)) {
+    merged.killer = mergeRecord(isObject(cloud.killer) ? cloud.killer : {}, isObject(local.killer) ? local.killer : {});
+  } else {
+    delete merged.killer;
+  }
   return merged;
 }
 

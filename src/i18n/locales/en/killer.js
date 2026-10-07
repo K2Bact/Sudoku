@@ -26,9 +26,7 @@ export const killer = {
     },
     stats: {
       title: 'Killer',
-      played: 'Played {count}',
-      won: 'Won {count}'
     },
-    shareText: '🧩 Sudoku Killer Lv.{level} {name} cleared in [{time}]! (mistakes: {mistakes}). Can you beat it?'
+    shareText: '🧩 Sudoku Killer Lv.{level} {name} cleared in [{time}]! Rank: {rank} (mistakes: {mistakes}). Can you beat it?'
   }
 };

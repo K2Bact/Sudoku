@@ -26,9 +26,7 @@ export const killer = {
     },
     stats: {
       title: '킬러',
-      played: '플레이 {count}판',
-      won: '완주 {count}판'
     },
-    shareText: '🧩 Sudoku 킬러 Lv.{level} {name}를 [{time}]만에 클리어! (실수 {mistakes}회). 당신도 도전해 보세요!'
+    shareText: '🧩 Sudoku 킬러 Lv.{level} {name}를 [{time}]만에 클리어! 등급: {rank} (실수 {mistakes}회). 당신도 도전해 보세요!'
   }
 };

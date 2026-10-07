@@ -9,15 +9,24 @@
  * right game. This plays it in a browser:
  *
  *   1. Home — both kinds show the same card (same tabs, same chips, the ⓘ),
- *      so switching does not change its height; a mode or rival the killer does
- *      not have yet says it is coming instead of switching (user, 2026-10-01);
- *      the ⓘ opens the selected kind's rules; the switch survives a reload
+ *      so switching does not change its height; Speedrun switches the killer
+ *      card to a speedrun start (2026-10-07); a mode or rival the killer does
+ *      not have yet (Survival, Ghost) says it is coming instead of switching
+ *      (user, 2026-10-01); the ⓘ opens the selected kind's rules; the switch
+ *      survives a reload
  *   2. the first killer starts after its rules; the board's outlines and sums
  *      match the cages saved for the game, cell by cell
- *   3. the second killer starts straight away
+ *   3. the second killer starts straight away; 3b. a new killer started on the
+ *      Speedrun tab is a speedrun (⚡), not a Classic one
  *   4. Resume is offered on the kind of game that was saved, and only there
- *   5. a killer won from the board shows no classic grade, and moves the killer
- *      record only — not the classic one, the ghost or the daily mission
+ *   5. a killer won from the board is graded on killer times (2026-10-07: 105 s
+ *      at Lv.1 is S+ for a killer, A on classic times), offers the Logic Score
+ *      leaderboard (it counts both kinds, 2026-10-08), and moves the killer
+ *      record only — not the classic one, the ghost or the daily records
+ *   5b. a killer speedrun: ⚡ in the header, no hint button, a wrong digit adds
+ *      10 s and does not end the game, the grade is the killer one, and the win
+ *      lands in the killer's own speedrun table — not its plain one, not the
+ *      classic speedrun table
  *   6. 13 languages at 360px and at 320px with a 1.3x font: the switch, the rules
  *      card and the killer stats card are not cut and do not scroll sideways
  */
@@ -150,9 +159,13 @@ async function run() {
     if (!(await visible('.mode-tab-group'))) fail('1: no mode tabs on the killer switch');
     if (!(await visible('.rival-mode-chip-group'))) fail('1: no rival chips on the killer switch');
     await tap(page, '.mode-tab-btn.time-attack-tab', '1: killer Speedrun tab');
+    if (!(await page.locator('.mode-tab-btn.time-attack-tab.active').count())) fail('1: the Speedrun tab on the killer switch did not switch to Speedrun');
+    if (await page.locator('.coming-soon-popup').count()) fail('1: the Speedrun tab on the killer switch says it is coming — killer has Speedrun now');
+    if (!(await page.locator('.home-screen-container .btn-play-new .lucide-zap').count())) fail('1: on killer Speedrun the start button is not the speedrun one');
+    await tap(page, '.mode-tab-btn.time-limit-tab', '1: killer Survival tab');
     const activeTab = await page.locator('.mode-tab-btn.active').innerText().catch(() => '');
-    if (!(await page.locator('.mode-tab-btn.active:not(.time-attack-tab):not(.time-limit-tab)').count())) fail(`1: the Speedrun tab on the killer switch changed the mode (active: "${activeTab}") instead of saying it is coming`);
-    if (!(await page.locator('.coming-soon-popup').count())) fail('1: the Speedrun tab on the killer switch said nothing');
+    if (!(await page.locator('.mode-tab-btn.time-attack-tab.active').count())) fail(`1: the Survival tab on the killer switch changed the mode (active: "${activeTab}") instead of saying it is coming`);
+    if (!(await page.locator('.coming-soon-popup').count())) fail('1: the Survival tab on the killer switch said nothing');
     await tap(page, '.rival-chip.ghost-chip', '1: killer Ghost chip');
     const notes = await page.locator('.locked-mode-popup').count();
     const comingNotes = await page.locator('.coming-soon-popup').count();
@@ -163,7 +176,8 @@ async function run() {
     await page.reload();
     await page.waitForSelector('.home-bottom-nav');
     if (!(await page.locator('.variant-option.active[data-variant="killer"]').count())) fail('1: the killer switch was forgotten on reload');
-    console.log(`  ▶ 1. home: one card shape (${standardAgain}px both; first look ${standardHeight}px), coming-soon note, rules for each kind`);
+    await tap(page, '.mode-tab-btn:not(.time-attack-tab):not(.time-limit-tab)', '1: back to the Classic tab');
+    console.log(`  ▶ 1. home: one card shape (${standardAgain}px both; first look ${standardHeight}px), killer Speedrun opens, coming-soon note, rules for each kind`);
 
     // ── 2. The first killer ──────────────────────────────────────────────
     await prime(page, { settings: { homeVariant: 'killer' } });
@@ -197,6 +211,19 @@ async function run() {
     if (await page.locator('.variant-rules-card').count()) fail('3: the rules came back before the second killer');
     console.log('  ▶ 3. second killer starts without the rules');
 
+    // ── 3b. A new killer speedrun from Home ──────────────────────────────
+    await page.goto(URL);
+    await page.waitForSelector('.home-bottom-nav');
+    await tap(page, '.mode-tab-btn.time-attack-tab', '3b: killer Speedrun tab');
+    await page.click('.home-screen-container .btn-play-new');
+    // The killer from step 3 is still going: starting another asks first.
+    const startAnyway = page.locator('.modal-card button', { hasText: 'OK' });
+    if (await startAnyway.count()) await startAnyway.first().click();
+    await page.waitForSelector('.killer-board', { timeout: 8000 }).catch(() => fail('3b: the speedrun start did not open a killer'));
+    const newTag = await page.locator('.current-level-badge .lvl-tag').innerText().catch(() => '');
+    if (!newTag.includes('⚡')) fail(`3b: a new killer from the Speedrun tab started without ⚡ ("${newTag}") — it played Classic`);
+    console.log('  ▶ 3b. a new killer from the Speedrun tab is a speedrun');
+
     // ── 4. Resume on its own kind ────────────────────────────────────────
     const p = generateKillerPuzzle(1, 'gate-3-18-win');
     const last = p.board.flat().findIndex((d, i) => !d && i > 0);
@@ -205,7 +232,8 @@ async function run() {
     const state = {
       board, initialBoard: cloneGrid(p.board), solutionBoard: p.solution,
       notes: Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => [])),
-      mistakes: 0, timerSeconds: 30, level: 1, gameMode: 'classic', variant: 'killer', cages: p.cages,
+      // 105 s at Lv.1: S+ on the killer times (≤110), A on the classic ones (≤150).
+      mistakes: 0, timerSeconds: 105, level: 1, gameMode: 'classic', variant: 'killer', cages: p.cages,
       isFastEntryMode: false, lockedNumber: null, adHintsUsedThisGame: 0, hintsUsedCount: 0,
     };
     await prime(page, { settings: { homeVariant: 'classic', killerRulesSeen: true }, state });
@@ -221,9 +249,12 @@ async function run() {
     await page.locator(`.number-pad .num-btn:nth-child(${p.solution[Math.floor(last / 9)][last % 9]})`).click();
     try {
       await page.locator('.victory-card').waitFor({ state: 'visible', timeout: 8000 });
-      if (await page.locator('.victory-rank-banner').count()) fail('5: a killer win shows the classic grade — its times are graded for classic puzzles');
+      const grade = await page.locator('.victory-rank-banner').innerText().catch(() => '');
+      if (!grade) fail('5: a killer win shows no grade');
+      else if (!grade.includes('S+')) fail(`5: a killer won in 105 s at Lv.1 says "${grade}" — graded on classic times, not the killer ones (S+ ≤ 110 s)`);
       const stats = await readJSON(page, 'suidoku_user_stats_v1');
       if (stats?.killer?.gamesWon !== 1) fail(`5: the killer record shows ${stats?.killer?.gamesWon} wins after one`);
+      if (!(await page.locator('.victory-card .btn-open-leaderboard').count())) fail('5: a killer win offers no leaderboard — the Logic Score counts killers too (2026-10-08)');
       if (!(stats?.killer?.bestTimes?.[1] > 0)) fail('5: the killer win set no Lv.1 best time');
       if (stats?.gamesWon) fail(`5: the classic record shows ${stats.gamesWon} win(s) after a killer`);
       if (await readJSON(page, 'suidoku_ghost_records_v1')) fail('5: a killer win recorded a ghost run');
@@ -232,6 +263,54 @@ async function run() {
       fail('5: no victory card after the last correct digit');
     }
     console.log('  ▶ 5. killer win: no grade, killer record only');
+
+    // ── 5b. A killer speedrun ────────────────────────────────────────────
+    // Two open cells with different digits: with one, every other digit is already
+    // placed nine times and its key is off, so no wrong digit can be entered.
+    const right = p.solution[Math.floor(last / 9)][last % 9];
+    const other = p.board.flat().findIndex((d, i) => !d && i !== last && p.solution[Math.floor(i / 9)][i % 9] !== right);
+    const wrong = p.solution[Math.floor(other / 9)][other % 9];
+    const twoOpen = cloneGrid(board);
+    twoOpen[Math.floor(other / 9)][other % 9] = 0;
+    await prime(page, { settings: { homeVariant: 'killer', killerRulesSeen: true }, state: { ...state, board: twoOpen, gameMode: 'timeAttack' } });
+    await tap(page, '.mode-tab-btn.time-attack-tab', '5b: killer Speedrun tab');
+    if (!(await page.locator('.btn-resume').count())) fail('5b: the killer Speedrun tab does not offer the killer speedrun in progress');
+    await page.click('.btn-resume').catch(() => {});
+    await page.waitForSelector('.killer-board', { timeout: 8000 }).catch(() => fail('5b: resume did not open the killer speedrun'));
+    const lvlTag = await page.locator('.current-level-badge .lvl-tag').innerText().catch(() => '');
+    if (!lvlTag.includes('⚡')) fail(`5b: the header says "${lvlTag}" — no ⚡ on a killer speedrun`);
+    if (await page.locator('.hint-btn').count()) fail('5b: a killer speedrun offers hints — speedrun has none');
+    const clock = async () => {
+      const [m, sec] = (await page.locator('.time-display').innerText()).split(':').map(Number);
+      return m * 60 + sec;
+    };
+    await page.locator('.sudoku-cell').nth(last).click();
+    const before = await clock();
+    await page.locator(`.number-pad .num-btn:nth-child(${wrong})`).click();
+    await page.waitForTimeout(200);
+    const after = await clock();
+    if (after - before < 10) fail(`5b: a wrong digit moved the killer speedrun clock ${before}s → ${after}s — speedrun adds 10 s`);
+    if (await page.locator('.game-over-card, .modal-card.game-over').count()) fail('5b: a wrong digit ended the killer speedrun — speedrun has no mistake limit');
+    // A filled cell takes no other digit until it is erased — the same as classic.
+    await page.locator('.sudoku-cell').nth(last).click();
+    await page.locator('.action-btn[title="Erase"]').click().catch(() => fail('5b: no Erase button'));
+    await page.locator(`.number-pad .num-btn:nth-child(${right})`).click();
+    await page.locator('.sudoku-cell').nth(other).click();
+    await page.locator(`.number-pad .num-btn:nth-child(${wrong})`).click();
+    try {
+      await page.locator('.victory-card').waitFor({ state: 'visible', timeout: 8000 });
+      const grade = await page.locator('.victory-rank-banner').innerText().catch(() => '');
+      if (!grade) fail('5b: a killer speedrun shows no grade');
+      else if (!grade.includes('S (')) fail(`5b: a killer speedrun at about 115-160 s says "${grade}" — the killer grade there is S`);
+      const stats = await readJSON(page, 'suidoku_user_stats_v1');
+      if (!(stats?.killer?.timeAttackBestTimes?.[1] >= 115)) fail(`5b: the killer speedrun set Lv.1 speedrun best ${stats?.killer?.timeAttackBestTimes?.[1]} — expected the clock with its 10 s penalty (105 s saved + 10)`);
+      if (stats?.killer?.bestTimes?.[1]) fail('5b: the killer speedrun set the plain killer best time — speedrun times are kept apart');
+      if (stats?.timeAttackBestTimes?.[1]) fail('5b: the killer speedrun set the classic speedrun best time');
+      if (stats?.killer?.gamesWon !== 1) fail(`5b: the killer record shows ${stats?.killer?.gamesWon} wins after one speedrun`);
+    } catch {
+      fail('5b: no victory card after the last correct digit');
+    }
+    console.log('  ▶ 5b. killer speedrun: ⚡, no hints, +10 s a mistake, own best time');
 
     // ── 6. Thirteen languages ────────────────────────────────────────────
     let measured = 0;
@@ -266,7 +345,7 @@ async function run() {
         await prime(page, { settings: { language: lang, homeVariant: 'killer', killerRulesSeen: true } });
         if (s !== 1) await scale('.variant-switch-row', s);
         (await cuts('.variant-switch-row')).forEach((c) => fail(`6: ${where} switch — ${c}`));
-        if (await tap(page, '.mode-tab-btn.time-attack-tab', `6: ${where}`) && await page.locator('.coming-soon-popup').count()) {
+        if (await tap(page, '.mode-tab-btn.time-limit-tab', `6: ${where}`) && await page.locator('.coming-soon-popup').count()) {
           if (s !== 1) await scale('.coming-soon-popup', s);
           (await cuts('.coming-soon-popup')).forEach((c) => fail(`6: ${where} coming-soon note — ${c}`));
           await tap(page, '.coming-soon-popup .locked-popup-close-btn', `6: ${where}`);

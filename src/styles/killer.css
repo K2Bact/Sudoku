@@ -150,14 +150,14 @@ html[lang="ko"] .variant-rules-example {
   color: #fff;
 }
 
-.killer-stats-totals {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding-top: 8px;
+/* Speedrun best times under the plain ones, set off the way the totals are. */
+.killer-speedrun-title {
+  margin: 14px 0 8px;
+  padding-top: 10px;
   border-top: 1px solid var(--board-grid-line);
-  font-size: 13px;
+  font-size: 14px;
+}
+
+.killer-summary-grid {
+  margin-bottom: 14px;
 }

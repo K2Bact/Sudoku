@@ -26,9 +26,7 @@ export const killer = {
     },
     stats: {
       title: 'キラー',
-      played: 'プレイ {count}回',
-      won: 'クリア {count}回'
     },
-    shareText: '🧩 ナンプレ キラー Lv.{level} {name}を[{time}]でクリア！ (ミス {mistakes}回)。あなたも挑戦してみよう！'
+    shareText: '🧩 ナンプレ キラー Lv.{level} {name}を[{time}]でクリア！ ランク: {rank} (ミス {mistakes}回)。あなたも挑戦してみよう！'
   }
 };

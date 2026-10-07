@@ -100,7 +100,7 @@ export function GameModalsContainer({
           level={level}
           onNextGame={() => onNextGame(level)}
           onReturnHome={onReturnHome}
-          onOpenLeaderboard={variant === 'killer' ? null : onOpenLeaderboard}
+          onOpenLeaderboard={onOpenLeaderboard}
         />
       )}
 

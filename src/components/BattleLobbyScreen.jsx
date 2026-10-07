@@ -100,8 +100,9 @@ export function BattleLobbyScreen({
               <button type="button" className={`btn ${matchUnavailable ? 'btn-primary' : 'btn-secondary'} w-100`} onClick={handlePlayAi}>
                 <Bot size={16} /> {t('battleLobby.playAiInstead')}
               </button>
+              {/* "Back", not "Close": it leaves the search for the lobby (user, 2026-10-07). */}
               <button type="button" className="btn btn-secondary w-100" onClick={handleCancelSearch}>
-                {t('common.close')}
+                {t('common.back')}
               </button>
             </div>
           </div>

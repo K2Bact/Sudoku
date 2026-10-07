@@ -26,9 +26,7 @@ export const killer = {
     },
     stats: {
       title: '殺手數獨',
-      played: '已玩 {count} 局',
-      won: '通關 {count} 局'
     },
-    shareText: '🧩 我以 [{time}] 破解了 Sudoku 殺手 Lv.{level} {name}！（失誤 {mistakes} 次）。你也來挑戰吧！'
+    shareText: '🧩 我以 [{time}] 破解了 Sudoku 殺手 Lv.{level} {name}！評級：{rank}（失誤 {mistakes} 次）。你也來挑戰吧！'
   }
 };

@@ -26,9 +26,7 @@ export const killer = {
     },
     stats: {
       title: 'किलर',
-      played: 'खेले: {count}',
-      won: 'जीते: {count}'
     },
-    shareText: '🧩 मैंने सुडोकू किलर Lv.{level} {name} को [{time}] में हल किया! (गलतियां: {mistakes})। क्या आप इससे तेज़ कर सकते हैं?'
+    shareText: '🧩 मैंने सुडोकू किलर Lv.{level} {name} को [{time}] में हल किया! रैंक: {rank} (गलतियां: {mistakes})। क्या आप इससे तेज़ कर सकते हैं?'
   }
 };

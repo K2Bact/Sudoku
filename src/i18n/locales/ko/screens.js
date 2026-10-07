@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Logic Score는 어떻게 정해지나요?",
-    scoreHowBody: "판을 끝까지 채워 이길 때 올라가요. 힌트 없이 깬 가장 어려운 레벨이 가장 크게 반영되고, 이긴 판 수와 승률도 조금씩 반영돼요. 1v1 배틀과 AI 봇 대전은 이긴 판 수와 승률에 들어가지 않고, 나의 통계의 전적에 따로 남아요. 게임 오버가 되거나 중간에 그만두면 승률이 내려가 점수가 조금 깎일 수 있어요. 순위표는 Play 게임즈에 로그인했을 때 이 점수로 매겨져요.",
+    scoreHowBody: "판을 끝까지 채워 이길 때 올라가요. 표준과 킬러 모두 반영돼요. 힌트 없이 깬 가장 어려운 레벨이 가장 크게 반영되고, 이긴 판 수와 승률도 조금씩 반영돼요. 1v1 배틀과 AI 봇 대전은 이긴 판 수와 승률에 들어가지 않고, 나의 통계의 전적에 따로 남아요. 게임 오버가 되거나 중간에 그만두면 승률이 내려가 점수가 조금 깎일 수 있어요. 순위표는 Play 게임즈에 로그인했을 때 이 점수로 매겨져요.",
     shareText: "[Sudoku 플레이 분석]\nLogic Score: {iq}점\n등급: {tier}\n지금 Sudoku에 도전해 보세요!",
     copiedToast: "플레이 분석이 클립보드에 복사되었습니다.",
     focus: "무실수",
@@ -182,7 +182,7 @@ export const screens = {
     autoMatchDesc: '전 세계 플레이어와 1:1 스피드 매칭',
     mmrBadge: '내 클리어율 {rate}%',
     findOpponentBtn: '상대 찾기',
-    noOpponentFound: '상대를 찾지 못했습니다. AI와 대전할까요?',
+    noOpponentFound: '상대를 찾지 못했습니다.',
     searchAgain: '다시 찾기',
     connectFailed: "온라인 대전에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요. AI와 대전할까요?",
     playAiInstead: 'AI와 대전'

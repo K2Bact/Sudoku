@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ How is the Logic Score decided?",
-    scoreHowBody: "It goes up when you fill the whole board and win. The hardest level you have cleared without hints counts the most; the number of wins and your win rate count a little. 1v1 and AI battles aren't counted in wins or win rate; they have their own Record in Stats. Game overs and quitting a game lower your win rate, which can take a few points off. The ranking uses this score when you are signed in to Play Games.",
+    scoreHowBody: "It goes up when you fill the whole board and win. Standard and Killer games both count. The hardest level you have cleared without hints counts the most; the number of wins and your win rate count a little. 1v1 and AI battles aren't counted in wins or win rate; they have their own Record in Stats. Game overs and quitting a game lower your win rate, which can take a few points off. The ranking uses this score when you are signed in to Play Games.",
     shareText: "[Sudoku Play Analysis]\nLogic Score: {iq}\nRank: {tier}\nGive Sudoku a try!",
     copiedToast: "Play analysis copied to clipboard.",
     focus: 'Flawless',
@@ -182,7 +182,7 @@ export const screens = {
     autoMatchDesc: 'Get matched with players worldwide',
     mmrBadge: 'Your Clear Rate {rate}%',
     findOpponentBtn: 'Find Opponent',
-    noOpponentFound: 'No opponent found. Play against the AI instead?',
+    noOpponentFound: 'No opponent found.',
     searchAgain: 'Search again',
     connectFailed: "Couldn't connect to online play. Please try again later. Play against the AI instead?",
     playAiInstead: 'Battle the AI'

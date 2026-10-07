@@ -31,17 +31,17 @@
     },
     {
       "name": "a killer win goes through the classic win path",
-      "why": "Killer wins and times land in the classic record, the Logic Score and the leaderboard — the separation the user decided on is gone.",
+      "why": "Since 2026-10-07 one win path serves both kinds and the kind only picks the record (storage.js recordOf). Drop the kind from the call and a killer win lands in the classic record — the Logic Score's win rate and best times — while the killer card shows nothing.",
       "file": "src/utils/gameCompletion.js",
-      "find": "  if (variant === 'killer') {",
-      "replace": "  if (false) {",
+      "find": "  }, variant);",
+      "replace": "  });",
       "expectFailure": "a killer win must count in the killer record"
     },
     {
       "name": "every loss counts against the classic record",
       "why": "A killer lost or walked away from lowers the classic win rate — the number the Logic Score is built on.",
       "file": "src/utils/killerStats.js",
-      "find": "  if (variant !== 'killer') return recordGameLoss(mode);",
+      "find": "  return recordGameLoss(mode, variant === 'killer' ? 'killer' : 'classic');",
       "replace": "  return recordGameLoss(mode);",
       "expectFailure": "a killer lost on mistakes must count as a killer played"
     },
@@ -84,6 +84,86 @@
       "find": "  if (isObject(cloud.killer) || isObject(local.killer)) {",
       "replace": "  if (false) {",
       "expectFailure": "the other phone's 3 were lost"
+    },
+    {
+      "name": "a speedrun's time goes into the plain table",
+      "why": "Speedrun and plain games share one table-picking branch since 2026-10-07 (both kinds go through recordGameWin). Lose the speedrun branch and every speedrun time — penalties included — lands among plain times, for both kinds.",
+      "file": "src/utils/storage.js",
+      "find": "  } else if (mode === 'timeAttack') {",
+      "replace": "  } else if (mode === 'never') {",
+      "expectFailure": "must set the killer speedrun Lv.2 best time"
+    },
+    {
+      "name": "the win forgets it was a speedrun",
+      "why": "The win path hands the record the mode; without it every killer speedrun is filed as a plain game.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "  recordGameWin(level, timerSeconds, gameMode, {",
+      "replace": "  recordGameWin(level, timerSeconds, 'classic', {",
+      "expectFailure": "must set the killer speedrun Lv.2 best time"
+    },
+    {
+      "name": "the cloud merge keeps only the old killer fields",
+      "why": "Until 2026-10-07 the killer record held games, wins and best times only, and the merge listed those. It holds every classic field now; a merge that lists the old few loses the other phone's speedrun times, flawless wins, combo and cleared levels.",
+      "file": "src/services/progressMerge.js",
+      "find": "    merged.killer = mergeRecord(isObject(cloud.killer) ? cloud.killer : {}, isObject(local.killer) ? local.killer : {});",
+      "replace": "    { const c = isObject(cloud.killer) ? cloud.killer : {}; const l = isObject(local.killer) ? local.killer : {}; merged.killer = { ...mergeGameCounts(c, l), bestTimes: mergeTimes(c.bestTimes, l.bestTimes) }; }",
+      "expectFailure": "a killer flawless count only in the cloud comes back"
+    },
+    {
+      "name": "the killer times fall back to the classic ones",
+      "why": "speedrunRank picks the classic table for every kind: a killer is held to classic times and nearly always gets C.",
+      "file": "src/utils/speedrunRank.js",
+      "find": "  const table = variant === 'killer' ? KILLER_THRESHOLDS : THRESHOLDS;",
+      "replace": "  const table = THRESHOLDS;",
+      "expectFailure": "must be S+ for a killer"
+    },
+    {
+      "name": "the killer share line drops its grade",
+      "why": "The killer line was written when a killer had no grade (before 2026-10-07). A language that loses {rank} shares a killer win without it, while every other language shows it.",
+      "file": "src/i18n/locales/ja/killer.js",
+      "find": "ランク: {rank} (ミス",
+      "replace": "(ミス",
+      "expectFailure": "the killer share line has no {rank}"
+    },
+    {
+      "name": "the daily mission skips a killer win",
+      "why": "Until 2026-10-07 a killer win ended before the mission check, so a killer player never completed a mission or got its hint. One guard is enough to bring that back.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "  if (activeDailyDateKey) {",
+      "replace": "  if (isKiller) {\n    // skipped\n  } else if (activeDailyDateKey) {",
+      "expectFailure": "mission undone"
+    },
+    {
+      "name": "the Logic Score leaves the killer record out",
+      "why": "The score counts both kinds since 2026-10-08 (one app, one score). Read only the classic record and a killer-only player stays at 100 forever, whatever they clear.",
+      "file": "src/services/iqStatsService.js",
+      "find": "  const k = stats.killer && typeof stats.killer === 'object' ? stats.killer : {};",
+      "replace": "  const k = {};",
+      "expectFailure": "a killer-only player scores differently"
+    },
+    {
+      "name": "a killer time is measured against classic par",
+      "why": "A killer takes ×1.8-3.2 the time of a classic at the same level (killerTimes.js); against classic par every killer best looks slow and drags the speed metric down.",
+      "file": "src/services/iqStatsService.js",
+      "find": "    if (kt > 0) ratios.push(kt / killerSeconds(PAR[lv], lv));",
+      "replace": "    if (kt > 0) ratios.push(kt / PAR[lv]);",
+      "expectFailure": "killer times are measured against classic par"
+    },
+    {
+      "name": "old best times stop counting as cleared levels",
+      "why": "Saves from before clearedLevels existed mark a level cleared only by its best time. Drop that and those players' Logic Score falls — on the leaderboard, for no play of theirs.",
+      "file": "src/services/iqStatsService.js",
+      "find": "  const clearedIn = (rec, lv) => Boolean((rec.clearedLevels || {})[lv] || (rec.bestTimes || {})[lv] > 0);",
+      "replace": "  const clearedIn = (rec, lv) => Boolean((rec.clearedLevels || {})[lv]);",
+      "expectFailure": "classic-only records got a different Logic Score"
+    },
+    {
+      "name": "a killer win does not send the Logic Score",
+      "why": "The win moved the score; the leaderboard would keep the old one until a classic win.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "      playGamesService.submitBrainIQ(currentIQ);",
+      "replace": "      if (!isKiller) playGamesService.submitBrainIQ(currentIQ);",
+      "expectFailure": "a killer win sent the Logic Score 0 time(s)"
     }
   ]
 }

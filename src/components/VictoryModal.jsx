@@ -26,7 +26,7 @@ export function VictoryModal({
   const actualSeconds = timerSeconds ?? timeSeconds ?? 0;
   const handleNext = onNextGame || onRestart;
 
-  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds);
+  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds, variant);
   // Same rule the win was recorded under (gameCompletion.js), so the player learns
   // why a fast time did not become their best instead of taking it for a bug.
   const eligibility = recordEligibility({
@@ -52,7 +52,7 @@ export function VictoryModal({
     soundHaptic.playSelectSound();
     const modeLabel = gameMode === 'timeAttack' ? '[⚡Time Attack]' : gameMode === 'timeLimit' ? '[⏳Survival]' : '[Classic]';
     const shared = { mode: modeLabel, level, name: t(`levels.${level}`), time: formatTime(actualSeconds), rank: rankInfo.rank, mistakes };
-    // A killer has no grade (see the banner below), so its line leaves the grade out.
+    // The killer line names the kind in place of the mode, and carries the killer grade.
     const shareText = variant === 'killer' ? t('killer.shareText', shared) : t('modals.victory.shareText', shared);
     const res = await shareContent({
       title: t('modals.victory.title'),
@@ -79,9 +79,8 @@ export function VictoryModal({
         <h2>{t('modals.victory.title')}</h2>
         <p className="modal-desc" style={{ marginBottom: '12px' }}>{t('modals.victory.desc')}</p>
 
-        {/* Speedrun Rank Banner. Its times are set for classic puzzles; a killer
-            takes longer by design and would always get the lowest grade. */}
-        {variant !== 'killer' && (
+        {/* Speedrun Rank Banner. A killer is graded on its own times
+            (speedrunRank.js) — on the classic ones it would always be C. */}
         <div className="victory-rank-banner" style={{
           display: 'flex',
           alignItems: 'center',
@@ -101,7 +100,6 @@ export function VictoryModal({
           <Medal size={18} />
           <span>{t('modals.victory.rankLabel', { title: t(`modals.victory.ranks.${rankInfo.rank}`) })}</span>
         </div>
-        )}
 
         <div className="stats-grid">
           <div className="stat-box">
@@ -137,7 +135,7 @@ export function VictoryModal({
           {/* In-App Global Leaderboard Quick View Button */}
           {onOpenLeaderboard && (
             <button type="button"
-              className="btn btn-secondary w-100"
+              className="btn btn-secondary w-100 btn-open-leaderboard"
               onClick={() => {
                 soundHaptic.playSelectSound();
                 onOpenLeaderboard();

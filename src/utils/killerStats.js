@@ -1,51 +1,30 @@
 /**
- * killerStats.js — Killer Sudoku keeps its own record.
+ * killerStats.js — reading the killer's record.
  *
- * The classic record feeds the Logic Score, the Play Games leaderboard, the
- * daily mission and the achievements. A killer is a different puzzle — a Lv.3
- * killer does not take the time a Lv.3 classic does — so its games and best
- * times are kept apart (user decision 2026-10-01) and none of those read them.
- *
- * It lives inside the same stats object, as stats.killer = { gamesPlayed,
- * gamesWon, bestTimes: { 1..5 } }, so the cloud backup carries it without a new
- * field; progressMerge merges it by the rules the classic record uses.
+ * A killer is a different puzzle — a Lv.3 killer does not take the time a Lv.3
+ * classic does — so its record is kept apart, as stats.killer inside the same
+ * stats object (the cloud backup carries it without a new field). It is written
+ * by the same code as the classic record (storage.js recordGameWin /
+ * recordGameLoss with the kind), so it holds everything the classic one holds:
+ * games, wins, flawless wins, the longest combo, the levels cleared, and best
+ * times per mode (user, 2026-10-07: the two kinds differ in the puzzle only).
+ * progressMerge merges it by the classic rules.
  */
-import { loadStats, recordGameLoss, USER_STATS_KEY } from './storage.js';
+import { loadStats, recordGameLoss } from './storage.js';
 
-function save(stats) {
-  try {
-    localStorage.setItem(USER_STATS_KEY, JSON.stringify(stats));
-  } catch (e) {
-    console.error('Failed to update killer stats:', e);
-  }
-}
-
+/** The killer record with every field present, for the screens that show it. */
 export function loadKillerRecord(stats = loadStats()) {
-  const k = stats?.killer || {};
+  const k = stats?.killer && typeof stats.killer === 'object' ? stats.killer : {};
   return {
+    ...k,
     gamesPlayed: k.gamesPlayed || 0,
     gamesWon: k.gamesWon || 0,
+    flawlessWins: k.flawlessWins || 0,
+    maxCombo: k.maxCombo || 0,
+    clearedLevels: { ...(k.clearedLevels || {}) },
     bestTimes: { ...(k.bestTimes || {}) },
+    timeAttackBestTimes: { ...(k.timeAttackBestTimes || {}) },
   };
-}
-
-/** A killer won. The best time moves only when the win counts as a record (recordEligibility.js). */
-export function recordKillerWin(level, timeInSeconds, { countsAsRecord = true } = {}) {
-  const stats = loadStats();
-  const killer = loadKillerRecord(stats);
-  killer.gamesPlayed += 1;
-  killer.gamesWon += 1;
-  let isNewRecord = false;
-  if (countsAsRecord) {
-    const best = killer.bestTimes[level];
-    if (!best || timeInSeconds < best) {
-      killer.bestTimes[level] = timeInSeconds;
-      isNewRecord = true;
-    }
-  }
-  stats.killer = killer;
-  save(stats);
-  return { stats, isNewRecord };
 }
 
 /**
@@ -53,11 +32,5 @@ export function recordKillerWin(level, timeInSeconds, { countsAsRecord = true } 
  * the record of the kind of puzzle that was lost, and only that one.
  */
 export function recordLoss(variant, mode) {
-  if (variant !== 'killer') return recordGameLoss(mode);
-  const stats = loadStats();
-  const killer = loadKillerRecord(stats);
-  killer.gamesPlayed += 1;
-  stats.killer = killer;
-  save(stats);
-  return stats;
+  return recordGameLoss(mode, variant === 'killer' ? 'killer' : 'classic');
 }

@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Wie wird der Logic Score bestimmt?",
-    scoreHowBody: "Er steigt, wenn du das ganze Brett füllst und gewinnst. Am meisten zählt die schwierigste Stufe, die du ohne Tipps geschafft hast; Anzahl der Siege und Siegquote zählen ein wenig. 1v1- und KI-Duelle zählen nicht zu Siegen und Siegquote – sie haben eine eigene Bilanz in der Statistik. Game Over und abgebrochene Spiele senken die Siegquote und können ein paar Punkte kosten. Die Rangliste nutzt diesen Wert, wenn du bei Play Spiele angemeldet bist.",
+    scoreHowBody: "Er steigt, wenn du das ganze Brett füllst und gewinnst. Standard- und Killer-Spiele zählen beide. Am meisten zählt die schwierigste Stufe, die du ohne Tipps geschafft hast; Anzahl der Siege und Siegquote zählen ein wenig. 1v1- und KI-Duelle zählen nicht zu Siegen und Siegquote – sie haben eine eigene Bilanz in der Statistik. Game Over und abgebrochene Spiele senken die Siegquote und können ein paar Punkte kosten. Die Rangliste nutzt diesen Wert, wenn du bei Play Spiele angemeldet bist.",
     shareText: '[Sudoku-Spielanalyse]\nLogic Score: {iq}\nRang: {tier}\nProbier Sudoku jetzt aus!',
     copiedToast: 'Spielanalyse in die Zwischenablage kopiert.',
     focus: 'Fehlerfrei',
@@ -182,7 +182,7 @@ export const screens = {
     autoMatchDesc: 'Schnelles Matchmaking mit weltweiten Spielern',
     mmrBadge: 'Deine Lösungsquote: {rate}%',
     findOpponentBtn: 'Gegner suchen',
-    noOpponentFound: 'Kein Gegner gefunden. Stattdessen gegen die KI spielen?',
+    noOpponentFound: 'Kein Gegner gefunden.',
     searchAgain: 'Erneut suchen',
     connectFailed: "Keine Verbindung zum Online-Spiel. Versuch es später noch einmal. Stattdessen gegen die KI spielen?",
     playAiInstead: 'Gegen die KI'

@@ -11,7 +11,9 @@
  */
 
 import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine.js';
+import { killerSeconds } from '../engine/killer/killerTimes.js';
 
+// Classic: in the first commit (2026-09-01), set by hand; nothing records how.
 const THRESHOLDS = {
   1: [60, 90, 150, 240],
   2: [90, 150, 240, 360],
@@ -20,15 +22,23 @@ const THRESHOLDS = {
   5: [240, 420, 660, 900],
 };
 
+// Killer (2026-10-07): the classic times × how much more thought a killer of the
+// same level takes (killerTimes.js, ×1.77 … ×3.19). Lv.1 comes to 110/160/270/420,
+// Lv.5 to 770/1340/2110/2870.
+const KILLER_THRESHOLDS = Object.fromEntries(Object.entries(THRESHOLDS)
+  .map(([level, times]) => [level, times.map((t) => killerSeconds(t, Number(level)))]));
+
 /**
  * @param level        1..5
  * @param gameMode     'timeLimit' counts time taken from the limit; everything else uses the clock
  * @param timerSeconds the game clock at the win (remaining time in timeLimit)
+ * @param variant      'killer' is graded on its own times
  */
-export function speedrunRankFor(level, gameMode, timerSeconds = 0) {
+export function speedrunRankFor(level, gameMode, timerSeconds = 0, variant = 'classic') {
   const totalLimit = DIFFICULTY_CONFIG[level]?.timeLimitSeconds || 480;
   const timeTaken = gameMode === 'timeLimit' ? Math.max(1, totalLimit - timerSeconds) : timerSeconds;
-  const t = THRESHOLDS[level] || THRESHOLDS[3];
+  const table = variant === 'killer' ? KILLER_THRESHOLDS : THRESHOLDS;
+  const t = table[level] || table[3];
   if (timeTaken <= t[0]) return { rank: 'S+', color: '#f59e0b', bg: '#fef3c7', timeTaken };
   if (timeTaken <= t[1]) return { rank: 'S', color: '#3b82f6', bg: '#dbeafe', timeTaken };
   if (timeTaken <= t[2]) return { rank: 'A', color: '#10b981', bg: '#d1fae5', timeTaken };

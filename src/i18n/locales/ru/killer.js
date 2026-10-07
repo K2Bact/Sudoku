@@ -26,9 +26,7 @@ export const killer = {
     },
     stats: {
       title: 'Киллер',
-      played: 'Сыграно: {count}',
-      won: 'Побед: {count}'
     },
-    shareText: '🧩 Решил Судоку Киллер Lv.{level} {name} за [{time}]! (ошибок: {mistakes}). Сможешь быстрее?'
+    shareText: '🧩 Решил Судоку Киллер Lv.{level} {name} за [{time}]! Ранг: {rank} (ошибок: {mistakes}). Сможешь быстрее?'
   }
 };

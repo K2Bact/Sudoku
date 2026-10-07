@@ -147,7 +147,7 @@ export const screens = {
   brainReport: {
     scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Logic Score 是怎麼決定的？",
-    scoreHowBody: "填滿整個棋盤獲勝時會上升。不用提示通關的最高難度影響最大，獲勝局數和勝率也有少量影響。1v1 對決和 AI 機器人對戰不計入獲勝局數和勝率，會另外記在個人統計的戰績裡。遊戲結束或中途放棄會降低勝率，分數可能略微下降。登入 Play 遊戲後，排行榜依這個分數排名。",
+    scoreHowBody: "填滿整個棋盤獲勝時會上升。標準和殺手都會計入。不用提示通關的最高難度影響最大，獲勝局數和勝率也有少量影響。1v1 對決和 AI 機器人對戰不計入獲勝局數和勝率，會另外記在個人統計的戰績裡。遊戲結束或中途放棄會降低勝率，分數可能略微下降。登入 Play 遊戲後，排行榜依這個分數排名。",
     shareText: '[Sudoku 遊戲分析]\nLogic Score: {iq}分\n等級: {tier}\n快來挑戰 Sudoku 吧！',
     copiedToast: '遊戲分析已複製到剪貼簿。',
     focus: '零失誤',
@@ -182,7 +182,7 @@ export const screens = {
     autoMatchDesc: '與全球玩家進行 1:1 極速對決',
     mmrBadge: '我的通關率 {rate}%',
     findOpponentBtn: '尋找對手',
-    noOpponentFound: '找不到對手。要改與 AI 對戰嗎?',
+    noOpponentFound: '找不到對手。',
     searchAgain: '再次尋找',
     connectFailed: "無法連接在線對戰。請稍後再試。要改與 AI 對戰嗎?",
     playAiInstead: '與 AI 對戰'

@@ -106,8 +106,22 @@ export function loadStats() {
 const BATTLE_MODES = new Set(['battle', 'aiBattle']);
 export const isDuelMode = (mode) => BATTLE_MODES.has(mode);
 
-export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}) {
-  const stats = loadStats();
+/**
+ * The record a kind of puzzle writes to. Classic is the stats object itself (it
+ * came first); killer is stats.killer, made on first use. Both are kept by the
+ * same code below, so whatever a classic game records, a killer records too —
+ * the two kinds differ in the puzzle only (user, 2026-10-07). Until then a
+ * killer had its own short record (games, wins, best times) and missed the rest.
+ */
+export function recordOf(stats, variant = 'classic') {
+  if (variant !== 'killer') return stats;
+  if (!stats.killer || typeof stats.killer !== 'object' || Array.isArray(stats.killer)) stats.killer = {};
+  return stats.killer;
+}
+
+export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}, variant = 'classic') {
+  const all = loadStats();
+  const stats = recordOf(all, variant);
 
   /*
    * A duel does not enter the games played / won counts (BT-1, user 2026-09-28).
@@ -187,26 +201,28 @@ export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}
   }
   
   try {
-    localStorage.setItem(USER_STATS_KEY, JSON.stringify(stats));
+    localStorage.setItem(USER_STATS_KEY, JSON.stringify(all));
   } catch (e) {
     console.error('Failed to update stats:', e);
   }
-  return { stats, isNewRecord };
+  return { stats: all, isNewRecord };
 }
 
-// Record lost / game over stats. A duel lost on mistakes is the duel record's to
-// count, like a duel won (see recordGameWin, BT-1).
-export function recordGameLoss(mode) {
-  const stats = loadStats();
-  if (isDuelMode(mode)) return stats;
+// Record lost / game over stats, in the record of the kind that was lost. A duel
+// lost on mistakes is the duel record's to count, like a duel won (see
+// recordGameWin, BT-1).
+export function recordGameLoss(mode, variant = 'classic') {
+  const all = loadStats();
+  if (isDuelMode(mode)) return all;
+  const stats = recordOf(all, variant);
   stats.gamesPlayed = (stats.gamesPlayed || 0) + 1;
 
   try {
-    localStorage.setItem(USER_STATS_KEY, JSON.stringify(stats));
+    localStorage.setItem(USER_STATS_KEY, JSON.stringify(all));
   } catch (e) {
     console.error('Failed to update stats on loss:', e);
   }
-  return stats;
+  return all;
 }
 
 const PLAY_GAMES_USER_KEY = 'suidoku_play_games_user_v1';

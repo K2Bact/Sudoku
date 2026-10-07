@@ -19,7 +19,9 @@ export function useAppModals(isVictory) {
       try {
         const stats = loadStats();
         const reviewStatus = localStorage.getItem('suidoku_review_prompted');
-        if (stats.gamesWon >= 5 && !reviewStatus) {
+        // Wins of either kind: a killer player has played the app as much (user, 2026-10-07).
+        const wins = (stats.gamesWon || 0) + (stats.killer?.gamesWon || 0);
+        if (wins >= 5 && !reviewStatus) {
           const timer = setTimeout(() => setShowStoreReviewModal(true), 1800);
           return () => clearTimeout(timer);
         }

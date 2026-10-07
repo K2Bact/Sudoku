@@ -20,13 +20,16 @@ export { getTodayDateKey };
  * 쓰이지 않으므로 export 하지 않는다.
  */
 function getUserSkillTier(stats = loadStats()) {
-  const wins = stats.gamesWon || 0;
-  const bestTimes = stats.bestTimes || {};
+  // Wins and levels of either kind: a killer player is as far along as a classic
+  // one with the same record (user, 2026-10-07: the kinds differ in the puzzle only).
+  const killer = stats.killer || {};
+  const wins = (stats.gamesWon || 0) + (killer.gamesWon || 0);
+  const cleared = (lv) => Boolean((stats.bestTimes || {})[lv] || (killer.bestTimes || {})[lv]);
 
-  if (wins < 3 || (!bestTimes[3] && !bestTimes[4] && !bestTimes[5])) {
+  if (wins < 3 || (!cleared(3) && !cleared(4) && !cleared(5))) {
     return 'beginner'; // New / Beginner
   }
-  if (wins < 15 || (!bestTimes[4] && !bestTimes[5])) {
+  if (wins < 15 || (!cleared(4) && !cleared(5))) {
     return 'intermediate'; // Intermediate
   }
   return 'advanced'; // Advanced / Master

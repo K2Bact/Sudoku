@@ -3,7 +3,7 @@ import { Brain, Share2, Zap, Target, Shield, Eye, Award, Trophy, Gamepad2 } from
 import { ScreenHeader } from './common/ScreenHeader';
 import { loadStats } from '../utils/storage';
 import { soundHaptic } from '../utils/soundHaptic';
-import { iqStatsService } from '../services/iqStatsService';
+import { iqStatsService, combinedRecord } from '../services/iqStatsService';
 import { useTranslation } from '../i18n/i18nContext';
 import { shareContent } from '../utils/nativeShare';
 import { playGamesService } from '../services/playGamesService';
@@ -42,8 +42,8 @@ export function BrainReportScreen({ onBack }) {
   };
 
   const stats = loadStats();
-  const played = stats.gamesPlayed || 0;
-  const won = stats.gamesWon || 0;
+  // Both kinds, as the Logic Score above them counts both (iqStatsService combinedRecord).
+  const { gamesPlayed: played, gamesWon: won } = combinedRecord(stats);
   const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
 
   // Calculate Mental Agility Index (Brain Score)
