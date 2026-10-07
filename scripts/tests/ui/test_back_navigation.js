@@ -168,8 +168,9 @@ async function run() {
   }
 }
 
+// The preview server is shut down by run()'s own finally; viteProcess is not visible
+// here, and calling it threw on the failure path (ESLint no-undef, 2026-10-07).
 run().catch((e) => {
   console.error('Fatal test error:', e);
-  shutdownPreview(viteProcess);
   process.exit(1);
 });

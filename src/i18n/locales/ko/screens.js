@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: '내 클리어율 {rate}%',
     findOpponentBtn: '상대 찾기',
     noOpponentFound: '상대를 찾지 못했습니다. AI와 대전할까요?',
+    searchAgain: '다시 찾기',
     connectFailed: "온라인 대전에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요. AI와 대전할까요?",
     playAiInstead: 'AI와 대전'
   },

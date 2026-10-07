@@ -29,7 +29,7 @@ export function handleMistakeLogic({
   }
 
   const isUnlimited = !limitMistakes || gameMode === 'timeAttack';
-  const conflict = detectSudokuConflict(nextBoard, r, c, num, newMistakes, isUnlimited, t, cages);
+  const conflict = detectSudokuConflict(nextBoard, r, c, num, newMistakes, isUnlimited, t, cages, gameMode === 'timeAttack');
   setConflictInfo(conflict);
   if (conflictTimeoutRef.current) clearTimeout(conflictTimeoutRef.current);
   conflictTimeoutRef.current = setTimeout(() => setConflictInfo(null), 3000);

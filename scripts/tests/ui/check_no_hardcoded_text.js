@@ -13,10 +13,26 @@
  * writes it, and to every reviewer after. Korean is the language a contributor
  * has to go out of their way to hardcode. The scanner was watching the door
  * nobody walks through.
+ *
+ * ── Read through the parser, not line by line (2026-10-07, BACKLOG D4) ──────
+ * Until today this gate stripped comments with regular expressions and read JSX
+ * children one line at a time, and both left holes it had written down itself:
+ *   - `//` inside a string ('x//y') was taken for a comment, and everything after
+ *     it on the line — a Korean literal included — went unread;
+ *   - only `>…<` on one line was read, so a JSX child split over several lines
+ *     (the replay screen writes them that way) was never looked at.
+ * The file is now parsed with the parser Vite itself uses (oxc, `parseSync`), the
+ * way gates 0-3 and 2-11 read code. Comments never reach the check because they
+ * are not strings; a JSX child is a node however many lines it spans; and line
+ * endings (CRLF/LF), which once made the same code pass or fail by checkout
+ * setting, do not enter the judgement at all.
+ * A self-test runs first on both holes, and the run fails if it parsed too little.
  */
 
 import { readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
+import assert from 'assert';
+import { parseSync } from 'vite';
 
 function walk(dir) {
   let files = [];
@@ -61,31 +77,124 @@ const KEPT_ENGLISH = new Map([
 const isWordy = (s) => (s.match(/[A-Za-z]/g) || []).length >= 2;
 const kept = (s) => KEPT_ENGLISH.has(s.replace(/^[^A-Za-z]+|[^A-Za-z.]+$/g, ''));
 
+const isString = (n) => n && n.type === 'Literal' && typeof n.value === 'string';
+const isTCall = (n) => n && n.type === 'CallExpression' && n.callee.type === 'Identifier' && n.callee.name === 't';
+const children = (node) => Object.entries(node)
+  .filter(([k, v]) => k !== 'parent' && v && typeof v === 'object')
+  .flatMap(([, v]) => (Array.isArray(v) ? v : [v]))
+  .filter((v) => v && typeof v.type === 'string');
+
 /**
- * English a JSX child would render: `<p>Watching ad</p>`, the ` pts` in
- * `{n} pts`, and quoted words inside a child expression — `{on ? 'ON' : 'OFF'}`.
+ * Words a JSX child expression writes itself: `{on ? 'ON' : 'OFF'}`, `{`${n} pts`}`.
  * Not reported: the key inside t('…'), a fallback after it (`t('x') || 'X'` never
- * renders — t returns the key when one is missing), and a comparison (`=== 'ghost'`).
+ * renders — t returns the key when one is missing), a comparison (`=== 'ghost'`),
+ * and nested JSX, whose own children are read where they stand.
  */
-function hardcodedJsxText(line) {
-  const found = [];
-  for (const match of line.matchAll(/>([^<>]*)</g)) {
-    const child = match[1]
-      .replace(/\bt\(\s*(['"`])[^'"`]*\1[^)]*\)(\s*\|\|\s*(['"`])[^'"`]*\3)?/g, ' ')
-      .replace(/[!=]==?\s*(['"`])[^'"`]*\1/g, ' ');
-    // Words written into the expression itself.
-    for (const q of child.matchAll(/(['"`])((?:(?!\1).)*)\1/g)) {
-      const text = q[2].replace(/\$\{[^}]*\}/g, ' ').trim();
-      if (isWordy(text) && !kept(text)) found.push(text);
-    }
-    // Words written between tags and expressions.
-    const bare = child.replace(/(['"`])(?:(?!\1).)*\1/g, ' ').split(/\{[^{}]*\}|[{}]/);
-    for (const piece of bare) {
-      const text = piece.trim();
-      if (isWordy(text) && !kept(text)) found.push(text);
-    }
+// An id handed to a helper — lockedChip('ghost', …), a class name — not a word on screen.
+const KEY_LIKE = /^[a-z][a-zA-Z0-9_-]*$/;
+
+/** The values a function body hands back: its expression, or its own return statements. */
+function returned(body, out) {
+  if (body.type !== 'BlockStatement') { out.push(body); return out; }
+  const walkBlock = (node) => {
+    if (!node || typeof node.type !== 'string') return;
+    if (/Function/.test(node.type)) return;              // a nested function returns for itself
+    if (node.type === 'ReturnStatement') { if (node.argument) out.push(node.argument); return; }
+    for (const c of children(node)) walkBlock(c);
+  };
+  walkBlock(body);
+  return out;
+}
+
+function wordsInExpression(node, out) {
+  if (!node || typeof node.type !== 'string') return;
+  if (node.type === 'JSXElement' || node.type === 'JSXFragment') return;
+  if (isTCall(node)) return;
+  // A callback's statements build classes and keys (`let btnClass = 'practice-key-btn'`);
+  // only what it returns can be drawn. The returned JSX is read where it stands.
+  if (node.type === 'ArrowFunctionExpression' || node.type === 'FunctionExpression') {
+    for (const r of returned(node.body, [])) wordsInExpression(r, out);
+    return;
   }
-  return found;
+  if (node.type === 'CallExpression') {
+    wordsInExpression(node.callee, out);
+    for (const a of node.arguments) if (!(isString(a) && KEY_LIKE.test(a.value))) wordsInExpression(a, out);
+    return;
+  }
+  if (node.type === 'LogicalExpression' && isTCall(node.left)) return;
+  if (node.type === 'BinaryExpression' && /^[!=]==?$/.test(node.operator)) return;
+  if (isString(node)) { out.push({ text: node.value, start: node.start }); return; }
+  if (node.type === 'TemplateLiteral') {
+    for (const q of node.quasis) out.push({ text: q.value.cooked ?? q.value.raw, start: q.start });
+    for (const e of node.expressions) wordsInExpression(e, out);
+    return;
+  }
+  for (const c of children(node)) wordsInExpression(c, out);
+}
+
+/**
+ * Everything one file would show that did not come from t():
+ *   - Korean in any string, template or JSX text in the code (comments are not
+ *     strings, so they never get here);
+ *   - English in a JSX child — text between tags, or a word an expression writes.
+ * Returns [{ start, text }]; `stats` counts what was read.
+ */
+function scan(code, filename, stats) {
+  const parsed = parseSync(filename, code);
+  if (parsed.errors.length) throw new Error(`${filename} could not be parsed: ${parsed.errors[0].message}`);
+  const found = [];
+  const visit = (node) => {
+    if (!node || typeof node.type !== 'string') return;
+    if (isString(node) && koreanRegex.test(node.value)) found.push({ start: node.start, text: node.value.trim() });
+    if (node.type === 'TemplateElement' && koreanRegex.test(node.value.cooked ?? node.value.raw)) {
+      found.push({ start: node.start, text: (node.value.cooked ?? node.value.raw).trim() });
+    }
+    if (node.type === 'JSXText') {
+      stats.jsxText++;
+      const text = node.value.replace(/\s+/g, ' ').trim();
+      if (koreanRegex.test(text)) found.push({ start: node.start, text });
+      else if (isWordy(text) && !kept(text)) found.push({ start: node.start, text: `(English) ${text}` });
+    }
+    if ((node.type === 'JSXElement' || node.type === 'JSXFragment') && filename.endsWith('.jsx')) {
+      for (const child of node.children) {
+        if (child.type !== 'JSXExpressionContainer') continue;
+        stats.jsxExpressions++;
+        const words = [];
+        wordsInExpression(child.expression, words);
+        for (const w of words) {
+          const text = w.text.replace(/\s+/g, ' ').trim();
+          // Korean in a string is already reported above; this adds the English.
+          if (!koreanRegex.test(text) && isWordy(text) && !kept(text)) found.push({ start: w.start, text: `(English) ${text}` });
+        }
+      }
+    }
+    for (const c of children(node)) visit(c);
+  };
+  visit(parsed.program);
+  return found.sort((a, b) => a.start - b.start);
+}
+
+const lineOf = (code, offset) => code.slice(0, offset).split('\n').length;
+
+// ── self-test: the two holes this rewrite closes, and what must stay quiet ──────
+{
+  const s = { jsxText: 0, jsxExpressions: 0 };
+  const texts = (code) => scan(code, 'probe.jsx', s).map((f) => f.text);
+  assert.deepStrictEqual(texts("const a = 'x//y'; const b = '안녕';"), ['안녕'],
+    "self-test: a Korean literal after 'x//y' on the same line was not found (the old comment hole)");
+  assert.deepStrictEqual(texts('const v = (\n  <p>\n    Watching ad\n  </p>\n);'), ['(English) Watching ad'],
+    'self-test: English in a JSX child split over lines was not found (the old one-line hole)');
+  assert.deepStrictEqual(texts("// 주석은 한국어로 쓴다\nconst v = <p>{t('home.title')}</p>; /* 블록 주석 */"), [],
+    'self-test: a comment or a t() key was reported');
+  assert.deepStrictEqual(texts("const v = <p>{t('x') || 'Fallback'}{mode === 'ghost' ? t('a') : t('b')}</p>;"), [],
+    'self-test: a t() fallback or a comparison was reported');
+  assert.deepStrictEqual(texts("const v = <p>{n} pts {on ? 'ON' : 'OFF'}</p>;"), ['(English) pts', '(English) ON', '(English) OFF'],
+    'self-test: the words a child expression writes, or text beside it, were not found');
+  assert.deepStrictEqual(texts("const v = <p>{[1, 2].map((n) => { let c = 'practice-key-btn'; return <b className={c}>{n}</b>; })}{chip('ghost', t('x'))}</p>;"), [],
+    "self-test: a class name built in a callback, or an id handed to a helper, was reported");
+  assert.deepStrictEqual(texts("const v = <p>{items.map((i) => 'Hello there')}</p>;"), ['(English) Hello there'],
+    'self-test: words a callback returns for the screen were not found');
+  console.log('  ✓ self-test: both old holes are caught; comments, t() keys, fallbacks, comparisons, class names and ids stay quiet');
 }
 
 // Files allowed to contain internal localized data dictionaries
@@ -104,73 +213,14 @@ const targetFiles = walk('src').filter((f) => {
 console.log('🔍 [QA Hardcode Scanner] Inspecting source files for forbidden hardcoded text...');
 
 const violations = [];
-
+const stats = { jsxText: 0, jsxExpressions: 0 };
 for (const f of targetFiles) {
-  let raw = readFileSync(f, 'utf8');
-  // Strip block comments and JSX comments
-  raw = raw.replace(/\/\*[\s\S]*?\*\//g, '');
-  raw = raw.replace(/\{\/\*[\s\S]*?\*\/\}/g, '');
-
-  /*
-   * 줄 끝 주석도 걷어낸다. 줄 전체가 주석인 경우만 건너뛰면
-   *
-   *     if (!mine) return false;   // 누가 이미 나를 데려갔다
-   *
-   * 이 한국어 하드코딩으로 보고된다. 주석은 이용자에게 닿지 않으므로
-   * 위반이 아니고, 이 보고는 순전히 소음이다. 소음이 쌓인 게이트는
-   * 무시당하고, 무시당하는 게이트는 검사처럼 보이는 장식이 된다.
-   *
-   * 같은 약점이 게이트 2-17 에도 있었고 같은 방식으로 고쳤다.
-   *
-   * 문자열 안의 `//` 는 건드리지 않아야 한다 — `'https://…'` 가 흔하다.
-   * 그래서 앞에 콜론이나 역슬래시가 오는 경우를 뺀다.
-   *
-   * 이것은 완전한 파서가 아니고, 남는 구멍의 방향을 정확히 적어둔다:
-   * `const a = 'x//y'; const b = '안녕';` 처럼 문자열 안에 콜론 없는 `//` 가
-   * 있으면 그 뒤가 주석으로 취급되어 **위반이 가려진다.** 자바스크립트를
-   * 제대로 토큰화하지 않는 한 이 구멍은 남는다.
-   *
-   * 그 위험을 받아들인 이유: `'x//y'` 형태는 이 저장소에 하나도 없고,
-   * 반대쪽 비용은 지금 당장 실재했다 — 한국어 주석 하나 때문에 게이트가
-   * 빨개지고, 그런 일이 반복되면 사람이 게이트를 끄거나 주석을 영어로
-   * 바꾸기 시작한다. 후자가 더 나쁘다. 이 저장소의 주석은 왜 그렇게 고쳤는지를
-   * 한국어로 설명하고 있고, 그게 이 프로젝트에서 가장 값나가는 부분이다.
-   *
-   * 이 구멍을 메우려면 토큰화가 필요하다. 그때까지는 여기 적힌 것이 전부다.
-   *
-   * ── `\r` 를 먼저 떼는 이유 ─────────────────────────────────────────────
-   * 위 정규식의 `.*$` 가 **`\r` 를 넘지 못한다.** `.` 는 줄 종결자를 제외한
-   * 모든 글자이고 `\r` 가 줄 종결자이기 때문이다. 그래서 CRLF 파일에서는
-   * 줄 끝 주석이 한 줄도 걷히지 않고, 바로 위에 적어놓은 그 소음이 전부
-   * 되살아난다.
-   *
-   * 이 저장소는 `core.autocrlf = true` 라 git 은 LF 로 보관하고 작업 폴더는
-   * CRLF 다. 그러면 **같은 코드가 체크아웃 설정에 따라 통과하기도 하고
-   * 실패하기도 한다** — 커밋된 내용은 그대로인데 판정이 달라지므로, diff 에는
-   * 아무것도 안 보이고 원인도 안 보인다. 실제로 `firebaseTransport.js` 의
-   * 줄 끝 한국어 주석이 LF 일 때 통과하고 CRLF 일 때 3건으로 잡혔다.
-   *
-   * 줄 종결자는 코드의 의미가 아니다. 판정에 들어오면 안 된다.
-   */
-  const lines = raw
-    .split('\n')
-    .map((line) => line.replace(/\r$/, '').replace(/(^|[^:\\])\/\/.*$/, '$1'));
-  lines.forEach((line, idx) => {
-    const trimmed = line.trim();
-    if (trimmed.startsWith('//') || trimmed.startsWith('*')) return;
-
-    if (koreanRegex.test(trimmed)) {
-      violations.push({ file: f, line: idx + 1, text: trimmed });
-      return;
-    }
-
-    if (f.endsWith('.jsx')) {
-      for (const text of hardcodedJsxText(line)) {
-        violations.push({ file: f, line: idx + 1, text: `(English) ${text}` });
-      }
-    }
-  });
+  const code = readFileSync(f, 'utf8');
+  for (const hit of scan(code, f, stats)) violations.push({ file: f, line: lineOf(code, hit.start), text: hit.text });
 }
+// A parse that reached nothing would pass every file; the app has hundreds of JSX children.
+assert.ok(stats.jsxText > 300 && stats.jsxExpressions > 300,
+  `read only ${stats.jsxText} JSX texts and ${stats.jsxExpressions} child expressions in ${targetFiles.length} files — the parse did not reach the screens`);
 
 if (violations.length > 0) {
   console.error(`\n❌ [QA Hardcode Scanner] FOUND ${violations.length} HARDCODED STRINGS:`);
@@ -183,5 +233,5 @@ if (violations.length > 0) {
   );
   process.exit(1);
 } else {
-  console.log(`✅ [QA Hardcode Scanner] PASSED! Inspected ${targetFiles.length} UI & Hook files with 0 hardcoded strings.`);
+  console.log(`✅ [QA Hardcode Scanner] PASSED! Inspected ${targetFiles.length} UI & Hook files (${stats.jsxText} JSX texts, ${stats.jsxExpressions} child expressions) with 0 hardcoded strings.`);
 }

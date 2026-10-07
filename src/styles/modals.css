@@ -266,6 +266,11 @@
   max-width: 90%;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.25);
+  /* Shown since 2026-10-07 (D7). Fixed at left:50%, its width was capped at half the
+     screen and a mistake read in three lines; max-content lets it use up to the 90%.
+     It sits over the header's buttons for three seconds, so taps go through it. */
+  width: max-content;
+  pointer-events: none;
 }
 
 @keyframes slideDownToast {

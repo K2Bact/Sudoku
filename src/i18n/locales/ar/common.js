@@ -3,6 +3,8 @@ export const common = {
     you: 'أنت',
     back: 'رجوع',
     close: 'إغلاق',
+    on: 'مفعّل',
+    off: 'معطّل',
     confirm: 'موافق',
     cancel: 'إلغاء',
     restart: 'إعادة البدء',
@@ -77,7 +79,9 @@ export const common = {
     cageSum: '⚠️ مجموع هذا القفص لم يعد {sum}! {suffix}',
     boardFullHasMistakes: '⚠️ اللوحة ممتلئة ولكن بها بعض الأخطاء. يُرجى المراجعة!',
     timeAttackSuffix: '(خطأ {count} | عقوبة \u2066+10\u2069 ث)',
-    classicSuffix: '(الأخطاء {count}/3)'
+    classicSuffix: '(الأخطاء {count}/3)',
+    // Classic with the three-mistake limit switched off: no limit to count to, no time penalty.
+    freeSuffix: '(الأخطاء {count})'
   },
   tiers: {
     grandMaster: {

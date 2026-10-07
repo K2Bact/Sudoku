@@ -3,6 +3,8 @@ export const common = {
     you: 'Tu',
     back: 'Indietro',
     close: 'Chiudi',
+    on: 'SÌ',
+    off: 'NO',
     confirm: 'OK',
     cancel: 'Annulla',
     restart: 'Ricomincia',
@@ -77,7 +79,9 @@ export const common = {
     cageSum: '⚠️ Questa gabbia non somma più {sum}! {suffix}',
     boardFullHasMistakes: '⚠️ Lo schema è completo ma contiene degli errori. Ricontrolla!',
     timeAttackSuffix: '(Errore {count} | penalità +10s)',
-    classicSuffix: '(Errori {count}/3)'
+    classicSuffix: '(Errori {count}/3)',
+    // Classic with the three-mistake limit switched off: no limit to count to, no time penalty.
+    freeSuffix: '(Errori {count})'
   },
   tiers: {
     grandMaster: {

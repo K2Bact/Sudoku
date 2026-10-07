@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Swords, Users, ShieldCheck, Globe, Bot } from 'lucide-react';
+import { Swords, Users, ShieldCheck, Globe, Bot, RotateCcw } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
 import { loadStats } from '../utils/storage';
 import { soundHaptic } from '../utils/soundHaptic';
@@ -90,7 +90,14 @@ export function BattleLobbyScreen({
                   {matchUnavailable ? t('battleLobby.connectFailed') : t('battleLobby.noOpponentFound')}
                 </span>
               </div>
-              <button type="button" className="btn btn-primary w-100" onClick={handlePlayAi}>
+              {/* Searching again is for "nobody came", not for "could not connect": the
+                  same tap would most likely hit the same wall (user, 2026-10-07). */}
+              {!matchUnavailable && (
+                <button type="button" className="btn btn-primary w-100 btn-search-again" onClick={handleQuickMatch}>
+                  <RotateCcw size={16} /> {t('battleLobby.searchAgain')}
+                </button>
+              )}
+              <button type="button" className={`btn ${matchUnavailable ? 'btn-primary' : 'btn-secondary'} w-100`} onClick={handlePlayAi}>
                 <Bot size={16} /> {t('battleLobby.playAiInstead')}
               </button>
               <button type="button" className="btn btn-secondary w-100" onClick={handleCancelSearch}>

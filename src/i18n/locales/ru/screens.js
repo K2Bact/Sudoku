@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'Ваш процент решений: {rate}%',
     findOpponentBtn: 'Искать соперника',
     noOpponentFound: 'Соперник не найден. Сыграть против ИИ?',
+    searchAgain: 'Искать снова',
     connectFailed: "Не удалось подключиться к онлайн-игре. Повторите попытку позже. Сыграть против ИИ?",
     playAiInstead: 'Играть с ИИ'
   },

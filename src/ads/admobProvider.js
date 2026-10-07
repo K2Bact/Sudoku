@@ -84,7 +84,7 @@ function plugin() {
 function readEnv() {
   const viteEnv = (typeof import.meta !== 'undefined' && import.meta.env) || null;
   if (viteEnv) return viteEnv;
-  return (typeof process !== 'undefined' && process.env) || {};
+  return globalThis.process?.env || {};
 }
 
 /**

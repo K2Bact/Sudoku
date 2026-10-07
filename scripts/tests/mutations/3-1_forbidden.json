@@ -83,6 +83,30 @@
       "find": "{battled ? battle.mmr : '--'}",
       "replace": "{battled ? `${battle.mmr} RP` : '--'}",
       "expectFailure": "StatsScreen.jsx"
+    },
+    {
+      "name": "the settings toggles say ON/OFF again",
+      "why": "Added 2026-10-07 with the parser rewrite (BACKLOG D4). Five settings toggles showed ON/OFF in every locale until today: each expression sat alone on its line, and the old scanner read only >…< on one line, so it never saw them.",
+      "file": "src/components/SettingsScreen.jsx",
+      "find": "{limitMistakes ? t('common.on') : t('common.off')}",
+      "replace": "{limitMistakes ? 'ON' : 'OFF'}",
+      "expectFailure": "(English) ON"
+    },
+    {
+      "name": "a JSX child written on its own line is typed in English",
+      "why": "The other half of the one-line hole: text between tags that are on different lines. The lobby's close button is written that way.",
+      "file": "src/components/BattleLobbyScreen.jsx",
+      "find": "                {t('common.close')}",
+      "replace": "                Close",
+      "expectFailure": "(English) Close"
+    },
+    {
+      "name": "a Korean string follows a // inside a string",
+      "why": "The comment hole the old scanner wrote down itself: 'x//y' was taken for a comment start and the Korean literal after it went unread.",
+      "file": "src/components/DailyRewardModal.jsx",
+      "find": "  const { t } = useTranslation();",
+      "replace": "  const { t } = useTranslation(); const probe = 'x//y'; const label = '안녕';",
+      "expectFailure": "안녕"
     }
   ],
   "note": "The scanner used to skip only whole-line comments, so a Korean trailing comment on a code line was reported as a hardcoded string. That is noise rather than a miss, but a noisy gate gets muted — or worse, gets quietened by rewriting Korean comments into English, and the comments explaining why each fix was made are the most valuable thing in this repository. Trailing comments are now stripped before scanning. The two mutations below hold both ends: a Korean comment must NOT fail, and a Korean string sitting after code on the same line must still fail."

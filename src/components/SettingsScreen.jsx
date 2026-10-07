@@ -133,7 +133,7 @@ export function SettingsScreen({
                 </div>
               </div>
               <div className={`settings-toggle-pill ${limitMistakes ? 'on' : 'off'}`}>
-                {limitMistakes ? 'ON' : 'OFF'}
+                {limitMistakes ? t('common.on') : t('common.off')}
               </div>
             </div>
 
@@ -148,7 +148,7 @@ export function SettingsScreen({
                 </div>
               </div>
               <div className={`settings-toggle-pill ${autoCheckMistakes ? 'on' : 'off'}`}>
-                {autoCheckMistakes ? 'ON' : 'OFF'}
+                {autoCheckMistakes ? t('common.on') : t('common.off')}
               </div>
             </div>
           </div>
@@ -169,7 +169,7 @@ export function SettingsScreen({
                 </div>
               </div>
               <div className={`settings-toggle-pill ${soundEnabled ? 'on' : 'off'}`}>
-                {soundEnabled ? 'ON' : 'OFF'}
+                {soundEnabled ? t('common.on') : t('common.off')}
               </div>
             </div>
 
@@ -184,7 +184,7 @@ export function SettingsScreen({
                 </div>
               </div>
               <div className={`settings-toggle-pill ${hapticEnabled ? 'on' : 'off'}`}>
-                {hapticEnabled ? 'ON' : 'OFF'}
+                {hapticEnabled ? t('common.on') : t('common.off')}
               </div>
             </div>
           </div>
@@ -233,7 +233,7 @@ export function SettingsScreen({
                 </div>
               </div>
               <div className={`settings-toggle-pill ${shareReplay ? 'on' : 'off'}`}>
-                {shareReplay ? 'ON' : 'OFF'}
+                {shareReplay ? t('common.on') : t('common.off')}
               </div>
             </div>
 

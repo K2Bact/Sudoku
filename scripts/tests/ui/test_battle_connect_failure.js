@@ -12,6 +12,10 @@
  *   2. block lifted → the next search starts, and the player's id becomes the
  *      account uid the transport signs with (the retry is what makes 1v1 usable
  *      again without restarting the app)
+ *   4. nobody came (sign-in works, the database is blocked so no ticket reaches the
+ *      real queue) → after the 12-second search the card says no opponent was found
+ *      and offers Search again, which starts a new search; the could-not-connect
+ *      card in step 1 must not offer it (BACKLOG D10, user 2026-10-07)
  *   3. the failure card, in every locale at 360px, stays inside its pill —
  *      the red team of 2026-09-29 found Japanese 21px outside it (SudokuDiary 56),
  *      because gate 3-7 never renders this state
@@ -30,6 +34,7 @@ import { LOCALES } from '../../lib/locales.js';
 const PORT = 5214;
 const URL = `http://localhost:${PORT}`;
 const AUTH_HOSTS = /identitytoolkit\.googleapis\.com|securetoken\.googleapis\.com/;
+const DB_HOSTS = /firebasedatabase\.app|firebaseio\.com/;
 // Well under the 12-second search timeout: a failure reported this fast cannot be
 // the timeout path in disguise.
 const PROMPT_MS = 6000;
@@ -66,10 +71,17 @@ try {
   await waitForServer(URL);
   browser = await chromium.launch();
 
-  async function lobby(loc, width) {
+  // blockDb: sign-in works but the database is out of reach, over HTTP and WebSocket,
+  // so a search can only end by its own timeout and no ticket reaches the real queue.
+  async function lobby(loc, width, { blockDb = false } = {}) {
     const ctx = await browser.newContext({ viewport: { width, height: 800 } });
-    const state = { blocked: true };
+    const state = { blocked: !blockDb, dbBlocked: 0 };
     await ctx.route(AUTH_HOSTS, (route) => (state.blocked ? route.abort('internetdisconnected') : route.continue()));
+    if (blockDb) {
+      // Counted: a block that never fires would let this step write to the real queue.
+      await ctx.route(DB_HOSTS, (route) => { state.dbBlocked++; return route.abort('internetdisconnected'); });
+      await ctx.routeWebSocket(DB_HOSTS, (ws) => { state.dbBlocked++; ws.close(); });
+    }
     const page = await ctx.newPage();
     page.on('pageerror', (e) => errors.push(`${loc}: page error ${e.message}`));
     // Not waitUntil 'load': index.css @imports Google Fonts, and "load" waits for it. On a
@@ -117,9 +129,15 @@ try {
       errors.push(`blocked sign-in: could-not-connect took ${ms}ms — that is the search timeout, not the sign-in check`);
     }
     console.log(`  ① blocked sign-in → ${said === text.ko.failed ? 'could not connect' : JSON.stringify(said)} in ${ms}ms`);
+    // Searching again is offered when nobody came, not when this phone cannot connect.
+    if (await page.locator('.match-radar-card .btn-search-again').count()) {
+      errors.push('could-not-connect card offers Search again — the same tap would hit the same wall');
+    }
 
     state.blocked = false;
-    await page.click('.match-radar-card .btn-secondary');
+    // Close is the card's last button. Since Search again (2026-10-07) the no-opponent card
+    // has two secondary buttons, and a bare '.btn-secondary' stopped this step there.
+    await page.locator('.match-radar-card .btn-secondary').last().click();
     await page.waitForSelector('.primary-battle-card button');
     await page.click('.primary-battle-card button');
     let searching = false;
@@ -141,6 +159,40 @@ try {
       errors.push(`after the block was lifted the player id did not become the account uid (id ${id}, transport signs as ${signs})`);
     }
     console.log(`  ② block lifted → ${searching ? 'searching' : 'not searching'} · id ${id === signs && id && !id.startsWith('user_') ? 'is the account uid' : `${id} / ${signs}`}`);
+    await ctx.close();
+  }
+
+  // 4 — nobody came: the search times out, the card says no opponent was found and
+  // offers Search again, and pressing it starts a new search (user, 2026-10-07).
+  // Korean only: each run signs one more anonymous account in.
+  {
+    const { ctx, page, state } = await lobby('ko', 360, { blockDb: true });
+    await page.click('.primary-battle-card button');
+    const { said, ms } = await waitForCard(page, 16000);
+    if (state.dbBlocked === 0) errors.push('nobody came: the database block never fired — the search may have reached the real queue, and the timeout proves nothing');
+    if (said !== text.ko.none) {
+      errors.push(`nobody came: the lobby said ${JSON.stringify(said)} after ${ms}ms instead of no-opponent (${JSON.stringify(text.ko.none)})`);
+    } else {
+      const again = page.locator('.match-radar-card .btn-search-again');
+      if (!(await again.count())) {
+        errors.push('nobody came: the no-opponent card has no Search again button');
+      } else {
+        const fit = await page.evaluate(() => {
+          const b = document.querySelector('.match-radar-card .btn-search-again');
+          return { text: b.scrollWidth - b.clientWidth, edge: Math.round(b.getBoundingClientRect().right - innerWidth) };
+        });
+        if (fit.text > 1 || fit.edge > 0) errors.push(`nobody came: Search again does not fit at 360px (text +${fit.text}px, ${fit.edge}px past the edge)`);
+        await again.click();
+        let searching = false;
+        for (let i = 0; i < 30 && !searching; i++) {
+          if (await page.locator('.radar-visual-arena').count()) searching = true;
+          else await page.waitForTimeout(100);
+        }
+        if (!searching) errors.push('nobody came: Search again did not start a new search');
+        console.log(`  ④ nobody came → no opponent in ${ms}ms (database blocked ${state.dbBlocked}×) · Search again ${searching ? 'searches again' : 'did nothing'}`);
+        if (searching) await page.click('.radar-cancel-btn');
+      }
+    }
     await ctx.close();
   }
 

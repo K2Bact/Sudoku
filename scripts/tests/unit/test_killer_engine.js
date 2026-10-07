@@ -15,12 +15,17 @@
  *   3. every puzzle has exactly one solution, counted by a brute force written
  *      here that shares no code with the engine — the engine's own counter
  *      would let the generator mark its own work (the lesson of gate 2-1)
- *   4. the levels look like their levels — Lv.1-3 give digits, Lv.4-5 give
- *      none, no puzzle has decayed into a grid of one-cell cages, and none
- *      needed more wrong turns than its level allows. That last number is the
- *      generator's own report; nothing outside it can grade difficulty yet
- *      (BACKLOG I-9), so it catches the cap being dropped, not a wrong cap.
- *   4b. a seed whose first cut decays into one-cell cages comes back cut again
+ *   4. the levels look like their levels — the ladder is the one measured on
+ *      Easybrain's killer app (36/31/26/10/0 digits, no wrong turns below
+ *      Lv.5), each puzzle gives that many digits (Lv.1-3 up to two more), its
+ *      cages are as small as the ladder's, no given sits on a one-cell cage, no
+ *      puzzle has decayed into a grid of one-cell cages, and none needed more
+ *      wrong turns than its level allows. That last number is the generator's
+ *      own report, so it catches the cap being dropped, not a wrong cap.
+ *   4b. a seed whose first cut decays into one-cell cages, and one whose first
+ *      cut needed three extra digits, come back cut again; a Lv.5 seed that
+ *      needs 461 wrong turns uncapped comes back within the cap; a Lv.4 seed
+ *      whose repair splits a given's cage down to that one cell keeps ten givens
  *   5. the same seed gives the same puzzle, another seed another one
  */
 import assert from 'assert';
@@ -30,6 +35,17 @@ import { solveKiller, innies } from '../../../src/engine/killer/killerSolver.js'
 console.log('\n🔪 [2-27] Killer Sudoku puzzles are sound');
 
 const SEEDS_PER_LEVEL = 4;
+// The ladder (2026-10-07): Easybrain's "Killer Sudoku by Sudoku.com" gives 31,
+// 26, 10 and 0 digits at Easy, Medium, Hard and Expert, and needs no wrong turns
+// below Expert (its 95th percentile there: 38). Our Lv.2-5 are those, Lv.1 one
+// step below. Pinned here, so the levels cannot drift back to what they were — a
+// "Medium" with 4-7 digits that played between its Hard and Expert.
+const LADDER = { 1: { givens: 36, guesses: 0 }, 2: { givens: 31, guesses: 0 }, 3: { givens: 26, guesses: 0 }, 4: { givens: 10, guesses: 0 }, 5: { givens: 0, guesses: 150 } };
+// Lv.1-3 may reveal this many more digits to make the answer unique.
+const MAX_EXTRA_GIVENS = 2;
+// Its cages average 2.43-2.49 cells at every level; ours measured 2.35-2.45 over
+// 200 per level. The old Lv.3 averaged 2.97 — bigger cages are harder.
+const MAX_MEAN_CAGE = 2.7;
 // A Lv.4-5 puzzle repaired with this many one-cell cages is a classic puzzle
 // drawn as cages. Measured 2026-10-01: 100 puzzles per level averaged 3.8-4.9.
 const MAX_ONE_CELL_CAGES = 12;
@@ -132,6 +148,9 @@ function bruteCount(cages, givens, limit = 2) {
 
 // ── 2-4. Every generated puzzle ─────────────────────────────────────────────
 for (let level = 1; level <= 5; level++) {
+  assert.strictEqual(KILLER_CONFIG[level].givens, LADDER[level].givens, `Lv.${level} is set to give ${KILLER_CONFIG[level].givens} digits; the ladder gives ${LADDER[level].givens}`);
+  assert.strictEqual(KILLER_CONFIG[level].guesses, LADDER[level].guesses, `Lv.${level} allows ${KILLER_CONFIG[level].guesses} wrong turns; the ladder allows ${LADDER[level].guesses}`);
+  let cells = 0, cageCount = 0;
   for (let i = 0; i < SEEDS_PER_LEVEL; i++) {
     const seed = `gate-2-27-${level}-${i}`;
     const name = `Lv.${level} (${seed})`;
@@ -170,30 +189,67 @@ for (let level = 1; level <= 5; level++) {
     assert.deepStrictEqual(found[0], p.solution, `${name}: its only solution is not the solution it shipped with`);
 
     const givenCount = p.board.flat().filter(Boolean).length;
+    const want = LADDER[level].givens;
     if (level <= 3) {
-      assert.ok(givenCount >= KILLER_CONFIG[level].givens, `${name}: gives ${givenCount} digits, the level gives at least ${KILLER_CONFIG[level].givens}`);
+      assert.ok(givenCount >= want && givenCount <= want + MAX_EXTRA_GIVENS, `${name}: gives ${givenCount} digits, the level gives ${want} to ${want + MAX_EXTRA_GIVENS}`);
     } else {
-      assert.strictEqual(givenCount, 0, `${name}: gives ${givenCount} digits — Lv.4 and Lv.5 are cages only`);
+      assert.strictEqual(givenCount, want, `${name}: gives ${givenCount} digits — Lv.4 and Lv.5 keep the ${want} they start with`);
     }
+    const onSingle = p.cages.find((cage) => cage.cells.length === 1 && at(p.board, cage.cells[0]));
+    assert.ok(!onSingle, `${name}: a given on a one-cell cage (cell ${onSingle?.cells[0]}) — that cage already shows its digit`);
+    cells += 81; cageCount += p.cages.length;
     const oneCell = p.cages.filter((cage) => cage.cells.length === 1).length;
     assert.ok(oneCell <= MAX_ONE_CELL_CAGES, `${name}: ${oneCell} one-cell cages — the puzzle has decayed into givens drawn as cages`);
     assert.ok(p.guesses <= KILLER_CONFIG[level].guesses, `${name}: the solver took ${p.guesses} wrong turns, the level allows ${KILLER_CONFIG[level].guesses}`);
   }
+  const mean = cells / cageCount;
+  assert.ok(mean <= MAX_MEAN_CAGE, `Lv.${level}: cages average ${mean.toFixed(2)} cells — bigger than the ladder's (at most ${MAX_MEAN_CAGE})`);
   console.log(`  ✓ Lv.${level}: ${SEEDS_PER_LEVEL} puzzles well formed, each with exactly one solution (counted by brute force), shaped like the level`);
 }
 
-// ── 4b. A cut that decayed is cut again ─────────────────────────────────────
-// The seeds above never reach the limit: measured 2026-10-06, 2 in 300 Lv.4 and
-// 13 in 300 Lv.5 went past it, and none of the 8 fixed seeds was one of them, so
-// this gate passed while the generator did not keep the limit. This seed's first
-// cut ends with 17 one-cell cages; the generator must not ship it.
+// ── 4b. A cut past a limit is cut again ─────────────────────────────────────
+// The seeds above never reach the limits: measured 2026-10-06, 2 in 300 Lv.4 and
+// 13 in 300 Lv.5 went past the one-cell limit, and none of the 8 fixed seeds was
+// one of them, so this gate passed while the generator did not keep the limit.
+// These seeds were found with the first cut alone (2026-10-07, ladder mix): one
+// ends with 14 one-cell cages, the other needed three digits more than Lv.3 gives.
 {
-  const seed = 'gate-2-27-decay-5-244';
+  const seed = 'gate-2-27-decay-5-406';
   const p = generateKillerPuzzle(5, seed);
   const oneCell = p.cages.filter((cage) => cage.cells.length === 1).length;
   assert.ok(oneCell <= MAX_ONE_CELL_CAGES, `Lv.5 seed ${seed}: ${oneCell} one-cell cages — a decayed cut was shipped instead of cut again`);
   assert.strictEqual(bruteCount(p.cages, p.board).length, 1, `Lv.5 seed ${seed}: the cut made again does not have exactly one solution — a killer must have exactly one solution`);
   console.log(`  ✓ a cut that decayed into one-cell cages is cut again (seed ${seed}: ${oneCell} left)`);
+}
+{
+  const seed = 'gate-2-27-drift-3-772';
+  const p = generateKillerPuzzle(3, seed);
+  const extra = p.board.flat().filter(Boolean).length - LADDER[3].givens;
+  assert.ok(extra <= MAX_EXTRA_GIVENS, `Lv.3 seed ${seed}: ${extra} digits over the level — a cut that needed too many extra digits was shipped instead of cut again`);
+  assert.strictEqual(bruteCount(p.cages, p.board).length, 1, `Lv.3 seed ${seed}: the cut made again does not have exactly one solution — a killer must have exactly one solution`);
+  console.log(`  ✓ a cut that needed too many extra digits is cut again (seed ${seed}: ${extra} over)`);
+}
+// The cap binds only at Lv.5: uncapped, 400 Lv.4 seeds all needed no wrong turns
+// anyway, and the fixed Lv.5 seeds above stay under 150. Uncapped, this one takes
+// 461 (found 2026-10-07 among 81 seeds).
+{
+  const seed = 'gate-2-27-turns-5-80';
+  const p = generateKillerPuzzle(5, seed);
+  assert.ok(p.guesses <= LADDER[5].guesses, `Lv.5 seed ${seed}: the solver took ${p.guesses} wrong turns, the level allows ${LADDER[5].guesses}`);
+  console.log(`  ✓ a Lv.5 that would need too many wrong turns is changed until it does not (seed ${seed}: ${p.guesses})`);
+}
+
+// Lv.4 repairs by splitting cages around its ten givens. A split can leave a
+// given alone in its cage — 6% of Lv.4 puzzles did, seen 2026-10-07 only when the
+// seed mutation made the puzzles random — and that Lv.4 plays with nine givens.
+// This seed is one of them when the given is not moved.
+{
+  const seed = 'gate-2-27-single-4-36';
+  const p = generateKillerPuzzle(4, seed);
+  const onSingle = p.cages.find((cage) => cage.cells.length === 1 && at(p.board, cage.cells[0]));
+  assert.ok(!onSingle, `Lv.4 seed ${seed}: a given on a one-cell cage (cell ${onSingle?.cells[0]}) — a split left it alone and it was not moved`);
+  assert.strictEqual(p.board.flat().filter(Boolean).length, LADDER[4].givens, `Lv.4 seed ${seed}: gives ${p.board.flat().filter(Boolean).length} digits — Lv.4 and Lv.5 keep the ${LADDER[4].givens} they start with`);
+  console.log(`  ✓ a given a split leaves alone moves to an open cell (seed ${seed})`);
 }
 
 // ── 5. The same seed, the same puzzle ───────────────────────────────────────

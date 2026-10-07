@@ -12,6 +12,7 @@
  *   Case 2  clock keeps advancing while the player taps rapidly (timer starvation)
  *   Case 3  resuming a save with no solutionBoard does not die  (ensureValidSolution)
  *   Case 4  filling the final cell raises the victory modal     (win path)
+ *   Case 6  a wrong digit shows why it is wrong, with the right suffix (D7)
  */
 
 import { chromium } from 'playwright';
@@ -486,6 +487,38 @@ async function run() {
       } else {
         console.log(`  ✅ Move persisted; hide flushed the clock ${clockAtMove}s -> ${clockAtHide}s`);
       }
+    }
+    // ---------------------------------------------------------------------
+    console.log('▶ Case 6: a wrong digit says why, on screen');
+    // ---------------------------------------------------------------------
+    // detectSudokuConflict built "row 3 already has a 5 (Mistakes 1/3)" in 13 languages from
+    // the first commit, and no screen drew it (BACKLOG D7, shown since 2026-10-07). With the
+    // three-mistake limit off it also said "+10s penalty", which only Speedrun charges.
+    for (const [limitMistakes, suffix] of [[true, '(Mistakes 1/3)'], [false, '(Mistakes 1)']]) {
+      const { state } = buildSavedState({ level: 1 });
+      await seedAndResume(page, state, { limitMistakes });
+      // A blank cell, and a digit its row already holds: a row conflict, never the answer.
+      let target = null;
+      for (let r = 0; r < 9 && !target; r++) {
+        for (let c = 0; c < 9 && !target; c++) {
+          if (state.board[r][c] !== 0) continue;
+          const d = state.board[r].find((v) => v && v !== state.solutionBoard[r][c]);
+          if (d) target = { index: r * 9 + c, digit: d };
+        }
+      }
+      await page.locator('.sudoku-cell').nth(target.index).click();
+      await page.waitForTimeout(80);
+      await page.locator(`.number-pad .num-btn:nth-child(${target.digit})`).click();
+      const toast = page.locator('.conflict-toast-banner');
+      const shown = await toast.waitFor({ timeout: 2000 }).then(() => true, () => false);
+      const text = shown ? (await toast.innerText()).trim() : '';
+      const passThrough = shown ? await toast.evaluate((el) => getComputedStyle(el).pointerEvents) : '';
+      const label = `limit ${limitMistakes ? 'on' : 'off'}`;
+      if (!shown) failures.push(`Case 6 (${label}): a wrong digit showed no message — only the cells lit up`);
+      else if (!text.includes('already exists') || !text.endsWith(suffix)) failures.push(`Case 6 (${label}): the message says ${JSON.stringify(text)}, expected a row conflict ending ${suffix}`);
+      else if (text.includes('+10s')) failures.push(`Case 6 (${label}): classic was told about a +10s penalty only Speedrun charges`);
+      else if (passThrough !== 'none') failures.push(`Case 6 (${label}): the message catches taps (pointer-events ${passThrough}) — the header buttons under it stop working for 3 s`);
+      else console.log(`  ✅ ${label}: ${JSON.stringify(text)}`);
     }
   } finally {
     if (browser) await browser.close();

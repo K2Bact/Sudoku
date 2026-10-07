@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'あなたのクリア率 {rate}%',
     findOpponentBtn: '対戦相手を探す',
     noOpponentFound: '対戦相手が見つかりませんでした。AIと対戦しますか?',
+    searchAgain: 'もう一度探す',
     connectFailed: "オンライン対戦に接続できませんでした。しばらくしてからもう一度お試しください。AIと対戦しますか?",
     playAiInstead: 'AIと対戦'
   },

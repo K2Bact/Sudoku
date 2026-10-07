@@ -3,6 +3,8 @@ export const common = {
     you: 'आप',
     back: 'वापस',
     close: 'बंद करें',
+    on: 'चालू',
+    off: 'बंद',
     confirm: 'ठीक है',
     cancel: 'रद्द करें',
     restart: 'पुनः आरंभ',
@@ -77,7 +79,9 @@ export const common = {
     cageSum: '⚠️ इस समूह का जोड़ अब {sum} नहीं बनता! {suffix}',
     boardFullHasMistakes: '⚠️ बोर्ड भरा है लेकिन कुछ गलतियां हैं। पुनः जांचें!',
     timeAttackSuffix: '(गलती {count} | +10 सेकंड दंड)',
-    classicSuffix: '(गलतियां {count}/3)'
+    classicSuffix: '(गलतियां {count}/3)',
+    // Classic with the three-mistake limit switched off: no limit to count to, no time penalty.
+    freeSuffix: '(गलतियां {count})'
   },
   tiers: {
     grandMaster: {

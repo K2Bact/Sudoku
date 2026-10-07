@@ -20,6 +20,14 @@
       "find": "  const [, redraw] = useState(0);",
       "replace": "  const [, redraw] = id ? useState(0) : [0, () => {}];",
       "expectFailure": "rules-of-hooks"
+    },
+    {
+      "name": "a setter that no longer exists is still called",
+      "why": "Added with no-undef 2026-10-07 (BACKLOG D6). The real case: the home level chips called a removed setLockedToast on every tap (Diary 91). Vite bundles it silently and it throws only when the line runs.",
+      "file": "src/components/home/RivalModeChips.jsx",
+      "find": "  const [lockedToast, setLockedToast] = useState(null);",
+      "replace": "  const [lockedToast] = useState(null);",
+      "expectFailure": "no-undef"
     }
   ]
 }

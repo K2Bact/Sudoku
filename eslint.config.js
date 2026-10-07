@@ -6,6 +6,11 @@
  *   - a React hook called where React cannot keep its order (rules-of-hooks):
  *     inside an `if`, a loop, after an early return. It builds and then breaks
  *     state at runtime, and no other gate reads for it.
+ *   - a name that is defined nowhere (no-undef, added 2026-10-07, BACKLOG D6).
+ *     Vite bundles such code without a word and it throws only when that line
+ *     runs: the home level chips called a removed `setLockedToast` on every tap
+ *     (Diary 91). Browser and Node names come from the `globals` package — the
+ *     app sees the browser's, scripts and tests both (page.evaluate runs there).
  * Everything else is a warning and does not stop QA.
  *
  * ── Why ESLint and not oxlint (2026-10-01, SudokuDiary 85) ────────────────
@@ -20,6 +25,7 @@
  * The files checked are the repository's own; generated and ignored folders are
  * left out, as oxlint left out what .gitignore lists.
  */
+import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 
@@ -36,12 +42,20 @@ export default [
       ecmaVersion: 'latest',
       sourceType: 'module',
       parserOptions: { ecmaFeatures: { jsx: true } },
+      globals: { ...globals.browser },
     },
     plugins: { 'react-hooks': reactHooks, 'react-refresh': reactRefresh },
     rules: {
       'react-hooks/rules-of-hooks': 'error',
+      'no-undef': 'error',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
+  },
+  {
+    // Scripts and tests run in Node, and the code they hand to page.evaluate runs
+    // in the browser, so both sets of names are real there.
+    files: ['scripts/**/*.{js,mjs}', '*.config.{js,mjs}', 'eslint.config.js'],
+    languageOptions: { globals: { ...globals.browser, ...globals.node } },
   },
   {
     files: ['**/*.cjs'],

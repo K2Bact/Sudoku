@@ -20,6 +20,30 @@
       "find": "    saveGameState({\n      board: s.board,",
       "replace": "    saveGameState({\n      board: s.initialBoard,",
       "expectFailure": "where 1 was entered"
+    },
+    {
+      "name": "the mistake message is built but not drawn",
+      "why": "Added 2026-10-07 (BACKLOG D7). The state of the first commit until today: 13 languages of explanation, and only the cells lit up.",
+      "file": "src/components/screens/GameScreen.jsx",
+      "find": "      {conflictInfo?.message && (",
+      "replace": "      {false && (",
+      "expectFailure": "showed no message"
+    },
+    {
+      "name": "classic without the mistake limit is told about the Speedrun penalty again",
+      "why": "The one flag for 'no limit' and 'ten-second penalty' that this fix split; visible only now that the message is on screen.",
+      "file": "src/utils/gameMistakeHandler.js",
+      "find": "  const conflict = detectSudokuConflict(nextBoard, r, c, num, newMistakes, isUnlimited, t, cages, gameMode === 'timeAttack');",
+      "replace": "  const conflict = detectSudokuConflict(nextBoard, r, c, num, newMistakes, isUnlimited, t, cages);",
+      "expectFailure": "expected a row conflict ending (Mistakes 1)"
+    },
+    {
+      "name": "the mistake message catches taps",
+      "why": "It sits over the header's Restart and New game for three seconds; catching taps would make them dead in that time.",
+      "file": "src/styles/modals.css",
+      "find": "  pointer-events: none;",
+      "replace": "  pointer-events: auto;",
+      "expectFailure": "catches taps"
     }
   ],
   "rebuild": true

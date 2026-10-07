@@ -15,7 +15,7 @@
     },
     {
       "name": "the level's limit on wrong turns is dropped",
-      "why": "Puzzles stay unique but any of them may need a long chain of guesses; a Lv.4 measured at 1,902 wrong turns before the cap. The level stops meaning anything.",
+      "why": "Puzzles stay unique but any of them may need a long chain of guesses; a Lv.4 measured at 1,902 wrong turns before the cap, and on today's ladder a Lv.5 seed takes 461 without it (the ladder's Expert peaks near 155). The level stops meaning anything.",
       "file": "src/engine/killer/killerGenerator.js",
       "find": "    if (result.count === 1 && !result.aborted && guesses <= config.guesses) return { cages, givens, guesses };",
       "replace": "    if (result.count === 1 && !result.aborted) return { cages, givens, guesses };",
@@ -54,12 +54,44 @@
       "expectFailure": "the same seed gave two different puzzles"
     },
     {
-      "name": "Lv.4 starts with digits on the grid",
-      "why": "Lv.4 and Lv.5 are cages only; given digits make them a classic puzzle with sums drawn on it.",
+      "name": "Lv.3 goes back to four digits",
+      "why": "Before 2026-10-07 the killer \"Medium\" gave 4-7 digits and played between Easybrain's Hard and Expert; a player who picked Medium got something much harder. The gate pins the ladder measured on that app, so the numbers cannot drift back.",
       "file": "src/engine/killer/killerGenerator.js",
-      "find": "  4: { sizes: [[2, 25], [3, 35], [4, 25], [5, 15]], givens: 0, repair: 'split', guesses: 100 },",
-      "replace": "  4: { sizes: [[2, 25], [3, 35], [4, 25], [5, 15]], givens: 3, repair: 'split', guesses: 100 },",
-      "expectFailure": "Lv.4 and Lv.5 are cages only"
+      "find": "  3: { sizes: CAGE_SIZES, givens: 26, repair: 'reveal', guesses: 0 },",
+      "replace": "  3: { sizes: CAGE_SIZES, givens: 4, repair: 'reveal', guesses: 0 },",
+      "expectFailure": "the ladder gives 26"
+    },
+    {
+      "name": "Lv.3 goes back to its big cages",
+      "why": "The old Lv.3 aimed for three- to five-cell cages and averaged 2.97 cells; bigger cages hold more possible sets of digits and are harder. Easybrain cuts every level the same, about 2.45 cells.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "  3: { sizes: CAGE_SIZES, givens: 26, repair: 'reveal', guesses: 0 },",
+      "replace": "  3: { sizes: [[2, 35], [3, 40], [4, 20], [5, 5]], givens: 26, repair: 'reveal', guesses: 0 },",
+      "expectFailure": "bigger than the ladder's"
+    },
+    {
+      "name": "Lv.4 repairs by revealing digits",
+      "why": "Lv.4 is the ladder's Hard: ten digits, no more. Revealing digits to make the answer unique would hand the player extra ones, a Hard drifting toward Medium.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "  4: { sizes: CAGE_SIZES, givens: 10, repair: 'split', guesses: 0 },",
+      "replace": "  4: { sizes: CAGE_SIZES, givens: 10, repair: 'reveal', guesses: 0 },",
+      "expectFailure": "keep the 10 they start with"
+    },
+    {
+      "name": "a given may land on a one-cell cage",
+      "why": "A one-cell cage already shows its digit; a given on it is one of the level's digits wasted, so the puzzle plays harder than its count says. Easybrain never does it.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "  for (const cell of shuffle([...Array(81).keys()].filter((c) => !single.has(c)), rng).slice(0, config.givens)) reveal(cell);",
+      "replace": "  for (const cell of shuffle([...Array(81).keys()], rng).slice(0, config.givens)) reveal(cell);",
+      "expectFailure": "a given on a one-cell cage"
+    },
+    {
+      "name": "a given a split leaves alone stays where it is",
+      "why": "Lv.4 repairs by splitting cages around its ten givens; a split can leave a given alone in a one-cell cage, which already shows the digit. Kept there, 6% of Lv.4 puzzles play with nine givens. Found 2026-10-07 only because the seed mutation made the puzzles random.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "          if (cage.cells.length !== 1 || !givens[Math.floor(cell / 9)][cell % 9]) continue;",
+      "replace": "          if (true) continue;",
+      "expectFailure": "a split left it alone and it was not moved"
     },
     {
       "name": "the 45 rule adds up to 44",
@@ -105,9 +137,17 @@
       "name": "a cut that decayed into one-cell cages is shipped",
       "why": "Added 2026-10-06. Lv.4-5 are cages only, but splitting pairs can leave a dozen or more one-cell cages, each a given drawn as a cage: 13 in 300 Lv.5 puzzles went past 12, up to 18. The generator cuts again; without that the gate's fixed decayed seed fails.",
       "file": "src/engine/killer/killerGenerator.js",
-      "find": "    if (oneCellCages(made.cages) <= MAX_ONE_CELL_CAGES) break;",
-      "replace": "    break;",
+      "find": "  const overBy = (m) => Math.max(0, oneCellCages(m.cages) - MAX_ONE_CELL_CAGES)",
+      "replace": "  const overBy = (m) => 0 * Math.max(0, oneCellCages(m.cages) - MAX_ONE_CELL_CAGES)",
       "expectFailure": "a decayed cut was shipped instead of cut again"
+    },
+    {
+      "name": "a cut that needed too many extra digits is shipped",
+      "why": "One Lv.3 in 1000 took thirteen extra digits to become unique — a Medium holding more digits than Lv.1. Such a cut must be cut again.",
+      "file": "src/engine/killer/killerGenerator.js",
+      "find": "    + Math.max(0, givenCount(m.givens) - config.givens - MAX_EXTRA_GIVENS);",
+      "replace": "    + 0 * Math.max(0, givenCount(m.givens) - config.givens - MAX_EXTRA_GIVENS);",
+      "expectFailure": "too many extra digits was shipped instead of cut again"
     }
   ]
 }

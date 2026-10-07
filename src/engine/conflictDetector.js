@@ -4,10 +4,14 @@
  * In a killer (`cages` given) also the cage: a digit it already holds, or a sum it can no longer make.
  */
 
-export function detectSudokuConflict(board, r, c, num, newMistakes, isUnlimited = false, t = null, cages = null) {
+// isUnlimited: no three-mistake limit to count against. hasTimePenalty: the mistake also
+// costs ten seconds (Speedrun). They were one flag until 2026-10-07, so classic with the
+// limit switched off was told "+10s penalty" — invisible until the message reached the screen.
+export function detectSudokuConflict(board, r, c, num, newMistakes, isUnlimited = false, t = null, cages = null, hasTimePenalty = isUnlimited) {
   const tr = typeof t === 'function' ? t : (k, p = {}) => {
     if (k === 'conflicts.timeAttackSuffix') return `(Mistake ${p.count} | +10s)`;
     if (k === 'conflicts.classicSuffix') return `(Mistakes ${p.count}/3)`;
+    if (k === 'conflicts.freeSuffix') return `(Mistakes ${p.count})`;
     if (k === 'conflicts.boxDuplicate') return `⚠️ Number ${p.num} already exists in [Box ${p.box}]! ${p.suffix}`;
     if (k === 'conflicts.rowDuplicate') return `⚠️ Number ${p.num} already exists in row ${p.row}! ${p.suffix}`;
     if (k === 'conflicts.colDuplicate') return `⚠️ Number ${p.num} already exists in column ${p.col}! ${p.suffix}`;
@@ -18,9 +22,11 @@ export function detectSudokuConflict(board, r, c, num, newMistakes, isUnlimited 
     return k;
   };
 
-  const mistakeSuffix = isUnlimited
+  const mistakeSuffix = hasTimePenalty
     ? tr('conflicts.timeAttackSuffix', { count: newMistakes })
-    : tr('conflicts.classicSuffix', { count: newMistakes });
+    : isUnlimited
+      ? tr('conflicts.freeSuffix', { count: newMistakes })
+      : tr('conflicts.classicSuffix', { count: newMistakes });
 
   const conflictingCells = [];
   const conflictingKeys = new Set();

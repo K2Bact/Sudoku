@@ -3,6 +3,8 @@ export const common = {
     you: "あなた",
     back: '戻る',
     close: '閉じる',
+    on: 'オン',
+    off: 'オフ',
     confirm: '決定',
     cancel: 'キャンセル',
     restart: 'やり直す',
@@ -77,7 +79,9 @@ export const common = {
     cageSum: '⚠️ このケージの合計が{sum}になりません！ {suffix}',
     boardFullHasMistakes: '⚠️ ボードが埋まりましたが、間違いがあります。もう一度確認してください！',
     timeAttackSuffix: '(不正解 {count}回 | +10秒ペナルティ)',
-    classicSuffix: '(ミス {count}/3)'
+    classicSuffix: '(ミス {count}/3)',
+    // Classic with the three-mistake limit switched off: no limit to count to, no time penalty.
+    freeSuffix: '(ミス {count})'
   },
   tiers: {
     grandMaster: {

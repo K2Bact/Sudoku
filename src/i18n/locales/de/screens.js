@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'Deine Lösungsquote: {rate}%',
     findOpponentBtn: 'Gegner suchen',
     noOpponentFound: 'Kein Gegner gefunden. Stattdessen gegen die KI spielen?',
+    searchAgain: 'Erneut suchen',
     connectFailed: "Keine Verbindung zum Online-Spiel. Versuch es später noch einmal. Stattdessen gegen die KI spielen?",
     playAiInstead: 'Gegen die KI'
   },

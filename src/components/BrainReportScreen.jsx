@@ -104,13 +104,16 @@ export function BrainReportScreen({ onBack }) {
       <div className="screen-scroll-content">
         {/* IQ Hero Ring */}
         <div className="brain-iq-hero text-center">
-          <div className="iq-circle mx-auto">
-            <span className="iq-label">{t('brainReport.scoreLabel')}</span>
-            <span className="iq-number">{report.iqScore}</span>
-          </div>
-          <div className="tier-badge-pill mt-3">
-            <Award size={14} className="text-yellow inline-icon" />
-            <span className="tier-title fw-bold">{tierTitle}</span>
+          {/* The tier sits beside the ring, not under it (user, 2026-10-07). */}
+          <div className="iq-hero-row">
+            <div className="iq-circle">
+              <span className="iq-label">{t('brainReport.scoreLabel')}</span>
+              <span className="iq-number">{report.iqScore}</span>
+            </div>
+            <div className="tier-badge-pill">
+              <Award size={14} className="text-yellow inline-icon" />
+              <span className="tier-title fw-bold">{tierTitle}</span>
+            </div>
           </div>
           <p className="iq-desc text-muted mt-2">{tierDesc}</p>
           {/* What moves the score — the ranking uses it, so the player should be able to

@@ -79,7 +79,7 @@ function runStep(name, cmd) {
 // -----------------------------------------------------------------------------
 runStep('0-1. File Size & Responsibility Separation', 'node scripts/tests/unit/test_file_responsibility.js');
 
-runStep('0-2. ESLint Static Analysis (files parse, React hook rules)', 'npx eslint .');
+runStep('0-2. ESLint Static Analysis (files parse, React hook rules, undefined names)', 'npx eslint .');
 runStep('0-3. Node ESM Import Extension Compliance', 'node scripts/tests/unit/test_esm_import_extensions.js');
 runStep('0-4. No Committed Secrets or Signing Material', 'node scripts/tests/unit/test_no_committed_secrets.js');
 runStep('0-4b. The Secrets Gate Catches Planted Material', 'node scripts/tests/unit/test_secrets_gate_catches_bait.js');

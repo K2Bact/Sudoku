@@ -114,10 +114,13 @@ export function BattleResultModal({
               <Flame size={16} className={isIWon ? 'text-yellow' : 'text-muted'} />
               <span className="mmr-label">{t('battleResult.ratingChange')}</span>
             </div>
-            <div className={`mmr-val-pill ${isIWon ? 'positive' : 'negative'}`}>
+            {/* Only a signed number, beside its label: no " MMR" unit, which every locale read
+                in English (2026-10-07, as the stats rating since 09-30). Left-to-right so Arabic
+                draws +12, not 12+ (gate 2-29's rule). */}
+            <div className={`mmr-val-pill ${isIWon ? 'positive' : 'negative'}`} dir="ltr">
               {lastRatingChange
-                ? `${lastRatingChange.delta >= 0 ? '+' : ''}${lastRatingChange.delta} MMR`
-                : `${isIWon ? '+' : ''}${ratingDeltaFor(isIWon, room?.level || 3)} MMR`}
+                ? `${lastRatingChange.delta >= 0 ? '+' : ''}${lastRatingChange.delta}`
+                : `${isIWon ? '+' : ''}${ratingDeltaFor(isIWon, room?.level || 3)}`}
             </div>
           </div>
         )}

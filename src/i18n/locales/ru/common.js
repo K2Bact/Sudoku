@@ -3,6 +3,8 @@ export const common = {
     you: 'Вы',
     back: 'Назад',
     close: 'Закрыть',
+    on: 'ВКЛ',
+    off: 'ВЫКЛ',
     confirm: 'OK',
     cancel: 'Отмена',
     restart: 'Заново',
@@ -77,7 +79,9 @@ export const common = {
     cageSum: '⚠️ Сумма этой области уже не равна {sum}! {suffix}',
     boardFullHasMistakes: '⚠️ Поле заполнено, но содержит ошибки. Проверьте еще раз!',
     timeAttackSuffix: '(Ошибка {count} | штраф +10с)',
-    classicSuffix: '(Ошибки {count}/3)'
+    classicSuffix: '(Ошибки {count}/3)',
+    // Classic with the three-mistake limit switched off: no limit to count to, no time penalty.
+    freeSuffix: '(Ошибки {count})'
   },
   tiers: {
     grandMaster: {

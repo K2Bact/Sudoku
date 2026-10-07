@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: '我的通关率 {rate}%',
     findOpponentBtn: '寻找对手',
     noOpponentFound: '找不到对手。要改与 AI 对战吗?',
+    searchAgain: '再次寻找',
     connectFailed: "无法连接在线对战。请稍后再试。要改与 AI 对战吗?",
     playAiInstead: '与 AI 对战'
   },

@@ -5,38 +5,50 @@
  * 1. A full classic solution (the same generator classic games use).
  * 2. Cut it into cages: connected groups of cells with no digit twice.
  * 3. Each cage's sum is read off the solution.
- * 4. Make its solution the only one: Lv.1-3 reveal digits, Lv.4-5 split cages
- *    and reveal none (makeUnique).
+ * 4. Make its solution the only one: Lv.1-3 reveal more digits, Lv.4-5 split
+ *    cages and keep the digits they were given (makeUnique).
  *
- * The level sets how big cages grow and how many digits are given. With the
- * same seed the same puzzle comes back, so a daily killer is possible later.
+ * The level sets how many digits are given and how many wrong turns the proof
+ * may take; cages are cut the same way at every level. With the same seed the
+ * same puzzle comes back, so a daily killer is possible later.
  *
- * Measured 2026-10-01 on the dev PC, 100 puzzles per level: Lv.1-3 under 0.12 s
- * each, Lv.4-5 median 0.05 s and at most 0.34 s — about twice what a classic
- * Lv.5 takes, which the app already generates on the spot.
+ * Measured 2026-10-07 on the dev PC, 200-300 puzzles per level: median 6-20 ms,
+ * at most 0.21 s (Lv.4) — the app generates them on the spot, as it does classic.
  */
 import { createPRNG, generateFullSolution, shuffle, cloneGrid, createEmptyGrid } from '../SudokuEngine.js';
 import { solveKiller } from './killerSolver.js';
 
-// sizes: [cage size, weight] — how often a new cage aims for that size.
-// givens: digits revealed from the start. repair: how an ambiguous puzzle is
-// made unique — 'reveal' a digit, or 'split' a cage and keep the grid empty.
-// guesses: how many wrong turns the solver may take proving the answer is the
-// only one. Its narrowing is what a player does — cage sums, the 45 rule, a
-// digit with one place left — so 0 means those alone solve the puzzle, and
-// more means it needs harder reasoning. Past it the puzzle is too hard for its
-// level and is changed again, which makes it easier.
+// sizes: [cage size, weight] — how often a new cage aims for that size; a 1 is
+// a one-cell cage kept on purpose. givens: digits revealed from the start.
+// repair: how an ambiguous puzzle is made unique — 'reveal' a digit, or 'split'
+// a cage and keep the givens as they are. guesses: how many wrong turns the
+// solver may take proving the answer is the only one. Its narrowing is what a
+// player does — cage sums, the 45 rule, a digit with one place left — so 0 means
+// those alone solve the puzzle, and more means it needs harder reasoning. Past
+// it the puzzle is too hard for its level and is changed again, which makes it
+// easier.
 //
-// Measured 2026-10-01 before this cap, 100 puzzles per level (wrong turns,
-// median / 90th percentile / max): Lv.1 0/0/0, Lv.2 0/0/2, Lv.3 0/16/173,
-// Lv.4 9/894/1902, Lv.5 22/821/1577. A Lv.5 at 1,248 took a plain search
-// longer than eight minutes to check; a person would be guessing too.
+// The levels follow the most played killer app, Easybrain's "Killer Sudoku by
+// Sudoku.com" (10M+ installs), measured 2026-10-07 on its 6,300 built-in puzzles
+// with this solver. It tells its levels apart by givens alone — Easy 31, Medium
+// 26, Hard 10, Expert 0, the same in every puzzle — and cuts cages the same way
+// at every level: about 49% two cells, 28% three, 10% four, 2-3% five. One-cell
+// cages (never on a given) are 10% at Easy and Medium, 17% at Hard, 6% at Expert:
+// each one is a digit shown, so Expert keeps few. Easy to Hard need no wrong turns; Expert's median is
+// 1, its 90th percentile 21, 95th 38. Our Lv.2-5 are those four under the same
+// names, and Lv.1 is one step below its Easy. Before this our Lv.3 "Medium"
+// gave 4-7 digits and bigger cages, and 38% of its puzzles needed wrong turns:
+// between its Hard and Expert (user, 2026-10-07: "보통 맞아? 전혀 안 그래 보이는데").
+// Lv.4-5 split cages to repair, and splitting leaves one-cell cages, so they aim
+// for fewer on purpose.
+const CAGE_SIZES = [[1, 11], [2, 50], [3, 27], [4, 10], [5, 3]];
+const FEW_SINGLES = [[1, 1], [2, 54], [3, 30], [4, 11], [5, 4]];
 export const KILLER_CONFIG = {
-  1: { sizes: [[2, 55], [3, 40], [4, 5]], givens: 18, repair: 'reveal', guesses: 0 },
-  2: { sizes: [[2, 45], [3, 40], [4, 15]], givens: 10, repair: 'reveal', guesses: 0 },
-  3: { sizes: [[2, 35], [3, 40], [4, 20], [5, 5]], givens: 4, repair: 'reveal', guesses: 20 },
-  4: { sizes: [[2, 25], [3, 35], [4, 25], [5, 15]], givens: 0, repair: 'split', guesses: 100 },
-  5: { sizes: [[2, 15], [3, 30], [4, 30], [5, 20], [6, 5]], givens: 0, repair: 'split', guesses: 300 },
+  1: { sizes: CAGE_SIZES, givens: 36, repair: 'reveal', guesses: 0 },
+  2: { sizes: CAGE_SIZES, givens: 31, repair: 'reveal', guesses: 0 },
+  3: { sizes: CAGE_SIZES, givens: 26, repair: 'reveal', guesses: 0 },
+  4: { sizes: CAGE_SIZES, givens: 10, repair: 'split', guesses: 0 },
+  5: { sizes: FEW_SINGLES, givens: 0, repair: 'split', guesses: 150 },
 };
 
 // Past this many wrong turns the search stops and the puzzle counts as too hard.
@@ -66,13 +78,14 @@ function pickSize(sizes, rng) {
 /**
  * Cut the solved grid into cages. Each new cage starts at the free cell with the
  * fewest free neighbours — starting in the open leaves stranded single cells in
- * the gaps. A single cell that still ends up alone joins a neighbouring cage that
- * lacks its digit, so a one-cell cage (a given in disguise) is rare.
+ * the gaps. A single cell that ends up alone by accident joins a neighbouring
+ * cage that lacks its digit; a cage that aimed for one cell stays one cell.
  */
 export function cutIntoCages(solution, sizes, rng) {
   const digit = solution.flat();
   const cageOf = new Int16Array(81).fill(-1);
   const cages = [];
+  const single = new Set();
   const freeAround = (cell) => neighbours(cell).filter((n) => cageOf[n] < 0).length;
   const order = shuffle([...Array(81).keys()], rng);
 
@@ -85,6 +98,7 @@ export function cutIntoCages(solution, sizes, rng) {
     if (start < 0) break;
 
     const target = pickSize(sizes, rng);
+    if (target === 1) single.add(cages.length);
     const cells = [start];
     let used = 1 << digit[start];
     cageOf[start] = cages.length;
@@ -105,7 +119,7 @@ export function cutIntoCages(solution, sizes, rng) {
   }
 
   for (let k = 0; k < cages.length; k++) {
-    if (cages[k].length !== 1) continue;
+    if (cages[k].length !== 1 || single.has(k)) continue;
     const cell = cages[k][0];
     const homes = neighbours(cell)
       .map((n) => cageOf[n])
@@ -162,15 +176,17 @@ function splitCage(cages, cell, digit, rng) {
 /**
  * Change the puzzle until its solution is the only one. Each change goes where
  * two solutions disagree, so it removes the ambiguity the search just found:
- * Lv.1-3 reveal that cell's digit, Lv.4-5 split the cage around it and give no
- * digits at all. Every change adds information, so this always ends — at worst
- * with every digit known.
+ * Lv.1-3 reveal that cell's digit, Lv.4-5 split the cage around it and keep the
+ * digits they started with. Every change adds information, so this always ends
+ * — at worst with every digit known.
  */
 function makeUnique(cages, solution, config, rng) {
   const digit = solution.flat();
   const givens = createEmptyGrid();
   const reveal = (cell) => { givens[Math.floor(cell / 9)][cell % 9] = digit[cell]; };
-  for (const cell of shuffle([...Array(81).keys()], rng).slice(0, config.givens)) reveal(cell);
+  // A one-cell cage already shows its digit; a given there would be a given wasted.
+  const single = new Set(cages.filter((cage) => cage.cells.length === 1).map((cage) => cage.cells[0]));
+  for (const cell of shuffle([...Array(81).keys()].filter((c) => !single.has(c)), rng).slice(0, config.givens)) reveal(cell);
 
   for (;;) {
     // Trying the answer first walks straight to it: one step per open cell, and
@@ -195,6 +211,18 @@ function makeUnique(cages, solution, config, rng) {
       if (biggest > 1) {
         const pool = disputed.filter((cell) => sizeOf(cell) === biggest);
         cages = splitCage(cages, pool[Math.floor(rng() * pool.length)], digit, rng);
+        // A split can leave a given alone in its cage: the cage now shows that
+        // digit, and Lv.4 would play with nine givens, not ten. The cage keeps
+        // the digit known, so the given moves to a cell nothing shows yet — only
+        // information is added, so the repair still ends.
+        for (const cage of cages) {
+          const [cell] = cage.cells;
+          if (cage.cells.length !== 1 || !givens[Math.floor(cell / 9)][cell % 9]) continue;
+          givens[Math.floor(cell / 9)][cell % 9] = 0;
+          const shown = new Set(cages.filter((c) => c.cells.length === 1).map((c) => c.cells[0]));
+          const free = [...Array(81).keys()].filter((c) => !shown.has(c) && !givens[Math.floor(c / 9)][c % 9]);
+          reveal(free[Math.floor(rng() * free.length)]);
+        }
         continue;
       }
     }
@@ -203,25 +231,33 @@ function makeUnique(cages, solution, config, rng) {
 }
 
 // A one-cell cage is a given drawn as a cage. Lv.4-5 repair by splitting, and
-// splitting pairs leaves them behind: measured 2026-10-06, 300 puzzles per level,
-// Lv.4 went past 12 in 2 and Lv.5 in 13 (up to 18) — a "no givens" level holding
-// more known digits than Lv.3. Such a cut is thrown away and the grid cut again.
-// Gate 2-27 checked this limit on 8 fixed seeds, none of them in that 4%.
+// splitting pairs leaves them behind: measured 2026-10-06 with the cage mix of
+// then, 300 puzzles per level, Lv.4 went past 12 in 2 and Lv.5 in 13 (up to 18).
+// Such a cut is thrown away and the grid cut again. With the mix of 2026-10-07
+// a cut averages 3-6 of them, at most 12 in 200 per level.
 const MAX_ONE_CELL_CAGES = 12;
+// Lv.1-3 reveal digits to repair. Measured 2026-10-07, 1000 puzzles per level:
+// 80-92% need none, the rest one or two — but one Lv.3 in 1000 took thirteen,
+// a "Medium" holding more digits than Lv.1. Past two, the grid is cut again.
+const MAX_EXTRA_GIVENS = 2;
 const MAX_CUTS = 10;
 const oneCellCages = (cages) => cages.filter((cage) => cage.cells.length === 1).length;
+const givenCount = (givens) => givens.flat().filter(Boolean).length;
 
 export function generateKillerPuzzle(level = 3, seed = null) {
   const rng = seed ? createPRNG(seed) : Math.random;
   const lv = KILLER_CONFIG[level] ? Number(level) : 3;
   const config = KILLER_CONFIG[lv];
   const solution = generateFullSolution(rng);
-  // Ten cuts all past the limit has not been seen; keep the least decayed if it happens.
+  // How far a cut is past either limit. Ten cuts all past has not been seen; keep
+  // the least bad if it happens.
+  const overBy = (m) => Math.max(0, oneCellCages(m.cages) - MAX_ONE_CELL_CAGES)
+    + Math.max(0, givenCount(m.givens) - config.givens - MAX_EXTRA_GIVENS);
   let made = null;
   for (let cut = 0; cut < MAX_CUTS; cut++) {
     const next = makeUnique(cutIntoCages(solution, config.sizes, rng), solution, config, rng);
-    if (!made || oneCellCages(next.cages) < oneCellCages(made.cages)) made = next;
-    if (oneCellCages(made.cages) <= MAX_ONE_CELL_CAGES) break;
+    if (!made || overBy(next) < overBy(made)) made = next;
+    if (overBy(made) === 0) break;
   }
   const { cages, givens, guesses } = made;
 

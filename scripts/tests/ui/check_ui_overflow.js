@@ -269,8 +269,10 @@ async function runScanner() {
   }
 }
 
+// The preview server is shut down by runScanner's own finally. This handler used to
+// call shutdownPreview(viteProcess) too, but viteProcess lives inside runScanner, so
+// on the failure path it threw a ReferenceError of its own (ESLint no-undef, 2026-10-07).
 runScanner().catch((e) => {
   console.error('Scanner error:', e);
-  shutdownPreview(viteProcess);
   process.exit(1);
 });

@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'Your Clear Rate {rate}%',
     findOpponentBtn: 'Find Opponent',
     noOpponentFound: 'No opponent found. Play against the AI instead?',
+    searchAgain: 'Search again',
     connectFailed: "Couldn't connect to online play. Please try again later. Play against the AI instead?",
     playAiInstead: 'Battle the AI'
   },

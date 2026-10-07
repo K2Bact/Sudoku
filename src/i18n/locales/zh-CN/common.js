@@ -6,6 +6,8 @@ export const common = {
     you: '您',
     back: '返回',
     close: '关闭',
+    on: '开',
+    off: '关',
     confirm: '确认',
     cancel: '取消',
     restart: '重新开始',
@@ -80,7 +82,9 @@ export const common = {
     cageSum: '⚠️ 这个笼子的和已对不上 {sum}！{suffix}',
     boardFullHasMistakes: '⚠️ 盘面已填满但有错误，请重新检查！',
     timeAttackSuffix: '(错误 {count}次 | +10秒惩罚)',
-    classicSuffix: '(失误 {count}/3)'
+    classicSuffix: '(失误 {count}/3)',
+    // Classic with the three-mistake limit switched off: no limit to count to, no time penalty.
+    freeSuffix: '(失误 {count})'
   },
   tiers: {
     grandMaster: {

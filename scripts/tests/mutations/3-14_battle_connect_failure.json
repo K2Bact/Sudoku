@@ -29,6 +29,30 @@
       "find": "                <span style={{ wordBreak: 'keep-all', overflowWrap: 'anywhere' }}>",
       "replace": "                <span style={{ wordBreak: 'keep-all', overflowWrap: 'break-word' }}>",
       "expectFailure": "overflows at 360px"
+    },
+    {
+      "name": "the no-opponent card loses Search again",
+      "why": "Added 2026-10-07 (BACKLOG D10). Without it a player who wanted a person can only take the AI or close the lobby and start over.",
+      "file": "src/components/BattleLobbyScreen.jsx",
+      "find": "              {!matchUnavailable && (",
+      "replace": "              {false && (",
+      "expectFailure": "has no Search again button"
+    },
+    {
+      "name": "Search again opens the AI lobby instead of searching",
+      "why": "A button that says search and does something else; the step presses it and waits for the radar.",
+      "file": "src/components/BattleLobbyScreen.jsx",
+      "find": "<button type=\"button\" className=\"btn btn-primary w-100 btn-search-again\" onClick={handleQuickMatch}>",
+      "replace": "<button type=\"button\" className=\"btn btn-primary w-100 btn-search-again\" onClick={handlePlayAi}>",
+      "expectFailure": "did not start a new search"
+    },
+    {
+      "name": "the could-not-connect card offers Search again too",
+      "why": "Searching again from a phone that cannot reach the server repeats the same failure; the card points to the AI match instead.",
+      "file": "src/components/BattleLobbyScreen.jsx",
+      "find": "              {!matchUnavailable && (",
+      "replace": "              {true && (",
+      "expectFailure": "could-not-connect card offers Search again"
     }
   ]
 }

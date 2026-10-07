@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'Completamento: {rate}%',
     findOpponentBtn: 'Cerca Avversario',
     noOpponentFound: 'Nessun avversario trovato. Giocare contro l’IA?',
+    searchAgain: 'Cerca di nuovo',
     connectFailed: "Impossibile connettersi al gioco online. Riprova più tardi. Giocare contro l’IA?",
     playAiInstead: 'Sfida l’IA'
   },

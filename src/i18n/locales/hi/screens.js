@@ -183,6 +183,7 @@ export const screens = {
     mmrBadge: 'आपकी पूर्णता दर: {rate}%',
     findOpponentBtn: 'प्रतिद्वंद्वी खोजें',
     noOpponentFound: 'कोई प्रतिद्वंद्वी नहीं मिला। AI से खेलें?',
+    searchAgain: 'फिर से खोजें',
     connectFailed: "ऑनलाइन मुकाबले से कनेक्ट नहीं हो सका। थोड़ी देर बाद फिर कोशिश करें। AI से खेलें?",
     playAiInstead: 'AI से खेलें'
   },

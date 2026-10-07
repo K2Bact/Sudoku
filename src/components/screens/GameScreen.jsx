@@ -157,6 +157,14 @@ export function GameScreen({
         />
       </main>
 
+      {/* Why the digit is wrong — "row 3 already has a 5 (Mistakes 1/3)", or the board is full but
+          wrong. detectSudokuConflict has built it in 13 languages since the first commit, and
+          nothing drew it: only the cells lit up (BACKLOG D7, user 2026-10-07). It lasts as long
+          as conflictInfo does (3 s); the style was already in modals.css. */}
+      {conflictInfo?.message && (
+        <div className="conflict-toast-banner" role="status" aria-live="polite">{conflictInfo.message}</div>
+      )}
+
       <AdBanner onOpenRemoveAdsModal={onOpenRemoveAds} refreshTrigger={adRefreshTrigger} />
     </div>
   );

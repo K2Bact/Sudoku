@@ -1,8 +1,8 @@
 [App name (max 30 chars)]
-Sudoku: Logic Puzzle Academy
+Sudoku: Classic Puzzle Academy
 
 [Short Description (max 80 chars)]
-5 difficulty levels, 32 solving techniques to learn, and 1v1 and AI battles.
+Classic & Killer Sudoku, 32 techniques to learn, daily puzzles, 1v1 & AI duels.
 
 [Full Description]
 Sudoku for everyone, from first-timers to seasoned solvers.

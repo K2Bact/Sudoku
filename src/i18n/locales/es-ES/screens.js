@@ -190,6 +190,7 @@ export const screens = {
     mmrBadge: 'Tu tasa de resolución: {rate}%',
     findOpponentBtn: 'Buscar oponente',
     noOpponentFound: 'No se encontró rival. ¿Jugar contra la IA?',
+    searchAgain: 'Buscar de nuevo',
     connectFailed: "No se pudo conectar al juego online. Inténtalo más tarde. ¿Jugar contra la IA?",
     playAiInstead: 'Jugar contra la IA'
   },

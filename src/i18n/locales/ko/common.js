@@ -3,6 +3,8 @@ export const common = {
     you: "나",
     back: '뒤로가기',
     close: '닫기',
+    on: '켬',
+    off: '끔',
     confirm: '확인',
     cancel: '취소',
     restart: '다시시작',
@@ -77,7 +79,9 @@ export const common = {
     cageSum: '⚠️ 이 묶음의 합이 맞지 않습니다 (합: {sum})! {suffix}',
     boardFullHasMistakes: '⚠️ 보드가 모두 채워졌으나 오답 칸이 있습니다. 다시 확인해 보세요!',
     timeAttackSuffix: '(오답 {count}회 | +10초 패널티)',
-    classicSuffix: '(실수 {count}/3)'
+    classicSuffix: '(실수 {count}/3)',
+    // Classic with the three-mistake limit switched off: no limit to count to, no time penalty.
+    freeSuffix: '(실수 {count})'
   },
   tiers: {
     grandMaster: {
