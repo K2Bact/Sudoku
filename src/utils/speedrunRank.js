@@ -10,7 +10,6 @@
  * computed where the win is recorded, and the modal reads the same function.
  */
 
-import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine.js';
 import { killerSeconds } from '../engine/killer/killerTimes.js';
 
 // Classic: in the first commit (2026-09-01), set by hand; nothing records how.
@@ -29,14 +28,33 @@ const KILLER_THRESHOLDS = Object.fromEntries(Object.entries(THRESHOLDS)
   .map(([level, times]) => [level, times.map((t) => killerSeconds(t, Number(level)))]));
 
 /**
- * @param level        1..5
- * @param gameMode     'timeLimit' counts time taken from the limit; everything else uses the clock
- * @param timerSeconds the game clock at the win (remaining time in timeLimit)
- * @param variant      'killer' is graded on its own times
+ * The seconds a finished game took, as the grade and the speed badges read them.
+ *
+ * Classic and Speedrun: the clock. (Speedrun's clock is that mode's own measure,
+ * combo trims and mistake penalties included, and stays so.) Survival: the
+ * seconds actually played. Its clock is the time LEFT and gains 7 s for every
+ * correct cell, so `limit − time left` came out far below the time taken — a
+ * solve at the classic B pace graded S+ on Lv.1–2 and S on Lv.3 (BACKLOG D15).
+ * A Survival time nobody passed is not known, and grades as slow, never as fast.
+ *
+ * @param gameMode      'timeLimit' is Survival
+ * @param timerSeconds  the game clock at the win
+ * @param playedSeconds the seconds the clock ran (useGameTimer), whatever it showed
  */
-export function speedrunRankFor(level, gameMode, timerSeconds = 0, variant = 'classic') {
-  const totalLimit = DIFFICULTY_CONFIG[level]?.timeLimitSeconds || 480;
-  const timeTaken = gameMode === 'timeLimit' ? Math.max(1, totalLimit - timerSeconds) : timerSeconds;
+export function timeTakenFor(gameMode, timerSeconds = 0, playedSeconds = null) {
+  if (gameMode !== 'timeLimit') return timerSeconds;
+  return Number.isFinite(playedSeconds) ? Math.max(1, playedSeconds) : Infinity;
+}
+
+/**
+ * @param level         1..5
+ * @param gameMode      the mode; it decides which time is the time taken (timeTakenFor)
+ * @param timerSeconds  the game clock at the win (the time left in Survival)
+ * @param variant       'killer' is graded on its own times
+ * @param playedSeconds the seconds actually played — what Survival is graded on
+ */
+export function speedrunRankFor(level, gameMode, timerSeconds = 0, variant = 'classic', playedSeconds = null) {
+  const timeTaken = timeTakenFor(gameMode, timerSeconds, playedSeconds);
   const table = variant === 'killer' ? KILLER_THRESHOLDS : THRESHOLDS;
   const t = table[level] || table[3];
   if (timeTaken <= t[0]) return { rank: 'S+', color: '#f59e0b', bg: '#fef3c7', timeTaken };

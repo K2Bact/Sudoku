@@ -26,6 +26,11 @@ export const achievements = {
     win_100: { title: 'Century Club', desc: 'Complete a total of 100 Sudoku puzzles' },
     win_250: { title: 'Sudoku Legend', desc: 'Complete a total of 250 Sudoku puzzles' },
 
+    // Days checked in, in all (2026-10-08, D11)
+    visit_30: { title: 'Regular', desc: 'Check in on 30 different days' },
+    visit_100: { title: 'Hundred Days', desc: 'Check in on 100 different days' },
+    visit_365: { title: 'A Year of Sudoku', desc: 'Check in on 365 different days' },
+
     // 8 ~ 14. Logic & Perfection
     flawless_1: { title: 'Flawless Master', desc: 'Solve a puzzle with 0 mistakes' },
     flawless_5: { title: 'Perfectionist', desc: 'Solve 5 puzzles with 0 mistakes' },
@@ -36,7 +41,7 @@ export const achievements = {
     fast_entry_fan: { title: 'Lightning Fast', desc: 'Clear a puzzle using Fast Entry' },
 
     // 15 ~ 19. Speed & Combos
-    rank_s_plus: { title: 'Godspeed', desc: 'Earn the 👑 S+ rank in Speedrun' },
+    rank_s_plus: { title: 'Godspeed', desc: 'Earn the 👑 S+ rank' },
     speed_runner_3m: { title: 'Under 3 Minutes', desc: 'Solve a puzzle in under 3 minutes (180s)' },
     speed_runner_2m: { title: 'Speed Demon', desc: 'Solve a puzzle in under 2 minutes (120s)' },
     combo_streak_5: { title: 'Combo Artist', desc: 'Achieve a 5-hit combo in Speedrun mode' },
@@ -47,14 +52,25 @@ export const achievements = {
     clear_lv2: { title: 'Easy Master', desc: 'Clear a Lv.2 Easy puzzle' },
     clear_lv3: { title: 'Medium Solved', desc: 'Clear a Lv.3 Medium puzzle' },
     clear_lv4: { title: 'Expert Deduction', desc: 'Clear a Lv.4 Hard puzzle' },
-    clear_lv5: { title: 'Grand Master', desc: 'Clear a Lv.5 Expert puzzle, the hardest level' },
+    clear_lv5: { title: 'Grand Master', desc: 'Clear a Lv.5 Expert puzzle — the hardest level' },
     survival_hero: { title: 'Time Survival Hero', desc: 'Clear a puzzle in Survival mode' },
     survival_clutch: { title: 'Clutch Escape', desc: 'Clear a puzzle with 5 seconds or less left on the clock' },
+
+    // Killer (2026-10-08, D11)
+    killer_first: { title: 'First Cage', desc: 'Clear your first Killer Sudoku' },
+    killer_lv3: { title: 'Sum Solver', desc: 'Clear a Lv.3 Medium Killer Sudoku' },
+    killer_win_25: { title: 'Cage Crusher', desc: 'Clear a total of 25 Killer Sudoku puzzles' },
+    killer_lv5: { title: 'Killer Master', desc: 'Clear a Lv.5 Expert Killer Sudoku — the hardest level' },
 
     // 27 ~ 30. Daily, Battle & Logic Score
     daily_first: { title: 'Daily Explorer', desc: 'Clear your first Daily Challenge puzzle' },
     daily_streak_7: { title: '7-Day Miracle', desc: 'Check in 7 days in a row' },
     battle_first_win: { title: 'Gladiator Victory', desc: 'Win your first 1v1 Online Battle or AI Bot match' },
-    iq_150: { title: 'Logic Master', desc: 'Reach a Logic Score of 150 or higher' }
+    iq_150: { title: 'Logic Master', desc: 'Reach a Logic Score of 135 or higher' },
+
+    // The academy (2026-10-08, D11)
+    academy_first_lesson: { title: 'First Lesson', desc: 'Solve a practice board in the Academy' },
+    academy_stage3: { title: 'Wing Master', desc: 'Solve a practice board for every Stage 3 technique' },
+    academy_all: { title: 'Academy Graduate', desc: 'Solve a practice board for every technique in the Academy' }
   }
 };

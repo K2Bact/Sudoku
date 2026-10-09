@@ -26,6 +26,11 @@ export const achievements = {
     win_100: { title: 'Club dei 100', desc: 'Completa un totale di 100 schemi di Sudoku' },
     win_250: { title: 'Leggenda del Sudoku', desc: 'Completa un totale di 250 schemi di Sudoku' },
 
+    // Days checked in, in all (2026-10-08, D11)
+    visit_30: { title: 'Presenza costante', desc: 'Accedi per 30 giorni in totale' },
+    visit_100: { title: 'Cento giorni', desc: 'Accedi per 100 giorni in totale' },
+    visit_365: { title: 'Un anno di sudoku', desc: 'Accedi per 365 giorni in totale' },
+
     // 8 ~ 14. Logica e Perfezione
     flawless_1: { title: 'Maestro Senza Errori', desc: 'Risolvi uno schema con 0 errori' },
     flawless_5: { title: 'Perfezionista', desc: 'Risolvi 5 schemi con 0 errori ciascuno' },
@@ -36,7 +41,7 @@ export const achievements = {
     fast_entry_fan: { title: 'Fulmineo', desc: 'Completa uno schema in modalità Modo Rapido (Numero prima)' },
 
     // 15 ~ 19. Velocità
-    rank_s_plus: { title: 'Velocità Divina', desc: 'Raggiungi la prestigiosa valutazione Cronometro 👑 S+' },
+    rank_s_plus: { title: 'Velocità Divina', desc: 'Raggiungi la prestigiosa valutazione 👑 S+' },
     speed_runner_3m: { title: 'Sotto i 3 Minuti', desc: 'Risolvi uno schema in meno di 3 minuti (180s)' },
     speed_runner_2m: { title: 'Demone della Velocità', desc: 'Risolvi uno schema in meno di 2 minuti (120s)' },
     combo_streak_5: { title: 'Artista delle Combo', desc: 'Raggiungi una combo da 5 in modalità Cronometro' },
@@ -51,10 +56,21 @@ export const achievements = {
     survival_hero: { title: 'Eroe della Sopravvivenza', desc: 'Sopravvivi e completa la modalità Limite di Tempo' },
     survival_clutch: { title: 'Fuga all’Ultimo Secondo', desc: 'Completa con 5 secondi o meno rimasti sul timer' },
 
+    // Killer (2026-10-08, D11)
+    killer_first: { title: 'Prima gabbia', desc: 'Completa il tuo primo Sudoku Killer' },
+    killer_lv3: { title: 'Asso delle somme', desc: 'Completa un Sudoku Killer Lv.3 Medio' },
+    killer_win_25: { title: 'Spaccagabbie', desc: 'Completa un totale di 25 schemi di Sudoku Killer' },
+    killer_lv5: { title: 'Maestro del Killer', desc: 'Completa un Sudoku Killer Lv.5 Esperto — la difficoltà massima' },
+
     // 27 ~ 30. Giornaliero & Duelli
     daily_first: { title: 'Esploratore Giornaliero', desc: 'Completa la tua prima Sfida Giornaliera' },
     daily_streak_7: { title: 'Miracolo di 7 Giorni', desc: 'Accedi per 7 giorni consecutivi' },
     battle_first_win: { title: 'Vittoria da Gladiatore', desc: 'Vinci il tuo primo duello 1v1 online o contro l’IA' },
-    iq_150: { title: 'Maestro della logica', desc: 'Raggiungi un Logic Score di 150 o più' }
+    iq_150: { title: 'Maestro della logica', desc: 'Raggiungi un Logic Score di 135 o più' },
+
+    // The academy (2026-10-08, D11)
+    academy_first_lesson: { title: 'Prima lezione', desc: 'Risolvi un esercizio dell’Accademia Sudoku' },
+    academy_stage3: { title: 'Maestro dei Wing', desc: 'Risolvi un esercizio per ogni tecnica della Fase 3' },
+    academy_all: { title: 'Diploma dell’Accademia', desc: 'Risolvi un esercizio per ogni tecnica dell’Accademia Sudoku' }
   }
 };

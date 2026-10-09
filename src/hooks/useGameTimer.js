@@ -1,10 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine';
 import { soundHaptic } from '../utils/soundHaptic';
+import { playedSecondsOf } from '../utils/savedGame';
 
 /**
  * useGameTimer.js
  * Manages game timer, 3.5s combo streaks, and floating time bonus/penalty indicators.
+ *
+ * Two clocks. timerSeconds is the one on screen: in Survival it is the time left
+ * and gains 7 s a correct cell, in Speedrun combos take seconds off it and
+ * mistakes put them on. playedSeconds is how long the game has been played — the
+ * same ticks and nothing else — which is what Survival is graded on (BACKLOG D15).
  */
 export function useGameTimer({
   gameMode,
@@ -15,6 +21,7 @@ export function useGameTimer({
   onTimeLimitExpire
 }) {
   const [timerSeconds, setTimerSeconds] = useState(0);
+  const [playedSeconds, setPlayedSeconds] = useState(0);
   const [comboCount, setComboCount] = useState(0);
   const [timeFloatingText, setTimeFloatingText] = useState(null);
 
@@ -33,6 +40,7 @@ export function useGameTimer({
     if (isPaused || isGameOver || isVictory) return undefined;
 
     const interval = setInterval(() => {
+      setPlayedSeconds(prev => prev + 1);
       setTimerSeconds(prev => {
         if (gameMode === 'timeLimit') {
           return prev <= 1 ? 0 : prev - 1;
@@ -107,10 +115,17 @@ export function useGameTimer({
     showFloatingIndicator('bonus', `+${bonusSeconds}s Bonus!`);
   };
 
-  // Reset timer for new game
-  const resetTimer = (newLevel = level, newMode = gameMode) => {
+  // Reset both clocks for a new game — Survival's limit or zero, nothing played.
+  // Given a saved game instead, its own two clocks come back (resumeSavedGame).
+  const resetTimer = (newLevel = level, newMode = gameMode, saved = null) => {
     const tailoredLimit = DIFFICULTY_CONFIG[newLevel]?.timeLimitSeconds || 480;
-    setTimerSeconds(newMode === 'timeLimit' ? tailoredLimit : 0);
+    if (saved) {
+      setTimerSeconds(saved.timerSeconds || 0);
+      setPlayedSeconds(playedSecondsOf(saved));
+    } else {
+      setTimerSeconds(newMode === 'timeLimit' ? tailoredLimit : 0);
+      setPlayedSeconds(0);
+    }
     setComboCount(0);
     lastSuccessTimeRef.current = 0;
     setTimeFloatingText(null);
@@ -121,6 +136,7 @@ export function useGameTimer({
   return {
     timerSeconds,
     setTimerSeconds,
+    playedSeconds,
     comboCount,
     timeFloatingText,
     handleComboSuccess,

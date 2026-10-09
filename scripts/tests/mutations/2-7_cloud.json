@@ -73,7 +73,7 @@
       "name": "the S+ grade achievement is unlocked only from the victory screen again",
       "why": "The victory screen now comes after the post-game ad. A player who closes the app during that ad would lose an achievement the win had already earned.",
       "file": "src/utils/gameCompletion.js",
-      "find": "    rank: speedrunRankFor(level, gameMode, timerSeconds).rank,\n",
+      "find": "    rank: grade.rank,\n",
       "replace": "",
       "expectFailure": "must unlock the S+ grade achievement inside handleGameWinLogic"
     },

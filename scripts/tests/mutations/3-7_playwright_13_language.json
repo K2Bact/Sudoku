@@ -14,6 +14,14 @@
       "replace": "    modeTabs: { classic: 'Hauptbahnhofsverwaltungsangestelltengehaltsabrechnung', timeAttack: 'Zeitrennen', timeLimit: 'Überleben' },",
       "expectFailure": "LAYOUT DEFECTS DETECTED",
       "history": "Three earlier attempts all passed, and all three were right to: a brand-new key that nothing renders, home.modes.academy.title which the home screen does not use, and home.modes.battle.title which sits in an ellipsis-clipped card. A fourth run reached the right element but named the wrong message: the gate reports \"LAYOUT DEFECTS DETECTED\", not the word overflow."
+    },
+    {
+      "name": "the achievement category pills scroll off the edge again",
+      "why": "As a sideways scroller with a hidden scrollbar, the last category (\"Daily & PvP\", where the academy badges are) sat wholly past the edge of a 375px phone even in English. Found 2026-10-08 the first time this gate opened the achievements tab.",
+      "file": "src/styles/achievements.css",
+      "find": "  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  padding: 2px 0 6px;\n}",
+      "replace": "  display: flex;\n  overflow-x: auto;\n  gap: 6px;\n  padding: 2px 0 6px;\n  scrollbar-width: none;\n}",
+      "expectFailure": "LAYOUT DEFECTS DETECTED"
     }
   ]
 }

@@ -102,17 +102,15 @@
   border-radius: 6px;
 }
 
-/* Category Filter Pills */
+/* Category Filter Pills. They wrap: as a sideways scroller with its scrollbar
+   hidden, the last pill ("Daily & PvP", where the academy badges are) sat wholly
+   past the edge of a 375px phone even in English, and nothing said it was there
+   (found 2026-10-08 when gate 3-7 first opened this tab). */
 .ach-category-pills {
   display: flex;
-  overflow-x: auto;
+  flex-wrap: wrap;
   gap: 6px;
   padding: 2px 0 6px;
-  scrollbar-width: none;
-}
-
-.ach-category-pills::-webkit-scrollbar {
-  display: none;
 }
 
 .cat-pill-btn {

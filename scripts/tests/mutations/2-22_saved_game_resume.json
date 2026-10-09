@@ -3,7 +3,7 @@
   "name": "A Game Still Being Played Can Be Resumed",
   "command": "node scripts/tests/unit/test_saved_game_resume.js",
   "greenMarker": "[2-22] PASSED",
-  "note": "Started 2026-10-01 with the killer section (5); the older sections had no manifest and still have none.",
+  "note": "Started 2026-10-01 with the killer section (5); the older sections had no manifest and still have none. Section 6 (the seconds played, BACKLOG D15) added 2026-10-08.",
   "mutations": [
     {
       "name": "a killer save is offered without its cages",
@@ -28,6 +28,62 @@
       "find": "      if (!Number.isInteger(cell) || cell < 0 || cell > 80 || seen.has(cell)) return false;",
       "replace": "      if (!Number.isInteger(cell) || cell < 0 || cell > 80) return false;",
       "expectFailure": "a cell in two places is not a cage set"
+    },
+    {
+      "name": "a resumed game's seconds played start again",
+      "why": "Survival is graded on the seconds played: a game resumed half-way would be graded on its second half alone — S+ for a slow game.",
+      "file": "src/utils/savedGame.js",
+      "find": "  if (Number.isInteger(kept) && kept >= 0) return kept;",
+      "replace": "",
+      "expectFailure": "brings them back as they were"
+    },
+    {
+      "name": "an old Survival save takes its time left for the time played",
+      "why": "A Survival game saved before the update would come back with \"seconds played\" = the time left — any number at all.",
+      "file": "src/utils/savedGame.js",
+      "find": "  if (saved?.gameMode !== 'timeLimit') return clock;",
+      "replace": "  return clock;",
+      "expectFailure": "an old Survival save"
+    },
+    {
+      "name": "an old Survival save counts wrong cells as right",
+      "why": "A wrong digit gave no 7 s; counting it makes the worked-back time longer than was played.",
+      "file": "src/utils/savedGame.js",
+      "find": "    ? board.reduce((n, row, r) => n + row.filter((v, c) => initial[r][c] === 0 && v === solution[r][c]).length, 0)",
+      "replace": "    ? board.reduce((n, row, r) => n + row.filter((v, c) => initial[r][c] === 0 && v !== 0).length, 0)",
+      "expectFailure": "for each RIGHT cell"
+    },
+    {
+      "name": "the old-save bonus drifts from the game's",
+      "why": "If the game ever gives a different bonus, old saves would be worked back with the wrong one.",
+      "file": "src/utils/savedGame.js",
+      "find": "export const SURVIVAL_CELL_BONUS_SECONDS = 7;",
+      "replace": "export const SURVIVAL_CELL_BONUS_SECONDS = 6;",
+      "expectFailure": "works old saves back with"
+    },
+    {
+      "name": "the save leaves the seconds played out",
+      "why": "Every resumed game would be an \"old save\" again: Survival worked back from the board, the rest restarted from the clock.",
+      "file": "src/hooks/useGameLifecycle.js",
+      "find": "      playedSeconds: s.playedSeconds,",
+      "replace": "",
+      "expectFailure": "the saved game must carry the seconds played"
+    },
+    {
+      "name": "resume puts back only the clock",
+      "why": "The seconds played would keep whatever the last game left — or 0 after a relaunch.",
+      "file": "src/hooks/useSudokuGame.js",
+      "find": "      resetTimer(saved.level, saved.gameMode, saved);   // the clock and the seconds played",
+      "replace": "      setTimerSeconds(saved.timerSeconds || 0);",
+      "expectFailure": "resuming must put back both clocks"
+    },
+    {
+      "name": "the timer ignores a saved game's seconds played",
+      "why": "A resumed game would start its seconds played at 0.",
+      "file": "src/hooks/useGameTimer.js",
+      "find": "      setPlayedSeconds(playedSecondsOf(saved));",
+      "replace": "      setPlayedSeconds(0);",
+      "expectFailure": "must take a saved game's seconds played"
     }
   ]
 }

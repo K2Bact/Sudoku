@@ -26,6 +26,11 @@ export const achievements = {
     win_100: { title: '센추리 클럽', desc: '누적 100판 완주 달성' },
     win_250: { title: '스도쿠의 전설', desc: '누적 250판 완주 달성' },
 
+    // Days checked in, in all (2026-10-08, D11)
+    visit_30: { title: '단골', desc: '누적 30일 출석' },
+    visit_100: { title: '백일 출석', desc: '누적 100일 출석' },
+    visit_365: { title: '스도쿠와 함께한 1년', desc: '누적 365일 출석' },
+
     // 8 ~ 14. 논리 & 무결점
     flawless_1: { title: '무결점 마스터', desc: '단 1번의 실수도 없이(오답 0회) 퍼즐 완주' },
     flawless_5: { title: '완벽주의자', desc: '오답 0회 무결점 퍼즐 5회 달성' },
@@ -51,10 +56,21 @@ export const achievements = {
     survival_hero: { title: '타임 서바이벌', desc: '서바이벌 모드 완주 성공' },
     survival_clutch: { title: '기사회생', desc: '남은 시간 5초 이하 위기를 극복하고 클리어' },
 
+    // Killer (2026-10-08, D11)
+    killer_first: { title: '킬러 입문', desc: '킬러 스도쿠 첫 완주' },
+    killer_lv3: { title: '합산의 달인', desc: 'Lv.3 보통 킬러 스도쿠 완주' },
+    killer_win_25: { title: '킬러 베테랑', desc: '킬러 스도쿠 누적 25판 완주' },
+    killer_lv5: { title: '킬러 마스터', desc: 'Lv.5 전문가 최고 난이도 킬러 스도쿠 완주' },
+
     // 27 ~ 30. 데일리, 배틀 & 두뇌지능
     daily_first: { title: '일일 탐험가', desc: '오늘의 데일리 챌린지 첫 완주' },
     daily_streak_7: { title: '7일간의 기적', desc: '7일 연속 출석' },
     battle_first_win: { title: '검투사의 첫 승', desc: '1v1 온라인 배틀 또는 AI 배틀 첫 승리' },
-    iq_150: { title: '논리의 달인', desc: 'Logic Score 150점 이상 달성' }
+    iq_150: { title: '논리의 달인', desc: 'Logic Score 135점 이상 달성' },
+
+    // The academy (2026-10-08, D11)
+    academy_first_lesson: { title: '첫 수업', desc: '아카데미 실전 연습 하나 풀기' },
+    academy_stage3: { title: '윙 마스터', desc: '3단계 모든 기법의 실전 연습 풀기' },
+    academy_all: { title: '아카데미 졸업', desc: '아카데미 모든 기법의 실전 연습 풀기' }
   }
 };

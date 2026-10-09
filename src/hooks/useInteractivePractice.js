@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
 import { soundHaptic } from '../utils/soundHaptic.js';
 import { getPracticeMissions } from '../data/academy/practice/index.js';
+import { markPracticeSolved } from '../utils/academyProgress.js';
+import { checkAndUnlockAchievements } from '../utils/achievementManager.js';
 
 export function useInteractivePractice(strategyId) {
   const [activeTab, setActiveTab] = useState('theory'); // 'theory' | 'ex1' | 'ex2'
@@ -35,6 +37,8 @@ export function useInteractivePractice(strategyId) {
       } catch (_) {}
       setIsSolved(true);
       setIsError(false);
+      // The academy achievements (D11). A technique counts once.
+      if (markPracticeSolved(strategyId)) checkAndUnlockAchievements();
     } else {
       try {
         soundHaptic.playErrorSound();

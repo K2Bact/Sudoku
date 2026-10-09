@@ -99,6 +99,10 @@ async function runScanner() {
         { name: 'Home Screen', path: 'home', trigger: null, expect: '.home-screen-container' },
         { name: 'Settings Screen', path: 'settings', trigger: 'button.icon-btn:has(.lucide-settings)', expect: '.settings-screen-container' },
         { name: 'Stats Screen', path: 'stats', trigger: '.home-bottom-nav button:nth-child(1)', expect: '.stats-screen-container' },
+        // The achievements are a tab of the stats screen, and every card shows its
+        // title beside a tier tag — 40 of them, the longest names in the app (2026-10-08).
+        // Each screen starts from Home, so this one takes two taps.
+        { name: 'Achievements Tab', path: 'achievements', trigger: ['.home-bottom-nav button:nth-child(1)', '.seg-tab-btn:has(.lucide-trophy)'], expect: '.achievements-view-wrapper' },
         { name: 'Play Analysis Screen', path: 'brain', trigger: '.home-bottom-nav button:nth-child(2)', expect: '.brain-screen-container' },
         { name: 'Academy Screen', path: 'academy', trigger: '.home-bottom-nav button:nth-child(3)', expect: '.academy-tab-bar' },
         { name: 'AI Battle Screen', path: 'aiBattle', trigger: '.ai-card-banner', expect: '.battle-lobby-container' },
@@ -108,8 +112,10 @@ async function runScanner() {
       for (const scr of testScreens) {
         if (scr.trigger) {
           try {
-            await page.click(scr.trigger, { timeout: 2000 });
-            await page.waitForTimeout(400);
+            for (const sel of [].concat(scr.trigger)) {
+              await page.click(sel, { timeout: 2000 });
+              await page.waitForTimeout(400);
+            }
           } catch { /* judged below by whether the screen opened */ }
         }
         if (!(await page.$(scr.expect))) {

@@ -97,8 +97,8 @@
       "name": "the win forgets it was a speedrun",
       "why": "The win path hands the record the mode; without it every killer speedrun is filed as a plain game.",
       "file": "src/utils/gameCompletion.js",
-      "find": "  recordGameWin(level, timerSeconds, gameMode, {",
-      "replace": "  recordGameWin(level, timerSeconds, 'classic', {",
+      "find": "  recordGameWin(level, timeTakenFor(gameMode, timerSeconds, playedSeconds), gameMode, {",
+      "replace": "  recordGameWin(level, timeTakenFor(gameMode, timerSeconds, playedSeconds), 'classic', {",
       "expectFailure": "must set the killer speedrun Lv.2 best time"
     },
     {

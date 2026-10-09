@@ -7,6 +7,7 @@
  * RT-6 (F13): a save whose board was not a 9x9 grid made Resume throw and the screen
  * went blank. One rule now answers both (src/utils/savedGame.js).
  * A killer save must also carry its cages (section 5, 2026-10-01).
+ * And its seconds played, which Survival is graded on (section 6, BACKLOG D15).
  */
 import assert from 'assert';
 import fs from 'fs';
@@ -14,7 +15,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
-const { isResumableGame } = await import('../../../src/utils/savedGame.js');
+const { isResumableGame, playedSecondsOf, SURVIVAL_CELL_BONUS_SECONDS } = await import('../../../src/utils/savedGame.js');
 
 console.log('\n▶️ [2-22] A game still being played can be resumed; a broken save cannot blank the app');
 
@@ -64,5 +65,81 @@ console.log('  ✅ 2. Home, resume, saved-state check and quit-as-loss all ask t
   assert.strictEqual(isResumableGame(good({ variant: 'killer', cages: [...rowCages, { cells: [0], sum: 5 }] })), false, 'a cell in two places is not a cage set');
   assert.strictEqual(isResumableGame(good()), true, 'a save from before puzzle kinds (no variant) is classic and resumes');
   console.log('  ✅ 5. a killer save resumes only with a whole set of cages; older saves are classic');
+}
+// 6. A resumed game keeps the seconds it was played (BACKLOG D15). Survival is
+//    graded on them, not on its clock (the time left, +7 s a cell), so a resume
+//    that started them again at 0 would grade the rest of the game alone — fast.
+{
+  const solution = Array.from({ length: 9 }, (_, r) => Array.from({ length: 9 }, (_, c) => ((r * 3 + Math.floor(r / 3) + c) % 9) + 1));
+  const initial = solution.map((row, r) => row.map((v, c) => (r < 4 ? v : 0)));   // 45 blanks
+  const board = initial.map((row) => row.slice());
+  for (let c = 0; c < 9; c++) board[4][c] = solution[4][c];                       // 9 right
+  board[5][0] = solution[5][0] === 9 ? 1 : solution[5][0] + 1;                       // 1 wrong
+  const survival = { board, initialBoard: initial, solutionBoard: solution, notes: grid().map((r) => r.map(() => [])), mistakes: 1, gameMode: 'timeLimit', level: 1 };
+
+  // The 7 s here must be the 7 s the game gives — or old saves are worked back wrong.
+  const input = fs.readFileSync(path.join(ROOT, 'src/hooks/useGameInput.js'), 'utf8');
+  const given = Number((input.match(/addSurvivalBonusTime\((\d+)\)/) || [])[1]);
+  assert.strictEqual(SURVIVAL_CELL_BONUS_SECONDS, given, `savedGame.js works old saves back with ${SURVIVAL_CELL_BONUS_SECONDS} s a cell, the game gives ${given}`);
+
+  assert.strictEqual(playedSecondsOf({ ...survival, timerSeconds: 150, playedSeconds: 333 }), 333, 'a save that kept its seconds played brings them back as they were');
+  assert.strictEqual(playedSecondsOf({ ...good(), timerSeconds: 412 }), 412, 'an old Classic save: its clock ran with the time played');
+  assert.strictEqual(playedSecondsOf({ ...good({ gameMode: 'timeAttack' }), timerSeconds: 95 }), 95, 'an old Speedrun save: the same');
+  // An old Survival save: Lv.1 has 240 s; 150 left after 9 right cells (+63) → 153 s played.
+  const worked = 240 - 150 + SURVIVAL_CELL_BONUS_SECONDS * 9;
+  assert.strictEqual(playedSecondsOf({ ...survival, timerSeconds: 150 }), worked,
+    'an old Survival save: limit − time left + 7 s for each RIGHT cell on the board (the wrong one gave nothing)');
+  assert.strictEqual(playedSecondsOf({ ...survival, timerSeconds: 150, playedSeconds: -4 }), worked, 'a broken count is read as missing, not as negative time');
+  assert.strictEqual(playedSecondsOf({ ...survival, timerSeconds: 150, solutionBoard: undefined }), 90, 'without the solution no cell is known right: the floor, limit − left');
+  assert.strictEqual(playedSecondsOf(null), 0);
+
+  // Saved with the game, put back on resume.
+  const strip = (s) => s.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '');
+  const lifecycle = strip(fs.readFileSync(path.join(ROOT, 'src/hooks/useGameLifecycle.js'), 'utf8'));
+  const saveCall = lifecycle.slice(lifecycle.indexOf('saveGameState({'), lifecycle.indexOf('});', lifecycle.indexOf('saveGameState({')));
+  assert(/playedSeconds: s\.playedSeconds,/.test(saveCall), 'the saved game must carry the seconds played');
+  const game = strip(fs.readFileSync(path.join(ROOT, 'src/hooks/useSudokuGame.js'), 'utf8'));
+  const resume = game.slice(game.indexOf('const resumeSavedGame = '), game.indexOf('return true;', game.indexOf('const resumeSavedGame = ')));
+  assert(/resetTimer\(saved\.level, saved\.gameMode, saved\);/.test(resume), 'resuming must put back both clocks from the save');
+  const timer = strip(fs.readFileSync(path.join(ROOT, 'src/hooks/useGameTimer.js'), 'utf8'));
+  const reset = timer.slice(timer.indexOf('const resetTimer = '), timer.indexOf('setComboCount(0)', timer.indexOf('const resetTimer = ')));
+  assert(/setPlayedSeconds\(playedSecondsOf\(saved\)\)/.test(reset), 'the timer must take a saved game\'s seconds played from playedSecondsOf');
+  console.log('  ✅ 6. a resumed game keeps its seconds played; an old Survival save works them back from the time left and the right cells');
+}
+// 7. A resumed game remembers which cells have been paid for (BACKLOG D17). A
+//    right digit pays once — Survival +7 s, a Speedrun combo. A resume that
+//    forgot would pay every cell already on the board again when erased and
+//    placed back. A save from before this was kept treats the cells it shows
+//    right as paid: each was placed, and paid, once.
+{
+  const { newPlayFacts, restorePlayFacts, firstRightAnswer } = await import('../../../src/utils/playFacts.js');
+  const solution = Array.from({ length: 9 }, (_, r) => Array.from({ length: 9 }, (_, c) => ((r * 3 + Math.floor(r / 3) + c) % 9) + 1));
+  const initial = solution.map((row, r) => row.map((v, c) => (r < 4 ? v : 0)));
+  const board = initial.map((row) => row.slice());
+  board[4][0] = solution[4][0];                                   // cell 36 right
+  board[4][1] = solution[4][1] === 9 ? 1 : solution[4][1] + 1;    // cell 37 wrong
+
+  const facts = newPlayFacts();
+  assert.strictEqual(firstRightAnswer(facts, 40), true, 'the first right digit in a cell pays');
+  assert.strictEqual(firstRightAnswer(facts, 40), false, 'the same cell right again does not');
+  assert.strictEqual(firstRightAnswer(facts, 41), true, 'another cell still pays');
+
+  const kept = restorePlayFacts({ board, initialBoard: initial, solutionBoard: solution, playFacts: JSON.parse(JSON.stringify(facts)) });
+  assert.deepStrictEqual(kept.rewardedCells, [40, 41], 'a saved game keeps the cells it has paid for');
+  assert.strictEqual(firstRightAnswer(kept, 40), false, 'and after the resume they do not pay again');
+
+  const old = restorePlayFacts({ board, initialBoard: initial, solutionBoard: solution });
+  assert.deepStrictEqual(old.rewardedCells, [36], 'an old save counts the cells it shows right as paid — not the wrong one, not the givens');
+  assert.deepStrictEqual(restorePlayFacts({ board: 'broken' }).rewardedCells, [], 'a save without a board to read pays nothing back');
+
+  // The hook needs React to run; what it must contain is short, so it is read.
+  const input = fs.readFileSync(path.join(ROOT, 'src/hooks/useGameInput.js'), 'utf8');
+  const gate = input.indexOf('if (firstRightAnswer(playFactsRef?.current, r * 9 + c)) {');
+  for (const pay of ['handleComboSuccess();', 'addSurvivalBonusTime(7);']) {
+    const at = input.indexOf(pay);
+    assert(gate > 0 && input.split(pay).length === 2 && at > gate && at - gate < 300,
+      `${pay} must be paid in one place, inside the once-a-cell check (useGameInput.js)`);
+  }
+  console.log('  ✅ 7. a right digit pays once a cell, and a resumed game remembers the cells already paid');
 }
 console.log('🎉 [2-22] PASSED');

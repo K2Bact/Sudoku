@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { battleService } from '../firebase/battleService';
 import { soundHaptic } from '../utils/soundHaptic';
 import { applyBattleResult } from '../utils/battleRating';
+import { checkAndUnlockAchievements } from '../utils/achievementManager';
 
 export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen, t }) {
   const [activeBattleRoom, setActiveBattleRoom] = useState(null);
@@ -37,6 +38,10 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
         if (room.winner && ratedMatchRef.current !== room.code) {
           ratedMatchRef.current = room.code;
           setLastRatingChange(applyBattleResult(room.winner === 'me', room.level || 3));
+          // The duel badge. Nothing passed isBattleWin until 2026-10-08, so it
+          // could not be earned. Here, not on a finished board: a duel is also
+          // won when the other side leaves, and lost to a faster board.
+          if (room.winner === 'me') checkAndUnlockAchievements({ isBattleWin: true });
         }
       }
 

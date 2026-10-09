@@ -44,6 +44,14 @@
       "find": "  pointer-events: none;",
       "replace": "  pointer-events: auto;",
       "expectFailure": "catches taps"
+    },
+    {
+      "name": "a right digit pays again each time it is placed",
+      "why": "Erasing a right digit and placing it again gave Survival +7 s and Speedrun a combo every time: Survival could not be lost and the Speedrun clock ran down towards zero (D17, 2026-10-09).",
+      "file": "src/hooks/useGameInput.js",
+      "find": "      if (firstRightAnswer(playFactsRef?.current, r * 9 + c)) {",
+      "replace": "      if (firstRightAnswer(null, r * 9 + c)) {",
+      "expectFailure": "paid again"
     }
   ],
   "rebuild": true

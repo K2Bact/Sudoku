@@ -90,8 +90,8 @@
       "name": "a killer is graded on classic times",
       "why": "Until 2026-10-07 a killer showed no grade because the only times were classic ones, on which a killer always came out C. With killer times in speedrunRank.js, the victory screen must pass the kind; without it a killer in 105 s at Lv.1 reads A instead of S+.",
       "file": "src/components/VictoryModal.jsx",
-      "find": "  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds, variant);",
-      "replace": "  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds);",
+      "find": "  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds, variant, playedSeconds);",
+      "replace": "  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds, 'classic', playedSeconds);",
       "expectFailure": "graded on classic times, not the killer ones"
     },
     {

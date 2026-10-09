@@ -96,9 +96,9 @@
       "name": "a JSX child written on its own line is typed in English",
       "why": "The other half of the one-line hole: text between tags that are on different lines. The lobby's close button is written that way.",
       "file": "src/components/BattleLobbyScreen.jsx",
-      "find": "                {t('common.close')}",
-      "replace": "                Close",
-      "expectFailure": "(English) Close"
+      "find": "                {t('common.back')}",
+      "replace": "                Back",
+      "expectFailure": "(English) Back"
     },
     {
       "name": "a Korean string follows a // inside a string",

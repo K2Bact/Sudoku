@@ -14,6 +14,7 @@ export function VictoryModal({
   variant = 'classic',
   timerSeconds,
   timeSeconds,
+  playedSeconds = null,
   mistakes = 0,
   hintsUsed = 0,
   onNextGame,
@@ -26,7 +27,9 @@ export function VictoryModal({
   const actualSeconds = timerSeconds ?? timeSeconds ?? 0;
   const handleNext = onNextGame || onRestart;
 
-  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds, variant);
+  // In Survival the clock is the time left; the grade and the shared time are
+  // the seconds played (speedrunRank.js timeTakenFor, BACKLOG D15).
+  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds, variant, playedSeconds);
   // Same rule the win was recorded under (gameCompletion.js), so the player learns
   // why a fast time did not become their best instead of taking it for a bug.
   const eligibility = recordEligibility({
@@ -51,7 +54,8 @@ export function VictoryModal({
   const handleShare = async () => {
     soundHaptic.playSelectSound();
     const modeLabel = gameMode === 'timeAttack' ? '[⚡Time Attack]' : gameMode === 'timeLimit' ? '[⏳Survival]' : '[Classic]';
-    const shared = { mode: modeLabel, level, name: t(`levels.${level}`), time: formatTime(actualSeconds), rank: rankInfo.rank, mistakes };
+    // "cleared in [time]": the time taken, which in Survival is not the clock.
+    const shared = { mode: modeLabel, level, name: t(`levels.${level}`), time: formatTime(rankInfo.timeTaken), rank: rankInfo.rank, mistakes };
     // The killer line names the kind in place of the mode, and carries the killer grade.
     const shareText = variant === 'killer' ? t('killer.shareText', shared) : t('modals.victory.shareText', shared);
     const res = await shareContent({

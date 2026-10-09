@@ -46,6 +46,10 @@ const DEFAULT_WALLET = {
   hints: 3,                 // Initial welcome bonus
   lastDailyClaimDate: null, // 'YYYY-MM-DD'
   streakDays: 0,            // Consecutive daily login streak
+  // Days the app was opened, in all — kept from 2026-10-08 for the visit
+  // achievements (30 / 100 / 365 days). Unlike the streak a missed day does not
+  // reset it. Days before that date were never counted, so it starts at 0.
+  totalVisitDays: 0,
   totalAdsWatched: 0,       // Rewarded ad count
   history: []               // Transaction log
 };
@@ -62,6 +66,7 @@ export function loadWallet() {
       hints: typeof parsed.hints === 'number' ? parsed.hints : DEFAULT_WALLET.hints,
       lastDailyClaimDate: parsed.lastDailyClaimDate || null,
       streakDays: typeof parsed.streakDays === 'number' ? parsed.streakDays : 0,
+      totalVisitDays: typeof parsed.totalVisitDays === 'number' ? parsed.totalVisitDays : 0,
       totalAdsWatched: typeof parsed.totalAdsWatched === 'number' ? parsed.totalAdsWatched : 0,
       history: Array.isArray(parsed.history) ? parsed.history.slice(-30) : []
     };
@@ -172,6 +177,8 @@ export function claimDailyAttendance() {
   } else {
     wallet.streakDays = 1;
   }
+
+  wallet.totalVisitDays += 1;
 
   // Bonus: +1 hint everyday, +2 extra on 7-day milestone
   const bonus = (wallet.streakDays % 7 === 0) ? 3 : 1;

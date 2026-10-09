@@ -26,6 +26,11 @@ export const achievements = {
     win_100: { title: 'Club des 100', desc: 'Complétez un total de 100 grilles de Sudoku' },
     win_250: { title: 'Légende du Sudoku', desc: 'Complétez un total de 250 grilles de Sudoku' },
 
+    // Days checked in, in all (2026-10-08, D11)
+    visit_30: { title: 'Fidélité', desc: 'Connectez-vous 30 jours au total' },
+    visit_100: { title: 'Cent jours', desc: 'Connectez-vous 100 jours au total' },
+    visit_365: { title: 'Une année de sudoku', desc: 'Connectez-vous 365 jours au total' },
+
     // 8 ~ 14. Logic & Perfection
     flawless_1: { title: 'Maître sans faute', desc: 'Résolvez une grille avec 0 erreur' },
     flawless_5: { title: 'Perfectionniste', desc: 'Résolvez 5 grilles avec 0 erreur chacune' },
@@ -36,7 +41,7 @@ export const achievements = {
     fast_entry_fan: { title: 'Vitesse éclair', desc: 'Terminez une grille en mode Saisie Rapide (Chiffre d’abord)' },
 
     // 15 ~ 19. Speed & Séries
-    rank_s_plus: { title: 'Vitesse divine', desc: 'Obtenez le prestigieux rang Contre-la-montre 👑 S+' },
+    rank_s_plus: { title: 'Vitesse divine', desc: 'Obtenez le prestigieux rang 👑 S+' },
     speed_runner_3m: { title: 'Moins de 3 minutes', desc: 'Résolvez une grille en moins de 3 minutes (180s)' },
     speed_runner_2m: { title: 'Démon de la vitesse', desc: 'Résolvez une grille en moins de 2 minutes (120s)' },
     combo_streak_5: { title: 'Artiste du combo', desc: 'Atteignez un combo de 5 en mode Contre-la-montre' },
@@ -51,10 +56,21 @@ export const achievements = {
     survival_hero: { title: 'Héros de la survie', desc: 'Survivez et terminez avec succès le mode Limite de Temps' },
     survival_clutch: { title: 'Échappée belle', desc: 'Terminez avec 5 secondes ou moins restantes au chrono' },
 
+    // Killer (2026-10-08, D11)
+    killer_first: { title: 'Première cage', desc: 'Terminez votre premier Sudoku Killer' },
+    killer_lv3: { title: 'As des sommes', desc: 'Terminez un Sudoku Killer Lv.3 Moyen' },
+    killer_win_25: { title: 'Briseur de cages', desc: 'Terminez un total de 25 grilles de Sudoku Killer' },
+    killer_lv5: { title: 'Maître du Killer', desc: 'Terminez un Sudoku Killer Lv.5 Expert — la difficulté maximale' },
+
     // 27 ~ 30. Daily, Battle & Brain IQ
     daily_first: { title: 'Explorateur quotidien', desc: 'Terminez votre premier défi quotidien' },
     daily_streak_7: { title: 'Miracle de 7 jours', desc: 'Connectez-vous 7 jours d’affilée' },
     battle_first_win: { title: 'Victoire de gladiateur', desc: 'Remportez votre premier duel 1v1 ou contre l’IA' },
-    iq_150: { title: 'Maître de la logique', desc: 'Atteignez un Logic Score de 150 ou plus' }
+    iq_150: { title: 'Maître de la logique', desc: 'Atteignez un Logic Score de 135 ou plus' },
+
+    // The academy (2026-10-08, D11)
+    academy_first_lesson: { title: 'Première leçon', desc: 'Réussissez un exercice de l’Académie Sudoku' },
+    academy_stage3: { title: 'Maître des Wings', desc: 'Réussissez un exercice pour chaque technique de l’étape 3' },
+    academy_all: { title: 'Diplôme de l’Académie', desc: 'Réussissez un exercice pour chaque technique de l’Académie Sudoku' }
   }
 };

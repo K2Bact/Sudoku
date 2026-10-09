@@ -149,6 +149,10 @@ export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}
   if (typeof extra.comboCount === 'number') {
     stats.maxCombo = Math.max(stats.maxCombo || 0, extra.comboCount);
   }
+  // Notes placed in games won — the "use notes 50 times" achievement (2026-10-08).
+  if (Number.isInteger(extra.notesPlaced) && extra.notesPlaced > 0) {
+    stats.notesPlaced = (stats.notesPlaced || 0) + extra.notesPlaced;
+  }
 
   // Levels cleared without a hint — the Logic Score difficulty metric. Kept apart
   // from the best times so a player who plays without the mistake limit still gets
@@ -172,11 +176,24 @@ export function recordGameWin(level, timeInSeconds, mode = 'classic', extra = {}
     }
   } else if (mode === 'timeLimit') {
     stats.timeLimitSurvivalWins = (stats.timeLimitSurvivalWins || 0) + 1;
-    if (!stats.timeLimitBestTimes) stats.timeLimitBestTimes = {};
-    const currentBest = stats.timeLimitBestTimes[level];
-    if (!currentBest || timeInSeconds < currentBest) {
-      stats.timeLimitBestTimes[level] = timeInSeconds;
-      isNewRecord = true;
+    /*
+     * Survival's best is the fastest clear: the seconds played (D16, user
+     * 2026-10-09: "3분 남기고 이기던 10분을 남기던. 깨는데 걸린 시간을 적어야지").
+     *
+     * It used to keep the clock at the win in timeLimitBestTimes — in Survival the
+     * time LEFT — and called the smallest the best, so the narrowest escape was
+     * the record, shown as if it were a time to clear. Those values cannot be
+     * turned into seconds played, and phones on 1.4.0 keep writing them, so the
+     * fastest clear has its own table and the old one is no longer read or written.
+     * A Survival win whose seconds played are unknown sets no best.
+     */
+    if (Number.isFinite(timeInSeconds) && timeInSeconds > 0) {
+      if (!stats.survivalBestTimes) stats.survivalBestTimes = {};
+      const currentBest = stats.survivalBestTimes[level];
+      if (!currentBest || timeInSeconds < currentBest) {
+        stats.survivalBestTimes[level] = timeInSeconds;
+        isNewRecord = true;
+      }
     }
   } else if (BATTLE_MODES.has(mode)) {
     /*

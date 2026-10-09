@@ -686,7 +686,9 @@ assert(keypadCss.includes('overflow: hidden'), 'keypad.css must enforce overflow
 assert(keypadCss.includes('min-width: 0'), 'keypad.css must enforce min-width: 0 on num-btn');
 
 const storageCode = fs.readFileSync(path.join(rootDir, 'src', 'utils', 'storage.js'), 'utf8');
-assert(storageCode.includes('stats.timeLimitBestTimes'), 'storage.js must record timeLimitBestTimes per difficulty level');
+// Survival's best per level is the fastest clear, seconds played (D16, 2026-10-09);
+// the old time-left table is no longer written. Gate 2-21 holds the rule itself.
+assert(storageCode.includes('stats.survivalBestTimes[level] = timeInSeconds'), 'storage.js must record survivalBestTimes per difficulty level');
 
 assert(statsScreen.includes('timeLimitBests'), 'StatsScreen must render 5 difficulty levels for Time Limit Survival');
 

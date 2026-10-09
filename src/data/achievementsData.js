@@ -1,15 +1,23 @@
 /**
- * 30 Core Sudoku Achievements Registry
- * Categorized and calibrated from global benchmark titles (Easybrain, Microsoft, Good Sudoku).
+ * The achievements — 40 since 2026-10-08 (D11).
+ * The first 30 were calibrated from global benchmark titles (Easybrain, Microsoft,
+ * Good Sudoku). The ten added with the Play Games set: days the app was opened
+ * (progression), killer (difficulty) and the academy (special). The order here is
+ * the order on screen; the ids are saved keys and, once registered, Play Games
+ * achievements — never rename one.
  */
 // The tier's name is translated (achievements.tiers.*). It used to be an English label
 // here, so every locale read "Silver" and "Diamond" (SudokuAITalk DE29-12, 2026-09-30).
+//
+// points: what the app's achievement screen adds up. pgsPoints: what each is worth
+// in Play Games, which allows 2,000 in all and 200 at most, in fives — 40 at these
+// values come to 1,480, leaving room for later ones (D11, 2026-10-07).
 export const ACHIEVEMENT_TIERS = {
-  BRONZE: { id: 'bronze', emoji: '🥉', labelKey: 'achievements.tiers.bronze', color: '#cd7f32', points: 10 },
-  SILVER: { id: 'silver', emoji: '🥈', labelKey: 'achievements.tiers.silver', color: '#94a3b8', points: 25 },
-  GOLD: { id: 'gold', emoji: '🥇', labelKey: 'achievements.tiers.gold', color: '#f59e0b', points: 50 },
-  DIAMOND: { id: 'diamond', emoji: '💎', labelKey: 'achievements.tiers.diamond', color: '#38bdf8', points: 100 },
-  MASTER: { id: 'master', emoji: '👑', labelKey: 'achievements.tiers.master', color: '#a855f7', points: 200 }
+  BRONZE: { id: 'bronze', emoji: '🥉', labelKey: 'achievements.tiers.bronze', color: '#cd7f32', points: 10, pgsPoints: 10 },
+  SILVER: { id: 'silver', emoji: '🥈', labelKey: 'achievements.tiers.silver', color: '#94a3b8', points: 25, pgsPoints: 20 },
+  GOLD: { id: 'gold', emoji: '🥇', labelKey: 'achievements.tiers.gold', color: '#f59e0b', points: 50, pgsPoints: 35 },
+  DIAMOND: { id: 'diamond', emoji: '💎', labelKey: 'achievements.tiers.diamond', color: '#38bdf8', points: 100, pgsPoints: 60 },
+  MASTER: { id: 'master', emoji: '👑', labelKey: 'achievements.tiers.master', color: '#a855f7', points: 200, pgsPoints: 120 }
 };
 
 export const ACHIEVEMENTS_LIST = [
@@ -76,6 +84,33 @@ export const ACHIEVEMENTS_LIST = [
     titleKey: 'achievements.win_250.title',
     descKey: 'achievements.win_250.desc',
     target: 250
+  },
+  {
+    id: 'visit_30',
+    icon: '🗓️',
+    tier: 'silver',
+    category: 'progression',
+    titleKey: 'achievements.visit_30.title',
+    descKey: 'achievements.visit_30.desc',
+    target: 30
+  },
+  {
+    id: 'visit_100',
+    icon: '💯',
+    tier: 'gold',
+    category: 'progression',
+    titleKey: 'achievements.visit_100.title',
+    descKey: 'achievements.visit_100.desc',
+    target: 100
+  },
+  {
+    id: 'visit_365',
+    icon: '🌏',
+    tier: 'master',
+    category: 'progression',
+    titleKey: 'achievements.visit_365.title',
+    descKey: 'achievements.visit_365.desc',
+    target: 365
   },
 
   // 8 ~ 14. Perfection & Logic Mastery
@@ -254,6 +289,42 @@ export const ACHIEVEMENTS_LIST = [
     descKey: 'achievements.survival_clutch.desc',
     target: 1
   },
+  {
+    id: 'killer_first',
+    icon: '➕',
+    tier: 'bronze',
+    category: 'difficulty',
+    titleKey: 'achievements.killer_first.title',
+    descKey: 'achievements.killer_first.desc',
+    target: 1
+  },
+  {
+    id: 'killer_lv3',
+    icon: '🔶',
+    tier: 'silver',
+    category: 'difficulty',
+    titleKey: 'achievements.killer_lv3.title',
+    descKey: 'achievements.killer_lv3.desc',
+    target: 1
+  },
+  {
+    id: 'killer_win_25',
+    icon: '🗡️',
+    tier: 'gold',
+    category: 'difficulty',
+    titleKey: 'achievements.killer_win_25.title',
+    descKey: 'achievements.killer_win_25.desc',
+    target: 25
+  },
+  {
+    id: 'killer_lv5',
+    icon: '🐉',
+    tier: 'diamond',
+    category: 'difficulty',
+    titleKey: 'achievements.killer_lv5.title',
+    descKey: 'achievements.killer_lv5.desc',
+    target: 1
+  },
 
   // 27 ~ 30. Daily Dedication, Battle & Brain IQ
   {
@@ -291,5 +362,32 @@ export const ACHIEVEMENTS_LIST = [
     titleKey: 'achievements.iq_150.title',
     descKey: 'achievements.iq_150.desc',
     target: 1
+  },
+  {
+    id: 'academy_first_lesson',
+    icon: '📖',
+    tier: 'bronze',
+    category: 'special',
+    titleKey: 'achievements.academy_first_lesson.title',
+    descKey: 'achievements.academy_first_lesson.desc',
+    target: 1
+  },
+  {
+    id: 'academy_stage3',
+    icon: '🎓',
+    tier: 'gold',
+    category: 'special',
+    titleKey: 'achievements.academy_stage3.title',
+    descKey: 'achievements.academy_stage3.desc',
+    target: 6
+  },
+  {
+    id: 'academy_all',
+    icon: '🏛️',
+    tier: 'diamond',
+    category: 'special',
+    titleKey: 'achievements.academy_all.title',
+    descKey: 'achievements.academy_all.desc',
+    target: 32
   }
 ];

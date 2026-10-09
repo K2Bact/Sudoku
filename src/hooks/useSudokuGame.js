@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import {
   cloneGrid,
-  calculateRemainingCounts,
   createEmptyGrid
 } from '../engine/SudokuEngine.js';
 import { startingPuzzle, savedPuzzle } from '../engine/puzzleSetup.js';
@@ -20,6 +19,8 @@ import { useGameHistory } from './useGameHistory.js';
 import { useGameLifecycle } from './useGameLifecycle.js';
 import { useGameInput } from './useGameInput.js';
 import { observe as observeForReplay } from '../utils/replay/matchRecorder.js';
+import { newPlayFacts, restorePlayFacts } from '../utils/playFacts.js';
+import { boardProgress } from '../utils/boardProgress.js';
 
 export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey, showToast) {
   const { t } = useTranslation();
@@ -65,6 +66,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
   const {
     timerSeconds,
     setTimerSeconds,
+    playedSeconds,
     comboCount,
     timeFloatingText,
     handleComboSuccess,
@@ -103,6 +105,9 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     isVictory
   });
 
+  // Notes placed and Fast Entry used in this game, for the achievements (playFacts.js).
+  const playFactsRef = useRef(newPlayFacts());
+
   // Sub-hook: Background Auto-Save & Lifecycle
   useGameLifecycle({
     board,
@@ -111,6 +116,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     notes,
     mistakes,
     timerSeconds,
+    playedSeconds,
     level,
     gameMode,
     variant,
@@ -119,6 +125,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     lockedNumber,
     adHintsUsedThisGame,
     hintsUsedCount,
+    playFactsRef,
     activeScreen,
     isGameOver,
     isVictory,
@@ -137,8 +144,10 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     observeForReplay(activeBattleRoom, board, notes);
   }, [activeBattleRoom, board, notes]);
 
-  const resetGameState = () => {
+  // Everything one game keeps, back to its start — both clocks included.
+  const resetGameState = (newLevel, newMode) => {
     runTimelineRef.current = [];
+    playFactsRef.current = newPlayFacts();
     setHintsUsedCount(0);
     setAdHintsUsedThisGame(0);
     setHintsRemaining(loadWallet().hints);
@@ -155,6 +164,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     setLockedNumber(null);
     setConflictInfo(null);
     clearGameState();
+    resetTimer(newLevel, newMode);
   };
 
   // Start fresh new game. A game in progress that this throws away counts as a loss.
@@ -179,16 +189,14 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
       setRivalMode('standard');
       setGhostRecord(null);
     }
-    resetGameState();
-    resetTimer(newLevel, mode);
+    resetGameState(newLevel, mode);
   };
 
   const restartCurrentGame = () => {
     recordAbandonedGame();
     setBoard(cloneGrid(initialBoard));
     setNotes(Array(9).fill(null).map(() => Array(9).fill([])));
-    resetGameState();
-    resetTimer(level, gameMode);
+    resetGameState(level, gameMode);
   };
 
   const resumeSavedGame = (requestedLevel, requestedVariant = null) => {
@@ -202,11 +210,12 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
       setSolutionBoard(puzzle.solution);
       setNotes(saved.notes || Array(9).fill(null).map(() => Array(9).fill([])));
       setMistakes(saved.mistakes || 0);
-      setTimerSeconds(saved.timerSeconds || 0);
+      resetTimer(saved.level, saved.gameMode, saved);   // the clock and the seconds played
       setLevel(saved.level || requestedLevel || 3);
       setGameMode(saved.gameMode || 'classic');
       setAdHintsUsedThisGame(saved.adHintsUsedThisGame || 0);
       setHintsUsedCount(saved.hintsUsedCount || 0);
+      playFactsRef.current = restorePlayFacts(saved);
       setHintsRemaining(loadWallet().hints);
       if (typeof saved.isFastEntryMode === 'boolean') setIsFastEntryMode(saved.isFastEntryMode);
       if (saved.lockedNumber !== undefined) setLockedNumber(saved.lockedNumber);
@@ -253,6 +262,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     gameMode,
     level,
     timerSeconds,
+    playedSeconds,
     activeBattleRoom,
     activeDailyDateKey,
     pushHistory,
@@ -269,6 +279,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     rivalMode,
     showToast,
     runTimelineRef,
+    playFactsRef,
     comboCount,
     variant,
     cages,
@@ -289,13 +300,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     }, 120);
   };
 
-  const remainingCounts = calculateRemainingCounts(board);
-  const userFilledCount = board.reduce((acc, row, r) =>
-    acc + row.filter((val, c) => val !== 0 && initialBoard[r][c] === 0).length, 0
-  );
-  const totalEmptyCount = initialBoard.reduce((acc, row) =>
-    acc + row.filter(val => val === 0).length, 0
-  );
+  const { remainingCounts, userFilledCount, totalEmptyCount } = boardProgress(board, initialBoard);
 
   return {
     level, setLevel, gameMode, setGameMode, variant, cages,
@@ -304,7 +309,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     isNoteMode, setIsNoteMode,
     isFastEntryMode, handleToggleFastEntryMode,
     mistakes, setMistakes, hasRevived, setHasRevived,
-    timerSeconds, setTimerSeconds, comboCount, timeFloatingText,
+    timerSeconds, setTimerSeconds, playedSeconds, comboCount, timeFloatingText,
     isGameOver, setIsGameOver, isVictory, setIsVictory, conflictInfo, flashCell,
     history, remainingCounts,
     hintsRemaining, showHintRewardModal, setShowHintRewardModal,

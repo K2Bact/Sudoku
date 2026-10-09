@@ -33,8 +33,8 @@
       "name": "academy boards mirror in Arabic again",
       "why": "Found on 2026-09-18: the page is dir=rtl in Arabic and the academy grids were not on the left-to-right list the game board uses, so r1c1 drew on the right while every guide names cells counted from the left.",
       "file": "src/index.css",
-      "find": "html[dir=\"rtl\"] .academy-screen-container [class*=\"-board\"],",
-      "replace": "html[dir=\"rtl\"] .academy-screen-container [class*=\"-board-disabled\"],",
+      "find": "html[dir=\"rtl\"] .academy-screen-container [class*=\"-board\"]:not(.theory-board-diagram),",
+      "replace": "html[dir=\"rtl\"] .academy-screen-container [class*=\"-board-disabled\"]:not(.theory-board-diagram),",
       "expectFailure": "board drawn right-to-left"
     },
     {
@@ -49,8 +49,8 @@
       "name": "one sampled language shows the English guide",
       "why": "Added when the pass was trimmed (2026-09-30): eleven languages now play a sample of seven missions, not all 64. The sample still has to read each language from the screen — here German quietly falls back to English, a fault only a German pass can see.",
       "file": "src/components/academy/practice/InteractivePracticeSection.jsx",
-      "find": "          {pickLocale(mission.guide, lang)}",
-      "replace": "          {pickLocale(mission.guide, lang === 'de' ? 'en' : lang)}",
+      "find": "          <GuideText text={pickLocale(mission.guide, lang)} />",
+      "replace": "          <GuideText text={pickLocale(mission.guide, lang === 'de' ? 'en' : lang)} />",
       "expectFailure": "[de · text"
     }
   ]

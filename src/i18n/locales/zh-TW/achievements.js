@@ -29,6 +29,11 @@ export const achievements = {
     win_100: { title: '百局俱樂部', desc: '累計通關 100 局數獨' },
     win_250: { title: '數獨傳奇', desc: '累計通關 250 局數獨' },
 
+    // Days checked in, in all (2026-10-08, D11)
+    visit_30: { title: '常客', desc: '累計簽到 30 天' },
+    visit_100: { title: '百日堅持', desc: '累計簽到 100 天' },
+    visit_365: { title: '數獨一整年', desc: '累計簽到 365 天' },
+
     // 8 ~ 14. 邏輯與完美
     flawless_1: { title: '完美無瑕', desc: '零失誤（0 次錯誤）通關 1 局數獨' },
     flawless_5: { title: '完美主義者', desc: '達成 5 次零失誤完美通關' },
@@ -54,10 +59,21 @@ export const achievements = {
     survival_hero: { title: '極限生還者', desc: '成功通關極限生存模式' },
     survival_clutch: { title: '絕處逢生', desc: '在剩餘時間 5 秒以內驚險通關' },
 
+    // Killer (2026-10-08, D11)
+    killer_first: { title: '初入籠中', desc: '首次通關殺手數獨' },
+    killer_lv3: { title: '求和能手', desc: '通關 Lv.3 中級難度的殺手數獨' },
+    killer_win_25: { title: '破籠者', desc: '累計通關 25 局殺手數獨' },
+    killer_lv5: { title: '殺手大師', desc: '通關 Lv.5 大師最高難度的殺手數獨' },
+
     // 27 ~ 30. 每日挑戰、對決與大腦智力
     daily_first: { title: '每日探索者', desc: '首次完成今日的每日挑戰' },
     daily_streak_7: { title: '七日奇蹟', desc: '連續 7 天簽到' },
     battle_first_win: { title: '競技場首勝', desc: '在 1v1 線上或 AI 對決中取得首勝' },
-    iq_150: { title: '邏輯達人', desc: 'Logic Score 達到 150 以上' }
+    iq_150: { title: '邏輯達人', desc: 'Logic Score 達到 135 以上' },
+
+    // The academy (2026-10-08, D11)
+    academy_first_lesson: { title: '第一課', desc: '完成數獨學院中任一實戰練習' },
+    academy_stage3: { title: '翼系列大師', desc: '完成第3階段所有技巧的實戰練習' },
+    academy_all: { title: '學院畢業', desc: '完成數獨學院所有技巧的實戰練習' }
   }
 };

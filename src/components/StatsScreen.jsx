@@ -26,7 +26,8 @@ export function StatsScreen({ onBack, initialTab = 'stats' }) {
   const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
   const bestTimes = stats.bestTimes || {};
   const timeAttackBests = stats.timeAttackBestTimes || {};
-  const timeLimitBests = stats.timeLimitBestTimes || {};
+  // The fastest Survival clear, seconds played (D16) — not the old time-left table.
+  const timeLimitBests = stats.survivalBestTimes || {};
   const survivalWins = stats.timeLimitSurvivalWins || 0;
 
   const formatTime = (secs) => {

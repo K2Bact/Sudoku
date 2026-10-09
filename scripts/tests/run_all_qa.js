@@ -124,6 +124,7 @@ runStep('2-26. 1v1 Replays (recorded, stored, exchanged only by agreement)', 'no
 runStep('2-27. Killer Sudoku Puzzles Are Sound (cages, sums, one solution, levels)', 'node scripts/tests/unit/test_killer_engine.js');
 runStep('2-28. A Killer Game Plays And Counts As A Killer (notes, mistakes, records, merge)', 'node scripts/tests/unit/test_killer_play.js');
 runStep('2-29. Signed Latin Tokens In RTL Text Are Isolated (+10, S+, Lv.4+ drawn as written)', 'node scripts/tests/unit/test_rtl_signed_tokens.js');
+runStep('2-30. Every Achievement Can Be Earned, And Only By Doing What It Says', 'node scripts/tests/unit/test_achievements.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests

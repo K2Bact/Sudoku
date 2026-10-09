@@ -26,6 +26,11 @@ export const achievements = {
     win_100: { title: 'センチュリークラブ', desc: '累計100パズルクリア達成' },
     win_250: { title: 'ナンプレの生ける伝説', desc: '累計250パズルクリア達成' },
 
+    // Days checked in, in all (2026-10-08, D11)
+    visit_30: { title: '常連さん', desc: '累計30日ログインする' },
+    visit_100: { title: '百日の継続', desc: '累計100日ログインする' },
+    visit_365: { title: 'ナンプレと過ごした1年', desc: '累計365日ログインする' },
+
     // 8 ~ 14. 論理 & ノーミス
     flawless_1: { title: 'パーフェクトマスター', desc: '1度もミスすることなく(誤答0回)パズルをクリア' },
     flawless_5: { title: '完璧主義者', desc: '誤答0回のパーフェクトクリアを5回達成' },
@@ -36,7 +41,7 @@ export const achievements = {
     fast_entry_fan: { title: '電光石火', desc: '連続入力モードで1パズルクリア' },
 
     // 15 ~ 19. スピード & コンボ
-    rank_s_plus: { title: '神速の境地', desc: 'タイムアタックで 👑 S+ ランクを初獲得' },
+    rank_s_plus: { title: '神速の境地', desc: '👑 S+ ランクを初獲得' },
     speed_runner_3m: { title: '3分以内クリア', desc: '3分(180秒)以内にパズルをクリア' },
     speed_runner_2m: { title: '電光石火の速攻', desc: '2分(120秒)以内の超高速クリアを達成' },
     combo_streak_5: { title: 'コンボアーティスト', desc: 'タイムアタックモードで5連続コンボ達成' },
@@ -51,10 +56,21 @@ export const achievements = {
     survival_hero: { title: 'タイムサバイバー', desc: 'タイムリミット(サバイバル)モードをクリア' },
     survival_clutch: { title: '九死に一生', desc: '残り時間5秒以下の危機を乗り越えてクリア' },
 
+    // Killer (2026-10-08, D11)
+    killer_first: { title: 'はじめてのケージ', desc: 'キラーナンプレを初めてクリア' },
+    killer_lv3: { title: '足し算の名手', desc: '「Lv.3 中級」のキラーナンプレをクリア' },
+    killer_win_25: { title: 'ケージ破り', desc: 'キラーナンプレを累計25回クリア' },
+    killer_lv5: { title: 'キラーの達人', desc: '最高難易度「Lv.5 達人」のキラーナンプレをクリア' },
+
     // 27 ~ 30. デイリー, バトル & 脳力
     daily_first: { title: 'デイリー探検家', desc: '本日のデイリーチャレンジを初クリア' },
     daily_streak_7: { title: '7日間の奇跡', desc: '7日連続でログインする' },
     battle_first_win: { title: '剣闘士の初勝利', desc: '1v1オンライン対戦またはAI対戦で初勝利' },
-    iq_150: { title: 'ロジックの達人', desc: 'ロジックスコア150点以上に到達' }
+    iq_150: { title: 'ロジックの達人', desc: 'ロジックスコア135点以上に到達' },
+
+    // The academy (2026-10-08, D11)
+    academy_first_lesson: { title: '最初の授業', desc: 'アカデミーの実践練習を1つ解く' },
+    academy_stage3: { title: 'ウィングの使い手', desc: '第3段階の全テクニックの実践練習を解く' },
+    academy_all: { title: 'アカデミー卒業', desc: 'アカデミーの全テクニックの実践練習を解く' }
   }
 };

@@ -7,7 +7,7 @@ import { checkAndUnlockAchievements } from './achievementManager.js';
 import { iqStatsService } from '../services/iqStatsService.js';
 import { playGamesService } from '../services/playGamesService.js';
 import { cloudSyncService } from '../services/cloudSyncService.js';
-import { speedrunRankFor } from './speedrunRank.js';
+import { speedrunRankFor, timeTakenFor } from './speedrunRank.js';
 
 // Cloud backup last, after everything has been written locally, so the upload
 // carries this win. Not awaited: the victory sequence must not wait on the network.
@@ -20,6 +20,9 @@ function backUpToCloud() {
 export function handleGameWinLogic({
   level,
   timerSeconds,
+  // The seconds actually played (useGameTimer). In Survival the clock above is the
+  // time left, and this is what the grade and the speed badges read (D15).
+  playedSeconds = null,
   gameMode,
   variant = 'classic',
   mistakes,
@@ -28,10 +31,12 @@ export function handleGameWinLogic({
   setIsVictory,
   setHintsRemaining,
   hintsUsed = 0,
-  notesUsedCount = 0,
+  // From playFacts.js. notesUsedCount is null when the game's notes are not all
+  // known (a save from before they were kept) — never read a missing count as 0.
+  notesUsedCount = null,
+  notesPlaced = 0,
   usedFastEntryThisGame = false,
   comboCount = 0,
-  survivalRemainingSeconds = 0,
   initialBoard = null,
   solutionBoard = null,
   totalEmptyCells = 40,
@@ -51,17 +56,19 @@ export function handleGameWinLogic({
   // (user, 2026-10-07); this replaces the killer branch of 2026-10-01 that kept
   // its own short record and skipped everything below.
   //
-  // Two steps below still pass a killer by, each until its killer half exists
-  // (BACKLOG, killer order ③-④): the achievements are counted on the classic
-  // record, and the ghost table has no kind in its key — a killer run there would
-  // race classic players. They are guarded by name, not by an early return, so
-  // nothing new added to this path can miss a killer by accident.
+  // One step below still passes a killer by until its killer half exists
+  // (BACKLOG, killer order ④): the ghost table has no kind in its key — a killer
+  // run there would race classic players. It is guarded by name, not by an early
+  // return, so nothing new added to this path can miss a killer by accident.
   const isKiller = variant === 'killer';
 
-  recordGameWin(level, timerSeconds, gameMode, {
+  // The time a best is kept by: the time taken — in Survival the seconds played,
+  // not the clock, which there is the time left (D16; timeTakenFor, D15).
+  recordGameWin(level, timeTakenFor(gameMode, timerSeconds, playedSeconds), gameMode, {
     isFlawless: mistakes === 0,
     comboCount,
     hintsUsed,
+    notesPlaced,
     countsAsRecord: eligibility.counts
   }, variant);
 
@@ -102,14 +109,19 @@ export function handleGameWinLogic({
     }
   }
 
-  // 30 Core Achievements Autonomous Check & Unlock — the clear grade included.
-  // The S+ unlock used to run from VictoryModal's mount; the modal now comes
-  // after the post-game interstitial, so everything the win earns is recorded
-  // here, before anything is shown. ③ for killer (D11).
-  if (!isKiller) checkAndUnlockAchievements({
-    rank: speedrunRankFor(level, gameMode, timerSeconds).rank,
+  // Achievements, the clear grade included. The S+ unlock used to run from
+  // VictoryModal's mount; the modal now comes after the post-game interstitial,
+  // so everything the win earns is recorded here, before anything is shown.
+  // A killer win counts like any other (2026-10-08, D11): graded on killer
+  // times, and the 3- and 2-minute badges keep their minutes (user: "가").
+  // The grade and the badges read one time taken — in Survival the seconds
+  // played, not the time left (speedrunRank.js timeTakenFor, D15).
+  const grade = speedrunRankFor(level, gameMode, timerSeconds, variant, playedSeconds);
+  checkAndUnlockAchievements({
+    rank: grade.rank,
+    timeTakenSeconds: grade.timeTaken,
+    variant,
     level,
-    timerSeconds,
     gameMode,
     mistakes,
     isFlawless: mistakes === 0,
@@ -118,7 +130,8 @@ export function handleGameWinLogic({
     notesUsedCount,
     usedFastEntryThisGame,
     comboCount,
-    survivalRemainingSeconds
+    // In Survival the clock counts down, so at the win it is the time left.
+    survivalRemainingSeconds: gameMode === 'timeLimit' ? timerSeconds : null
   });
 
   // Google Play Games Real-Time Leaderboard Submission. The Logic Score counts

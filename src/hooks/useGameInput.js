@@ -12,12 +12,14 @@ import { handleGameWinLogic } from '../utils/gameCompletion.js';
 import { handleMistakeLogic } from '../utils/gameMistakeHandler.js';
 import { useKeypadActions } from './useKeypadActions.js';
 import { ensureValidSolution } from '../engine/puzzleSetup.js';
+import { notePlaced, digitPlaced, winFacts, firstRightAnswer } from '../utils/playFacts.js';
 
 export function useGameInput({
   board,
   setBoard,
   initialBoard,
   solutionBoard,
+  notes,
   setNotes,
   selectedCell,
   setSelectedCell,
@@ -38,6 +40,7 @@ export function useGameInput({
   gameMode,
   level,
   timerSeconds,
+  playedSeconds = null,
   activeBattleRoom,
   activeDailyDateKey,
   pushHistory,
@@ -54,6 +57,7 @@ export function useGameInput({
   rivalMode = 'standard',
   showToast,
   runTimelineRef,
+  playFactsRef = null,
   comboCount = 0,
   variant = 'classic',
   cages = null,
@@ -119,6 +123,7 @@ export function useGameInput({
     if (isNoteMode) {
       if (board[r][c] !== 0) return;
       soundHaptic.playNoteSound();
+      if (!(notes?.[r]?.[c] || []).includes(num)) notePlaced(playFactsRef?.current);
       setNotes(prev => {
         const next = prev.map(row => row.map(col => [...col]));
         const currentNotes = next[r][c];
@@ -132,6 +137,7 @@ export function useGameInput({
 
     if (board[r][c] === num) return;
 
+    digitPlaced(playFactsRef?.current, isFastEntryMode);
     soundHaptic.playPopSound();
     const nextBoard = cloneGrid(board);
     nextBoard[r][c] = num;
@@ -193,10 +199,15 @@ export function useGameInput({
         runTimelineRef.current.push({ time: timerSeconds, count: filled });
       }
 
-      if (gameMode === 'timeAttack') {
-        handleComboSuccess();
-      } else if (gameMode === 'timeLimit') {
-        addSurvivalBonusTime(7);
+      // A cell earns its reward once a game (playFacts.js, D17): erasing a right
+      // digit and placing it again used to pay again — Survival +7 s, a Speedrun
+      // combo off the clock — as often as it was repeated.
+      if (firstRightAnswer(playFactsRef?.current, r * 9 + c)) {
+        if (gameMode === 'timeAttack') {
+          handleComboSuccess();
+        } else if (gameMode === 'timeLimit') {
+          addSurvivalBonusTime(7);
+        }
       }
     }
 
@@ -217,6 +228,7 @@ export function useGameInput({
       handleGameWinLogic({
         level,
         timerSeconds,
+        playedSeconds,
         gameMode,
         variant,
         mistakes,
@@ -228,6 +240,7 @@ export function useGameInput({
         initialBoard,
         solutionBoard: validSolution,
         comboCount,
+        ...winFacts(playFactsRef?.current),
         timeline: runTimelineRef ? runTimelineRef.current.slice() : [],
         totalEmptyCells: initialBoard.reduce((acc, row) => acc + row.filter(v => v === 0).length, 0)
       });

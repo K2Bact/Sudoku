@@ -29,6 +29,11 @@ export const achievements = {
     win_100: { title: '百局俱乐部', desc: '累计通关 100 局数独' },
     win_250: { title: '数独传奇', desc: '累计通关 250 局数独' },
 
+    // Days checked in, in all (2026-10-08, D11)
+    visit_30: { title: '常客', desc: '累计签到 30 天' },
+    visit_100: { title: '百日坚持', desc: '累计签到 100 天' },
+    visit_365: { title: '数独一整年', desc: '累计签到 365 天' },
+
     // 8 ~ 14. 逻辑与完美
     flawless_1: { title: '完美无瑕', desc: '零失误（0 次错误）通关 1 局数独' },
     flawless_5: { title: '完美主义者', desc: '达成 5 次零失误完美通关' },
@@ -54,10 +59,21 @@ export const achievements = {
     survival_hero: { title: '极限生存者', desc: '成功通关极限生存模式' },
     survival_clutch: { title: '绝处逢生', desc: '在剩余时间 5 秒以内惊险通关' },
 
+    // Killer (2026-10-08, D11)
+    killer_first: { title: '初入笼中', desc: '首次通关杀手数独' },
+    killer_lv3: { title: '求和能手', desc: '通关 Lv.3 中级难度的杀手数独' },
+    killer_win_25: { title: '破笼者', desc: '累计通关 25 局杀手数独' },
+    killer_lv5: { title: '杀手大师', desc: '通关 Lv.5 大师最高难度的杀手数独' },
+
     // 27 ~ 30. 每日挑战、对决与大脑智力
     daily_first: { title: '每日探索者', desc: '首次完成今日的每日挑战' },
     daily_streak_7: { title: '七日奇迹', desc: '连续 7 天签到' },
     battle_first_win: { title: '竞技场首胜', desc: '在 1v1 在线或 AI 对决中取得首胜' },
-    iq_150: { title: '逻辑达人', desc: 'Logic Score 达到 150 以上' }
+    iq_150: { title: '逻辑达人', desc: 'Logic Score 达到 135 以上' },
+
+    // The academy (2026-10-08, D11)
+    academy_first_lesson: { title: '第一课', desc: '完成数独学院中任意一个实战练习' },
+    academy_stage3: { title: '翼系列大师', desc: '完成第3阶段所有技巧的实战练习' },
+    academy_all: { title: '学院毕业', desc: '完成数独学院所有技巧的实战练习' }
   }
 };

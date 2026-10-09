@@ -25,16 +25,16 @@
       "name": "the game-over path stops saying which mode lost",
       "why": "A duel lost on mistakes goes back into games played, so duels lower the win rate only through mistakes and raise it through every win — the one-sided count BT-1 removed.",
       "file": "src/utils/gameMistakeHandler.js",
-      "find": "    recordGameLoss(gameMode);",
-      "replace": "    recordGameLoss();",
+      "find": "    recordLoss(variant, gameMode);",
+      "replace": "    recordLoss(variant);",
       "expectFailure": "is the duel record's loss"
     },
     {
       "name": "recordGameLoss forgets the duel rule",
       "why": "Same as above, from the other side: the caller names the mode but the rule is gone.",
       "file": "src/utils/storage.js",
-      "find": "  if (isDuelMode(mode)) return stats;",
-      "replace": "  if (false) return stats;",
+      "find": "  if (isDuelMode(mode)) return all;",
+      "replace": "  if (false) return all;",
       "expectFailure": "is the duel record's loss"
     },
     {
@@ -52,6 +52,22 @@
       "find": "  } else if (BATTLE_MODES.has(mode)) {",
       "replace": "  } else if (false) {",
       "expectFailure": "must not become the Classic best time"
+    },
+    {
+      "name": "Survival keeps the clock — the time left — as its best again",
+      "why": "The clock at a Survival win is the time left, and the smallest was kept: a win with 5 s to spare replaced one with 3 minutes, and the stats screen showed 00:05 as the best (D16, 2026-10-09).",
+      "file": "src/utils/gameCompletion.js",
+      "find": "  recordGameWin(level, timeTakenFor(gameMode, timerSeconds, playedSeconds), gameMode, {",
+      "replace": "  recordGameWin(level, timerSeconds, gameMode, {",
+      "expectFailure": "the seconds played are the Survival best"
+    },
+    {
+      "name": "the stats screen shows the old time-left table again",
+      "why": "The old table holds the time left at a win, and phones on 1.4.0 still write it; shown under Survival it reads as a time to clear (D16).",
+      "file": "src/components/StatsScreen.jsx",
+      "find": "  const timeLimitBests = stats.survivalBestTimes || {};",
+      "replace": "  const timeLimitBests = stats.timeLimitBestTimes || {};",
+      "expectFailure": "the stats screen must show the Survival best from survivalBestTimes"
     }
   ]
 }

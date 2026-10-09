@@ -13,6 +13,7 @@
  *   Case 3  resuming a save with no solutionBoard does not die  (ensureValidSolution)
  *   Case 4  filling the final cell raises the victory modal     (win path)
  *   Case 6  a wrong digit shows why it is wrong, with the right suffix (D7)
+ *   Case 7  a right digit erased and placed again earns no more time (D17)
  */
 
 import { chromium } from 'playwright';
@@ -519,6 +520,63 @@ async function run() {
       else if (text.includes('+10s')) failures.push(`Case 6 (${label}): classic was told about a +10s penalty only Speedrun charges`);
       else if (passThrough !== 'none') failures.push(`Case 6 (${label}): the message catches taps (pointer-events ${passThrough}) — the header buttons under it stop working for 3 s`);
       else console.log(`  ✅ ${label}: ${JSON.stringify(text)}`);
+    }
+
+    // ---------------------------------------------------------------------
+    console.log('▶ Case 7: a right digit erased and placed again earns nothing more (D17)');
+    // ---------------------------------------------------------------------
+    // A right digit gives Survival +7 s and Speedrun a combo (1–2 s off the clock
+    // from the second in a row). Erasing it and placing it again paid again, each
+    // time: Survival could not be lost and the Speedrun clock ran down towards 0.
+    // Classic pays nothing for a right digit, so there it is the control.
+    for (const { mode, tab, clock } of [
+      { mode: 'timeLimit', tab: '.time-limit-tab', clock: 200 },
+      { mode: 'timeAttack', tab: '.time-attack-tab', clock: 300 },
+      { mode: 'classic', tab: null, clock: 300 },
+    ]) {
+      const label = { timeLimit: 'Survival', timeAttack: 'Speedrun', classic: 'Classic' }[mode];
+      // A step that cannot be taken (the game ended, a button is covered) is a
+      // failure of this case, reported with the others — not a crash of the gate.
+      try {
+        const { state, remaining } = buildSavedState({ level: 1, leaveEmpty: 20 });
+        state.gameMode = mode;
+        state.timerSeconds = clock;
+        await primeStorage(page, state);
+        if (tab) {
+          await page.locator(`.home-screen-container .mode-tab-btn${tab}`).click();
+          await page.waitForTimeout(200);
+        }
+        await enterGame(page, '.btn-resume');
+        const { r, c, value } = remaining[0];
+        const digit = page.locator(`.number-pad .num-btn:nth-child(${value})`);
+        await page.locator('.sudoku-cell').nth(r * 9 + c).click();
+        await page.waitForTimeout(80);
+        const before = await readTimerSeconds(page);
+        await digit.click();
+        await page.waitForTimeout(250);
+        const afterFirst = await readTimerSeconds(page);
+        for (let i = 0; i < 4; i++) {
+          await page.locator('.action-btn[title="Erase"]').click();
+          await page.waitForTimeout(60);
+          await digit.click();
+          await page.waitForTimeout(160);
+        }
+        const afterRepeats = await readTimerSeconds(page);
+        const shown = await cellDigitAt(page, r * 9 + c);
+        if (shown !== String(value)) {
+          failures.push(`Case 7 (${label}): the cell shows "${shown}" after erasing and placing ${value} again — the repeat did not happen, so nothing was measured`);
+        } else if (mode === 'timeLimit' && afterFirst < before + 5) {
+          failures.push(`Case 7 (Survival): the first right digit gave no bonus (${before}s -> ${afterFirst}s) — the bonus itself is gone`);
+        } else if (mode === 'timeLimit' && afterRepeats > afterFirst + 1) {
+          failures.push(`Case 7 (Survival): erasing and placing the same right digit 4 times took the clock ${afterFirst}s -> ${afterRepeats}s — paid again`);
+        } else if (mode !== 'timeLimit' && afterRepeats < afterFirst) {
+          failures.push(`Case 7 (${label}): erasing and placing the same right digit 4 times took the clock back ${afterFirst}s -> ${afterRepeats}s — combos paid again`);
+        } else {
+          console.log(`  ✅ ${label}: first right digit ${before}s -> ${afterFirst}s, four repeats -> ${afterRepeats}s`);
+        }
+      } catch (e) {
+        failures.push(`Case 7 (${label}): the play-through broke — ${String(e.message || e).split(/\r?\n/)[0]}`);
+      }
     }
   } finally {
     if (browser) await browser.close();

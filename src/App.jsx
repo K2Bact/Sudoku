@@ -66,7 +66,7 @@ export function App() {
   const game = useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey, showToast);
   const {
     level, gameMode, variant, mistakes, setMistakes, hintsUsedCount,
-    hasRevived, setHasRevived, timerSeconds, setTimerSeconds,
+    hasRevived, setHasRevived, timerSeconds, setTimerSeconds, playedSeconds,
     isGameOver, setIsGameOver, isVictory,
     startNewGame, resumeSavedGame, handleRewardHint
   } = game;
@@ -196,6 +196,7 @@ export function App() {
         variant={variant}
         isVictory={isVictory}
         timerSeconds={timerSeconds}
+        playedSeconds={playedSeconds}
         mistakes={mistakes}
         hintsUsed={hintsUsedCount}
         onNextGame={startFollowUpGame}

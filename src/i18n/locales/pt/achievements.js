@@ -26,6 +26,11 @@ export const achievements = {
     win_100: { title: 'Clube dos 100', desc: 'Conclua um total de 100 quebra-cabeças de Sudoku' },
     win_250: { title: 'Lenda do Sudoku', desc: 'Conclua um total de 250 quebra-cabeças de Sudoku' },
 
+    // Days checked in, in all (2026-10-08, D11)
+    visit_30: { title: 'Presença constante', desc: 'Entre no jogo em 30 dias no total' },
+    visit_100: { title: 'Cem dias', desc: 'Entre no jogo em 100 dias no total' },
+    visit_365: { title: 'Um ano de sudoku', desc: 'Entre no jogo em 365 dias no total' },
+
     // 8 ~ 14. Lógica e Perfeição
     flawless_1: { title: 'Mestre Sem Erros', desc: 'Resolva um tabuleiro com 0 erros' },
     flawless_5: { title: 'Perfeccionista', desc: 'Resolva 5 tabuleiros com 0 erros cada' },
@@ -51,10 +56,21 @@ export const achievements = {
     survival_hero: { title: 'Herói da Sobrevivência', desc: 'Sobreviva e conclua o modo Limite de Tempo' },
     survival_clutch: { title: 'Fuga Épica', desc: 'Conclua com 5 segundos ou menos restantes no relógio' },
 
+    // Killer (2026-10-08, D11)
+    killer_first: { title: 'Primeira gaiola', desc: 'Conclua seu primeiro Sudoku Killer' },
+    killer_lv3: { title: 'Craque das somas', desc: 'Conclua um Sudoku Killer Lv.3 Médio' },
+    killer_win_25: { title: 'Quebra-gaiolas', desc: 'Conclua um total de 25 Sudoku Killer' },
+    killer_lv5: { title: 'Mestre do Killer', desc: 'Conclua um Sudoku Killer Lv.5 Especialista — o nível mais alto' },
+
     // 27 ~ 30. Diário & Duelos
     daily_first: { title: 'Explorador Diário', desc: 'Conclua seu primeiro Desafio Diário' },
     daily_streak_7: { title: 'Milagre de 7 Dias', desc: 'Entre no jogo 7 dias seguidos' },
     battle_first_win: { title: 'Gladiador Vitorioso', desc: 'Vença seu primeiro duelo 1v1 online ou contra a IA' },
-    iq_150: { title: 'Mestre da lógica', desc: 'Alcance um Logic Score de 150 ou mais' }
+    iq_150: { title: 'Mestre da lógica', desc: 'Alcance um Logic Score de 135 ou mais' },
+
+    // The academy (2026-10-08, D11)
+    academy_first_lesson: { title: 'Primeira lição', desc: 'Resolva um exercício da Academia Sudoku' },
+    academy_stage3: { title: 'Mestre dos Wings', desc: 'Resolva um exercício de cada técnica da Etapa 3' },
+    academy_all: { title: 'Formatura na Academia', desc: 'Resolva um exercício de cada técnica da Academia Sudoku' }
   }
 };

@@ -49,8 +49,8 @@
       "name": "the Arabic mission names a very-easy level the app does not have",
       "why": "Arabic writes مستوى, not Lv. — the mission asked for \"مستوى 1 سهل جداً\" (very easy) while the button says مبتدئ. Since 2026-09-30 the app writes Lv. here; the mutation puts back the old prefix with the old name.",
       "file": "src/i18n/locales/ar/screens.js",
-      "find": "beginnerLv1Title: '[Lv.1 مبتدئ] حل لغز سودوكو 1'",
-      "replace": "beginnerLv1Title: '[مستوى 1 سهل جداً] حل لغز سودوكو 1'",
+      "find": "beginnerLv1Title: '[Lv.1 مبتدئ] حل لغز سودوكو واحد'",
+      "replace": "beginnerLv1Title: '[مستوى 1 سهل جداً] حل لغز سودوكو واحد'",
       "expectFailure": "the Lv.1 button says \"مبتدئ\""
     },
     {

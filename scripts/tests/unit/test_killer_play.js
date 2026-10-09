@@ -136,17 +136,42 @@ const win = (variant, { level = 3, time = 200, hints = 0, mode = 'classic', mist
 }
 
 // ── 3d. The daily mission counts a killer win (2026-10-07) ──────────────────
+//
+// The mission changes with the date, and every third day it is "play a battle",
+// which the battle result screen completes and no solo win can. Read off the
+// real date, this section failed on those days (2026-10-09, BACKLOG D18). The
+// day is pinned instead: a solo-mission day must be completed by a killer win,
+// and a battle day must not be.
 {
+  const RealDate = Date;
+  const dayFrom = (offset) => { const d = new RealDate(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + offset); return d; };
+  const onDay = (day, run) => {
+    globalThis.Date = class extends RealDate {
+      constructor(...a) { if (a.length) super(...a); else super(day.getTime()); }
+      static now() { return day.getTime(); }
+    };
+    try { return run(); } finally { globalThis.Date = RealDate; }
+  };
   localStorage.clear();
-  const mission = getDailyMission(getTodayDateKey());
+  const days = [0, 1, 2].map(dayFrom);
+  const missionOn = (day) => getDailyMission(getTodayDateKey(day));
+  const soloDay = days.find((d) => missionOn(d).type !== 'play_battle');
+  const battleDay = days.find((d) => missionOn(d).type === 'play_battle');
+  assert.ok(soloDay && battleDay, 'three days in a row must hold both a solo mission and a battle mission — the mission cycle changed');
+
+  const mission = missionOn(soloDay);
   const level = mission.type === 'expert_clear' ? 5 : Math.max(3, mission.minLevel || 1);
   const mode = mission.type === 'speedrun' ? 'timeAttack' : 'classic';
   const before = JSON.parse(localStorage.getItem('suidoku_user_wallet_v1') || '{}').hints || 0;
-  win('killer', { level, mode });
-  assert.ok(loadDailyRecords()[getTodayDateKey()]?.completed, `a killer win (Lv.${level} ${mode}) left today's ${mission.type} mission undone — the mission counts wins of either kind`);
+  onDay(soloDay, () => win('killer', { level, mode }));
+  assert.ok(loadDailyRecords()[getTodayDateKey(soloDay)]?.completed, `a killer win (Lv.${level} ${mode}) left the day's ${mission.type} mission undone — the mission counts wins of either kind`);
   const after = JSON.parse(localStorage.getItem('suidoku_user_wallet_v1') || '{}').hints || 0;
   assert.ok(after > before, 'the mission a killer completed gave no hint');
-  console.log(`  ✅ 3d. today's mission (${mission.type}) is completed by a killer win, with its hint`);
+
+  localStorage.clear();
+  onDay(battleDay, () => win('killer', { level: 5, mode: 'classic' }));
+  assert.ok(!loadDailyRecords()[getTodayDateKey(battleDay)]?.completed, 'a solo killer win completed a "play a battle" mission — only a battle does');
+  console.log(`  ✅ 3d. a day's mission (${mission.type}) is completed by a killer win, with its hint; a battle mission is not`);
 }
 
 // ── 3b. A killer speedrun (2026-10-07) ──────────────────────────────────────

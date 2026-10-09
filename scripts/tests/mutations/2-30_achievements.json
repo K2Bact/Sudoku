@@ -1,0 +1,265 @@
+{
+  "gate": "2-30",
+  "name": "Every Achievement Can Be Earned, And Only By Doing What It Says",
+  "command": "node scripts/tests/unit/test_achievements.js",
+  "greenMarker": "[2-30] PASSED",
+  "note": "Written with the gate on 2026-10-08 (D11). Each mutation puts back one of the nine broken achievements found that day, or breaks a path the forty depend on. Survival rejoined the S+ and 3-/2-minute badges with BACKLOG D15 (same day): the two mutations that put Survival back into them are replaced by the ones from \"Survival is graded on the time left again\" on, which break the seconds-played path instead.",
+  "mutations": [
+    {
+      "name": "Logic Master asks for 150 again",
+      "why": "No record reaches 150 — the score tops out at 137 — so the badge, once registered in Play Games, could never be earned there either.",
+      "file": "src/utils/achievementManager.js",
+      "find": "export const LOGIC_MASTER_SCORE = 135;",
+      "replace": "export const LOGIC_MASTER_SCORE = 150;",
+      "expectFailure": "these achievements cannot be earned by doing what they say"
+    },
+    {
+      "name": "the Logic Score is not worked out for the check",
+      "why": "Nothing passes ctx.iq; reading it alone is how the badge sat unreachable since the first commit.",
+      "file": "src/utils/achievementManager.js",
+      "find": "const logicScore = ctx.iq ?? iqStatsService.calculateBrainIQ(stats);",
+      "replace": "const logicScore = ctx.iq || 0;",
+      "expectFailure": "these achievements cannot be earned by doing what they say"
+    },
+    {
+      "name": "a duel won no longer checks the achievements",
+      "why": "Nothing else passes isBattleWin; the duel badge goes back to unreachable.",
+      "file": "src/hooks/useBattleMultiplayer.js",
+      "find": "          if (room.winner === 'me') checkAndUnlockAchievements({ isBattleWin: true });\n",
+      "replace": "",
+      "expectFailure": "a duel won must check the achievements"
+    },
+    {
+      "name": "a killer win skips the achievements again",
+      "why": "Killer and classic differ in the puzzle only (user, 2026-10-07); the killer badges and every count would stop at the classic record.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "  checkAndUnlockAchievements({\n    rank:",
+      "replace": "  if (variant !== 'killer') checkAndUnlockAchievements({\n    rank:",
+      "expectFailure": "these achievements cannot be earned by doing what they say"
+    },
+    {
+      "name": "the counts are the classic record alone",
+      "why": "Wins of a killer player would not reach the win badges — 20 killer wins and 5 classic are 25 wins.",
+      "file": "src/utils/achievementManager.js",
+      "find": "  const won = rec.gamesWon;",
+      "replace": "  const won = Number(stats.gamesWon) || 0;",
+      "expectFailure": "these achievements cannot be earned by doing what they say"
+    },
+    {
+      "name": "the killer badges read the classic record",
+      "why": "A classic Lv.3 would hand out the killer Lv.3 badge.",
+      "file": "src/utils/achievementManager.js",
+      "find": "      case 'killer_lv3': isEarned = killerClearedAt(killer, 3, ctx); break;",
+      "replace": "      case 'killer_lv3': isEarned = killerClearedAt(stats, 3, { ...ctx, variant: 'killer' }); break;",
+      "expectFailure": "these achievements are given for something that is not what they say"
+    },
+    {
+      "name": "a missing notes count reads as zero again",
+      "why": "Every Lv.3 win becomes a win without notes — the badge given for nothing.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "  notesUsedCount = null,",
+      "replace": "  notesUsedCount = 0,",
+      "expectFailure": "a win that says nothing about notes must not count as one without them"
+    },
+    {
+      "name": "an old save counts as known from the start",
+      "why": "A game saved before the notes were counted could have had notes already; it must not earn \"no notes\".",
+      "file": "src/utils/playFacts.js",
+      "find": "  return { notesPlaced: 0, fastEntryUsed: false, fromStart: false, rewardedCells };",
+      "replace": "  return { notesPlaced: 0, fastEntryUsed: false, fromStart: true, rewardedCells };",
+      "expectFailure": "an old save's notes are unknown, not zero"
+    },
+    {
+      "name": "note_master reads the one game's count again",
+      "why": "The win's own count was never passed; 50 notes across games would never add up.",
+      "file": "src/utils/achievementManager.js",
+      "find": "      case 'note_master': isEarned = rec.notesPlaced >= 50; break;",
+      "replace": "      case 'note_master': isEarned = (ctx.notesUsedCount || 0) >= 50; break;",
+      "expectFailure": "these achievements cannot be earned by doing what they say"
+    },
+    {
+      "name": "notes placed are not added to the record",
+      "why": "The count lives only for one game; the 50 across games never adds up.",
+      "file": "src/utils/storage.js",
+      "find": "    stats.notesPlaced = (stats.notesPlaced || 0) + extra.notesPlaced;",
+      "replace": "    stats.notesPlaced = stats.notesPlaced || 0;",
+      "expectFailure": "these achievements cannot be earned by doing what they say"
+    },
+    {
+      "name": "adding a note is not counted",
+      "why": "The board's own note button would leave the count at zero.",
+      "file": "src/hooks/useGameInput.js",
+      "find": "      if (!(notes?.[r]?.[c] || []).includes(num)) notePlaced(playFactsRef?.current);\n",
+      "replace": "",
+      "expectFailure": "adding a note must be counted"
+    },
+    {
+      "name": "Fast Entry is not noted",
+      "why": "The Fast Entry badge goes back to unreachable.",
+      "file": "src/utils/playFacts.js",
+      "find": "  if (facts && isFastEntryMode) facts.fastEntryUsed = true;",
+      "replace": "  if (false) facts.fastEntryUsed = true;",
+      "expectFailure": "these achievements cannot be earned by doing what they say"
+    },
+    {
+      "name": "the time left in Survival is not passed",
+      "why": "The clutch badge goes back to unreachable — it read 0 as 99.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "    survivalRemainingSeconds: gameMode === 'timeLimit' ? timerSeconds : null",
+      "replace": "    survivalRemainingSeconds: null",
+      "expectFailure": "these achievements cannot be earned by doing what they say"
+    },
+    {
+      "name": "the days in all are not counted",
+      "why": "The day badges go unreachable — the wallet only kept the streak.",
+      "file": "src/utils/wallet.js",
+      "find": "  wallet.totalVisitDays += 1;\n",
+      "replace": "",
+      "expectFailure": "these achievements cannot be earned by doing what they say"
+    },
+    {
+      "name": "app start does not check the achievements",
+      "why": "The day and streak badges would wait for a win; a badge earned before it existed would wait too.",
+      "file": "src/hooks/useAppModals.js",
+      "find": "    if (reward) setDailyRewardInfo(reward);\n    checkAndUnlockAchievements();\n",
+      "replace": "    if (reward) setDailyRewardInfo(reward);\n",
+      "expectFailure": "app start must claim the day"
+    },
+    {
+      "name": "a practice solved is not recorded",
+      "why": "The academy badges go unreachable.",
+      "file": "src/hooks/useInteractivePractice.js",
+      "find": "      if (markPracticeSolved(strategyId)) checkAndUnlockAchievements();\n",
+      "replace": "",
+      "expectFailure": "a practice board solved must be recorded"
+    },
+    {
+      "name": "a technique counts every time it is solved",
+      "why": "Solving one board twice would count as two techniques.",
+      "file": "src/utils/academyProgress.js",
+      "find": "  if (progress.solved[strategyId]) return false;\n",
+      "replace": "",
+      "expectFailure": "the second does not count again"
+    },
+    {
+      "name": "the days in all merge as this phone's",
+      "why": "A phone change would take the day count back to what the new phone had.",
+      "file": "src/services/progressMerge.js",
+      "find": "          totalVisitDays: larger(lw.totalVisitDays, c.wallet.totalVisitDays),\n",
+      "replace": "",
+      "expectFailure": "the days in all must merge as the larger"
+    },
+    {
+      "name": "the academy merges as this phone's alone",
+      "why": "Techniques practised on the old phone would be lost.",
+      "file": "src/services/progressMerge.js",
+      "find": "{ solved: { ...solvedOf(c.academy), ...solvedOf(l.academy) } }",
+      "replace": "{ solved: { ...solvedOf(l.academy) } }",
+      "expectFailure": "a technique practised on either phone stays practised"
+    },
+    {
+      "name": "the backup leaves the academy out",
+      "why": "A restore could not bring the techniques back.",
+      "file": "src/services/cloudSyncService.js",
+      "find": "    const academy = readJson(ACADEMY_PROGRESS_KEY);",
+      "replace": "    const academy = null;",
+      "expectFailure": "the backup must carry the academy"
+    },
+    {
+      "name": "Survival is graded on the time left again",
+      "why": "The pre-D15 rule: \"limit − time left\", which 7 s a cell shrinks — a Survival Lv.1 played at the classic B pace (240 s) grades S+ and hands out the S+ badge.",
+      "file": "src/utils/speedrunRank.js",
+      "find": "  const timeTaken = timeTakenFor(gameMode, timerSeconds, playedSeconds);",
+      "replace": "  const timeTaken = gameMode === 'timeLimit' ? Math.max(1, [0, 240, 360, 480, 720, 1080][level] - timerSeconds) : timerSeconds;",
+      "expectFailure": "given for something that is not what they say"
+    },
+    {
+      "name": "an unknown Survival time grades fast",
+      "why": "A win that did not say how long it took would grade S+ and earn the speed badges for nothing.",
+      "file": "src/utils/speedrunRank.js",
+      "find": "  return Number.isFinite(playedSeconds) ? Math.max(1, playedSeconds) : Infinity;",
+      "replace": "  return Number.isFinite(playedSeconds) ? Math.max(1, playedSeconds) : 1;",
+      "expectFailure": "without its seconds played must not grade S+"
+    },
+    {
+      "name": "the win grades without the seconds played",
+      "why": "Every Survival win would be \"time unknown\" — graded C, and a fast one could never earn S+ or the speed badges.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "  const grade = speedrunRankFor(level, gameMode, timerSeconds, variant, playedSeconds);",
+      "replace": "  const grade = speedrunRankFor(level, gameMode, timerSeconds, variant);",
+      "expectFailure": "must earn S+ and both speed badges"
+    },
+    {
+      "name": "the speed badges read Survival's clock",
+      "why": "Finishing a Survival game with 2:50 left after five minutes would count as solving it in under three.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "    timeTakenSeconds: grade.timeTaken,",
+      "replace": "    timeTakenSeconds: timerSeconds,",
+      "expectFailure": "given for something that is not what they say"
+    },
+    {
+      "name": "the timer does not count the seconds played",
+      "why": "The seconds played would stay at 0 — every Survival win graded S+.",
+      "file": "src/hooks/useGameTimer.js",
+      "find": "      setPlayedSeconds(prev => prev + 1);",
+      "replace": "",
+      "expectFailure": "must count a second played"
+    },
+    {
+      "name": "a new game carries the last game's seconds played",
+      "why": "The next Survival game would start with the last one's time already on it and grade slower than it was played.",
+      "file": "src/hooks/useGameTimer.js",
+      "find": "      setPlayedSeconds(0);",
+      "replace": "",
+      "expectFailure": "a new game must start with no seconds played"
+    },
+    {
+      "name": "the win does not report the seconds played",
+      "why": "The board path would leave every Survival win \"time unknown\" (C), whatever the gate passes by hand.",
+      "file": "src/hooks/useGameInput.js",
+      "find": "        playedSeconds,",
+      "replace": "",
+      "expectFailure": "the win must report the seconds played"
+    },
+    {
+      "name": "the victory screen grades Survival without the seconds played",
+      "why": "The screen would show C for every Survival win while the badges were graded on the real time.",
+      "file": "src/components/VictoryModal.jsx",
+      "find": "  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds, variant, playedSeconds);",
+      "replace": "  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds, variant);",
+      "expectFailure": "the victory screen must grade Survival on the seconds played"
+    },
+    {
+      "name": "the shared line gives the clock",
+      "why": "A Survival share would say \"cleared in [03:37]\" for the time that was LEFT.",
+      "file": "src/components/VictoryModal.jsx",
+      "find": "time: formatTime(rankInfo.timeTaken)",
+      "replace": "time: formatTime(actualSeconds)",
+      "expectFailure": "the shared line says"
+    },
+    {
+      "name": "the victory screen is not handed the seconds played",
+      "why": "The modal grades with what it is given; without it every Survival win shows C.",
+      "file": "src/components/modals/GameModalsContainer.jsx",
+      "find": "          playedSeconds={playedSeconds}",
+      "replace": "",
+      "expectFailure": "the victory screen must be handed the seconds played"
+    },
+    {
+      "name": "an achievement text gets a comma again",
+      "why": "The import CSV has no quoting: a comma in a name or description splits the row and Play refuses the zip (found 2026-10-09 in six texts).",
+      "file": "src/i18n/locales/en/achievements.js",
+      "find": "'Clear a Lv.5 Expert puzzle — the hardest level'",
+      "replace": "'Clear a Lv.5 Expert puzzle, the hardest level'",
+      "expectFailure": "Play Games would refuse the achievements as they stand"
+    },
+    {
+      "name": "two achievements share a name in one language",
+      "why": "Play matches translations and icons to an achievement by its name; two with one name cannot both be imported.",
+      "file": "src/i18n/locales/ja/achievements.js",
+      "find": "killer_lv5: { title: 'キラーの達人'",
+      "replace": "killer_lv5: { title: 'ケージ破り'",
+      "expectFailure": "Play Games would refuse the achievements as they stand"
+    }
+  ]
+}

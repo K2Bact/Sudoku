@@ -31,6 +31,7 @@ export function GameModalsContainer({
   gameMode = 'classic',
   variant = 'classic',
   timerSeconds,
+  playedSeconds = null,
   mistakes,
   hintsUsed = 0,
   onNextGame,
@@ -93,6 +94,7 @@ export function GameModalsContainer({
       {showVictory && victoryPhase === 'modal' && (
         <VictoryModal
           timerSeconds={timerSeconds}
+          playedSeconds={playedSeconds}
           gameMode={gameMode}
           variant={variant}
           mistakes={mistakes}

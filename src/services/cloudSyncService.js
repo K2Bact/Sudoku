@@ -11,6 +11,7 @@ import { loadUnlockedAchievements, saveUnlockedAchievements, ACHIEVEMENTS_STORAG
 import { WALLET_STORAGE_KEY } from '../utils/wallet.js';
 import { DAILY_STORAGE_KEY } from '../utils/dailyChallenge.js';
 import { GHOST_STORAGE_KEY } from '../utils/ghostManager.js';
+import { ACADEMY_PROGRESS_KEY } from '../utils/academyProgress.js';
 import { iqStatsService } from './iqStatsService.js';
 import { playGamesService } from './playGamesService.js';
 import { mergeProgress } from './progressMerge.js';
@@ -49,7 +50,7 @@ const RESTORE_OFFERED_KEY = 'suidoku_cloud_restore_offered_v1';
 // marker doubled ~15KB of local storage for a comparison. Equal hashes mean nothing
 // new to back up; a collision would only delay one backup to the next change.
 const fingerprint = (p) => {
-  const text = JSON.stringify([p.stats, p.settings, p.achievements, p.wallet, p.daily, p.ghost]);
+  const text = JSON.stringify([p.stats, p.settings, p.achievements, p.wallet, p.daily, p.ghost, p.academy]);
   let h = 0x811c9dc5;
   for (let i = 0; i < text.length; i++) {
     h ^= text.charCodeAt(i);
@@ -114,6 +115,9 @@ class CloudSyncService {
     const wallet = readJson(WALLET_STORAGE_KEY);
     const daily = readJson(DAILY_STORAGE_KEY);
     const ghost = readJson(GHOST_STORAGE_KEY);
+    // The techniques practised (2026-10-08): two academy achievements count them,
+    // and a phone change must not send the player back through them.
+    const academy = readJson(ACADEMY_PROGRESS_KEY);
 
     return {
       userId,
@@ -125,7 +129,8 @@ class CloudSyncService {
       achievements,
       wallet,
       daily,
-      ghost
+      ghost,
+      academy
     };
   }
 
@@ -289,7 +294,7 @@ class CloudSyncService {
          * removing it again, which is why null is kept apart from a stored value.
          */
         const touched = [USER_STATS_KEY, WALLET_STORAGE_KEY, DAILY_STORAGE_KEY, GHOST_STORAGE_KEY,
-                         ACHIEVEMENTS_STORAGE_KEY, LAST_SYNC_KEY];
+                         ACHIEVEMENTS_STORAGE_KEY, ACADEMY_PROGRESS_KEY, LAST_SYNC_KEY];
         const before = new Map(touched.map((k) => [k, localStorage.getItem(k)]));
         try {
           localStorage.setItem(USER_STATS_KEY, JSON.stringify(mergedStats));
@@ -307,6 +312,9 @@ class CloudSyncService {
           }
           if (cloudData.ghost && typeof cloudData.ghost === 'object') {
             localStorage.setItem(GHOST_STORAGE_KEY, JSON.stringify(merged.ghost));
+          }
+          if (cloudData.academy && typeof cloudData.academy === 'object') {
+            localStorage.setItem(ACADEMY_PROGRESS_KEY, JSON.stringify(merged.academy));
           }
 
           localStorage.setItem(LAST_SYNC_KEY, String(Date.now()));

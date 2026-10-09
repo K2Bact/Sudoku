@@ -45,6 +45,7 @@ export function combinedRecord(stats = {}) {
     flawlessWins: n(stats.flawlessWins) + n(k.flawlessWins),
     timeLimitSurvivalWins: n(stats.timeLimitSurvivalWins) + n(k.timeLimitSurvivalWins),
     maxCombo: Math.max(n(stats.maxCombo), n(k.maxCombo)),
+    notesPlaced: n(stats.notesPlaced) + n(k.notesPlaced),
     clearedLevels,
     speedRatios,
   };

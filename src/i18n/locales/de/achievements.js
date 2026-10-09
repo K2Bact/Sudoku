@@ -26,6 +26,11 @@ export const achievements = {
     win_100: { title: 'Hunderter-Club', desc: 'Löse insgesamt 100 Sudoku-Rätsel' },
     win_250: { title: 'Sudoku-Legende', desc: 'Löse insgesamt 250 Sudoku-Rätsel' },
 
+    // Days checked in, in all (2026-10-08, D11)
+    visit_30: { title: 'Stammgast', desc: 'Melde dich an insgesamt 30 Tagen an' },
+    visit_100: { title: 'Hundert Tage', desc: 'Melde dich an insgesamt 100 Tagen an' },
+    visit_365: { title: 'Ein Jahr Sudoku', desc: 'Melde dich an insgesamt 365 Tagen an' },
+
     // 8 ~ 14. Logic & Perfection
     flawless_1: { title: 'Fehlerfreier Meister', desc: 'Löse ein Rätsel mit 0 Fehlern' },
     flawless_5: { title: 'Perfektionist', desc: 'Löse 5 Rätsel mit jeweils 0 Fehlern' },
@@ -36,7 +41,7 @@ export const achievements = {
     fast_entry_fan: { title: 'Blitzschnell', desc: 'Ein Rätsel im Schnellmodus (Zahl-Zuerst) lösen' },
 
     // 15 ~ 19. Speed & Combos
-    rank_s_plus: { title: 'Göttliches Tempo', desc: 'Erreiche den prestigeträchtigen 👑 S+ Zeitrennen-Rang' },
+    rank_s_plus: { title: 'Göttliches Tempo', desc: 'Erreiche den prestigeträchtigen 👑 S+ Rang' },
     speed_runner_3m: { title: 'Unter 3 Minuten', desc: 'Ein Rätsel in unter 3 Minuten (180s) lösen' },
     speed_runner_2m: { title: 'Geschwindigkeitsdämon', desc: 'Ein Rätsel in unter 2 Minuten (120s) lösen' },
     combo_streak_5: { title: 'Kombo-Künstler', desc: 'Erreiche eine 5er-Kombo im Zeitrennen-Modus' },
@@ -51,10 +56,21 @@ export const achievements = {
     survival_hero: { title: 'Überlebensheld', desc: 'Den Zeitlimit-Überlebensmodus erfolgreich bestehen' },
     survival_clutch: { title: 'Knappe Flucht', desc: 'Mit 5 Sekunden oder weniger Restzeit abschließen' },
 
+    // Killer (2026-10-08, D11)
+    killer_first: { title: 'Erster Käfig', desc: 'Löse dein erstes Killer-Sudoku' },
+    killer_lv3: { title: 'Summenprofi', desc: 'Löse ein Killer-Sudoku auf Lv.3 Mittel' },
+    killer_win_25: { title: 'Käfigknacker', desc: 'Löse insgesamt 25 Killer-Sudokus' },
+    killer_lv5: { title: 'Killer-Meister', desc: 'Löse ein Killer-Sudoku auf der höchsten Stufe Lv.5 Experte' },
+
     // 27 ~ 30. Daily, Battle & Brain IQ
     daily_first: { title: 'Täglicher Entdecker', desc: 'Löse dein erstes tägliches Rätsel' },
     daily_streak_7: { title: '7-Tage-Wunder', desc: 'Melde dich 7 Tage in Folge an' },
     battle_first_win: { title: 'Gladiatoren-Sieg', desc: 'Gewinne dein erstes 1v1-Duell oder KI-Match' },
-    iq_150: { title: 'Logik-Meister', desc: 'Erreiche einen Logic Score von 150 oder mehr' }
+    iq_150: { title: 'Logik-Meister', desc: 'Erreiche einen Logic Score von 135 oder mehr' },
+
+    // The academy (2026-10-08, D11)
+    academy_first_lesson: { title: 'Erste Lektion', desc: 'Löse eine Übung in der Sudoku-Akademie' },
+    academy_stage3: { title: 'Wing-Meister', desc: 'Löse eine Übung zu jeder Technik aus Stufe 3 der Akademie' },
+    academy_all: { title: 'Akademie-Abschluss', desc: 'Löse eine Übung zu jeder Technik der Sudoku-Akademie' }
   }
 };

@@ -105,8 +105,8 @@
       "name": "the policy says the IQ score is not transmitted again",
       "why": "Found on 2026-09-18: the hosted policy said IQ metrics stay on the device while gameCompletion submits them to a Play Games leaderboard.",
       "file": "docs/privacy.html",
-      "find": "<p>None of this is linked to your name or your Google account. Your opponent sees your nickname and progress.</p>",
-      "replace": "<p>None of this is linked to your name or your Google account. Your opponent sees your nickname and progress. IQ metrics are computed on the device and are not transmitted.</p>",
+      "find": "<p>None of this is linked to your name or your Google account. Your opponent sees your nickname and progress, and, if you both share, your moves and their timing.</p>",
+      "replace": "<p>None of this is linked to your name or your Google account. Your opponent sees your nickname and progress, and, if you both share, your moves and their timing. IQ metrics are computed on the device and are not transmitted.</p>",
       "expectFailure": "says the IQ score is not sent"
     },
     {

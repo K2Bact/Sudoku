@@ -23,6 +23,7 @@ export function useGameLifecycle({
   notes,
   mistakes,
   timerSeconds,
+  playedSeconds = 0,
   level,
   gameMode,
   variant = 'classic',
@@ -31,6 +32,7 @@ export function useGameLifecycle({
   lockedNumber,
   adHintsUsedThisGame = 0,
   hintsUsedCount = 0,
+  playFactsRef = null,
   activeScreen,
   isGameOver,
   isVictory,
@@ -47,6 +49,7 @@ export function useGameLifecycle({
     notes,
     mistakes,
     timerSeconds,
+    playedSeconds,
     level,
     gameMode,
     variant,
@@ -55,6 +58,7 @@ export function useGameLifecycle({
     lockedNumber,
     adHintsUsedThisGame,
     hintsUsedCount,
+    playFactsRef,
     activeScreen,
     isGameOver,
     isVictory,
@@ -73,6 +77,9 @@ export function useGameLifecycle({
       notes: s.notes,
       mistakes: s.mistakes,
       timerSeconds: s.timerSeconds,
+      // How long the game has been played; in Survival the clock above is the time
+      // left, and the grade reads this instead (useGameTimer, BACKLOG D15).
+      playedSeconds: s.playedSeconds,
       level: s.level,
       gameMode: s.gameMode,
       // A killer cannot be resumed without its cages (savedGame.js).
@@ -83,7 +90,11 @@ export function useGameLifecycle({
       adHintsUsedThisGame: s.adHintsUsedThisGame,
       // Without this a player could use hints, relaunch, and still register a
       // "zero-hint" personal best — the Ghost PB policy was bypassable.
-      hintsUsedCount: s.hintsUsedCount
+      hintsUsedCount: s.hintsUsedCount,
+      // Notes placed and Fast Entry used so far — the achievements read them at
+      // the win, and a resumed game must still know them (playFacts.js). Saved
+      // whenever the board or the notes change, which is when they change.
+      playFacts: s.playFactsRef?.current ? { ...s.playFactsRef.current } : undefined
     });
   };
 

@@ -41,7 +41,10 @@
  * backup can fail to add anything; it cannot take anything away from the phone.
  */
 
-const BEST_TIME_TABLES = ['bestTimes', 'timeAttackBestTimes', 'timeLimitBestTimes'];
+// survivalBestTimes: Survival's fastest clears, seconds played (D16). timeLimitBestTimes
+// held the time left at a win until 2026-10-09; still merged so nothing a phone
+// on 1.4.0 kept is lost, but no longer read.
+const BEST_TIME_TABLES = ['bestTimes', 'timeAttackBestTimes', 'timeLimitBestTimes', 'survivalBestTimes'];
 const LEVELS = [1, 2, 3, 4, 5];
 
 const isObject = (v) => Boolean(v) && typeof v === 'object' && !Array.isArray(v);
@@ -57,7 +60,7 @@ const larger = (a, b) => {
   return y === null ? x : Math.max(x, y);
 };
 /** Fields holding counts that merge as "local wins, cloud fills a gap". */
-const LOCAL_COUNTS = ['flawlessWins', 'maxCombo'];
+const LOCAL_COUNTS = ['flawlessWins', 'maxCombo', 'notesPlaced'];
 
 /**
  * Games played and games won, which cannot be merged one at a time.
@@ -205,6 +208,7 @@ export function mergeProgress(cloud, local) {
           ...lw,
           hints: larger(lw.hints, c.wallet.hints),
           streakDays: larger(lw.streakDays, c.wallet.streakDays),
+          totalVisitDays: larger(lw.totalVisitDays, c.wallet.totalVisitDays),
           totalAdsWatched: larger(lw.totalAdsWatched, c.wallet.totalAdsWatched),
         };
       })()
@@ -219,11 +223,18 @@ export function mergeProgress(cloud, local) {
       }
     : l.ghost;
 
+  // The academy techniques practised: practised on either phone is practised.
+  const solvedOf = (a) => entries(isObject(a) ? a.solved : null, (v) => v === true);
+  const academy = isObject(c.academy)
+    ? { solved: { ...solvedOf(c.academy), ...solvedOf(l.academy) } }
+    : l.academy;
+
   return {
     stats: mergeStats(c.stats || {}, l.stats || {}),
     achievements,
     wallet,
     daily,
     ghost,
+    academy,
   };
 }

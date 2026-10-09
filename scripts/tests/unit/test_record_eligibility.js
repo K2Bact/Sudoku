@@ -46,10 +46,10 @@ assert.strictEqual(R({ gameMode: 'timeAttack', hintsUsed: 1, limitMistakes: true
 console.log('  ✅ 1. rule: hints never, limit off never (except Speedrun), >2 mistakes means the limit was off');
 
 // 2. Through the real win path
-const win = ({ level = 5, time = 300, mode = 'classic', mistakes = 0, hints = 0, limit = true }) => {
+const win = ({ level = 5, time = 300, mode = 'classic', mistakes = 0, hints = 0, limit = true, played = null }) => {
   localStorage.setItem('suidoku_settings_v1', JSON.stringify({ limitMistakes: limit }));
   handleGameWinLogic({
-    level, timerSeconds: time, gameMode: mode, mistakes, hintsUsed: hints, activeDailyDateKey: null,
+    level, timerSeconds: time, playedSeconds: played, gameMode: mode, mistakes, hintsUsed: hints, activeDailyDateKey: null,
     clearGameState: () => {}, setIsVictory: () => {}, setHintsRemaining: () => {}
   });
   return loadStats();
@@ -85,10 +85,35 @@ s = win({ mode: 'timeAttack', limit: false, mistakes: 5, time: 180 });
 assert.strictEqual(s.timeAttackBestTimes?.[5], 180, 'Speedrun records without the limit');
 
 localStorage.clear();
-s = win({ mode: 'timeLimit', limit: false, time: 90 });
-assert.ok(!s.timeLimitBestTimes?.[5], 'Survival follows Classic');
+s = win({ mode: 'timeLimit', limit: false, time: 90, played: 400 });
+assert.ok(!s.survivalBestTimes?.[5], 'Survival follows Classic');
 assert.strictEqual(s.timeLimitSurvivalWins, 1, 'but the survival win is still counted');
 console.log('  ✅ 2. real win path: best times and ghost held back, wins and cleared levels kept');
+
+// 2b. Survival's best is the fastest clear — the seconds played, not the time left
+//     (D16, user 2026-10-09: "깨는데 걸린 시간을 적어야지"). The clock at a Survival
+//     win is the time LEFT, and the smallest used to be kept: a win with 5 s to
+//     spare replaced one with 3 minutes, and the screen showed 00:05 as the best.
+localStorage.clear();
+s = win({ mode: 'timeLimit', time: 180, played: 500 });
+assert.strictEqual(s.survivalBestTimes?.[5], 500, 'the seconds played are the Survival best');
+s = win({ mode: 'timeLimit', time: 5, played: 650 });
+assert.strictEqual(s.survivalBestTimes?.[5], 500, 'a slower clear with little time left is not a new best');
+s = win({ mode: 'timeLimit', time: 600, played: 420 });
+assert.strictEqual(s.survivalBestTimes?.[5], 420, 'a faster clear is, however much time was left');
+s = win({ mode: 'timeLimit', time: 30 });
+assert.strictEqual(s.survivalBestTimes?.[5], 420, 'a win whose seconds played are unknown sets no best');
+assert.ok(!s.timeLimitBestTimes, 'the old time-left table is no longer written');
+assert.strictEqual(s.timeLimitSurvivalWins, 4, 'every Survival win still counts');
+const merged = mergeStats({ survivalBestTimes: { 5: 380 }, timeLimitBestTimes: { 5: 7 } }, { survivalBestTimes: { 5: 420 } });
+assert.strictEqual(merged.survivalBestTimes[5], 380, 'a phone change keeps the faster clear');
+{
+  const fs = await import('fs');
+  const screen = fs.readFileSync(new URL('../../../src/components/StatsScreen.jsx', import.meta.url), 'utf8');
+  assert(/const timeLimitBests = stats\.survivalBestTimes \|\| \{\};/.test(screen),
+    'the stats screen must show the Survival best from survivalBestTimes — the old table is the time left');
+}
+console.log('  ✅ 2b. Survival best = the fastest clear in seconds played, not the narrowest escape');
 
 // 3. Old saves and cloud restore
 assert.ok(iqStatsService.calculateBrainIQ({ gamesPlayed: 1, gamesWon: 1, bestTimes: { 5: 400 } }) >
