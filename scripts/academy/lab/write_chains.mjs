@@ -3,6 +3,8 @@
 import fs from 'fs';
 import { describe } from './present.mjs';
 import { rc } from './core.mjs';
+// French needs a no-break space before : ; ! ? — the l10n engine's gate 10 checks it, and its fixer writes it.
+import { fixFrenchTypography } from '../../../../../app_common/l10n_engine/core/gate10_french_typography.mjs';
 
 const P = new URL('../../../src/data/academy/practice/', import.meta.url);
 const LOCALES = ['ko', 'en', 'ja', 'zh-CN', 'zh-TW', 'es-ES', 'de', 'fr', 'pt', 'it', 'ru', 'hi', 'ar'];
@@ -72,6 +74,8 @@ for (const job of jobs) {
   const tpl = d.type === 'answer' ? ANSWER : d.type === 'place' ? PLACE : ASK;
   const title = Object.fromEntries(LOCALES.map((l) => [l, TITLE[l](x)]));
   const guide = Object.fromEntries(LOCALES.map((l) => [l, tpl[l](x)]));
+  title.fr = fixFrenchTypography(title.fr);
+  guide.fr = fixFrenchTypography(guide.fr);
   const seed = `chain-${job.p.n}`;
   const body = [
     `      // Generated in-house: SudokuEngine full grid + minimiser, seed "${seed}". No external puzzle or text.`,

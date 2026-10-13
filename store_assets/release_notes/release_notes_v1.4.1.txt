@@ -1,0 +1,117 @@
+<en-US>
+• Killer gets Speedrun, a clear rank (S+ to C) and the same records as Standard. Killer wins count toward Logic Score, missions and achievements.
+• Killer levels rebalanced: easier at the bottom, still tough at the top.
+• 40 achievements, all earnable, also in Play Games.
+• 1v1: no opponent? Tap “Search again”.
+• A wrong digit briefly shows why.
+• Survival rank and best time now use the time you played.
+• Security update.
+</en-US>
+<ar>
+• كيلر يحصل على «سباق الزمن» وتقييم للإنجاز (من S+ إلى C) والسجلات نفسها التي في القياسي. انتصارات كيلر تُحتسب في Logic Score والمهام والإنجازات.
+• إعادة ضبط مستويات كيلر: أسهل في البداية، وصعبة كما هي في الأعلى.
+• 40 إنجازًا، كلها قابلة للتحقيق، وتظهر أيضًا في ألعاب Play.
+• 1 ضد 1: لا يوجد منافس؟ اضغط «ابحث مرة أخرى».
+• الرقم الخاطئ يعرض سبب خطئه للحظة.
+• تقييم «النجاة» وأفضل وقت فيها يعتمدان الآن على الوقت الذي لعبته.
+• تحديث أمني.
+</ar>
+<de-DE>
+• Killer erhält Zeitrennen, einen Abschluss-Rang (S+ bis C) und dieselben Rekorde wie Standard. Killer-Siege zählen für Logic Score, Missionen und Erfolge.
+• Killer-Stufen neu abgestimmt: unten leichter, oben weiter schwer.
+• 40 Erfolge, alle erreichbar, auch in Play Games.
+• 1v1: Kein Gegner? Tippe auf „Erneut suchen“.
+• Eine falsche Ziffer zeigt kurz, warum.
+• Rang und Bestzeit im Überleben zählen jetzt die gespielte Zeit.
+• Sicherheitsupdate.
+</de-DE>
+<es-ES>
+• Killer estrena Contrarreloj, calificación (de S+ a C) y los mismos récords que Estándar. Sus victorias cuentan para el Logic Score, las misiones y los logros.
+• Niveles de Killer reajustados: más fáciles abajo, igual de duros arriba.
+• 40 logros, todos alcanzables, también en Play Juegos.
+• 1v1: ¿sin rival? Toca «Buscar de nuevo».
+• Un número incorrecto muestra un momento por qué.
+• La calificación y el mejor tiempo de Supervivencia usan ya el tiempo jugado.
+• Actualización de seguridad.
+</es-ES>
+<fr-FR>
+• Killer reçoit le Contre-la-montre, un rang (de S+ à C) et les mêmes records que Standard. Ses victoires comptent pour le Logic Score, les missions et les succès.
+• Niveaux Killer rééquilibrés : plus faciles en bas, toujours durs en haut.
+• 40 succès, tous réalisables, aussi dans Play Jeux.
+• 1v1 : pas d’adversaire ? Touchez « Rechercher à nouveau ».
+• Un chiffre erroné indique brièvement pourquoi.
+• Le rang et le meilleur temps en Survie comptent le temps joué.
+• Mise à jour de sécurité.
+</fr-FR>
+<hi-IN>
+• किलर में स्पीडरन, रैंक (S+ से C) और मानक जैसे रिकॉर्ड जुड़े। किलर की जीत Logic Score, मिशन और उपलब्धियों में गिनी जाती है।
+• किलर लेवल संतुलित किए: शुरुआत में आसान, ऊपर अब भी कठिन।
+• 40 उपलब्धियां, सभी हासिल की जा सकती हैं, Play गेम्स में भी।
+• 1v1: प्रतिद्वंद्वी नहीं मिला? "फिर से खोजें" पर टैप करें।
+• गलत अंक कुछ पल के लिए कारण बताता है।
+• सर्वाइवल की रैंक और सबसे अच्छा समय अब खेले गए समय से तय होते हैं।
+• सुरक्षा अपडेट।
+</hi-IN>
+<it-IT>
+• Killer ottiene Cronometro, una valutazione (da S+ a C) e gli stessi record dello Standard. Le sue vittorie contano per Logic Score, missioni e obiettivi.
+• Livelli Killer ribilanciati: più facili in basso, sempre duri in alto.
+• 40 obiettivi, tutti ottenibili, anche in Play Giochi.
+• 1v1: nessun avversario? Tocca «Cerca di nuovo».
+• Un numero sbagliato mostra per un attimo perché.
+• Valutazione e miglior tempo in Sopravvivenza usano il tempo giocato.
+• Aggiornamento di sicurezza.
+</it-IT>
+<ja-JP>
+• キラーナンプレにタイムアタック、クリアランク（S+〜C）、スタンダードと同じ記録が加わりました。キラーの勝利もロジックスコア・ミッション・実績に数えられます。
+• キラーのレベルを調整：低いレベルは取り組みやすく、最上位は手ごわいまま。
+• 実績40個、すべて達成可能に。Play ゲームにも表示されます。
+• 1v1：相手が見つからないときは「もう一度探す」をタップ。
+• 間違えた数字は、なぜ間違いなのかを短く表示します。
+• サバイバルのランクと最高記録は、実際にプレイした時間で決まります。
+• セキュリティ更新。
+</ja-JP>
+<ko-KR>
+• 킬러에 스피드런, 클리어 등급(S+~C), 표준과 같은 기록이 생겼어요. 킬러 승리도 Logic Score·미션·업적에 들어가요.
+• 킬러 단계를 다시 맞췄어요. 낮은 단계는 더 편하고, 가장 높은 단계는 여전히 어려워요.
+• 업적 40개, 이제 전부 딸 수 있어요. Play 게임즈에도 나와요.
+• 1v1: 상대를 못 찾으면 「다시 찾기」를 눌러요.
+• 틀린 숫자를 놓으면 왜 틀렸는지 잠깐 알려 줘요.
+• 서바이벌 등급과 최고 기록은 실제로 플레이한 시간으로 정해져요.
+• 보안 업데이트.
+</ko-KR>
+<pt-BR>
+• Killer ganha Contra o Tempo, classificação (de S+ a C) e os mesmos recordes do Padrão. Suas vitórias contam para o Logic Score, missões e conquistas.
+• Níveis do Killer rebalanceados: mais fáceis embaixo, ainda difíceis no topo.
+• 40 conquistas, todas alcançáveis, também no Play Jogos.
+• 1v1: sem adversário? Toque em "Procurar de novo".
+• Um número errado mostra rapidamente o porquê.
+• Classificação e melhor tempo no Sobrevivência usam o tempo jogado.
+• Atualização de segurança.
+</pt-BR>
+<ru-RU>
+• В Киллере появились спидран, оценка (от S+ до C) и те же рекорды, что в стандартном. Победы в Киллере учитываются в Logic Score, миссиях и достижениях.
+• Уровни Киллера перенастроены: внизу легче, наверху по-прежнему сложно.
+• 40 достижений, все достижимы, также в Play Играх.
+• 1v1: нет соперника? Нажмите «Искать снова».
+• Неверная цифра ненадолго показывает, почему.
+• Оценка и лучшее время в «Выживании» считаются по сыгранному времени.
+• Обновление безопасности.
+</ru-RU>
+<zh-CN>
+• 杀手数独新增计时竞速、通关评级（S+ 至 C），记录与标准数独相同。杀手数独的胜利现在也计入 Logic Score、任务和成就。
+• 重新调整杀手数独难度：较低难度更容易上手，最高难度依然有挑战。
+• 共 40 项成就，现在全部都能达成，也会显示在 Play 游戏中。
+• 1v1：找不到对手时，点按“再次寻找”。
+• 填错数字时，会短暂显示错误原因。
+• 极限生存的评级和最佳成绩现在按实际游玩时间计算。
+• 安全更新。
+</zh-CN>
+<zh-TW>
+• 殺手數獨新增計時競速、通關評級（S+ 至 C），紀錄與標準數獨相同。殺手數獨的勝利現在也計入 Logic Score、任務和成就。
+• 重新調整殺手數獨難度：較低難度更容易上手，最高難度依然有挑戰。
+• 共 40 項成就，現在全部都能達成，也會顯示在 Play 遊戲中。
+• 1v1：找不到對手時，輕觸「再次尋找」。
+• 填錯數字時，會短暫顯示錯誤原因。
+• 極限生存的評級和最佳成績現在依實際遊玩時間計算。
+• 安全性更新。
+</zh-TW>

@@ -3,9 +3,9 @@
  * Single Source of Truth for App Version, Build Code, and Studio Branding.
  */
 export const APP_INFO = {
-  name: 'Suidoku',
-  version: '1.4.0',
-  buildCode: '26',
+  name: 'Sudoku',
+  version: '1.4.1',
+  buildCode: '27',
   buildDate: '2026.10',
   copyright: '© 2026 K2Bact. All rights reserved.',
   packageName: 'com.powerneja.suidoku',

@@ -19,14 +19,14 @@ export const killer = {
     rules: {
       title: 'Règles du Sudoku Killer',
       sudoku: 'Chaque ligne, colonne et bloc 3×3 contient les chiffres de 1 à 9 une seule fois, comme au sudoku habituel.',
-      sum: 'Les chiffres de chaque cage en pointillés ont pour somme le petit nombre de son coin supérieur gauche.',
+      sum: 'Les chiffres de chaque cage en pointillés ont pour somme la valeur indiquée dans son coin supérieur gauche.',
       noRepeat: 'Un chiffre ne peut pas apparaître deux fois dans la même cage.',
-      example: 'Exemple : une cage de deux cases marquée 3 contient forcément 1 et 2.',
+      example: 'Exemple : une cage de deux cases marquée 3 contient forcément 1 et 2.',
       start: 'Commencer'
     },
     stats: {
       title: 'Killer',
     },
-    shareText: '🧩 Sudoku Killer Lv.{level} {name} résolu en [{time}] ! Rang : {rank} (erreurs : {mistakes}). Saurez-vous faire mieux ?'
+    shareText: '🧩 Sudoku Killer Lv.{level} {name} résolu en [{time}] ! Rang : {rank} (erreurs : {mistakes}). Saurez-vous faire mieux ?'
   }
 };

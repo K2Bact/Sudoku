@@ -44,6 +44,14 @@
       "find": "नेकेड क्वाड",
       "replace": "नेके드 क्वाड",
       "expectFailure": "Korean character"
+    },
+    {
+      "name": "a French practice title loses the space before its colon",
+      "why": "Found while checking Gemini's French review (2026-10-13): 84 academy practice titles read \"Exemple pratique 1: …\" — no space at all, which no reviewer counted because the UI scan never read the academy. Gate 10 runs here through the same corpus.",
+      "file": "src/data/academy/practice/stage2PairsPractice.js",
+      "find": "Exemple pratique 1 : Réduction bloc-ligne sur une ligne",
+      "replace": "Exemple pratique 1: Réduction bloc-ligne sur une ligne",
+      "expectFailure": "no space before :"
     }
   ]
 }

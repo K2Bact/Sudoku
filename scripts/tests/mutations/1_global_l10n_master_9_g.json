@@ -44,6 +44,22 @@
       "find": "notesOn: 'Notizen AN',",
       "replace": "notesOn: 'Notizen AN {ghost}',",
       "expectFailure": "Token mismatch"
+    },
+    {
+      "name": "a French colon goes back to a plain space",
+      "why": "Gemini FR-07 (2026-10-13): 95 French UI strings had a plain space before : ; ! ?, so a narrow button could break the line there and leave the colon alone at the start of the next line. Gate 10 asks for a no-break space.",
+      "file": "src/i18n/locales/fr/modals.js",
+      "find": "rankLabel: 'Rang obtenu : {title}',",
+      "replace": "rankLabel: 'Rang obtenu : {title}',",
+      "expectFailure": "plain space before : ; ! ?"
+    },
+    {
+      "name": "a straight apostrophe comes back in French",
+      "why": "Gemini FR-26: the newer French files (replay.js) still had programmer's apostrophes while the rest used ’. Gate 10 refuses ' in French.",
+      "file": "src/i18n/locales/fr/screens.js",
+      "find": "Voici ce que l’application",
+      "replace": "Voici ce que l\\'application",
+      "expectFailure": "straight apostrophe"
     }
   ]
 }

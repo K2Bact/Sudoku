@@ -42,7 +42,7 @@ const aabOutput = 'android/app/build/outputs/bundle/release/app-release.aab';
 // 다음 릴리스가 막힐 뻔했다. 빌드 산출물은 소스 관리에 들어가지 않는다.
 const outDir = 'release_archive';
 mkdirSync(outDir, { recursive: true });
-const versionedAab = `${outDir}/suidoku-v${APP_INFO.version}-build${APP_INFO.buildCode}.aab`;
+const versionedAab = `${outDir}/sudoku-v${APP_INFO.version}-build${APP_INFO.buildCode}.aab`;
 
 copyFileSync(aabOutput, versionedAab);
 

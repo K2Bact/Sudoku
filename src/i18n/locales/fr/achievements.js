@@ -8,7 +8,7 @@ export const achievements = {
       difficulty: 'Difficulté',
       special: 'Quotidien & Duel'
     },
-    unlockedToast: 'Succès déverrouillé !',
+    unlockedToast: 'Succès déverrouillé !',
     tabTitle: 'Succès',
     openPlayGames: 'Voir mes succès dans Play Jeux',
     statsTab: 'Stats',
@@ -16,11 +16,11 @@ export const achievements = {
     lockedBadge: 'Verrouillé',
     pointsTotal: '{count} pts',
     tiers: { bronze: 'Bronze', silver: 'Argent', gold: 'Or', diamond: 'Diamant', master: 'Maître' },
-    unlockedAt: 'Débloqué : {date}',
+    unlockedAt: 'Débloqué : {date}',
 
     // 1 ~ 7. Progression & Wins
     first_win: { title: 'Premier pas', desc: 'Résolvez votre toute première grille de Sudoku dans n’importe quelle difficulté' },
-    win_5: { title: 'High Five', desc: 'Complétez un total de 5 grilles de Sudoku' },
+    win_5: { title: 'Cinq sur cinq', desc: 'Complétez un total de 5 grilles de Sudoku' },
     win_10: { title: 'Passion des casse-tête', desc: 'Complétez un total de 10 grilles de Sudoku' },
     win_25: { title: 'Médaille d’argent', desc: 'Complétez un total de 25 grilles de Sudoku' },
     win_50: { title: 'Vétéran d’or', desc: 'Complétez un total de 50 grilles de Sudoku' },
@@ -39,7 +39,7 @@ export const achievements = {
     pure_logic_master: { title: 'Esprit ultime', desc: 'Terminez Lv.5 Expert avec 0 erreur et 0 indice' },
     note_master: { title: 'Maître des notes', desc: 'Utilisez activement les notes au crayon plus de 50 fois' },
     no_notes: { title: 'Œil intuitif', desc: 'Terminez Lv.3 Moyen ou supérieur sans utiliser de notes au crayon' },
-    fast_entry_fan: { title: 'Vitesse éclair', desc: 'Terminez une grille en mode Saisie Rapide (Chiffre d’abord)' },
+    fast_entry_fan: { title: 'Vitesse éclair', desc: 'Terminez une grille en mode rapide (chiffre d’abord)' },
 
     // 15 ~ 19. Speed & Séries
     rank_s_plus: { title: 'Vitesse divine', desc: 'Obtenez le prestigieux rang 👑 S+' },
@@ -54,8 +54,8 @@ export const achievements = {
     clear_lv3: { title: 'Moyen maîtrisé', desc: 'Terminez une grille Lv.3 Moyen' },
     clear_lv4: { title: 'Déduction experte', desc: 'Terminez une grille Lv.4 Difficile' },
     clear_lv5: { title: 'Grand Maître', desc: 'Terminez la difficulté maximale Lv.5 Expert' },
-    survival_hero: { title: 'Héros de la survie', desc: 'Survivez et terminez avec succès le mode Limite de Temps' },
-    survival_clutch: { title: 'Échappée belle', desc: 'Terminez avec 5 secondes ou moins restantes au chrono' },
+    survival_hero: { title: 'Héros de la survie', desc: 'Terminez une grille en mode Survie' },
+    survival_clutch: { title: 'Échappée belle', desc: 'Terminez avec 5 secondes ou moins au chrono' },
 
     // Killer (2026-10-08, D11)
     killer_first: { title: 'Première cage', desc: 'Terminez votre premier Sudoku Killer' },
@@ -65,7 +65,7 @@ export const achievements = {
 
     // 27 ~ 30. Daily, Battle & Brain IQ
     daily_first: { title: 'Explorateur quotidien', desc: 'Terminez votre premier défi quotidien' },
-    daily_streak_7: { title: 'Miracle de 7 jours', desc: 'Connectez-vous 7 jours d’affilée' },
+    daily_streak_7: { title: 'Semaine parfaite', desc: 'Connectez-vous 7 jours d’affilée' },
     battle_first_win: { title: 'Victoire de gladiateur', desc: 'Remportez votre premier duel 1v1 ou contre l’IA' },
     iq_150: { title: 'Maître de la logique', desc: 'Atteignez un Logic Score de 135 ou plus' },
 

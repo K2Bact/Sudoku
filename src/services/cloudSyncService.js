@@ -214,7 +214,7 @@ class CloudSyncService {
       : await playGamesService.saveSnapshot(
           SNAPSHOT_NAME,
           serialized,
-          `Suidoku • ${upload.stats?.gamesWon || 0} wins`
+          `Sudoku • ${upload.stats?.gamesWon || 0} wins`
         );
     if (remoteSave.success) {
       try {

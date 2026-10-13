@@ -1,4 +1,4 @@
-# Suidoku — 앱 전용 규칙
+# Sudoku — 앱 전용 규칙
 
 > **먼저 `../../app_common/AGENTS.md` 를 읽으십시오.** 이 파일은 그것을 상속하며,
 > 스도쿠에서만 참인 것만 담습니다. 공통 규칙(빌드 금지·커밋 승인·비밀 관리·파일
@@ -11,6 +11,22 @@
 com.powerneja.suidoku    ·    React 19 · Vite 8 · Capacitor 8 · Firebase RTDB
 실기 기본 단말            R3CW60KA6YM (SM-F731N, Z플립5)
 ```
+
+---
+
+## 0. 이름은 Sudoku
+
+이 앱의 이름은 **Sudoku**(한국어 「스도쿠」)다. `Suidoku` 는 오타가 굳은 것이다 (사용자 2026-10-13: *"앞으로는 sudoku 라고 해. suidoku 가 고정되서 못 고치는 것들은 그렇게 쓰고"*).
+새로 쓰는 화면 문구·문서·파일 이름·대화는 전부 Sudoku. 아래처럼 **바꾸면 깨지는 것만** suidoku 로 남긴다.
+
+| 그대로 두는 것 | 왜 못 바꾸나 |
+|---|---|
+| 패키지 `com.powerneja.suidoku` | Play 에 등록된 앱 ID — 바꾸면 다른 앱이 된다 |
+| 저장 키 `suidoku_*`(localStorage) · Play 게임즈 저장 이름 `suidoku_progress_v1` · 안드로이드 설정 `suidoku_pgs` | 바꾸면 이미 깔린 폰의 기록·클라우드 백업을 못 읽는다 |
+| 저장소 폴더 `Suidoku/` · l10n 프로필 `--app suidoku` · 테스트 훅 `window.suidokuBattle` · 로그 태그 `SuidokuPlayGames` | 사용자에게 안 보인다. 바꾸면 경로·명령·세션·과거 기록이 같이 깨진다(폴더는 바꿀 수는 있다 — 사용자가 정할 일) |
+| 지난 Diary·SudokuAITalk·커밋의 `Suidoku` | 기록이다. 고쳐 쓰지 않는다 |
+
+앱 화면에 `Suidoku` 가 나오면 버그다 — l10n 프로필이 번역 문구에서 막고, 코드의 문자열은 2026-10-13 에 다 바꿨다(설정 버전 줄 `APP_INFO.name` · 클라우드 저장 설명 · 공유 창 제목 · 웹 매니페스트).
 
 ---
 

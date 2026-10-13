@@ -39,6 +39,7 @@ import { auditGate3EnglishLeakage } from '../../../../../app_common/l10n_engine/
 import { auditGate4CjkIsolation } from '../../../../../app_common/l10n_engine/core/gate4_cjk_isolation.mjs';
 import { auditGate6TypoBlacklist } from '../../../../../app_common/l10n_engine/core/gate6_typo_blacklist.mjs';
 import { auditGate7SentenceIntegrity } from '../../../../../app_common/l10n_engine/core/gate7_sentence_integrity.mjs';
+import { auditGate10FrenchTypography } from '../../../../../app_common/l10n_engine/core/gate10_french_typography.mjs';
 
 console.log('======================================================');
 console.log('🧪 QA Gate: Academy content under the l10n engine');
@@ -78,6 +79,7 @@ runGate('Gate 3 — 영어 찌꺼기', auditGate3EnglishLeakage(dictionaries));
 runGate('Gate 4 — 한중일 문자 격리 (zh-TW 안의 간체 포함)', auditGate4CjkIsolation(dictionaries));
 runGate('Gate 6 — 오타 블랙리스트', auditGate6TypoBlacklist(dictionaries));
 runGate('Gate 7 — 문장 무결성', auditGate7SentenceIntegrity(dictionaries));
+runGate('Gate 10 — 프랑스어 조판 (: ; ! ? 앞 줄바꿈 없는 공백 · ’ · « »)', auditGate10FrenchTypography(dictionaries));
 
 console.log('\n======================================================');
 if (failed > 0) {

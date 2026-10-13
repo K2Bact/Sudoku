@@ -5,7 +5,7 @@ Sudoku : Académie de logique
 Sudoku classique et Killer, 32 techniques, défis quotidiens, duels 1v1 et IA.
 
 [자세한 설명 (Full description - 최대 4000자)]
-Le sudoku pour tous, du grand débutant au joueur chevronné.
+Un sudoku accessible à chacun, du grand débutant au joueur chevronné.
 
 Jouez sur 5 niveaux de difficulté, apprenez 32 techniques de résolution avec schémas et exercices, et affrontez d’autres joueurs en duel 1v1 en ligne ou l’IA.
 
@@ -17,29 +17,31 @@ Jouez sur 5 niveaux de difficulté, apprenez 32 techniques de résolution avec s
 - Initiation, Facile, Moyen, Difficile et Expert.
 - Chaque grille est générée pour n’avoir qu’une seule solution.
 - Modes Classique, Contre-la-montre et Survie.
+- Sudoku Killer : les chiffres de chaque cage en pointillés ont pour somme la valeur indiquée. Modes Classique et Contre-la-montre, avec rang et records comme au sudoku standard.
 - 4 thèmes reposants pour les yeux.
 
-🎓 2. Académie : 32 techniques de résolution
+🎓 2. Académie : 32 techniques de résolution
 - Chaque technique s’accompagne d’une explication illustrée et de 2 exercices sur de vraies grilles.
-- Débutant : Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
-- Intermédiaire : Pointing, Claiming, Naked/Hidden Pairs, Triples et Quads
-- Avancé : X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
-- Maître : Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
-- Grand Maître : Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
+- Débutant : Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
+- Intermédiaire : Pointing, Claiming, Naked/Hidden Pairs, Triples et Quads
+- Avancé : X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
+- Maître : Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
+- Grand Maître : Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
 
 ⚔️ 3. Duels 1v1 et contre l’IA
-- Duels en ligne en temps réel : affrontez un autre joueur sur la même grille.
+- Duels en ligne en temps réel : affrontez un autre joueur sur la même grille.
 - Suivez la progression de votre adversaire pendant la partie.
+- Après le duel, revoyez les deux grilles coup par coup.
 - Duels contre l’IA sur 5 niveaux de difficulté.
 
 🏆 4. Succès et analyse de jeu
-- 30 succès à débloquer.
+- 40 succès à débloquer, aussi dans Google Play Jeux.
 - Votre jeu détaillé selon 5 indicateurs, comme la vitesse et les grilles réussies sans erreur.
 - Mesurez-vous aux autres dans le classement Logic Score de Google Play Jeux.
 
 📅 5. Défi quotidien
 - Une nouvelle mission chaque jour, suivie sur un calendrier.
-- Vous avez manqué un jour ? Débloquez les grilles passées en regardant une courte publicité.
+- Vous avez manqué un jour ? Débloquez les grilles passées en regardant une courte publicité.
 - Gagnez un badge chaque mois.
 
 ☁️ 6. Sauvegarde cloud

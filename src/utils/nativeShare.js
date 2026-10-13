@@ -7,7 +7,7 @@ const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.powern
  * Robust Native Android / iOS / Web Share Utility
  * Automatically prioritizes Capacitor Native Share Dialog, then Web Share API, then Clipboard fallback.
  */
-export async function shareContent({ title, text, url = PLAY_STORE_URL, dialogTitle = 'Share Suidoku' }) {
+export async function shareContent({ title, text, url = PLAY_STORE_URL, dialogTitle = 'Share Sudoku' }) {
   // 1. Capacitor Native Android / iOS Share
   if (Capacitor.isNativePlatform()) {
     try {

@@ -1,6 +1,6 @@
 {
-  "name": "Suidoku - 스도쿠 & 두뇌 활성 지수",
-  "short_name": "Suidoku",
+  "name": "Sudoku",
+  "short_name": "Sudoku",
   "description": "5단계 난이도 모바일 스도쿠, 자동 노트 지우개, 1v1 배틀 및 두뇌 활성 지수 리포트",
   "start_url": "/",
   "display": "standalone",
