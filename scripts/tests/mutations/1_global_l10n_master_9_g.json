@@ -60,6 +60,14 @@
       "find": "Voici ce que l’application",
       "replace": "Voici ce que l\\'application",
       "expectFailure": "straight apostrophe"
+    },
+    {
+      "name": "French loading text goes back to three dots",
+      "why": "Gemini FR-29 (2026-10-14): four French loading texts used \"...\" while three others used the ellipsis; gate 10 rule 6 asks for … everywhere in French.",
+      "file": "src/i18n/locales/fr/screens.js",
+      "find": "searching: 'Recherche d’un adversaire…',",
+      "replace": "searching: 'Recherche d’un adversaire...',",
+      "expectFailure": "three dots"
     }
   ]
 }
