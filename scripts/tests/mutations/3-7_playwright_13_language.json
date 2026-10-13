@@ -22,6 +22,14 @@
       "find": "  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  padding: 2px 0 6px;\n}",
       "replace": "  display: flex;\n  overflow-x: auto;\n  gap: 6px;\n  padding: 2px 0 6px;\n  scrollbar-width: none;\n}",
       "expectFailure": "LAYOUT DEFECTS DETECTED"
+    },
+    {
+      "name": "the settings version line draws the app name from APP_INFO again",
+      "why": "2026-10-13 the line became APP_INFO.name — \"Sudoku\" in every language, including Japanese, where 「数独 / Sudoku」 is Nikoli's mark and the app says ナンプレ (Diary 129). The dictionaries cannot see text the code draws itself, so 3-7 reads the Japanese screens as shown.",
+      "file": "src/components/SettingsScreen.jsx",
+      "find": "<span>{t('home.title')} <bdi dir=\"ltr\">",
+      "replace": "<span>{APP_INFO.name} <bdi dir=\"ltr\">",
+      "expectFailure": "JA_NIKOLI_MARK_ON_SCREEN"
     }
   ]
 }

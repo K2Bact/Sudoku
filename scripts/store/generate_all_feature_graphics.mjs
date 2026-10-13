@@ -10,8 +10,12 @@ const GRAPHICS_CONFIG = {
     dir: 'ltr',
     badge: '☀ SUDOKU',
     title1: 'Sudoku',
-    title2: 'Casse-tête logique',
-    tagline: 'Classique · 32 techniques · Rapport de QI et duel 1v1',
+    // The store title's words (store_description_fr.txt), made for the France launch
+    // 2026-10-14. The old tagline sold a "rapport de QI" the app renamed to Logic Score,
+    // and "Casse-tête" right under "Sudoku" read like the registered « Casse-tête Sudoku »
+    // (INPI 3396139, Diary 126).
+    title2: 'Académie de logique',
+    tagline: 'Classique et Killer · 32 techniques · duels 1v1 et IA',
     font: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", sans-serif'
   },
   'hi-IN': {

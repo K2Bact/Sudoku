@@ -1,0 +1,52 @@
+<en-US>
+• The app's name in Settings now reads correctly.
+• French: clearer wording and proper French punctuation.
+</en-US>
+<ar>
+• تصحيح اسم التطبيق الظاهر في الإعدادات.
+• الفرنسية: صياغة أوضح وعلامات ترقيم فرنسية صحيحة.
+</ar>
+<de-DE>
+• Der App-Name in den Einstellungen wird jetzt richtig angezeigt.
+• Französisch: klarere Formulierungen und korrekte französische Zeichensetzung.
+</de-DE>
+<es-ES>
+• Corregido el nombre de la app que aparece en Ajustes.
+• Francés: textos más claros y puntuación francesa correcta.
+</es-ES>
+<fr-FR>
+• Le nom de l’application affiché dans les Paramètres est corrigé.
+• Textes français revus : vocabulaire du sudoku plus juste, ponctuation et espaces corrects.
+</fr-FR>
+<hi-IN>
+• सेटिंग में दिखने वाला ऐप का नाम ठीक किया गया।
+• फ़्रेंच: ज़्यादा साफ़ शब्द और सही फ़्रेंच विराम चिह्न।
+</hi-IN>
+<it-IT>
+• Corretto il nome dell’app mostrato nelle Impostazioni.
+• Francese: testi più chiari e punteggiatura francese corretta.
+</it-IT>
+<ja-JP>
+• 設定画面に表示されるアプリ名を修正しました。
+• フランス語の表現と句読点を改善しました。
+</ja-JP>
+<ko-KR>
+• 설정 화면에 나오는 앱 이름을 바로잡았어요.
+• 프랑스어 문구와 문장부호를 다듬었어요.
+</ko-KR>
+<pt-BR>
+• Corrigido o nome do app exibido nas Configurações.
+• Francês: textos mais claros e pontuação francesa correta.
+</pt-BR>
+<ru-RU>
+• Исправлено название приложения в Настройках.
+• Французский язык: более понятные формулировки и правильная французская пунктуация.
+</ru-RU>
+<zh-CN>
+• 修正了设置中显示的应用名称。
+• 改进了法语文本的措辞和标点。
+</zh-CN>
+<zh-TW>
+• 修正了設定中顯示的應用程式名稱。
+• 改進了法語文字的措辭和標點。
+</zh-TW>

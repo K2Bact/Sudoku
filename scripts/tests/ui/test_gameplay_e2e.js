@@ -148,6 +148,15 @@ async function readTimerSeconds(page) {
   return parts[0] * 60 + parts[1];
 }
 
+// Tap a cell and wait until the board has selected it. A fixed sleep here raced the
+// keypad under load: in the full QA run, right after the 13-language sweep, the digit
+// arrived before the selection and nothing was placed (Case 6 and Case 3, 2026-10-14,
+// Diary 129). Alone the gate passed; in the pipeline it failed one run in four.
+async function selectCell(page, index) {
+  await page.locator('.sudoku-cell').nth(index).click();
+  await page.waitForFunction((i) => document.querySelectorAll('.sudoku-cell')[i]?.classList.contains('selected'), index, { timeout: 2000 });
+}
+
 // Index of the first blank cell in DOM order, or -1
 async function firstBlankCellIndex(page) {
   return page.evaluate(() => {
@@ -219,8 +228,7 @@ async function run() {
     for (const digit of [1, 2, 3]) {
       blank = await firstBlankCellIndex(page);
       if (blank < 0) break;
-      await cells.nth(blank).click();
-      await page.waitForTimeout(80);
+      await selectCell(page, blank);
       await page.locator(`.number-pad .num-btn:nth-child(${digit})`).click();
       await page.waitForTimeout(120);
     }
@@ -268,8 +276,7 @@ async function run() {
     // in there throws here. (A blank cell short-circuits and hides the fault.)
     const filled = await firstFilledCellIndex(page);
     if (filled >= 0) {
-      await page.locator('.sudoku-cell').nth(filled).click();
-      await page.waitForTimeout(150);
+      await selectCell(page, filled);
     }
 
     // Then prove input still works. If initialBoard was solved in place, every cell
@@ -277,8 +284,7 @@ async function run() {
     const target = await firstBlankCellIndex(page);
     let placed = '';
     if (target >= 0) {
-      await page.locator('.sudoku-cell').nth(target).click();
-      await page.waitForTimeout(150);
+      await selectCell(page, target);
       await page.locator('.number-pad .num-btn:nth-child(1)').click();
       await page.waitForTimeout(250);
       placed = await cellDigitAt(page, target);
@@ -311,8 +317,7 @@ async function run() {
     if (lastIdx < 0) {
       failures.push('Case 4: no blank cell found after resuming a one-cell-remaining save');
     } else {
-      await page.locator('.sudoku-cell').nth(lastIdx).click();
-      await page.waitForTimeout(150);
+      await selectCell(page, lastIdx);
       await page.locator(`.number-pad .num-btn:nth-child(${remaining[0].value})`).click();
 
       const victory = page.locator('.victory-card');
@@ -371,8 +376,7 @@ async function run() {
       const { state: s4b, remaining: r4b } = buildSavedState({ level: 1, leaveEmpty: 1 });
       await seedAndResume(page, s4b, { limitMistakes: false });
       const idx = await firstBlankCellIndex(page);
-      await page.locator('.sudoku-cell').nth(idx).click();
-      await page.waitForTimeout(150);
+      await selectCell(page, idx);
       await page.locator(`.number-pad .num-btn:nth-child(${r4b[0].value})`).click();
       try {
         await page.locator('.victory-card').waitFor({ state: 'visible', timeout: 4000 });
@@ -450,8 +454,7 @@ async function run() {
     });
 
     const blankIdx = await firstBlankCellIndex(page);
-    await page.locator('.sudoku-cell').nth(blankIdx).click();
-    await page.waitForTimeout(120);
+    await selectCell(page, blankIdx);
     await page.locator('.number-pad .num-btn:nth-child(1)').click();
     await page.waitForTimeout(400);
 
@@ -507,8 +510,7 @@ async function run() {
           if (d) target = { index: r * 9 + c, digit: d };
         }
       }
-      await page.locator('.sudoku-cell').nth(target.index).click();
-      await page.waitForTimeout(80);
+      await selectCell(page, target.index);
       await page.locator(`.number-pad .num-btn:nth-child(${target.digit})`).click();
       const toast = page.locator('.conflict-toast-banner');
       const shown = await toast.waitFor({ timeout: 2000 }).then(() => true, () => false);
@@ -549,8 +551,7 @@ async function run() {
         await enterGame(page, '.btn-resume');
         const { r, c, value } = remaining[0];
         const digit = page.locator(`.number-pad .num-btn:nth-child(${value})`);
-        await page.locator('.sudoku-cell').nth(r * 9 + c).click();
-        await page.waitForTimeout(80);
+        await selectCell(page, r * 9 + c);
         const before = await readTimerSeconds(page);
         await digit.click();
         await page.waitForTimeout(250);

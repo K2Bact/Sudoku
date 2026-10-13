@@ -224,6 +224,18 @@ async function runScanner() {
         // The count is what was looked at. It used to be a flat 35 per screen, so the
         // total printed 3,185 whatever happened (external audit V04, 2026-09-12). A
         // screen that shows nothing to inspect was not checked, and is not a pass.
+        // Japan: 「数独 / Sudoku」 is Nikoli's mark and the Japanese UI says ナンプレ. Gate 2-18
+        // holds the dictionaries to that, but text the code draws itself never passes through
+        // them — APP_INFO.name put "Sudoku" on the Japanese settings screen (2026-10-13,
+        // Diary 129). So each screen is read as the player sees it.
+        if (lang === 'ja') {
+          const mark = await page.evaluate(() => (document.body.innerText.match(/sudoku|数独/i) || [null])[0]);
+          if (mark) {
+            errorLog.push({ lang, screen: scr.name, type: 'JA_NIKOLI_MARK_ON_SCREEN', text: mark, className: '' });
+            totalErrors++;
+          }
+        }
+
         totalScanned += inspected;
         if (inspected === 0) {
           errorLog.push({ lang, screen: scr.name, type: 'NOTHING_INSPECTED', text: 'no visible element to check', className: '' });

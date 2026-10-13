@@ -214,7 +214,9 @@ class CloudSyncService {
       : await playGamesService.saveSnapshot(
           SNAPSHOT_NAME,
           serialized,
-          `Sudoku • ${upload.stats?.gamesWon || 0} wins`
+          // No app name: the save is already listed under this game, and in Japan
+          // 「Sudoku」 is Nikoli's mark (the app says ナンプレ there) — Diary 129.
+          `${upload.stats?.gamesWon || 0} wins`
         );
     if (remoteSave.success) {
       try {

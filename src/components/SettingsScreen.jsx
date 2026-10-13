@@ -274,7 +274,10 @@ export function SettingsScreen({
         <div className="settings-footer">
           <div className="version-pill">
             <Info size={14} />
-            <span>{APP_INFO.name} v{APP_INFO.version} (Build {APP_INFO.buildCode})</span>
+            {/* The name is the one the home header shows: 「ナンプレ」 in Japanese, where
+                「数独 / Sudoku」 is Nikoli's mark — APP_INFO.name put "Sudoku" here in every
+                language (2026-10-14, Diary 129). The version stays left-to-right inside RTL. */}
+            <span>{t('home.title')} <bdi dir="ltr">v{APP_INFO.version} (Build {APP_INFO.buildCode})</bdi></span>
           </div>
           {/* 아랍어 화면에서 이 줄이 `.K2Bact. All rights reserved 2026 ©` 로
               나왔다. 양방향 알고리즘이 RTL 문맥 안의 라틴 문자열을 재배열한
