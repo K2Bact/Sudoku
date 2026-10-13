@@ -118,6 +118,7 @@ npm run qa         # 문구·화면·CSS·게이트를 바꿨을 때, 그리고 
 docs/BACKLOG.md            할 일 — 단일 원본. archive/ 는 읽지 마십시오
 docs/RELEASE_STATE.md      콘솔 신고 이력 · 실기 검증 · 출시 전 전환 목록
 docs/SudokuDiary.md        경위·발견·검증 (서사). 할 일을 여기 쓰지 마십시오
+docs/SESSIONS.md           어느 대화(세션)에서 무엇을 했나 — 세션 이름 → Diary 번호. 찾을 때만 읽는다
 docs/TECHNICAL_SPECIFICATION.md
 docs/POST_MORTEM_MISTAKES_REGISTRY.md   2026-08-15 시점 스냅샷. 이후는 일지
 ```

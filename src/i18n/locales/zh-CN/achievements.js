@@ -13,6 +13,7 @@ export const achievements = {
     },
     unlockedToast: '成就达成！',
     tabTitle: '成就',
+    openPlayGames: '在 Play 游戏中查看我的成就',
     statsTab: '统计',
     unlockedCount: '已达成 {unlocked} / {total} ({pct}%)',
     lockedBadge: '未解锁',

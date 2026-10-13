@@ -43,9 +43,52 @@ export const LEADERBOARD_IDS = {
   BRAIN_IQ: 'CgkIsvv_0f4TEAIQAQ'
 };
 
-// No achievements exist in the Play Console yet. Populate this map as they are
-// created; unlockAchievement is a no-op while it stays empty.
-export const ACHIEVEMENT_IDS = {};
+// The forty achievements, imported into Play Console on 2026-10-10 (D11) from
+// scripts/store/build_pgs_achievements.mjs. The ids come from the console's
+// "Get resources" file, kept as store_assets/common/pgs_achievements/games-ids.xml;
+// gate 2-30 holds this map to it, by each achievement's English name.
+export const ACHIEVEMENT_IDS = {
+  first_win: 'CgkIsvv_0f4TEAIQCw',
+  win_5: 'CgkIsvv_0f4TEAIQHA',
+  win_10: 'CgkIsvv_0f4TEAIQIA',
+  win_25: 'CgkIsvv_0f4TEAIQBg',
+  win_50: 'CgkIsvv_0f4TEAIQIg',
+  win_100: 'CgkIsvv_0f4TEAIQDw',
+  win_250: 'CgkIsvv_0f4TEAIQGA',
+  visit_30: 'CgkIsvv_0f4TEAIQCQ',
+  visit_100: 'CgkIsvv_0f4TEAIQFg',
+  visit_365: 'CgkIsvv_0f4TEAIQEg',
+  flawless_1: 'CgkIsvv_0f4TEAIQDg',
+  flawless_5: 'CgkIsvv_0f4TEAIQHg',
+  pure_logic_expert: 'CgkIsvv_0f4TEAIQGg',
+  pure_logic_master: 'CgkIsvv_0f4TEAIQKA',
+  note_master: 'CgkIsvv_0f4TEAIQDA',
+  no_notes: 'CgkIsvv_0f4TEAIQFA',
+  fast_entry_fan: 'CgkIsvv_0f4TEAIQGQ',
+  rank_s_plus: 'CgkIsvv_0f4TEAIQFQ',
+  speed_runner_3m: 'CgkIsvv_0f4TEAIQAw',
+  speed_runner_2m: 'CgkIsvv_0f4TEAIQCg',
+  combo_streak_5: 'CgkIsvv_0f4TEAIQHQ',
+  combo_streak_10: 'CgkIsvv_0f4TEAIQJQ',
+  clear_lv1: 'CgkIsvv_0f4TEAIQJw',
+  clear_lv2: 'CgkIsvv_0f4TEAIQEw',
+  clear_lv3: 'CgkIsvv_0f4TEAIQBQ',
+  clear_lv4: 'CgkIsvv_0f4TEAIQKQ',
+  clear_lv5: 'CgkIsvv_0f4TEAIQIw',
+  survival_hero: 'CgkIsvv_0f4TEAIQKg',
+  survival_clutch: 'CgkIsvv_0f4TEAIQEQ',
+  killer_first: 'CgkIsvv_0f4TEAIQBA',
+  killer_lv3: 'CgkIsvv_0f4TEAIQGw',
+  killer_win_25: 'CgkIsvv_0f4TEAIQDQ',
+  killer_lv5: 'CgkIsvv_0f4TEAIQFw',
+  daily_first: 'CgkIsvv_0f4TEAIQHw',
+  daily_streak_7: 'CgkIsvv_0f4TEAIQBw',
+  battle_first_win: 'CgkIsvv_0f4TEAIQEA',
+  iq_150: 'CgkIsvv_0f4TEAIQJg',
+  academy_first_lesson: 'CgkIsvv_0f4TEAIQIQ',
+  academy_stage3: 'CgkIsvv_0f4TEAIQCA',
+  academy_all: 'CgkIsvv_0f4TEAIQJA',
+};
 
 class PlayGamesService {
   constructor() {
@@ -162,6 +205,20 @@ class PlayGamesService {
     } catch (e) {
       console.warn('[PlayGames] unlockAchievement failed:', e?.message || e);
       return { success: false, reason: 'error', error: e?.message };
+    }
+  }
+
+  /** Google's own achievements screen — what Play Games shows the player. */
+  async showAchievements() {
+    if (!this.isNative() || !this.isAuthenticated) return { success: false, reason: 'signed_out' };
+    try {
+      const { api: pg } = await loadPlugin();
+      if (!pg) return { success: false, reason: 'no_plugin' };
+      await pg.showAchievements();
+      return { success: true };
+    } catch (e) {
+      console.warn('[PlayGames] showAchievements failed:', e?.message || e);
+      return { success: false, reason: 'error' };
     }
   }
 

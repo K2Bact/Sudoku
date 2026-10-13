@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { Trophy, Lock, CheckCircle2, Award } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Trophy, Lock, CheckCircle2, Award, Gamepad2 } from 'lucide-react';
 import { ACHIEVEMENTS_LIST, ACHIEVEMENT_TIERS } from '../data/achievementsData.js';
 import { loadUnlockedAchievements } from '../utils/achievementManager.js';
+import { playGamesService } from '../services/playGamesService.js';
+import { connectPlayGames } from '../utils/playGamesBridge.js';
 import { useTranslation } from '../i18n/i18nContext';
 import { soundHaptic } from '../utils/soundHaptic';
 
@@ -9,6 +11,30 @@ export function AchievementsView() {
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const unlockedMap = loadUnlockedAchievements();
+
+  // The same forty in Play Games (D11). Signed in: Google's own achievements
+  // screen. Signed out: connect first — the BrainReportScreen ranking card works
+  // the same way.
+  const [signedIn, setSignedIn] = useState(() => playGamesService.isNative() && playGamesService.isAuthenticated);
+  const [connecting, setConnecting] = useState(false);
+  useEffect(() => {
+    const onSignedIn = () => setSignedIn(playGamesService.isNative() && playGamesService.isAuthenticated);
+    window.addEventListener('playGamesSignedIn', onSignedIn);
+    return () => window.removeEventListener('playGamesSignedIn', onSignedIn);
+  }, []);
+  const handleOpenPlayGames = async () => {
+    soundHaptic.playSelectSound();
+    const res = await playGamesService.showAchievements();
+    if (!res.success) setSignedIn(false);
+  };
+  const handleConnect = async () => {
+    if (connecting) return;
+    soundHaptic.playSelectSound();
+    setConnecting(true);
+    const ok = await connectPlayGames();
+    setConnecting(false);
+    if (ok) setSignedIn(true);
+  };
 
   const totalCount = ACHIEVEMENTS_LIST.length;
   const unlockedCount = Object.keys(unlockedMap).length;
@@ -70,6 +96,20 @@ export function AchievementsView() {
         <div className="ach-progress-track">
           <div className="ach-progress-bar" style={{ width: `${pct}%` }}></div>
         </div>
+      </div>
+
+      <div className="ach-playgames-row">
+        {signedIn ? (
+          <button type="button" className="btn-modern btn-block btn-open-pg-achievements" onClick={handleOpenPlayGames}>
+            <Trophy size={16} />
+            <span>{t('achievements.openPlayGames')}</span>
+          </button>
+        ) : (
+          <button type="button" className="btn-modern btn-block btn-open-pg-achievements" onClick={handleConnect} disabled={connecting}>
+            <Gamepad2 size={16} />
+            <span>{t('cloudSync.playGamesConnect')}</span>
+          </button>
+        )}
       </div>
 
       {/* 2. Category Filter Pills */}

@@ -36,6 +36,7 @@ import http from 'http';
 import { LOCALES } from '../../lib/locales.js';
 import { generateKillerPuzzle } from '../../../src/engine/killer/killerGenerator.js';
 import { cloneGrid } from '../../../src/engine/SudokuEngine.js';
+import { getDailyMission } from '../../../src/utils/dailyChallenge.js';
 
 const PORT = 5218;
 const URL = `http://localhost:${PORT}`;
@@ -258,11 +259,24 @@ async function run() {
       if (!(stats?.killer?.bestTimes?.[1] > 0)) fail('5: the killer win set no Lv.1 best time');
       if (stats?.gamesWon) fail(`5: the classic record shows ${stats.gamesWon} win(s) after a killer`);
       if (await readJSON(page, 'suidoku_ghost_records_v1')) fail('5: a killer win recorded a ghost run');
-      if (await readJSON(page, 'suidoku_daily_records_v1')) fail('5: a killer win touched the daily records');
+      // Since 2026-10-08 a killer win counts toward the day's mission (Diary 112). The
+      // mission changes with the date, so the expectation does too: this said "no daily
+      // record, ever", and failed on the days the mission is "clear Lv.1 or higher"
+      // (2026-10-10, found by Gemini's run — BACKLOG D18's twin). Read the day's
+      // mission the way the win path does, then hold the record to it both ways.
+      const dateKey = await page.evaluate(() => {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      });
+      const mission = getDailyMission(dateKey, stats || {});
+      const missionDone = mission.type === 'level_clear' && 1 >= mission.minLevel;   // a Lv.1 game in plain mode
+      const dayRecord = (await readJSON(page, 'suidoku_daily_records_v1'))?.[dateKey];
+      if (missionDone && !dayRecord?.completed) fail(`5: today's mission (${mission.type}, Lv.${mission.minLevel}+) was met by the killer win and not recorded`);
+      if (!missionDone && dayRecord) fail(`5: a killer win recorded today's ${mission.type} mission, which a Lv.1 plain game does not meet`);
     } catch {
       fail('5: no victory card after the last correct digit');
     }
-    console.log('  ▶ 5. killer win: no grade, killer record only');
+    console.log("  ▶ 5. killer win: killer grade, killer record only, the day's mission as the rules say");
 
     // ── 5b. A killer speedrun ────────────────────────────────────────────
     // Two open cells with different digits: with one, every other digit is already

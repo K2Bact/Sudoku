@@ -10,6 +10,7 @@ export const achievements = {
     },
     unlockedToast: '実績達成！',
     tabTitle: '実績',
+    openPlayGames: 'Play ゲームで実績を見る',
     statsTab: '統計',
     unlockedCount: '{unlocked} / {total} 達成 ({pct}%)',
     lockedBadge: '未達成',

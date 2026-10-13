@@ -10,6 +10,7 @@ export const achievements = {
     },
     unlockedToast: 'تم فتح إنجاز جديد!',
     tabTitle: 'الإنجازات',
+    openPlayGames: 'عرض إنجازاتي في ألعاب Play',
     statsTab: 'الإحصائيات',
     unlockedCount: 'تم فتح \u2066{unlocked} / {total}\u2069 ({pct}%)',
     lockedBadge: 'مغلق',

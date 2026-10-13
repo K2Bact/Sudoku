@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Google Play game services IDs. Save this file as res/values/games-ids.xml in your project.-->
+<resources>
+  <!--app_id-->
+  <string name="app_id" translatable="false">686829862322</string>
+  <!--package_name-->
+  <string name="package_name" translatable="false">com.powerneja.suidoku</string>
+  <!--achievement First Step-->
+  <string name="achievement_first_step" translatable="false">CgkIsvv_0f4TEAIQCw</string>
+  <!--achievement High Five-->
+  <string name="achievement_high_five" translatable="false">CgkIsvv_0f4TEAIQHA</string>
+  <!--achievement Puzzle Enthusiast-->
+  <string name="achievement_puzzle_enthusiast" translatable="false">CgkIsvv_0f4TEAIQIA</string>
+  <!--achievement Silver Puzzler-->
+  <string name="achievement_silver_puzzler" translatable="false">CgkIsvv_0f4TEAIQBg</string>
+  <!--achievement Gold Veteran-->
+  <string name="achievement_gold_veteran" translatable="false">CgkIsvv_0f4TEAIQIg</string>
+  <!--achievement Century Club-->
+  <string name="achievement_century_club" translatable="false">CgkIsvv_0f4TEAIQDw</string>
+  <!--achievement Sudoku Legend-->
+  <string name="achievement_sudoku_legend" translatable="false">CgkIsvv_0f4TEAIQGA</string>
+  <!--achievement Regular-->
+  <string name="achievement_regular" translatable="false">CgkIsvv_0f4TEAIQCQ</string>
+  <!--achievement Hundred Days-->
+  <string name="achievement_hundred_days" translatable="false">CgkIsvv_0f4TEAIQFg</string>
+  <!--achievement A Year of Sudoku-->
+  <string name="achievement_a_year_of_sudoku" translatable="false">CgkIsvv_0f4TEAIQEg</string>
+  <!--achievement Flawless Master-->
+  <string name="achievement_flawless_master" translatable="false">CgkIsvv_0f4TEAIQDg</string>
+  <!--achievement Perfectionist-->
+  <string name="achievement_perfectionist" translatable="false">CgkIsvv_0f4TEAIQHg</string>
+  <!--achievement Pure Logic-->
+  <string name="achievement_pure_logic" translatable="false">CgkIsvv_0f4TEAIQGg</string>
+  <!--achievement Ultimate Mind-->
+  <string name="achievement_ultimate_mind" translatable="false">CgkIsvv_0f4TEAIQKA</string>
+  <!--achievement Note Master-->
+  <string name="achievement_note_master" translatable="false">CgkIsvv_0f4TEAIQDA</string>
+  <!--achievement Intuitive Eye-->
+  <string name="achievement_intuitive_eye" translatable="false">CgkIsvv_0f4TEAIQFA</string>
+  <!--achievement Lightning Fast-->
+  <string name="achievement_lightning_fast" translatable="false">CgkIsvv_0f4TEAIQGQ</string>
+  <!--achievement Godspeed-->
+  <string name="achievement_godspeed" translatable="false">CgkIsvv_0f4TEAIQFQ</string>
+  <!--achievement Under 3 Minutes-->
+  <string name="achievement_under_3_minutes" translatable="false">CgkIsvv_0f4TEAIQAw</string>
+  <!--achievement Speed Demon-->
+  <string name="achievement_speed_demon" translatable="false">CgkIsvv_0f4TEAIQCg</string>
+  <!--achievement Combo Artist-->
+  <string name="achievement_combo_artist" translatable="false">CgkIsvv_0f4TEAIQHQ</string>
+  <!--achievement Combo Maestro-->
+  <string name="achievement_combo_maestro" translatable="false">CgkIsvv_0f4TEAIQJQ</string>
+  <!--achievement Novice Conqueror-->
+  <string name="achievement_novice_conqueror" translatable="false">CgkIsvv_0f4TEAIQJw</string>
+  <!--achievement Easy Master-->
+  <string name="achievement_easy_master" translatable="false">CgkIsvv_0f4TEAIQEw</string>
+  <!--achievement Medium Solved-->
+  <string name="achievement_medium_solved" translatable="false">CgkIsvv_0f4TEAIQBQ</string>
+  <!--achievement Expert Deduction-->
+  <string name="achievement_expert_deduction" translatable="false">CgkIsvv_0f4TEAIQKQ</string>
+  <!--achievement Grand Master-->
+  <string name="achievement_grand_master" translatable="false">CgkIsvv_0f4TEAIQIw</string>
+  <!--achievement Time Survival Hero-->
+  <string name="achievement_time_survival_hero" translatable="false">CgkIsvv_0f4TEAIQKg</string>
+  <!--achievement Clutch Escape-->
+  <string name="achievement_clutch_escape" translatable="false">CgkIsvv_0f4TEAIQEQ</string>
+  <!--achievement First Cage-->
+  <string name="achievement_first_cage" translatable="false">CgkIsvv_0f4TEAIQBA</string>
+  <!--achievement Sum Solver-->
+  <string name="achievement_sum_solver" translatable="false">CgkIsvv_0f4TEAIQGw</string>
+  <!--achievement Cage Crusher-->
+  <string name="achievement_cage_crusher" translatable="false">CgkIsvv_0f4TEAIQDQ</string>
+  <!--achievement Killer Master-->
+  <string name="achievement_killer_master" translatable="false">CgkIsvv_0f4TEAIQFw</string>
+  <!--achievement Daily Explorer-->
+  <string name="achievement_daily_explorer" translatable="false">CgkIsvv_0f4TEAIQHw</string>
+  <!--achievement 7-Day Miracle-->
+  <string name="achievement_7day_miracle" translatable="false">CgkIsvv_0f4TEAIQBw</string>
+  <!--achievement Gladiator Victory-->
+  <string name="achievement_gladiator_victory" translatable="false">CgkIsvv_0f4TEAIQEA</string>
+  <!--achievement Logic Master-->
+  <string name="achievement_logic_master" translatable="false">CgkIsvv_0f4TEAIQJg</string>
+  <!--achievement First Lesson-->
+  <string name="achievement_first_lesson" translatable="false">CgkIsvv_0f4TEAIQIQ</string>
+  <!--achievement Wing Master-->
+  <string name="achievement_wing_master" translatable="false">CgkIsvv_0f4TEAIQCA</string>
+  <!--achievement Academy Graduate-->
+  <string name="achievement_academy_graduate" translatable="false">CgkIsvv_0f4TEAIQJA</string>
+  <!--leaderboard Logic Score-->
+  <string name="leaderboard_logic_score" translatable="false">CgkIsvv_0f4TEAIQAQ</string>
+</resources>

@@ -125,7 +125,7 @@ export const screens = {
     privacy: {
       subtitle: 'Sudoku 無需帳號。以下是本應用程式實際儲存與傳送的資訊。',
       sec1Title: '1. 本機儲存與備份', sec1Desc: "您的紀錄、提示與設定儲存在本機。未登入 Play 遊戲時，這些資料只保留在本機。我們從不收集您的姓名、電子郵件、電話號碼、通訊錄或位置。",
-      sec2Title: '2. Google Play 遊戲', sec2Desc: '登入 Play 遊戲後，每次獲勝都會把您的進度（統計、成就、提示、設定）自動備份到 Play 遊戲存檔，並把您的 Logic Score提交到 Play 遊戲排行榜。這些資料儲存在您自己的 Google 帳戶中。',
+      sec2Title: '2. Google Play 遊戲', sec2Desc: '登入 Play 遊戲後，每次獲勝都會把您的進度（統計、成就、提示、設定）自動備份到 Play 遊戲存檔，並把您的 Logic Score提交到 Play 遊戲排行榜。您獲得的成就也會記錄到 Play 遊戲中，包括登入前獲得的成就。這些資料儲存在您自己的 Google 帳戶中。',
       sec3Title: '3. 1v1 對戰', sec3Desc: '即時 1v1 對戰透過 Google Firebase 向對手傳送隨機產生的玩家 ID、自動暱稱（Player_xxxx）與您的解題進度。該 ID 儲存在本機並重複使用，不與您的姓名或任何帳戶連結。 若雙方都開啟了「對戰紀錄分享」，對戰結束後還會向對手傳送本局的步驟和時間，用於復盤（預設開啟，可在設定中關閉）。',
       sec4Title: '4. 廣告與購買', sec4Desc: '本應用程式透過 Google AdMob 顯示廣告：橫幅廣告、獲勝後的全螢幕廣告，以及自願觀看的獎勵影片。AdMob 可能會處理您的廣告 ID。「移除廣告」的購買由 Google Play 處理，我們不會收到您的付款資訊。'
     }

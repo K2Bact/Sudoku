@@ -10,6 +10,7 @@ export const achievements = {
     },
     unlockedToast: 'Achievement Unlocked!',
     tabTitle: 'Achievements',
+    openPlayGames: 'See my achievements in Play Games',
     statsTab: 'Stats',
     unlockedCount: '{unlocked} / {total} Unlocked ({pct}%)',
     lockedBadge: 'Locked',

@@ -5,6 +5,7 @@
 
 import { savePlayGamesUser, getPlayGamesUser } from './storage.js';
 import { playGamesService } from '../services/playGamesService.js';
+import { syncAchievementsToPlayGames } from './achievementManager.js';
 
 /**
  * 자동 로그인을 그만둘지 기억하는 키.
@@ -83,6 +84,8 @@ export function initPlayGamesListener() {
         lastLogin: Date.now()
       };
       savePlayGamesUser(currentUser);
+      // Achievements earned while signed out reach Play Games now (D11 ④).
+      syncAchievementsToPlayGames().catch((e) => console.warn('[PlayGamesBridge] achievement sync failed:', e?.message || e));
       listeners.forEach((callback) => {
         try {
           callback(currentUser);

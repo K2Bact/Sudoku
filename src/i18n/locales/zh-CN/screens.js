@@ -125,7 +125,7 @@ export const screens = {
     privacy: {
       subtitle: 'Sudoku 无需账号。以下是本应用实际保存和发送的信息。',
       sec1Title: '1. 本机存储与备份', sec1Desc: "您的记录、提示和设置保存在本机。未登录 Play 游戏时，这些数据只保留在本机。我们从不收集您的姓名、邮箱、电话号码、通讯录或位置。",
-      sec2Title: '2. Google Play 游戏', sec2Desc: '登录 Play 游戏后，每次获胜都会把您的进度（统计、成就、提示、设置）自动备份到 Play 游戏存档，并把您的 Logic Score提交到 Play 游戏排行榜。这些数据保存在您自己的 Google 账号中。',
+      sec2Title: '2. Google Play 游戏', sec2Desc: '登录 Play 游戏后，每次获胜都会把您的进度（统计、成就、提示、设置）自动备份到 Play 游戏存档，并把您的 Logic Score提交到 Play 游戏排行榜。您获得的成就也会记录到 Play 游戏中，包括登录前获得的成就。这些数据保存在您自己的 Google 账号中。',
       sec3Title: '3. 1v1 对战', sec3Desc: '实时 1v1 对战通过 Google Firebase 向对手发送随机生成的玩家 ID、自动昵称（Player_xxxx）和您的解题进度。该 ID 保存在本机并重复使用，不与您的姓名或任何账号关联。 如果双方都开启了“对战记录共享”，对战结束后还会向对手发送本局的步骤和时间，用于复盘（默认开启，可在设置中关闭）。',
       sec4Title: '4. 广告与购买', sec4Desc: '本应用通过 Google AdMob 展示广告：横幅广告、获胜后的全屏广告以及自愿观看的激励视频。AdMob 可能会处理您的广告 ID。“移除广告”的购买由 Google Play 处理，我们不会收到您的支付信息。'
     }

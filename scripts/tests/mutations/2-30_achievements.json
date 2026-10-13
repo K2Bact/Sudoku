@@ -260,6 +260,38 @@
       "find": "killer_lv5: { title: 'キラーの達人'",
       "replace": "killer_lv5: { title: 'ケージ破り'",
       "expectFailure": "Play Games would refuse the achievements as they stand"
+    },
+    {
+      "name": "two achievements swap their Play Games ids",
+      "why": "First Step would unlock High Five in Play Games and the other way round — no error anywhere, just the wrong badge for every player.",
+      "file": "src/services/playGamesService.js",
+      "find": "  first_win: 'CgkIsvv_0f4TEAIQCw',",
+      "replace": "  first_win: 'CgkIsvv_0f4TEAIQHA',",
+      "expectFailure": "an achievement would unlock a different Play Games achievement, or none"
+    },
+    {
+      "name": "a sign-in no longer sends what was earned signed out",
+      "why": "Everything unlocked before the first sign-in, offline or before the console had the achievements would stay on the phone for good.",
+      "file": "src/utils/playGamesBridge.js",
+      "find": "      syncAchievementsToPlayGames().catch(",
+      "replace": "      Promise.resolve().catch(",
+      "expectFailure": "a sign-in must send the achievements unlocked while signed out"
+    },
+    {
+      "name": "the sync sends unknown keys too",
+      "why": "An old saved key (streak_7) has no Play Games id; sending it is a wasted call that reports failure on every sign-in.",
+      "file": "src/utils/achievementManager.js",
+      "find": "  for (const id of unlocked.filter((k) => known.has(k))) {",
+      "replace": "  for (const id of unlocked) {",
+      "expectFailure": "every unlocked achievement goes up, and only ones that exist"
+    },
+    {
+      "name": "the achievements screen opens the leaderboard",
+      "why": "The button says achievements; opening the Logic Score ranking instead is a button that lies.",
+      "file": "src/components/AchievementsView.jsx",
+      "find": "    const res = await playGamesService.showAchievements();",
+      "replace": "    const res = await playGamesService.showLeaderboards();",
+      "expectFailure": "the achievements screen must open Google's own achievements screen"
     }
   ]
 }

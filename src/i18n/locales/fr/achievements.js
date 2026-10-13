@@ -10,6 +10,7 @@ export const achievements = {
     },
     unlockedToast: 'Succès déverrouillé !',
     tabTitle: 'Succès',
+    openPlayGames: 'Voir mes succès dans Play Jeux',
     statsTab: 'Stats',
     unlockedCount: '{unlocked} / {total} débloqué(s) ({pct}%)',
     lockedBadge: 'Verrouillé',

@@ -13,6 +13,7 @@ export const achievements = {
     },
     unlockedToast: '¡Logro desbloqueado!',
     tabTitle: 'Logros',
+    openPlayGames: 'Ver mis logros en Play Juegos',
     statsTab: 'Datos',
     unlockedCount: '{unlocked} / {total} desbloqueados ({pct}%)',
     lockedBadge: 'Bloqueado',

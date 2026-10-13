@@ -430,5 +430,54 @@ const CASES = {
   console.log("  ✅ 8. all 40 pass Play Games' import rules (no commas, names unique per language, points in fives within 2,000)");
 }
 
+// ── 9. Each unlock reaches its own Play Games achievement (D11 ④) ───────────
+//
+// The ids were typed into no file by hand: the console's "Get resources" file is
+// kept as games-ids.xml, and the map is held to it by English name. One wrong id
+// is an achievement that unlocks here and never in Play Games, silently — or,
+// worse, unlocks a different one. An unlock made while signed out goes up at the
+// next sign-in, or it would stay on the phone for good.
+{
+  const { ACHIEVEMENT_IDS, LEADERBOARD_IDS } = await import('../../../src/services/playGamesService.js');
+  const xml = read('store_assets/common/pgs_achievements/games-ids.xml');
+  const consoleIds = new Map([...xml.matchAll(/<!--achievement (.+?)-->\s*<string name="[^"]+" translatable="false">([^<]+)<\/string>/g)]
+    .map((m) => [m[1], m[2]]));
+  const en = (await import(pathToFileURL(path.join(ROOT, 'src/i18n/locales/en/achievements.js')).href)).achievements.achievements;
+  const wrong = ACHIEVEMENTS_LIST
+    .filter((a) => ACHIEVEMENT_IDS[a.id] !== consoleIds.get(en[a.id].title))
+    .map((a) => `${a.id} ("${en[a.id].title}"): app ${ACHIEVEMENT_IDS[a.id]} / console ${consoleIds.get(en[a.id].title)}`);
+  assert.deepStrictEqual(wrong, [], 'an achievement would unlock a different Play Games achievement, or none');
+  assert.strictEqual(new Set(Object.values(ACHIEVEMENT_IDS)).size, ACHIEVEMENTS_LIST.length, 'two achievements share one Play Games id');
+  assert.strictEqual(Object.keys(ACHIEVEMENT_IDS).length, ACHIEVEMENTS_LIST.length, 'the map has ids for achievements the app does not have');
+  const board = xml.match(/<!--leaderboard Logic Score-->\s*<string name="[^"]+" translatable="false">([^<]+)<\/string>/)?.[1];
+  assert.strictEqual(LEADERBOARD_IDS.BRAIN_IQ, board, 'the Logic Score leaderboard id must be the console\'s');
+
+  // An unlock made while signed out goes up at sign-in — each known one, once.
+  const { syncAchievementsToPlayGames } = await import('../../../src/utils/achievementManager.js');
+  const sent = [];
+  const realUnlock = playGamesService.unlockAchievement;
+  playGamesService.unlockAchievement = async (key) => { sent.push(key); return { success: true }; };
+  try {
+    localStorage.clear();
+    localStorage.setItem(ACHIEVEMENTS_STORAGE_KEY, JSON.stringify({
+      first_win: { unlockedAt: '2026-10-01' }, killer_first: { unlockedAt: '2026-10-02' }, streak_7: { unlockedAt: '2026-09-01' },
+    }));
+    const n = await syncAchievementsToPlayGames();
+    assert.deepStrictEqual(sent.sort(), ['first_win', 'killer_first'], 'every unlocked achievement goes up, and only ones that exist');
+    assert.strictEqual(n, 2);
+  } finally {
+    playGamesService.unlockAchievement = realUnlock;
+    localStorage.clear();
+  }
+  const strip = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  const bridge = strip(read('src/utils/playGamesBridge.js'));
+  const handler = bridge.slice(bridge.indexOf("addEventListener('playGamesSignedIn'"), bridge.indexOf('listeners.forEach', bridge.indexOf("addEventListener('playGamesSignedIn'")));
+  assert(/syncAchievementsToPlayGames\(\)/.test(handler), 'a sign-in must send the achievements unlocked while signed out');
+  const view = strip(read('src/components/AchievementsView.jsx'));
+  assert(/playGamesService\.showAchievements\(\)/.test(view) && /t\('achievements\.openPlayGames'\)/.test(view),
+    'the achievements screen must open Google\'s own achievements screen');
+  console.log(`  ✅ 9. all 40 unlock their own Play Games achievement (held to the console's file); a sign-in sends what was earned signed out`);
+}
+
 localStorage.clear();
 console.log('\n✅ [2-30] PASSED — every achievement can be earned, and only by doing what it says');

@@ -46,6 +46,27 @@ function killerClearedAt(killer, level, ctx) {
 }
 
 /**
+ * Tell Play Games about every achievement already unlocked here (D11 ④).
+ *
+ * An unlock reaches Play Games only while signed in: one earned before the
+ * player signed in, offline, before the achievement existed in the console, or
+ * on a phone whose records came back from the cloud would otherwise stay in
+ * this app alone. Play Games ignores an unlock it already has, so this runs on
+ * every sign-in (playGamesBridge.js) and sends them all.
+ * @returns {Promise<number>} how many Play Games accepted
+ */
+export async function syncAchievementsToPlayGames() {
+  const unlocked = Object.keys(loadUnlockedAchievements());
+  const known = new Set(ACHIEVEMENTS_LIST.map((a) => a.id));
+  let sent = 0;
+  for (const id of unlocked.filter((k) => known.has(k))) {
+    const res = await playGamesService.unlockAchievement(id);
+    if (res?.success) sent++;
+  }
+  return sent;
+}
+
+/**
  * Check and evaluate every achievement on a win, an academy lesson or app start.
  *
  * A win of either kind counts (user, 2026-10-07: killer and classic differ in the

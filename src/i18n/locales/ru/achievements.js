@@ -10,6 +10,7 @@ export const achievements = {
     },
     unlockedToast: 'Достижение разблокировано!',
     tabTitle: 'Достижения',
+    openPlayGames: 'Мои достижения в Play Играх',
     statsTab: 'Статистика',
     unlockedCount: 'Открыто {unlocked} / {total} ({pct}%)',
     lockedBadge: 'Закрыто',

@@ -10,6 +10,7 @@ export const achievements = {
     },
     unlockedToast: '업적 달성!',
     tabTitle: '업적',
+    openPlayGames: 'Play 게임즈에서 내 업적 보기',
     statsTab: '통계',
     unlockedCount: '{unlocked} / {total} 달성 ({pct}%)',
     lockedBadge: '미달성',

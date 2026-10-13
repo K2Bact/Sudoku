@@ -10,6 +10,7 @@ export const achievements = {
     },
     unlockedToast: 'उपलब्धि अनलॉक!',
     tabTitle: 'उपलब्धियां',
+    openPlayGames: 'Play गेम्स में मेरी उपलब्धियां देखें',
     statsTab: 'आंकड़े',
     unlockedCount: '{unlocked} / {total} अनलॉक ({pct}%)',
     lockedBadge: 'लॉक',

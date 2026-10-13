@@ -10,6 +10,7 @@ export const achievements = {
     },
     unlockedToast: 'Erfolg freigeschaltet!',
     tabTitle: 'Erfolge',
+    openPlayGames: 'Meine Erfolge in Play Games ansehen',
     statsTab: 'Statistik',
     unlockedCount: '{unlocked} / {total} freigeschaltet ({pct}%)',
     lockedBadge: 'Gesperrt',
