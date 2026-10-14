@@ -46,10 +46,10 @@ assert.strictEqual(R({ gameMode: 'timeAttack', hintsUsed: 1, limitMistakes: true
 console.log('  ✅ 1. rule: hints never, limit off never (except Speedrun), >2 mistakes means the limit was off');
 
 // 2. Through the real win path
-const win = ({ level = 5, time = 300, mode = 'classic', mistakes = 0, hints = 0, limit = true, played = null }) => {
+const win = ({ level = 5, time = 300, mode = 'classic', mistakes = 0, hints = 0, limit = true, played = null, variant = 'classic' }) => {
   localStorage.setItem('suidoku_settings_v1', JSON.stringify({ limitMistakes: limit }));
   handleGameWinLogic({
-    level, timerSeconds: time, playedSeconds: played, gameMode: mode, mistakes, hintsUsed: hints, activeDailyDateKey: null,
+    level, timerSeconds: time, playedSeconds: played, gameMode: mode, variant, mistakes, hintsUsed: hints, activeDailyDateKey: null,
     clearGameState: () => {}, setIsVictory: () => {}, setHintsRemaining: () => {}
   });
   return loadStats();
@@ -114,6 +114,35 @@ assert.strictEqual(merged.survivalBestTimes[5], 380, 'a phone change keeps the f
     'the stats screen must show the Survival best from survivalBestTimes — the old table is the time left');
 }
 console.log('  ✅ 2b. Survival best = the fastest clear in seconds played, not the narrowest escape');
+
+// 2c. Survival and duels race no ghost, and leave Classic's alone (D19, 2026-10-14).
+//     Every mode that was not Speedrun used to land in the Classic ghost slot: a
+//     Survival win wrote its clock — the time LEFT — over the Classic ghost, and a
+//     1v1 or AI match its duel time. The best times above never took either, and
+//     the ghost is the same record by the same rule, so it does not either.
+{
+  const ghostTable = () => JSON.parse(localStorage.getItem('suidoku_ghost_records_v1') || '{}');
+  const classicGhost = () => ghostTable().classic?.[5];
+  localStorage.clear();
+  win({ time: 500 });
+  assert.strictEqual(classicGhost()?.bestSeconds, 500, 'control: a Classic win did not set the Classic ghost');
+  const before = JSON.stringify(classicGhost());
+  win({ mode: 'timeLimit', time: 420, played: 300 });
+  assert.strictEqual(JSON.stringify(classicGhost()), before,
+    `a Survival win (420 s left) changed the Classic ghost to ${classicGhost()?.bestSeconds} s — the time left is not a time to clear`);
+  for (const mode of ['battle', 'aiBattle']) {
+    win({ mode, time: 90 });
+    assert.strictEqual(JSON.stringify(classicGhost()), before, `a ${mode} win (90 s) changed the Classic ghost to ${classicGhost()?.bestSeconds} s`);
+  }
+  win({ mode: 'timeLimit', time: 420, played: 300, variant: 'killer' });
+  const killerSlots = ghostTable().killer || {};
+  assert.ok(!killerSlots.classic?.[5] && !killerSlots.timeAttack?.[5],
+    'a killer Survival win (KP-2) wrote a killer ghost — the rule must hold for the mode, whatever the kind');
+  win({ time: 450 });
+  assert.strictEqual(classicGhost()?.bestSeconds, 450, 'control: a faster Classic win after them did not replace the Classic ghost');
+  localStorage.clear();
+  console.log('  ✅ 2c. Survival and duel wins write no ghost, of either kind; Classic wins still do');
+}
 
 // 3. Old saves and cloud restore
 assert.ok(iqStatsService.calculateBrainIQ({ gamesPlayed: 1, gamesWon: 1, bestTimes: { 5: 400 } }) >

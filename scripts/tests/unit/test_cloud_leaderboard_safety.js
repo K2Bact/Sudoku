@@ -64,7 +64,9 @@ ghost.recordGhostRun('classic', 3, { timeSeconds: 200, hintsUsed: 0, totalEmptyC
 localStorage.setItem(USER_STATS_KEY, JSON.stringify({
   gamesPlayed: 20,
   gamesWon: 15,
-  bestTimes: { 1: 90, 2: 150, 3: 210 },
+  // Lv.3 is the ghost's 200 s: a Classic win writes both from one time, and a
+  // ghost faster than its best time is read as another mode's (D19). It was 210.
+  bestTimes: { 1: 90, 2: 150, 3: 200 },
   timeAttackBestTimes: { 1: 80 },
   timeLimitBestTimes: { 1: 70, 2: 110 },   // survival records
   timeLimitSurvivalWins: 5

@@ -9,14 +9,16 @@
  *      so; a classic board with the same digits is not told about cages
  *   3. the win, through handleGameWinLogic — the killer record moves with
  *      everything a classic win records (games, wins, flawless wins, the
- *      longest combo, the levels cleared, best times); the classic record and
- *      the leaderboard do not (a classic win alongside is the control that shows
+ *      longest combo, the levels cleared, best times, the ghost with its cages
+ *      and pace — 2026-10-14); the classic record, the classic ghost and the
+ *      leaderboard do not (a classic win alongside is the control that shows
  *      the measurement can move); 3d. today's daily mission counts a killer win
  *   4. losses — on mistakes and thrown away — count against the killer record only
  *   5. which puzzle a game starts on — "next game" after a killer is a killer,
  *      a puzzle handed in (daily, 1v1) is classic; a killer save that lost its
  *      solution gets it back from its cages, not from a classic solve
- *   6. the cloud merge carries the killer record from both phones, every field
+ *   6. the cloud merge carries the killer record from both phones, every field,
+ *      and the killer ghosts in their own slots
  *   7. the Logic Score counts both kinds (user, 2026-10-08) — and a classic-only
  *      player's score is exactly what it was before: 3000 random classic records
  *      against the formula as it stood (copied below), the leaderboard holds it
@@ -49,7 +51,7 @@ const { generateKillerPuzzle } = await import('../../../src/engine/killer/killer
 const { speedrunRankFor } = await import('../../../src/utils/speedrunRank.js');
 const { iqStatsService, combinedRecord } = await import('../../../src/services/iqStatsService.js');
 const { LOCALES } = await import('../../lib/locales.js');
-const { mergeStats } = await import('../../../src/services/progressMerge.js');
+const { mergeStats, mergeProgress } = await import('../../../src/services/progressMerge.js');
 const { cloudSyncService } = await import('../../../src/services/cloudSyncService.js');
 const { playGamesService } = await import('../../../src/services/playGamesService.js');
 cloudSyncService.saveToCloud = async () => ({ success: true });
@@ -98,19 +100,28 @@ const L_CAGE = { cells: [20, 29, 30], sum: 6 };
 }
 
 // ── 3. The win ──────────────────────────────────────────────────────────────
-const win = (variant, { level = 3, time = 200, hints = 0, mode = 'classic', mistakes = 0, combo = 0 } = {}) => {
+// board: what useGameInput hands the win about the board — the givens, the solution,
+// a killer's cages and the run's pace — which the ghost keeps (KP-3, 2026-10-14).
+const win = (variant, { level = 3, time = 200, hints = 0, mode = 'classic', mistakes = 0, combo = 0, board = {} } = {}) => {
   localStorage.setItem('suidoku_settings_v1', JSON.stringify({ limitMistakes: true }));
   handleGameWinLogic({
     level, timerSeconds: time, gameMode: mode, variant, mistakes, hintsUsed: hints, comboCount: combo,
-    activeDailyDateKey: null, clearGameState: () => {}, setIsVictory: () => {}, setHintsRemaining: () => {}
+    activeDailyDateKey: null, clearGameState: () => {}, setIsVictory: () => {}, setHintsRemaining: () => {},
+    ...board
   });
   return loadStats();
 };
+const ghosts = () => JSON.parse(localStorage.getItem('suidoku_ghost_records_v1') || '{}');
+const WON = generateKillerPuzzle(3, 'gate-2-28-ghost');
+const PACE = [{ time: 40, count: 6 }, { time: 200, count: 55 }];
 {
   localStorage.clear();
   submissions = 0;
   scoreSubmissions = 0;
-  let s = win('killer', { level: 3, time: 200, combo: 4 });
+  let s = win('killer', { level: 3, time: 200, combo: 4, board: {
+    initialBoard: WON.board, solutionBoard: WON.solution, cages: WON.cages, timeline: PACE,
+    totalEmptyCells: WON.board.flat().filter((d) => !d).length
+  } });
   assert.strictEqual(s.killer?.gamesWon, 1, 'a killer win must count in the killer record');
   assert.strictEqual(s.killer?.bestTimes?.[3], 200, 'and set its Lv.3 best time');
   assert.strictEqual(s.killer?.flawlessWins, 1, `a killer won with no mistakes counted ${s.killer?.flawlessWins} flawless wins — a classic win counts 1`);
@@ -122,17 +133,27 @@ const win = (variant, { level = 3, time = 200, hints = 0, mode = 'classic', mist
   assert.ok(!s.clearedLevels?.[3], 'a killer win marked a classic level cleared for the Logic Score');
   assert.strictEqual(submissions, 0, `a killer win sent ${submissions} time(s) to a per-level board — those rank classic times`);
   assert.strictEqual(scoreSubmissions, 1, `a killer win sent the Logic Score ${scoreSubmissions} time(s) — it counts both kinds, so once`);
+  // The ghost: the same win path writes it, the kind picks the slot (KP-3).
+  let g = ghosts();
+  assert.strictEqual(g.killer?.classic?.[3]?.bestSeconds, 200, `a killer win left no killer ghost (ghost table: ${JSON.stringify(g).slice(0, 80)}) — Ghost and Time Gap have nothing to race on killer`);
+  assert.deepStrictEqual(g.killer.classic[3].cages, WON.cages, 'the killer ghost must keep the cages it was won on — a Ghost race deals that board again');
+  assert.deepStrictEqual(g.killer.classic[3].timeline, PACE, 'the killer ghost must keep the pace of the run');
+  assert.ok(!g.classic?.[3], 'a killer win set the classic ghost — a classic player would race a killer time on a killer board');
 
   s = win('killer', { level: 3, time: 150, hints: 1 });
   assert.strictEqual(s.killer.bestTimes[3], 200, 'a killer won with a hint is a win, not a best time (recordEligibility.js)');
   assert.strictEqual(s.killer.gamesWon, 2);
+  assert.strictEqual(ghosts().killer.classic[3].bestSeconds, 200, 'a killer won with a hint replaced the killer ghost');
 
   // Control: the same measurement does move for a classic win.
   s = win('classic', { level: 3, time: 300 });
   assert.strictEqual(s.gamesWon, 1, 'control: a classic win counts in the classic record');
   assert.ok(submissions > 0, 'control: a classic win is submitted — without this, "0 submissions" above proves nothing');
   assert.strictEqual(s.killer.gamesWon, 2, 'a classic win must not touch the killer record');
-  console.log('  ✅ 3. a killer win records what a classic win does, in the killer record — nothing in the classic one, nothing to the leaderboard');
+  g = ghosts();
+  assert.strictEqual(g.classic?.[3]?.bestSeconds, 300, 'control: a classic win sets the classic ghost — without this, "no classic ghost" above proves nothing');
+  assert.strictEqual(g.killer.classic[3].bestSeconds, 200, 'a classic win must not touch the killer ghost');
+  console.log('  ✅ 3. a killer win records what a classic win does, in the killer record and the killer ghost — nothing in the classic ones, nothing to the leaderboard');
 }
 
 // ── 3d. The daily mission counts a killer win (2026-10-07) ──────────────────
@@ -282,7 +303,24 @@ const win = (variant, { level = 3, time = 200, hints = 0, mode = 'classic', mist
   assert.strictEqual(rest.maxCombo, 9, 'a killer longest combo only in the cloud comes back');
   assert.deepStrictEqual(rest.clearedLevels, { 2: true, 4: true }, 'killer levels cleared on either phone stay cleared');
   assert.deepStrictEqual(speed.timeAttackBestTimes, { 2: 140, 5: 900 }, 'killer speedrun best times: the faster per level, from either phone');
-  console.log('  ✅ 6. the cloud merge keeps both phones\' killer records by the classic rules');
+
+  // Killer ghosts (KP-3): the merge is what a save uploads, so a slot it drops is
+  // gone from the cloud at the next win.
+  const cloudGhosts = { ghost: { classic: { 3: { bestSeconds: 180 } }, timeAttack: {},
+    killer: { classic: { 3: { bestSeconds: 700, cages: WON.cages } }, timeAttack: { 2: { bestSeconds: 500 } } } } };
+  const localGhosts = { ghost: { classic: {}, timeAttack: {}, killer: { classic: { 4: { bestSeconds: 900 } }, timeAttack: {} } } };
+  const mg = mergeProgress(cloudGhosts, localGhosts).ghost;
+  assert.strictEqual(mg.killer?.classic?.[3]?.bestSeconds, 700, 'a killer ghost only in the cloud was dropped by the merge — every save uploads the merge, so the cloud loses it too');
+  assert.deepStrictEqual(mg.killer.classic[3].cages, WON.cages, 'a killer ghost comes through the merge with its cages');
+  assert.strictEqual(mg.killer.classic[4]?.bestSeconds, 900, 'a killer ghost only on this phone survives the merge');
+  assert.strictEqual(mg.killer.timeAttack[2]?.bestSeconds, 500, 'killer speedrun ghosts merge too');
+  assert.strictEqual(mg.classic[3]?.bestSeconds, 180, 'control: the classic ghost merges as before');
+  assert.ok(!mg.classic[4] && !mg.timeAttack[2], 'a killer ghost leaked into a classic slot in the merge');
+  const fromOldBackup = mergeProgress({ ghost: { classic: { 3: { bestSeconds: 180 } }, timeAttack: {} } }, localGhosts).ghost;
+  assert.strictEqual(fromOldBackup.killer?.classic?.[4]?.bestSeconds, 900, 'a backup from before killer ghosts erased this phone\'s killer ghosts');
+  const damaged = mergeProgress({ ghost: { classic: {}, timeAttack: {}, killer: 'broken' } }, localGhosts).ghost;
+  assert.strictEqual(damaged.killer?.classic?.[4]?.bestSeconds, 900, 'a damaged killer part of the backup took this phone\'s killer ghosts away');
+  console.log('  ✅ 6. the cloud merge keeps both phones\' killer records by the classic rules, killer ghosts in their own slots');
 }
 
 // ── 7. One Logic Score for both kinds (2026-10-08) ──────────────────────────

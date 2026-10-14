@@ -39,6 +39,8 @@ export function handleGameWinLogic({
   comboCount = 0,
   initialBoard = null,
   solutionBoard = null,
+  // A killer's cages, kept with its ghost so a Ghost race can deal the same board.
+  cages = null,
   totalEmptyCells = 40,
   timeline = []
 }) {
@@ -52,14 +54,11 @@ export function handleGameWinLogic({
   });
 
   // One win, one path, whatever the puzzle: the kind only chooses which record
-  // is written (storage.js recordOf). The two kinds differ in the puzzle alone
-  // (user, 2026-10-07); this replaces the killer branch of 2026-10-01 that kept
-  // its own short record and skipped everything below.
-  //
-  // One step below still passes a killer by until its killer half exists
-  // (BACKLOG, killer order ④): the ghost table has no kind in its key — a killer
-  // run there would race classic players. It is guarded by name, not by an early
-  // return, so nothing new added to this path can miss a killer by accident.
+  // is written (storage.js recordOf, ghostManager.js ghostSlot). The two kinds
+  // differ in the puzzle alone (user, 2026-10-07); this replaces the killer branch
+  // of 2026-10-01 that kept its own short record and skipped everything below.
+  // The ghost was the last step to pass a killer by — until its table had a
+  // killer slot (2026-10-14, killer order ④); only the per-level time boards still do.
   const isKiller = variant === 'killer';
 
   // The time a best is kept by: the time taken — in Survival the seconds played,
@@ -72,16 +71,20 @@ export function handleGameWinLogic({
     countsAsRecord: eligibility.counts
   }, variant);
 
-  // Ghost & Delta Time PB — the same rule as the best times above. ④ for killer.
-  if (!isKiller) recordGhostRun(gameMode, level, {
+  // Ghost & Delta Time PB — the same rule as the best times above, in the kind's slot.
+  // Survival and the duels have no slot and write nothing (ghostManager.js
+  // GHOST_MODES, D19): the clock here is Survival's time left.
+  const ghostRun = {
     timeSeconds: timerSeconds,
     hintsUsed,
     countsAsRecord: eligibility.counts,
     puzzle: initialBoard,
     solution: solutionBoard,
+    cages,
     totalEmptyCells,
     timeline
-  });
+  };
+  recordGhostRun(gameMode, level, ghostRun, variant);
 
   // The daily mission counts a win of either kind.
   if (activeDailyDateKey) {

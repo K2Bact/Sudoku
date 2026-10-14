@@ -16,23 +16,39 @@ import { useTranslation } from '../../i18n/i18nContext';
  * Standard whenever they are unavailable, so `onChange` is given the EFFECTIVE
  * mode — never a value the game cannot honour.
  *
- * comingSoon: the puzzle kind has no rivals yet (killer, 2026-10-01). The chips
- * stay, so the card keeps its shape, and tapping one asks the parent to show its
- * own "coming" note (onComingSoon) — one note for the tabs and the chips, not two
- * stacked in the same place.
+ * variant: the kind of puzzle on the switch. Each kind races its own record —
+ * a killer's ghost is never a classic time (2026-10-14). Until then the chips
+ * were "coming" on killer, which had no ghost table.
+ *
+ * One note at a time. These popups and Home's own note (a mode the kind does not
+ * have yet — killer Survival) sit in the same spot at the bottom of the screen.
+ * While the chips were "coming" on killer they showed Home's note and never
+ * their own, so the two could not meet; now a killer chip can be locked for its
+ * own reason. homeNoteOpen closes the chips' notes when Home opens its note, and
+ * onNote asks Home to close its note when the chips open one.
  */
-export function RivalModeChips({ selectedMode, selectedLevel, onChange, comingSoon = false, onComingSoon }) {
+export function RivalModeChips({ selectedMode, selectedLevel, onChange, variant = 'classic', homeNoteOpen = false, onNote }) {
   const { t } = useTranslation();
   const [rivalMode, setRivalMode] = useState('standard');
   const [lockedToast, setLockedToast] = useState(null);
   const [showRivalInfo, setShowRivalInfo] = useState(false);
+  // Home's note opening is a change of prop, not an event here: adjusted while
+  // rendering, the way React documents for a prop change (no Effect, no extra paint).
+  const [homeNoteSeen, setHomeNoteSeen] = useState(homeNoteOpen);
+  if (homeNoteOpen !== homeNoteSeen) {
+    setHomeNoteSeen(homeNoteOpen);
+    if (homeNoteOpen) {
+      setLockedToast(null);
+      setShowRivalInfo(false);
+    }
+  }
 
   // Survival races the clock already; a second pace to chase is one clock too
   // many, so both rivals are off there whatever record exists.
   const isTimeLimit = selectedMode === 'timeLimit';
-  const ghost = getGhostForModeLevel(isTimeLimit ? 'timeAttack' : selectedMode, selectedLevel);
+  const ghost = getGhostForModeLevel(isTimeLimit ? 'timeAttack' : selectedMode, selectedLevel, variant);
   const isGhostAvailable = Boolean(ghost && typeof ghost.bestSeconds === 'number' && ghost.bestSeconds > 0);
-  const canSelectGhost = !isTimeLimit && !comingSoon && isGhostAvailable;
+  const canSelectGhost = !isTimeLimit && isGhostAvailable;
   const effectiveRivalMode = canSelectGhost ? rivalMode : 'standard';
 
   // The parent has to follow even when nothing was clicked. Pick Ghost in
@@ -66,10 +82,8 @@ export function RivalModeChips({ selectedMode, selectedLevel, onChange, comingSo
    */
   const triggerLockedToast = () => {
     soundHaptic.playErrorSound();
-    if (comingSoon) {
-      if (onComingSoon) onComingSoon();
-      return;
-    }
+    if (onNote) onNote();
+    setShowRivalInfo(false);
     setLockedToast(t(isTimeLimit ? 'home.rivalModes.timeLimitToast' : 'home.rivalModes.lockedToast'));
   };
 
@@ -111,7 +125,8 @@ export function RivalModeChips({ selectedMode, selectedLevel, onChange, comingSo
             onClick={() => {
               soundHaptic.playSelectSound();
               setLockedToast(null);
-              setShowRivalInfo((v) => !v);
+              if (!showRivalInfo && onNote) onNote();
+              setShowRivalInfo(!showRivalInfo);
             }}
           >
             <Info size={15} />

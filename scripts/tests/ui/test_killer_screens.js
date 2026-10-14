@@ -10,10 +10,12 @@
  *
  *   1. Home — both kinds show the same card (same tabs, same chips, the ⓘ),
  *      so switching does not change its height; Speedrun switches the killer
- *      card to a speedrun start (2026-10-07); a mode or rival the killer does
- *      not have yet (Survival, Ghost) says it is coming instead of switching
- *      (user, 2026-10-01); the ⓘ opens the selected kind's rules; the switch
- *      survives a reload
+ *      card to a speedrun start (2026-10-07); a mode the killer does not have
+ *      yet (Survival) says it is coming instead of switching (user, 2026-10-01);
+ *      the Ghost chip with no killer record is locked for the classic reason
+ *      (2026-10-14, it said "coming" until then), and its note and Survival's
+ *      take turns in the spot they share; the ⓘ opens the selected kind's
+ *      rules; the switch survives a reload
  *   2. the first killer starts after its rules; the board's outlines and sums
  *      match the cages saved for the game, cell by cell
  *   3. the second killer starts straight away; 3b. a new killer started on the
@@ -22,7 +24,13 @@
  *   5. a killer won from the board is graded on killer times (2026-10-07: 105 s
  *      at Lv.1 is S+ for a killer, A on classic times), offers the Logic Score
  *      leaderboard (it counts both kinds, 2026-10-08), and moves the killer
- *      record only — not the classic one, the ghost or the daily records
+ *      record and the killer ghost only (with its cages) — not the classic
+ *      ones; the day's mission as its rules say
+ *   5c. racing the killer ghost (2026-10-14, KP-3): the chip shows the killer
+ *      record, not the classic one beside it; Ghost deals the record's board
+ *      and cages, its banner counts the killer's open cells, and header,
+ *      banner, board and keypad fit the phone; Time Gap deals a new killer
+ *      and races the killer record
  *   5b. a killer speedrun: ⚡ in the header, no hint button, a wrong digit adds
  *      10 s and does not end the game, the grade is the killer one, and the win
  *      lands in the killer's own speedrun table — not its plain one, not the
@@ -35,7 +43,7 @@ import { spawn, execSync } from 'child_process';
 import http from 'http';
 import { LOCALES } from '../../lib/locales.js';
 import { generateKillerPuzzle } from '../../../src/engine/killer/killerGenerator.js';
-import { cloneGrid } from '../../../src/engine/SudokuEngine.js';
+import { cloneGrid, generatePuzzle } from '../../../src/engine/SudokuEngine.js';
 import { getDailyMission } from '../../../src/utils/dailyChallenge.js';
 
 const PORT = 5218;
@@ -167,10 +175,19 @@ async function run() {
     const activeTab = await page.locator('.mode-tab-btn.active').innerText().catch(() => '');
     if (!(await page.locator('.mode-tab-btn.time-attack-tab.active').count())) fail(`1: the Survival tab on the killer switch changed the mode (active: "${activeTab}") instead of saying it is coming`);
     if (!(await page.locator('.coming-soon-popup').count())) fail('1: the Survival tab on the killer switch said nothing');
+    // The Ghost chip on killer, with no killer record yet, is locked for the reason a
+    // classic one is — no longer "coming" (2026-10-14, KP-3). Its note and the
+    // Survival tab's share one spot: one note at a time, whichever came last.
     await tap(page, '.rival-chip.ghost-chip', '1: killer Ghost chip');
-    const notes = await page.locator('.locked-mode-popup').count();
+    let notes = await page.locator('.locked-mode-popup').count();
+    if (await page.locator('.coming-soon-popup').count()) fail('1: the locked Ghost chip on the killer switch left the "coming" note up');
+    if (notes !== 1) fail(`1: after the Survival tab, the locked Ghost chip on the killer switch put ${notes} notes in the same spot — one note at a time`);
+    const lockedLine = await page.locator('.locked-mode-popup[role="alert"] .locked-popup-text').first().innerText().catch(() => '');
+    if (!lockedLine.includes('Clear this difficulty')) fail(`1: the locked Ghost chip on the killer switch says "${lockedLine}" — expected the classic reason: clear this level once`);
+    await tap(page, '.mode-tab-btn.time-limit-tab', '1: killer Survival tab again');
+    notes = await page.locator('.locked-mode-popup').count();
     const comingNotes = await page.locator('.coming-soon-popup').count();
-    if (notes !== 1 || comingNotes !== 1) fail(`1: after the Ghost chip on the killer switch, ${notes} note(s) are shown, ${comingNotes} of them "coming soon" — one note, the same one, is expected`);
+    if (notes !== 1 || comingNotes !== 1) fail(`1: after the Ghost chip's note, the Survival tab on the killer switch shows ${notes} note(s), ${comingNotes} of them "coming soon" — one note at a time`);
     if (await tap(page, '.variant-rules-btn', '1: killer ⓘ') &&
         !(await page.locator('.variant-rules-card[data-variant="killer"]').count())) fail('1: the ⓘ on killer did not open the killer rules');
     await page.locator('.variant-rules-card button').click().catch(() => {});
@@ -178,7 +195,7 @@ async function run() {
     await page.waitForSelector('.home-bottom-nav');
     if (!(await page.locator('.variant-option.active[data-variant="killer"]').count())) fail('1: the killer switch was forgotten on reload');
     await tap(page, '.mode-tab-btn:not(.time-attack-tab):not(.time-limit-tab)', '1: back to the Classic tab');
-    console.log(`  ▶ 1. home: one card shape (${standardAgain}px both; first look ${standardHeight}px), killer Speedrun opens, coming-soon note, rules for each kind`);
+    console.log(`  ▶ 1. home: one card shape (${standardAgain}px both; first look ${standardHeight}px), killer Speedrun opens, Survival coming, Ghost locked like classic, one note at a time, rules for each kind`);
 
     // ── 2. The first killer ──────────────────────────────────────────────
     await prime(page, { settings: { homeVariant: 'killer' } });
@@ -258,7 +275,15 @@ async function run() {
       if (!(await page.locator('.victory-card .btn-open-leaderboard').count())) fail('5: a killer win offers no leaderboard — the Logic Score counts killers too (2026-10-08)');
       if (!(stats?.killer?.bestTimes?.[1] > 0)) fail('5: the killer win set no Lv.1 best time');
       if (stats?.gamesWon) fail(`5: the classic record shows ${stats.gamesWon} win(s) after a killer`);
-      if (await readJSON(page, 'suidoku_ghost_records_v1')) fail('5: a killer win recorded a ghost run');
+      // The ghost, in the killer's own slot, with the cages a Ghost race deals again (KP-3).
+      const ghostTable = await readJSON(page, 'suidoku_ghost_records_v1');
+      const won = ghostTable?.killer?.classic?.[1];
+      if (!won) fail('5: a killer win recorded no killer ghost — Ghost and Time Gap on killer have nothing to race');
+      else {
+        if (won.bestSeconds !== 105) fail(`5: the killer ghost holds ${won.bestSeconds} s — the win took 105 s`);
+        if (JSON.stringify(won.cages) !== JSON.stringify(p.cages)) fail('5: the killer ghost was saved without its cages — a Ghost race cannot deal its board again');
+      }
+      if (ghostTable?.classic?.[1]) fail('5: a killer win set the classic ghost');
       // Since 2026-10-08 a killer win counts toward the day's mission (Diary 112). The
       // mission changes with the date, so the expectation does too: this said "no daily
       // record, ever", and failed on the days the mission is "clear Lv.1 or higher"
@@ -276,7 +301,100 @@ async function run() {
     } catch {
       fail('5: no victory card after the last correct digit');
     }
-    console.log("  ▶ 5. killer win: killer grade, killer record only, the day's mission as the rules say");
+    console.log("  ▶ 5. killer win: killer grade, killer record and killer ghost only, the day's mission as the rules say");
+
+    // ── 5c. Racing the killer ghost ──────────────────────────────────────
+    // The win above left a killer ghost at Lv.1 (105 s). A classic ghost at Lv.1
+    // with another time (66 s) sits beside it, so a chip, a start or a banner that
+    // reads the wrong slot shows on the screen. With the classic best time it comes
+    // with: a classic ghost faster than that, or without one, is read as another
+    // mode's and never shown (ghostManager.js, D19).
+    const classicGhost = generatePuzzle(1, 'gate-3-18-classic-ghost');
+    await page.evaluate((c) => {
+      const g = JSON.parse(localStorage.getItem('suidoku_ghost_records_v1') || '{}');
+      g.classic = { ...(g.classic || {}), 1: { bestSeconds: 66, puzzle: c.puzzle, solution: c.solution, totalEmptyCells: 45, timeline: [] } };
+      localStorage.setItem('suidoku_ghost_records_v1', JSON.stringify(g));
+      const s = JSON.parse(localStorage.getItem('suidoku_user_stats_v1') || '{}');
+      s.bestTimes = { ...(s.bestTimes || {}), 1: 66 };
+      localStorage.setItem('suidoku_user_stats_v1', JSON.stringify(s));
+    }, classicGhost);
+    const openCells = p.board.flat().filter((d) => !d).length;
+    const homeOnLevel1 = async () => {
+      await page.goto(URL);
+      await page.waitForSelector('.home-bottom-nav');
+      await tap(page, '.level-chip-group button:nth-child(1)', '5c: Lv.1');
+    };
+    const startFromHome = async () => {
+      await page.click('.home-screen-container .btn-play-new');
+      const startAnyway = page.locator('.modal-card button', { hasText: 'OK' });
+      if (await startAnyway.count()) await startAnyway.first().click();
+      if (!(await page.waitForSelector('.killer-board', { timeout: 8000 }).catch(() => null))) return false;
+      await page.waitForTimeout(400);
+      return true;
+    };
+    const racedRecord = () => page.locator('.ghost-indicator-pin').getAttribute('title').catch(() => null);
+    await homeOnLevel1();
+    const killerChip = await page.locator('.ghost-chip').innerText().catch(() => '');
+    if (!killerChip.includes('01:45')) fail(`5c: the killer Ghost chip says "${killerChip}" — expected the killer record, 01:45 (the classic one is 01:06)`);
+    await tap(page, '.variant-option[data-variant="classic"]', '5c: standard switch');
+    const classicChip = await page.locator('.ghost-chip').innerText().catch(() => '');
+    if (!classicChip.includes('01:06')) fail(`5c: the standard Ghost chip says "${classicChip}" — expected the classic record, 01:06`);
+    await tap(page, '.variant-option[data-variant="killer"]', '5c: back to the killer switch');
+    await tap(page, '.rival-chip.ghost-chip', '5c: killer Ghost chip');
+    if (!(await startFromHome())) fail('5c: the killer Ghost race did not open a killer — it dealt the record as a classic board');
+    else {
+      const raced = await readJSON(page, 'suidoku_game_state_v1');
+      if (raced?.variant !== 'killer' || JSON.stringify(raced?.cages) !== JSON.stringify(p.cages)) {
+        fail(`5c: the killer Ghost race dealt a ${raced?.variant} with ${raced?.cages?.length ?? 'no'} cages — not the board the record was set on (${p.cages.length} cages)`);
+      } else if (JSON.stringify(raced.initialBoard) !== JSON.stringify(p.board)) {
+        fail('5c: the killer Ghost race has the record\'s cages but other givens');
+      } else {
+        const b = await page.evaluate(readBoard, raced.cages);
+        b.wrong.slice(0, 4).forEach((w) => fail(`5c: outline — ${w}`));
+      }
+      // Each side's count read on its own: read as the whole banner's text, the
+      // ghost's "0/45" stood in for the player's count when that one said 0/40.
+      const banner = await page.locator('.ghost-rival-banner-container').count();
+      const count = (side) => page.locator(`.ghost-rival-banner-container .${side} .rival-count`).innerText().catch(() => '');
+      if (!banner) fail('5c: no ghost banner on the killer Ghost race');
+      else {
+        const [you, rival] = [await count('user-col'), await count('ghost-col')];
+        if (you !== `0/${openCells}`) fail(`5c: the player's count on the Ghost banner says "${you}" — expected the count out of the killer's ${openCells} open cells`);
+        if (!rival.endsWith(`/${openCells}`)) fail(`5c: the ghost's count on the Ghost banner says "${rival}" — expected the count out of the killer's ${openCells} open cells`);
+      }
+      const against = await racedRecord();
+      if (banner && !against?.includes('01:45')) fail(`5c: the killer Ghost race runs against "${against}" — expected the killer record, 01:45`);
+      // Header, banner, board and keypad on one phone screen: none over another, none off it.
+      const layout = await page.evaluate(() => {
+        const parts = ['.game-header', '.ghost-rival-banner-container', '.board-zone', '.number-pad']
+          .map((q) => [q, document.querySelector(q)?.getBoundingClientRect()]);
+        const out = [];
+        for (const [q, b] of parts) {
+          if (!b) { out.push(`${q} not on screen`); continue; }
+          if (b.left < -0.5 || b.right > innerWidth + 0.5 || b.bottom > innerHeight + 0.5) out.push(`${q} runs off the screen`);
+        }
+        for (let i = 0; i < parts.length; i++) for (let j = i + 1; j < parts.length; j++) {
+          const [qa, a] = parts[i];
+          const [qb, c] = parts[j];
+          if (a && c && Math.min(a.bottom, c.bottom) - Math.max(a.top, c.top) > 1 && Math.min(a.right, c.right) - Math.max(a.left, c.left) > 1) out.push(`${qa} and ${qb} overlap`);
+        }
+        return out;
+      });
+      layout.forEach((l) => fail(`5c: killer Ghost race at 360×800 — ${l}`));
+    }
+    // Time Gap deals a new killer and races the killer record's pace.
+    await homeOnLevel1();
+    await tap(page, '.rival-chip.delta-chip', '5c: killer Time Gap chip');
+    if (!(await startFromHome())) fail('5c: the killer Time Gap race did not open a killer');
+    else {
+      const fresh = await readJSON(page, 'suidoku_game_state_v1');
+      if (fresh?.variant !== 'killer') fail(`5c: the killer Time Gap race is a ${fresh?.variant}`);
+      else if (JSON.stringify(fresh.cages) === JSON.stringify(p.cages)) fail('5c: Time Gap on killer dealt the record\'s board — it deals a new one');
+      const against = await racedRecord();
+      if (!against) fail('5c: no pace banner on the killer Time Gap race');
+      else if (!against.includes('01:45')) fail(`5c: the killer Time Gap race runs against "${against}" — expected the killer record, 01:45`);
+    }
+    console.log('  ▶ 5c. killer Ghost: its own chip time, the record\'s board and cages, the banner out of its open cells, all on screen; Time Gap: a new killer against the killer record');
 
     // ── 5b. A killer speedrun ────────────────────────────────────────────
     // Two open cells with different digits: with one, every other digit is already

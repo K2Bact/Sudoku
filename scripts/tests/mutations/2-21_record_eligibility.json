@@ -3,7 +3,7 @@
   "name": "A Best Time Is A Record Only When It Was Played For One",
   "command": "node scripts/tests/unit/test_record_eligibility.js",
   "greenMarker": "[2-21] PASSED",
-  "note": "Written 2026-09-28 with BT-1 (duels out of the win rate). The gate had no manifest before; these cover the duel rules and the quit-is-a-loss rule it already claimed. The record-eligibility rule itself (hints, mistake limit) is not mutated here yet.",
+  "note": "Written 2026-09-28 with BT-1 (duels out of the win rate). The gate had no manifest before; these cover the duel rules and the quit-is-a-loss rule it already claimed. The record-eligibility rule itself (hints, mistake limit) is not mutated here yet. Survival and duel wins writing no ghost (D19) added 2026-10-14.",
   "mutations": [
     {
       "name": "a duel win adds to games played and won again",
@@ -68,6 +68,38 @@
       "find": "  const timeLimitBests = stats.survivalBestTimes || {};",
       "replace": "  const timeLimitBests = stats.timeLimitBestTimes || {};",
       "expectFailure": "the stats screen must show the Survival best from survivalBestTimes"
+    },
+    {
+      "name": "Survival and duels borrow the Classic ghost slot again",
+      "why": "The bug as it was (D19), through the real win path: a Survival win writes the time LEFT over the Classic ghost — 500 s becomes 420 s and the Survival board.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  if (!GHOST_MODES.has(mode)) return null;",
+      "replace": "  if (!GHOST_MODES.has(mode)) mode = 'classic';",
+      "expectFailure": "a Survival win (420 s left) changed the Classic ghost"
+    },
+    {
+      "name": "the ghost rule names Survival alone",
+      "why": "A 1v1 or AI match still writes its duel time over the Classic ghost from the win path, where the best-time table refuses it (BT-1).",
+      "file": "src/utils/ghostManager.js",
+      "find": "  if (!GHOST_MODES.has(mode)) return null;",
+      "replace": "  if (!GHOST_MODES.has(mode)) { if (mode === 'timeLimit') return null; mode = 'classic'; }",
+      "expectFailure": "a battle win (90 s) changed the Classic ghost"
+    },
+    {
+      "name": "the ghost rule holds for classic only",
+      "why": "When killer Survival arrives (KP-2) its wins take the same path and write their time left into the killer ghost.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  if (!GHOST_MODES.has(mode)) return null;",
+      "replace": "  if (!GHOST_MODES.has(mode)) { if (variant !== 'killer') return null; mode = 'classic'; }",
+      "expectFailure": "a killer Survival win (KP-2) wrote a killer ghost"
+    },
+    {
+      "name": "the win path stops writing the ghost",
+      "why": "The control: without the Classic win writing its ghost, every 'changed the Classic ghost' check compares an empty slot with an empty slot and passes.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "  recordGhostRun(gameMode, level, ghostRun, variant);",
+      "replace": "",
+      "expectFailure": "control: a Classic win did not set the Classic ghost"
     }
   ]
 }

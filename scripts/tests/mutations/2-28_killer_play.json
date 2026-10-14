@@ -164,6 +164,54 @@
       "find": "      playGamesService.submitBrainIQ(currentIQ);",
       "replace": "      if (!isKiller) playGamesService.submitBrainIQ(currentIQ);",
       "expectFailure": "a killer win sent the Logic Score 0 time(s)"
+    },
+    {
+      "name": "a killer win records no ghost again",
+      "why": "The guard that stood here until 2026-10-14 (killer order ④). With it back, Ghost and Time Gap on killer stay locked forever — there is never a killer run to race.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "  recordGhostRun(gameMode, level, ghostRun, variant);",
+      "replace": "  if (!isKiller) recordGhostRun(gameMode, level, ghostRun, variant);",
+      "expectFailure": "a killer win left no killer ghost"
+    },
+    {
+      "name": "the ghost forgets which kind won",
+      "why": "Without the kind the run lands in the classic slot: a classic player's Ghost chip offers a killer's time, and Ghost deals them a killer's givens as a classic board.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "  recordGhostRun(gameMode, level, ghostRun, variant);",
+      "replace": "  recordGhostRun(gameMode, level, ghostRun);",
+      "expectFailure": "a killer win left no killer ghost"
+    },
+    {
+      "name": "the win does not hand the ghost its cages",
+      "why": "The ghost keeps a killer's givens without its cages; Ghost cannot deal that board again and falls back to a new puzzle, so the race is never on the board the record was set on.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "    cages,",
+      "replace": "",
+      "expectFailure": "the killer ghost must keep the cages it was won on"
+    },
+    {
+      "name": "the cloud merge drops the killer ghosts",
+      "why": "Saving uploads the merge: the first win after this loses every killer ghost from the cloud, and a restore on a new phone has none.",
+      "file": "src/services/progressMerge.js",
+      "find": "        killer: { classic: ghosts(ck.classic, lk.classic), timeAttack: ghosts(ck.timeAttack, lk.timeAttack) },",
+      "replace": "",
+      "expectFailure": "a killer ghost only in the cloud was dropped by the merge"
+    },
+    {
+      "name": "the cloud merge reads no killer ghosts from the cloud",
+      "why": "A killer ghost set on the other phone never arrives here, and this phone's next save uploads the merge without it.",
+      "file": "src/services/progressMerge.js",
+      "find": "  const ck = isObject(c.ghost?.killer) ? c.ghost.killer : {};",
+      "replace": "  const ck = {};",
+      "expectFailure": "a killer ghost only in the cloud was dropped by the merge"
+    },
+    {
+      "name": "the cloud merge ignores this phone's killer ghosts",
+      "why": "A restore replaces this phone's killer ghosts with the cloud's: a record set here before the backup caught up is gone.",
+      "file": "src/services/progressMerge.js",
+      "find": "  const lk = isObject(lg.killer) ? lg.killer : {};",
+      "replace": "  const lk = {};",
+      "expectFailure": "a killer ghost only on this phone survives the merge"
     }
   ]
 }

@@ -27,6 +27,7 @@
  *   achievements                          union, cloud wins a shared key
  *   wallet                                hints / streak / ads watched: larger
  *   daily records, ghost PBs              union, local wins a shared key
+ *                                         (ghosts of both kinds, each in its slot)
  *
  * Known limit, recorded rather than fixed here: hints are spendable, and "larger"
  * means a hint spent on one phone reappears after a merge with a phone that still
@@ -216,10 +217,18 @@ export function mergeProgress(cloud, local) {
 
   const daily = isObject(c.daily) ? { ...entries(c.daily, isObject), ...(l.daily || {}) } : l.daily;
 
+  // Ghosts by kind and mode (ghostManager.js): classic at the top, killer one level
+  // down (2026-10-14). Dropping the killer slots here would lose them on every save,
+  // since saving uploads what this returns.
+  const ghosts = (cloudSide, localSide) => ({ ...entries(cloudSide, isGhost), ...entries(localSide, isGhost) });
+  const lg = isObject(l.ghost) ? l.ghost : {};
+  const ck = isObject(c.ghost?.killer) ? c.ghost.killer : {};
+  const lk = isObject(lg.killer) ? lg.killer : {};
   const ghost = isObject(c.ghost)
     ? {
-        classic: { ...entries(c.ghost.classic, isGhost), ...entries((l.ghost || {}).classic, isGhost) },
-        timeAttack: { ...entries(c.ghost.timeAttack, isGhost), ...entries((l.ghost || {}).timeAttack, isGhost) },
+        classic: ghosts(c.ghost.classic, lg.classic),
+        timeAttack: ghosts(c.ghost.timeAttack, lg.timeAttack),
+        killer: { classic: ghosts(ck.classic, lk.classic), timeAttack: ghosts(ck.timeAttack, lk.timeAttack) },
       }
     : l.ghost;
 

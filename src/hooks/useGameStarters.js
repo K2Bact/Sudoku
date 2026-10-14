@@ -1,6 +1,6 @@
 import { soundHaptic } from '../utils/soundHaptic';
 import { getDailyPuzzle } from '../utils/dailyChallenge';
-import { getGhostForModeLevel } from '../utils/ghostManager';
+import { getGhostForModeLevel, ghostPuzzle } from '../utils/ghostManager';
 import { useConfirm } from '../components/common/ConfirmProvider';
 import { gameInProgress } from '../utils/abandonedGame';
 import { isDuelMode } from '../utils/storage';
@@ -45,23 +45,21 @@ export function useGameStarters({
       return;
     }
 
-    if (rivalMode === 'ghost' && variant === 'classic') {
-      const ghost = getGhostForModeLevel(mode, selectedLevel);
-      if (ghost && (ghost.puzzle || ghost.board)) {
-        startNewGame(selectedLevel, mode, {
-          board: ghost.puzzle || ghost.board,
-          solution: ghost.solution,
-          seed: ghost.seed,
-          rivalMode: 'ghost',
-          ghostRecord: ghost
-        });
+    // Either kind races its own ghost (2026-10-14, killer order ④): the record is
+    // read from the kind's slot, and Ghost deals the board it was set on — a
+    // killer's with its cages (ghostManager.js ghostPuzzle).
+    if (rivalMode === 'ghost') {
+      const ghost = getGhostForModeLevel(mode, selectedLevel, variant);
+      const replay = ghostPuzzle(ghost, variant);
+      if (replay) {
+        startNewGame(selectedLevel, mode, { ...replay, rivalMode: 'ghost', ghostRecord: ghost });
         setActiveScreen('game');
         return;
       }
     }
 
-    const racesGhost = variant === 'classic' && (rivalMode === 'delta' || rivalMode === 'ghost');
-    const ghost = racesGhost ? getGhostForModeLevel(mode, selectedLevel) : null;
+    const racesGhost = rivalMode === 'delta' || rivalMode === 'ghost';
+    const ghost = racesGhost ? getGhostForModeLevel(mode, selectedLevel, variant) : null;
     startNewGame(selectedLevel, mode, ghost ? { rivalMode, ghostRecord: ghost, variant } : { variant });
     setActiveScreen('game');
   };

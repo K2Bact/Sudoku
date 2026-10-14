@@ -239,6 +239,7 @@ export function useGameInput({
         hintsUsed: hintsUsedCount || 0,
         initialBoard,
         solutionBoard: validSolution,
+        cages,
         comboCount,
         ...winFacts(playFactsRef?.current),
         timeline: runTimelineRef ? runTimelineRef.current.slice() : [],

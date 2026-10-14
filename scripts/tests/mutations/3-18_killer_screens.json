@@ -4,7 +4,7 @@
   "command": "node scripts/tests/ui/test_killer_screens.js",
   "greenMarker": "[3-18] PASSED",
   "rebuild": true,
-  "note": "Written with the gate on 2026-10-01. Each mutation breaks one thing a killer player sees.",
+  "note": "Written with the gate on 2026-10-01. Each mutation breaks one thing a killer player sees. Ghost and Time Gap on killer (KP-3) added 2026-10-14, Diary 130.",
   "mutations": [
     {
       "name": "a killer's Survival tab switches instead of saying it is coming",
@@ -26,9 +26,17 @@
       "name": "a new killer from the Speedrun tab starts as Classic",
       "why": "Home's killer button used to start Classic whatever tab was chosen. With the tab open the player sees the speedrun button and gets a classic game: no ⚡, no +10 s, hints back, the time in the wrong table.",
       "file": "src/components/HomeScreen.jsx",
-      "find": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, 'standard', 'killer');",
-      "replace": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, 'classic', 'standard', 'killer');",
+      "find": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, effectiveRivalMode, 'killer');",
+      "replace": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, 'classic', effectiveRivalMode, 'killer');",
       "expectFailure": "started without ⚡"
+    },
+    {
+      "name": "Home's killer button drops the rival again",
+      "why": "Until 2026-10-14 the killer start passed 'standard' whatever chip was chosen. The player picks Ghost, sees the record's time on the chip, and gets a new puzzle with no one to race.",
+      "file": "src/components/HomeScreen.jsx",
+      "find": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, effectiveRivalMode, 'killer');",
+      "replace": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, 'standard', 'killer');",
+      "expectFailure": "no ghost banner on the killer Ghost race"
     },
     {
       "name": "the ⓘ shows for killer only again",
@@ -47,12 +55,92 @@
       "expectFailure": "the layout jumps"
     },
     {
-      "name": "the Ghost chip on killer shows its own note",
-      "why": "Two notes stacked in the same place at the bottom of the screen, one saying the rival is locked until a level is cleared — which is not the reason on killer.",
+      "name": "a locked Ghost chip leaves Home's note up",
+      "why": "Replaces 'the Ghost chip on killer shows its own note' (its anchor, the comingSoon branch, went with the coming-soon chips on 2026-10-14). The worry is the same: two notes stacked in the one spot at the bottom of the screen, the Survival tab's 'coming' under the chip's 'clear this level once'.",
       "file": "src/components/home/RivalModeChips.jsx",
-      "find": "    if (comingSoon) {",
+      "find": "    if (onNote) onNote();",
+      "replace": "",
+      "expectFailure": "left the \"coming\" note up"
+    },
+    {
+      "name": "Home's note leaves the chip's note up",
+      "why": "The other way round: the Survival tab's 'coming' opens over the Ghost chip's note. Home cannot reach the chip's state, so the chips close their own notes when Home's opens.",
+      "file": "src/components/home/RivalModeChips.jsx",
+      "find": "    if (homeNoteOpen) {",
       "replace": "    if (false) {",
-      "expectFailure": "one note, the same one"
+      "expectFailure": "after the Ghost chip's note, the Survival tab"
+    },
+    {
+      "name": "the killer Ghost chip stays locked",
+      "why": "Killer order ④ undone on the home screen: whatever killer records exist, Ghost and Time Gap never open on killer.",
+      "file": "src/components/home/RivalModeChips.jsx",
+      "find": "  const canSelectGhost = !isTimeLimit && isGhostAvailable;",
+      "replace": "  const canSelectGhost = !isTimeLimit && isGhostAvailable && variant === 'classic';",
+      "expectFailure": "the killer Ghost chip says"
+    },
+    {
+      "name": "the chips read the classic record on killer",
+      "why": "The killer Ghost chip shows a classic time — a pace no killer can keep — and opens as soon as a classic level is cleared, before any killer was.",
+      "file": "src/components/home/RivalModeChips.jsx",
+      "find": "  const ghost = getGhostForModeLevel(isTimeLimit ? 'timeAttack' : selectedMode, selectedLevel, variant);",
+      "replace": "  const ghost = getGhostForModeLevel(isTimeLimit ? 'timeAttack' : selectedMode, selectedLevel);",
+      "expectFailure": "the killer Ghost chip says"
+    },
+    {
+      "name": "a killer Ghost race deals the record without its kind",
+      "why": "The start hands the record's givens over as a classic puzzle: no cages, too few digits to have one answer, and the race is on a board that cannot be solved.",
+      "file": "src/hooks/useGameStarters.js",
+      "find": "      const replay = ghostPuzzle(ghost, variant);",
+      "replace": "      const replay = ghostPuzzle(ghost);",
+      "expectFailure": "the killer Ghost race did not open a killer"
+    },
+    {
+      "name": "a killer Ghost race reads the classic record",
+      "why": "Ghost on killer replays the classic record: its board has no cages, so the race falls back to a new killer — not the board the player chose to race again.",
+      "file": "src/hooks/useGameStarters.js",
+      "find": "      const ghost = getGhostForModeLevel(mode, selectedLevel, variant);",
+      "replace": "      const ghost = getGhostForModeLevel(mode, selectedLevel);",
+      "expectFailure": "not the board the record was set on"
+    },
+    {
+      "name": "killer Time Gap races the classic record",
+      "why": "The pace on a killer is measured against a classic time: the banner reads far behind from the first cell, and the ghost pin finishes long before any killer could.",
+      "file": "src/hooks/useGameStarters.js",
+      "find": "    const ghost = racesGhost ? getGhostForModeLevel(mode, selectedLevel, variant) : null;",
+      "replace": "    const ghost = racesGhost ? getGhostForModeLevel(mode, selectedLevel) : null;",
+      "expectFailure": "the killer Time Gap race runs against"
+    },
+    {
+      "name": "the board does not hand its cages to the win",
+      "why": "The killer ghost is saved without its cages; a Ghost race cannot deal its board again and quietly deals a new one.",
+      "file": "src/hooks/useGameInput.js",
+      "find": "        cages,",
+      "replace": "",
+      "expectFailure": "the killer ghost was saved without its cages"
+    },
+    {
+      "name": "the banner counts out of a fixed 40",
+      "why": "Proves the banner check reads the banner: a killer Lv.1 has 45 open cells (Lv.5 has 81), and a count out of anything else never reaches the end.",
+      "file": "src/components/battle/GhostRivalBanner.jsx",
+      "find": "          <span className=\"rival-count\">{userFilledCount}/{totalEmptyCount}</span>",
+      "replace": "          <span className=\"rival-count\">{userFilledCount}/40</span>",
+      "expectFailure": "the player's count on the Ghost banner says"
+    },
+    {
+      "name": "the ghost's count on the banner is out of a fixed 40",
+      "why": "The other side of the banner: the ghost's progress out of the wrong total, so the two counts the player compares are not the same race. The first run of the player's-side mutation survived because the check read the whole banner's text and the ghost side's 0/45 matched (scope, AGENTS §3.3).",
+      "file": "src/components/battle/GhostRivalBanner.jsx",
+      "find": "          <span className=\"rival-count\">{pace.ghostFilledCount}/{totalEmptyCount}</span>",
+      "replace": "          <span className=\"rival-count\">{pace.ghostFilledCount}/40</span>",
+      "expectFailure": "the ghost's count on the Ghost banner says"
+    },
+    {
+      "name": "the ghost banner slides under the board",
+      "why": "Proves the race's layout check measures it: the board pulled up over the banner hides the pace the player is racing.",
+      "file": "src/styles/ghostBanner.css",
+      "find": "  margin: 0 auto 8px auto;",
+      "replace": "  margin: 0 auto -60px auto;",
+      "expectFailure": ".ghost-rival-banner-container and .board-zone overlap"
     },
     {
       "name": "a cell stops drawing the right side of its cage",

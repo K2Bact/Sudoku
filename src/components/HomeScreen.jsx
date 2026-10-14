@@ -74,7 +74,7 @@ export function HomeScreen({
       setComingSoon(true);
     }
   };
-  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, 'standard', 'killer');
+  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, effectiveRivalMode, 'killer');
 
   const savedGame = loadGameState();
   const hasSavedGame = isResumableGame(savedGame);
@@ -152,14 +152,16 @@ export function HomeScreen({
           </div>
 
           {/* Row 3: Rival Race Mode Selector Chips (Standard on Top, Ghost & Delta on Bottom).
-              A killer has no ghost to race yet: its times are kept apart (killerStats.js),
-              so Ghost and Time Gap say they are coming instead. */}
+              Each kind races its own record (ghostManager.js ghostSlot, 2026-10-14) — a
+              killer's ghost is a killer time. They share the bottom spot with the
+              "coming" note below, one note at a time. */}
           <RivalModeChips
             selectedMode={mode}
             selectedLevel={selectedLevel}
             onChange={setEffectiveRivalMode}
-            comingSoon={variant !== 'classic'}
-            onComingSoon={() => setComingSoon(true)}
+            variant={variant}
+            homeNoteOpen={comingSoon}
+            onNote={() => setComingSoon(false)}
           />
 
           {/* Full-Width Mobile Action Buttons */}

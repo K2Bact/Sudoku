@@ -28,6 +28,14 @@
       "find": "const ghostTimeDisplay = canSelectGhost ? formatSecs(ghost.bestSeconds) : '--:--';",
       "replace": "const ghostTimeDisplay = '--:--';",
       "expectFailure": "expected it to show 01:06"
+    },
+    {
+      "name": "the chips read the classic record on the killer switch",
+      "why": "Killer ghosts have their own slot since 2026-10-14 (KP-3). Read without the kind, the killer chip shows the classic 01:06 — a time no killer can race — instead of the killer's own 03:42.",
+      "file": "src/components/home/RivalModeChips.jsx",
+      "find": "  const ghost = getGhostForModeLevel(isTimeLimit ? 'timeAttack' : selectedMode, selectedLevel, variant);",
+      "replace": "  const ghost = getGhostForModeLevel(isTimeLimit ? 'timeAttack' : selectedMode, selectedLevel);",
+      "expectFailure": "expected it to show 03:42"
     }
   ],
   "note": "Until 2026-09-30 this gate saved screenshots and asserted nothing (external audit V05). It now measures the home screen in five states; the mutations below break the layout while it still renders."

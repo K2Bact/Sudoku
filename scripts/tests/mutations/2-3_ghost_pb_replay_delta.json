@@ -3,7 +3,7 @@
   "name": "Ghost PB Replay & Delta Pace Calculation Engine",
   "command": "node scripts/tests/unit/test_ghost_delta_mode.js",
   "greenMarker": "ALL GHOST & DELTA PACE CALCULATION TESTS PASSED",
-  "note": "A personal best is only worth racing if it was set without help. hintsUsedCount was once left out of the autosave, so a hinted run that survived an app restart came back looking clean and set a PB.",
+  "note": "A personal best is only worth racing if it was set without help. hintsUsedCount was once left out of the autosave, so a hinted run that survived an app restart came back looking clean and set a PB. This gate prints every check, passed or failed — '✅ [PASS] <text>' or '❌ [FAIL] <text>' — so expectFailure starts with '[FAIL] ': the bare text is in the output of a green run too, and credited any red run as the right reason (found 2026-10-14, Diary 130). Killer ghosts (KP-3) added 2026-10-14. Survival and duel ghosts (D19) added 2026-10-14: none written, and those already written are read as none.",
   "mutations": [
     {
       "name": "a run that used hints can still set a personal best",
@@ -11,7 +11,167 @@
       "file": "src/utils/ghostManager.js",
       "find": "  if (hintsUsed > 0) {",
       "replace": "  if (hintsUsed > 999) {",
-      "expectFailure": "PB record when hintsUsed"
+      "expectFailure": "[FAIL] Rejects PB record when hintsUsed"
+    },
+    {
+      "name": "the ghost table forgets the kind of puzzle",
+      "why": "Killer and classic runs share one slot per level. A killer Lv.3 takes several times a classic one, so a killer win never becomes a record there, and a classic player's Ghost chip offers a killer's time and board.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  const kind = variant === 'killer' ? records.killer : records;",
+      "replace": "  const kind = records;",
+      "expectFailure": "[FAIL] A first killer win sets the killer PB"
+    },
+    {
+      "name": "a killer ghost is saved without its cages",
+      "why": "A killer's givens are often none: without the cages the record's board cannot be dealt again, and Ghost quietly deals a new puzzle instead of the one the record was set on.",
+      "file": "src/utils/ghostManager.js",
+      "find": "      ...(variant === 'killer' ? { variant: 'killer', cages } : {}),",
+      "replace": "",
+      "expectFailure": "[FAIL] The killer ghost keeps its cages"
+    },
+    {
+      "name": "classic ghosts change shape",
+      "why": "Every classic ghost already on a phone or in a backup has no kind and no cages. Writing them with a kind field makes the classic slot two shapes, and any reader that checks the kind treats the old ghosts as something else.",
+      "file": "src/utils/ghostManager.js",
+      "find": "      ...(variant === 'killer' ? { variant: 'killer', cages } : {}),",
+      "replace": "      variant, cages,",
+      "expectFailure": "[FAIL] The classic ghost keeps its old place and shape"
+    },
+    {
+      "name": "killer ghosts are written but never read back",
+      "why": "The killer slot is dropped when the table is loaded: each killer win is saved and then lost, and the Ghost chip on killer stays locked forever.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  const killer = table(p.killer);",
+      "replace": "  const killer = {};",
+      "expectFailure": "[FAIL] The killer ghost reads back as 600s"
+    },
+    {
+      "name": "a killer without a ghost falls back to the classic best time",
+      "why": "Before the first killer ghost, Time Gap on killer would race the classic best time — a pace a killer can never keep, read as being far behind from the first cell.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  const stats = recordOf(loadStats(), variant);",
+      "replace": "  const stats = loadStats();",
+      "expectFailure": "[FAIL] Killer falls back to the killer best time"
+    },
+    {
+      "name": "a killer Ghost race deals the board without its kind",
+      "why": "The givens come back as a classic puzzle: no cages, a handful of digits (none at Lv.5), and thousands of solutions the game will call wrong.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  return isValidCageSet(ghost.cages) ? { ...puzzle, variant: 'killer', cages: ghost.cages } : null;",
+      "replace": "  return puzzle;",
+      "expectFailure": "[FAIL] A killer Ghost race starts as"
+    },
+    {
+      "name": "a killer ghost with damaged cages is dealt anyway",
+      "why": "A damaged backup's cages leave cells with no cage: the board draws holes and a cell no sum can decide. Dealing a new killer and racing the time alone is the safe fall-back.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  return isValidCageSet(ghost.cages) ? { ...puzzle, variant: 'killer', cages: ghost.cages } : null;",
+      "replace": "  return { ...puzzle, variant: 'killer', cages: ghost.cages };",
+      "expectFailure": "[FAIL] A killer ghost with damaged cages"
+    },
+    {
+      "name": "the ghost's own pace is ignored",
+      "why": "The banner's ghost count falls back to an even pace across the record time. A ghost that raced the easy cells first looks slower than it was, and the race is against a run nobody made. Nothing checked the timeline branch before 2026-10-14.",
+      "file": "src/utils/ghostManager.js",
+      "find": "    const pastEntries = ghostRecord.timeline.filter(e => e.time <= elapsedSeconds);",
+      "replace": "    const pastEntries = [];",
+      "expectFailure": "[FAIL] At 300s the killer ghost had filled 35 of 81"
+    },
+    {
+      "name": "Survival and duels borrow the Classic slot again",
+      "why": "The bug as it was (D19): a Survival win writes the time LEFT on its clock over the Classic ghost, with the Survival board, and its pace runs backwards. The chip then shows a time the player never set in Classic.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  if (!GHOST_MODES.has(mode)) return null;",
+      "replace": "  if (!GHOST_MODES.has(mode)) mode = 'classic';",
+      "expectFailure": "[FAIL] A Survival win (420 s left) leaves the classic ghost"
+    },
+    {
+      "name": "the rule names Survival alone",
+      "why": "The fix rejected in Diary ③: a 1v1 or AI match still writes its duel time over the Classic ghost — a time set racing someone, which the best-time table has refused since BT-1.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  if (!GHOST_MODES.has(mode)) return null;",
+      "replace": "  if (!GHOST_MODES.has(mode)) { if (mode === 'timeLimit') return null; mode = 'classic'; }",
+      "expectFailure": "[FAIL] A 1v1 win (90 s) leaves the classic ghost"
+    },
+    {
+      "name": "the rule holds for classic only",
+      "why": "Killer Survival (KP-2) comes through the same win path: its time left lands in the killer Classic ghost, and the killer Ghost chip offers it.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  if (!GHOST_MODES.has(mode)) return null;",
+      "replace": "  if (!GHOST_MODES.has(mode)) { if (variant !== 'killer') return null; mode = 'classic'; }",
+      "expectFailure": "[FAIL] A killer Survival win (BACKLOG KP-2) writes no killer ghost"
+    },
+    {
+      "name": "Classic has no ghost slot",
+      "why": "The control: with Classic left out of the ghost modes nothing in Test 14 can change, and every 'leaves the classic ghost' check would pass on an empty table.",
+      "file": "src/utils/ghostManager.js",
+      "find": "const GHOST_MODES = new Set(['classic', 'timeAttack']);",
+      "replace": "const GHOST_MODES = new Set(['timeAttack']);",
+      "expectFailure": "[FAIL] Control: a Classic win sets the classic ghost"
+    },
+    {
+      "name": "ghosts already written by Survival or a duel are read as they are",
+      "why": "Every phone and backup that took a Survival or duel win before the fix keeps racing it: a time the player never set in Classic, and no Classic win slower than it can replace it.",
+      "file": "src/utils/ghostManager.js",
+      "find": "    return withoutStrayClassicGhosts(normalise(raw ? JSON.parse(raw) : null));",
+      "replace": "    return normalise(raw ? JSON.parse(raw) : null);",
+      "expectFailure": "[FAIL] A classic ghost faster than the classic best time"
+    },
+    {
+      "name": "a ghost faster than the Classic best time is kept",
+      "why": "A duel's 90 s stays the Classic ghost over a 200 s best time — its pace runs forward, so nothing else can tell it from a Classic run.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  if (!(typeof bestTime === 'number' && bestTime > 0) || ghost.bestSeconds < bestTime) return true;",
+      "replace": "  if (!(typeof bestTime === 'number' && bestTime > 0)) return true;",
+      "expectFailure": "[FAIL] A classic ghost faster than the classic best time"
+    },
+    {
+      "name": "a ghost with no Classic best time behind it is kept",
+      "why": "A fast Survival at a level never cleared in Classic: every cell inside its 7 s bonus, so its clock only went up. The level's Ghost chip unlocks on a time left.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  if (!(typeof bestTime === 'number' && bestTime > 0) || ghost.bestSeconds < bestTime) return true;",
+      "replace": "  if (typeof bestTime === 'number' && ghost.bestSeconds < bestTime) return true;",
+      "expectFailure": "[FAIL] A classic ghost at a level with no classic best time"
+    },
+    {
+      "name": "a ghost equal to its best time is dropped",
+      "why": "Every Classic win writes the ghost and the best time from one time, so every clean ghost is equal to it: dropping the equal one hides the Classic ghost of everyone.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  if (!(typeof bestTime === 'number' && bestTime > 0) || ghost.bestSeconds < bestTime) return true;",
+      "replace": "  if (!(typeof bestTime === 'number' && bestTime > 0) || ghost.bestSeconds <= bestTime) return true;",
+      "expectFailure": "[FAIL] A classic ghost equal to its best time is kept"
+    },
+    {
+      "name": "only a ghost exactly at the best time is kept",
+      "why": "The best time takes the faster of two phones and the ghost this phone's (D21), so a clean ghost can be slower than it. Dropping those hides real Classic runs.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  if (!(typeof bestTime === 'number' && bestTime > 0) || ghost.bestSeconds < bestTime) return true;",
+      "replace": "  if (!(typeof bestTime === 'number' && bestTime > 0) || ghost.bestSeconds !== bestTime) return true;",
+      "expectFailure": "[FAIL] A classic ghost slower than its best time is kept"
+    },
+    {
+      "name": "a pace that goes back in time is not looked at",
+      "why": "A Survival ghost slower than the best time stays: its timeline is the clock counting down, so the ghost's cell count jumps about during the race.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  return times.some((time, i) => i > 0 && time < times[i - 1]);",
+      "replace": "  return false;",
+      "expectFailure": "[FAIL] A classic ghost whose pace goes back in time"
+    },
+    {
+      "name": "the stray check reaches the Speedrun slot",
+      "why": "A Speedrun clock does go down — a combo takes seconds off — so the same test drops honest Speedrun ghosts. Nothing was ever written into that slot wrongly.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  const bestTimes = loadStats().bestTimes || {};",
+      "replace": "  const bestTimes = loadStats().bestTimes || {}; for (const l of Object.keys(records.timeAttack)) if (isStrayClassicGhost(records.timeAttack[l], (loadStats().timeAttackBestTimes || {})[l])) delete records.timeAttack[l];",
+      "expectFailure": "[FAIL] A Speedrun ghost whose clock went down (a combo) is kept"
+    },
+    {
+      "name": "the stray check reaches the killer slots",
+      "why": "Killer ghosts were never written by Survival or a duel; checked against the killer best time they vanish whenever the two disagree, for no wrong ever done there.",
+      "file": "src/utils/ghostManager.js",
+      "find": "  const bestTimes = loadStats().bestTimes || {};",
+      "replace": "  const bestTimes = loadStats().bestTimes || {}; for (const l of Object.keys(records.killer.classic)) if (isStrayClassicGhost(records.killer.classic[l], (recordOf(loadStats(), 'killer').bestTimes || {})[l])) delete records.killer.classic[l];",
+      "expectFailure": "[FAIL] A killer ghost with no killer best time is kept"
     }
   ]
 }

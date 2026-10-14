@@ -133,6 +133,8 @@ async function run() {
     await page.evaluate(() => {
       localStorage.setItem('suidoku_review_prompted', 'done');
       localStorage.setItem('suidoku_daily_reward_v1', JSON.stringify({ claimedDate: new Date().toISOString().slice(0, 10) }));
+      // A killer speedrun ghost at the same level, with another time (2026-10-14,
+      // KP-3): on the killer switch the chip must show the killer one.
       localStorage.setItem('suidoku_ghost_records_v1', JSON.stringify({
         classic: {},
         timeAttack: {
@@ -142,7 +144,8 @@ async function run() {
             hintsUsed: 0,
             seed: 'test-seed'
           }
-        }
+        },
+        killer: { classic: {}, timeAttack: { 3: { bestSeconds: 222 } } }
       }));
     });
     await page.reload();
@@ -181,6 +184,22 @@ async function run() {
     await page.screenshot({ path: path.join(SHOT_DIR, 'home_survival_verified.png') });
     console.log('Saved home_survival_verified.png');
 
+    // 6. The killer switch, Speedrun, level 3: its own record (03:42), not the classic 01:06
+    await page.click('.variant-option[data-variant="killer"]');
+    await page.click('.time-attack-tab');
+    await page.click('.level-chip-group button:nth-child(3)');
+    await page.waitForTimeout(400);
+    await checkLayout(page, 'killer speedrun with a record', '03:42');
+    await page.screenshot({ path: path.join(SHOT_DIR, 'home_killer_timeattack_pb_verified.png') });
+    console.log('Saved home_killer_timeattack_pb_verified.png');
+
+    // 7. Its Ghost chip selected
+    await page.click('.ghost-chip');
+    await page.waitForTimeout(400);
+    await checkLayout(page, 'killer ghost selected', '03:42');
+    await page.screenshot({ path: path.join(SHOT_DIR, 'home_killer_ghost_selected.png') });
+    console.log('Saved home_killer_ghost_selected.png');
+
     await browser.close();
     if (layoutProblems.length) {
       console.error(`❌ [3-5] ${layoutProblems.length} layout problem(s) on the home screen:`);
@@ -188,7 +207,7 @@ async function run() {
       shutdownPreview(viteProcess);
       process.exit(1);
     }
-    console.log('  ✅ 5 home states: no sideways scroll, no overlapping blocks, tabs and chips in their rows, the ghost time shown');
+    console.log('  ✅ 7 home states (2 on the killer switch): no sideways scroll, no overlapping blocks, tabs and chips in their rows, the ghost time of the kind shown');
     console.log('All screenshots captured successfully!');
   } finally {
     shutdownPreview(viteProcess);
