@@ -20,28 +20,16 @@ import { useTranslation } from '../../i18n/i18nContext';
  * a killer's ghost is never a classic time (2026-10-14). Until then the chips
  * were "coming" on killer, which had no ghost table.
  *
- * One note at a time. These popups and Home's own note (a mode the kind does not
- * have yet — killer Survival) sit in the same spot at the bottom of the screen.
- * While the chips were "coming" on killer they showed Home's note and never
- * their own, so the two could not meet; now a killer chip can be locked for its
- * own reason. homeNoteOpen closes the chips' notes when Home opens its note, and
- * onNote asks Home to close its note when the chips open one.
+ * One note at a time: the locked note and the ⓘ close each other. Home had a note
+ * of its own in the same spot, for a mode the kind did not have yet, and the two
+ * sides closed each other's (homeNoteOpen / onNote, 2026-10-14). It went when
+ * killer got Survival, the last such mode, the same day (Diary 132).
  */
-export function RivalModeChips({ selectedMode, selectedLevel, onChange, variant = 'classic', homeNoteOpen = false, onNote }) {
+export function RivalModeChips({ selectedMode, selectedLevel, onChange, variant = 'classic' }) {
   const { t } = useTranslation();
   const [rivalMode, setRivalMode] = useState('standard');
   const [lockedToast, setLockedToast] = useState(null);
   const [showRivalInfo, setShowRivalInfo] = useState(false);
-  // Home's note opening is a change of prop, not an event here: adjusted while
-  // rendering, the way React documents for a prop change (no Effect, no extra paint).
-  const [homeNoteSeen, setHomeNoteSeen] = useState(homeNoteOpen);
-  if (homeNoteOpen !== homeNoteSeen) {
-    setHomeNoteSeen(homeNoteOpen);
-    if (homeNoteOpen) {
-      setLockedToast(null);
-      setShowRivalInfo(false);
-    }
-  }
 
   // Survival races the clock already; a second pace to chase is one clock too
   // many, so both rivals are off there whatever record exists.
@@ -82,7 +70,6 @@ export function RivalModeChips({ selectedMode, selectedLevel, onChange, variant 
    */
   const triggerLockedToast = () => {
     soundHaptic.playErrorSound();
-    if (onNote) onNote();
     setShowRivalInfo(false);
     setLockedToast(t(isTimeLimit ? 'home.rivalModes.timeLimitToast' : 'home.rivalModes.lockedToast'));
   };
@@ -125,7 +112,6 @@ export function RivalModeChips({ selectedMode, selectedLevel, onChange, variant 
             onClick={() => {
               soundHaptic.playSelectSound();
               setLockedToast(null);
-              if (!showRivalInfo && onNote) onNote();
               setShowRivalInfo(!showRivalInfo);
             }}
           >

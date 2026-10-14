@@ -1,0 +1,104 @@
+<en-US>
+• Killer Sudoku now has Survival, with its own time limits and a bigger bonus for each right cell.
+• Race your best Killer games with Ghost and Time Gap.
+• AI Bot Battle on Killer: pick Standard or Killer on the AI screen.
+• The duel header shows which puzzle is being played.
+• Fixed: Survival and duel wins no longer replace your Ghost record.
+• The app's name in Settings now reads correctly, and the French texts were revised.
+</en-US>
+<ar>
+• أصبح لكيلر وضع «النجاة»، بحدود وقت خاصة به ومكافأة أكبر لكل خلية صحيحة.
+• نافس أفضل ألعاب كيلر لديك عبر «شبح الرقم القياسي» و«فارق الوقت».
+• «مبارزة الذكاء الاصطناعي» متاحة الآن في كيلر: اختر «قياسي» أو «كيلر» في شاشة الذكاء الاصطناعي.
+• يُظهر أعلى شاشة المبارزة نوع اللغز.
+• إصلاح: الفوز في «النجاة» أو في المبارزات لم يعد يستبدل سجل الشبح.
+• تصحيح اسم التطبيق في الإعدادات، وتحسين النصوص الفرنسية.
+</ar>
+<de-DE>
+• Killer hat jetzt Überleben – mit eigenen Zeitlimits und mehr Bonuszeit für jedes richtige Feld.
+• Tritt mit Geist und Zeitdiff. gegen deine besten Killer-Partien an.
+• KI-Bot-Duell auch mit Killer: Wähle Standard oder Killer im KI-Bildschirm.
+• Der Duell-Kopf zeigt, welches Rätsel gespielt wird.
+• Behoben: Siege in Überleben und Duellen ersetzen deinen Geist-Rekord nicht mehr.
+• App-Name in den Einstellungen korrigiert, französische Texte überarbeitet.
+</de-DE>
+<es-ES>
+• Killer estrena Supervivencia, con sus propios límites de tiempo y más bonificación por cada casilla correcta.
+• Compite contra tus mejores partidas Killer con Fantasma y Ritmo Delta.
+• Duelo contra IA también en Killer: elige Estándar o Killer en la pantalla de la IA.
+• La cabecera del duelo muestra qué tipo de sudoku se juega.
+• Corregido: ganar en Supervivencia o en un duelo ya no reemplaza tu récord de Fantasma.
+• Nombre de la app corregido en Ajustes y textos en francés revisados.
+</es-ES>
+<fr-FR>
+• Le Killer a désormais son mode Survie, avec ses propres limites de temps et un bonus plus grand pour chaque case juste.
+• Affrontez vos meilleures parties Killer avec Fantôme et Écart.
+• Duel contre l’IA en Killer : choisissez Standard ou Killer sur l’écran de l’IA.
+• L’en-tête du duel indique la grille jouée.
+• Corrigé : une victoire en Survie ou en duel ne remplace plus votre record Fantôme.
+• Nom de l’application corrigé dans les Paramètres et textes français revus.
+</fr-FR>
+<hi-IN>
+• किलर में अब सर्वाइवल है — अपनी समय सीमा और हर सही सेल पर ज़्यादा बोनस के साथ।
+• घोस्ट और टाइम गैप से अपने सबसे अच्छे किलर गेम से मुकाबला करें।
+• एआई बॉट मुकाबला अब किलर में भी: एआई स्क्रीन पर मानक या किलर चुनें।
+• मुकाबले के ऊपर दिखता है कि कौन-सी पहेली खेली जा रही है।
+• सुधार: सर्वाइवल और मुकाबले की जीत अब आपका घोस्ट रिकॉर्ड नहीं बदलती।
+• सेटिंग में ऐप का नाम ठीक किया गया और फ़्रेंच पाठ सुधारे गए।
+</hi-IN>
+<it-IT>
+• Il Killer ha ora la Sopravvivenza, con limiti di tempo propri e più bonus per ogni casella giusta.
+• Sfida le tue migliori partite Killer con Fantasma e Distacco.
+• Duello contro l’IA anche con il Killer: scegli Standard o Killer nella schermata dell’IA.
+• L’intestazione del duello mostra il tipo di sudoku.
+• Corretto: le vittorie in Sopravvivenza e nei duelli non sostituiscono più il tuo record Fantasma.
+• Nome dell’app corretto nelle Impostazioni e testi francesi rivisti.
+</it-IT>
+<ja-JP>
+• キラーナンプレにサバイバルが登場。キラー専用の制限時間と、正解マスごとのボーナス。
+• ゴーストとデルタで、キラーの自己ベストと競えます。
+• AI ボット対戦もキラーで。AI 画面でスタンダードかキラーを選べます。
+• 対戦画面の上に、どちらのパズルかを表示します。
+• サバイバルや対戦で勝ってもゴーストの記録が置き換わらないよう修正しました。
+• 設定画面のアプリ名表記を修正し、フランス語の表現を改善しました。
+</ja-JP>
+<ko-KR>
+• 킬러에 서바이벌이 생겼어요. 킬러에 맞춘 제한 시간과 맞힌 칸 보너스가 있어요.
+• 고스트·델타타임으로 내 킬러 최고 기록과 겨뤄요.
+• AI 봇 대전도 킬러로! AI 화면에서 표준·킬러를 골라요.
+• 대전 화면 위에 어떤 퍼즐인지 보여 줘요.
+• 서바이벌·대전에서 이겨도 고스트 기록이 바뀌지 않게 고쳤어요.
+• 설정의 앱 이름 표시를 바로잡고, 프랑스어 문구를 다듬었어요.
+</ko-KR>
+<pt-BR>
+• O Killer ganhou o Sobrevivência, com limites de tempo próprios e mais bônus por casa certa.
+• Desafie suas melhores partidas Killer com Fantasma e Diferença.
+• Duelo contra IA também no Killer: escolha Padrão ou Killer na tela da IA.
+• O topo do duelo mostra o tipo de sudoku.
+• Corrigido: vitórias no Sobrevivência e em duelos não substituem mais seu recorde Fantasma.
+• Nome do app corrigido nas Configurações e textos em francês revisados.
+</pt-BR>
+<ru-RU>
+• В Киллере появилось Выживание — со своими лимитами времени и большим бонусом за каждую верную клетку.
+• Соревнуйтесь со своими лучшими играми в Киллер в режимах Призрак и Отрыв.
+• Дуэль против ИИ теперь и в Киллере: выберите Стандарт или Киллер на экране ИИ.
+• В шапке дуэли видно, какая головоломка в игре.
+• Исправлено: победы в Выживании и дуэлях больше не заменяют ваш рекорд Призрака.
+• Исправлено название приложения в Настройках, улучшены французские тексты.
+</ru-RU>
+<zh-CN>
+• 杀手数独新增极限生存：专属时间限制，每个正确格子奖励更多时间。
+• 用幽灵和时间差挑战自己的杀手数独最佳成绩。
+• AI 机器人对战也能玩杀手数独：在 AI 页面选择标准或杀手。
+• 对战页面顶部显示当前谜题类型。
+• 修复：极限生存和对战胜利不再覆盖你的幽灵记录。
+• 修正设置中的应用名称，改进法语文本。
+</zh-CN>
+<zh-TW>
+• 殺手數獨新增極限生存：專屬時間限制，每個正確格子獎勵更多時間。
+• 用幽靈和 Delta 步調挑戰自己的殺手數獨最佳成績。
+• AI 機器人對戰也能玩殺手數獨：在 AI 頁面選擇標準或殺手。
+• 對戰頁面頂部顯示目前的謎題類型。
+• 修正：極限生存和對戰勝利不再覆蓋你的幽靈紀錄。
+• 修正設定中的應用程式名稱，改進法語文字。
+</zh-TW>

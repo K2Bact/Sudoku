@@ -144,8 +144,9 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     observeForReplay(activeBattleRoom, board, notes);
   }, [activeBattleRoom, board, notes]);
 
-  // Everything one game keeps, back to its start — both clocks included.
-  const resetGameState = (newLevel, newMode) => {
+  // Everything one game keeps, back to its start — both clocks included, with
+  // the Survival limit of the game's kind.
+  const resetGameState = (newLevel, newMode, newVariant) => {
     runTimelineRef.current = [];
     playFactsRef.current = newPlayFacts();
     setHintsUsedCount(0);
@@ -164,7 +165,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     setLockedNumber(null);
     setConflictInfo(null);
     clearGameState();
-    resetTimer(newLevel, newMode);
+    resetTimer(newLevel, newMode, null, newVariant);
   };
 
   // Start fresh new game. A game in progress that this throws away counts as a loss.
@@ -189,14 +190,16 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
       setRivalMode('standard');
       setGhostRecord(null);
     }
-    resetGameState(newLevel, mode);
+    // The new puzzle's kind, not the state's: setVariant above lands next render,
+    // and a killer started after a classic would get the classic limit.
+    resetGameState(newLevel, mode, puzzle.variant);
   };
 
   const restartCurrentGame = () => {
     recordAbandonedGame();
     setBoard(cloneGrid(initialBoard));
     setNotes(Array(9).fill(null).map(() => Array(9).fill([])));
-    resetGameState(level, gameMode);
+    resetGameState(level, gameMode, variant);
   };
 
   const resumeSavedGame = (requestedLevel, requestedVariant = null) => {

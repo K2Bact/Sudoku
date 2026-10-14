@@ -36,6 +36,14 @@
       "find": "  const ghost = getGhostForModeLevel(isTimeLimit ? 'timeAttack' : selectedMode, selectedLevel, variant);",
       "replace": "  const ghost = getGhostForModeLevel(isTimeLimit ? 'timeAttack' : selectedMode, selectedLevel);",
       "expectFailure": "expected it to show 03:42"
+    },
+    {
+      "name": "killer has no Survival on the home card",
+      "why": "Added 2026-10-14 with killer Survival (KP-2). The killer's modes lose Survival: on the killer card the tab does nothing and the Classic start stays — the player cannot reach a killer Survival from Home.",
+      "file": "src/engine/variants.js",
+      "find": "  { id: 'killer', modes: ['classic', 'timeAttack', 'timeLimit'] },",
+      "replace": "  { id: 'killer', modes: ['classic', 'timeAttack'] },",
+      "expectFailure": "the Survival tab on the killer switch did not switch to Survival"
     }
   ],
   "note": "Until 2026-09-30 this gate saved screenshots and asserted nothing (external audit V05). It now measures the home screen in five states; the mutations below break the layout while it still renders."

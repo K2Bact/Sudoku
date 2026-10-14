@@ -16,6 +16,9 @@
  *   3. Speedrun → win → Next puzzle   is Speedrun
  *   4. daily → win (+1 hint) → Next puzzle → win   gives no hint and leaves the
  *      daily record as the daily left it
+ *   5. killer Survival (2026-10-14, KP-2) → New game → Lv.2, → the header's
+ *      Restart, → game over → Restart   are each a killer Survival on the
+ *      killer's clock (Lv.2: 13 min; classic has 6)
  */
 import { chromium } from 'playwright';
 import { spawn, execSync } from 'child_process';
@@ -42,20 +45,25 @@ const todayKey = () => {
 };
 
 /** Fresh storage: English, today's attendance claimed, no review prompt, 3 hints. */
-async function prime(page) {
+async function prime(page, settings = {}) {
   await page.goto(URL);
-  await page.evaluate((today) => {
+  await page.evaluate(({ today, extra }) => {
     localStorage.clear();
-    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en', theme: 'matte-dark' }));
+    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en', theme: 'matte-dark', ...extra }));
     localStorage.setItem('suidoku_user_wallet_v1', JSON.stringify({ hints: 3, lastDailyClaimDate: today, streakDays: 1, totalAdsWatched: 0, history: [] }));
     localStorage.setItem('suidoku_review_prompted', '1');
-  }, todayKey());
+  }, { today: todayKey(), extra: settings });
   await page.reload();
   await page.waitForSelector('.home-bottom-nav', { timeout: 8000 });
 }
 
 const save = (page) => page.evaluate(() => JSON.parse(localStorage.getItem('suidoku_game_state_v1') || 'null'));
 const hints = (page) => page.evaluate(() => JSON.parse(localStorage.getItem('suidoku_user_wallet_v1') || '{}').hints);
+/** The clock in the header, in seconds. */
+const clock = async (page) => {
+  const [m, sec] = (await page.locator('.time-display').innerText()).split(':').map(Number);
+  return m * 60 + sec;
+};
 const dailyRecord = (page, key) => page.evaluate((k) => JSON.parse(localStorage.getItem('suidoku_daily_records_v1') || '{}')[k] || null, key);
 
 /** "Throw away the game in progress?" — yes, when it is asked. */
@@ -90,6 +98,39 @@ async function solve(page) {
   });
 }
 
+/**
+ * Three wrong digits: the game-over card. Returns its Restart button, or null
+ * after saying what was on the screen instead.
+ */
+async function loseOnMistakes(page, where) {
+  const s = await save(page);
+  const wrong = [];
+  for (let i = 0; i < 81 && wrong.length < 3; i++) {
+    const r = Math.floor(i / 9);
+    const c = i % 9;
+    if (s.initialBoard[r][c] !== 0) continue;
+    // A digit already on the board nine times is refused, not counted as a mistake —
+    // and each wrong digit typed here adds one more (a run with 2 mistakes of 3 was
+    // this: the same digit chosen twice, the second one refused).
+    const placed = (d) => s.board.flat().filter((v) => v === d).length + wrong.filter(([, w]) => w === d).length;
+    const d = [1, 2, 3, 4, 5, 6, 7, 8, 9].find((n) => n !== s.solutionBoard[r][c] && placed(n) < 9);
+    wrong.push([i, d]);
+  }
+  for (const [i, d] of wrong) {
+    await page.locator('.sudoku-cell').nth(i).click();
+    await page.locator('.num-btn').nth(d - 1).click();
+    await page.waitForTimeout(150);
+  }
+  const restart = page.locator('.modal-overlay .btn-secondary.btn-lg');
+  if (await restart.waitFor({ timeout: 8000 }).then(() => true, () => false)) return restart;
+  const seen = await page.evaluate(() => ({
+    mistakes: JSON.parse(localStorage.getItem('suidoku_game_state_v1') || 'null')?.mistakes,
+    buttons: [...document.querySelectorAll('.modal-overlay button')].map((el) => el.className),
+  }));
+  fail(`${where} three wrong digits did not bring up the game-over card (saved mistakes ${seen.mistakes}, buttons on screen ${JSON.stringify(seen.buttons)})`);
+  return null;
+}
+
 /** Win the game on screen, then press Next puzzle on the victory card. */
 async function winThenNext(page) {
   await solve(page);
@@ -121,32 +162,8 @@ async function run() {
     else console.log('  ✓ 1. Survival → New game → Lv.2 is Survival Lv.2');
 
     // ── 2. Restart on the game-over card ─────────────────────────────────────
-    s = await save(page);
-    const wrong = [];
-    for (let i = 0; i < 81 && wrong.length < 3; i++) {
-      const r = Math.floor(i / 9);
-      const c = i % 9;
-      if (s.initialBoard[r][c] !== 0) continue;
-      // A digit already on the board nine times is refused, not counted as a mistake —
-      // and each wrong digit typed here adds one more (a run with 2 mistakes of 3 was
-      // this: the same digit chosen twice, the second one refused).
-      const placed = (d) => s.board.flat().filter((v) => v === d).length + wrong.filter(([, w]) => w === d).length;
-      const d = [1, 2, 3, 4, 5, 6, 7, 8, 9].find((n) => n !== s.solutionBoard[r][c] && placed(n) < 9);
-      wrong.push([i, d]);
-    }
-    for (const [i, d] of wrong) {
-      await page.locator('.sudoku-cell').nth(i).click();
-      await page.locator('.num-btn').nth(d - 1).click();
-      await page.waitForTimeout(150);
-    }
-    const restart = page.locator('.modal-overlay .btn-secondary.btn-lg');
-    if (!(await restart.waitFor({ timeout: 8000 }).then(() => true, () => false))) {
-      const seen = await page.evaluate(() => ({
-        mistakes: JSON.parse(localStorage.getItem('suidoku_game_state_v1') || 'null')?.mistakes,
-        buttons: [...document.querySelectorAll('.modal-overlay button')].map((el) => el.className),
-      }));
-      fail(`2. three wrong digits did not bring up the game-over card (saved mistakes ${seen.mistakes}, buttons on screen ${JSON.stringify(seen.buttons)})`);
-    } else {
+    const restart = await loseOnMistakes(page, '2.');
+    if (restart) {
       await restart.click();
       await page.waitForTimeout(600);
       s = await save(page);
@@ -186,6 +203,44 @@ async function run() {
       if (JSON.stringify(after) !== JSON.stringify(record)) fail(`4. a puzzle won after the daily rewrote the daily record: ${JSON.stringify(record)} → ${JSON.stringify(after)}`);
       if (h2 === h1 && JSON.stringify(after) === JSON.stringify(record)) console.log(`  ✓ 4. the daily pays once (hints ${h0} → ${h1}); the puzzle after it pays nothing and leaves the record`);
     }
+
+    // ── 5. Killer Survival (2026-10-14, KP-2) ────────────────────────────────
+    // The same buttons on a killer Survival: each next game is a killer Survival,
+    // and its clock starts at the killer limit — Lv.2 13 min (780 s), classic 6.
+    const killerSurvival = async (where, level) => {
+      await page.waitForSelector('.killer-board', { timeout: 10000 }).catch(() => {});
+      await page.waitForTimeout(600);
+      const g = await save(page);
+      const t = await clock(page).catch(() => null);
+      if (g?.variant !== 'killer' || g?.gameMode !== 'timeLimit' || g?.level !== level) {
+        fail(`5. ${where} started ${g?.variant} ${g?.gameMode} Lv.${g?.level} — expected a killer Survival Lv.${level}`);
+        return false;
+      }
+      if (!(t >= 770 && t <= 780)) {
+        fail(`5. ${where} started with ${t} s on the clock — a killer Survival Lv.2 starts at 780 s (13 min), classic at 360`);
+        return false;
+      }
+      return true;
+    };
+    await prime(page, { homeVariant: 'killer', killerRulesSeen: true });
+    await startFromHome(page, '.mode-tab-btn.time-limit-tab');
+    await page.click('.new-game-btn');
+    await page.locator('.difficulty-modal-list button').nth(1).click();
+    await page.click('.modal-overlay .modal-actions-vertical .btn-primary');
+    await acceptAbandon(page);
+    const picked = await killerSurvival('killer Survival → New game → Lv.2', 2);
+    // The header's Restart: the same puzzle again, on a full killer clock.
+    await page.waitForTimeout(2200);
+    await page.click('.restart-btn');
+    await acceptAbandon(page);
+    const restarted = await killerSurvival("killer Survival → the header's Restart", 2);
+    const lost = await loseOnMistakes(page, '5. killer Survival:');
+    let again = false;
+    if (lost) {
+      await lost.click();
+      again = await killerSurvival('killer Survival → game over → Restart', 2);
+    }
+    if (picked && restarted && again) console.log('  ✓ 5. killer Survival → New game, the header\'s Restart and game over → Restart are killer Survival on the killer clock');
   } finally {
     if (browser) await browser.close();
     server.kill();
@@ -197,7 +252,7 @@ async function run() {
     failures.forEach((f) => console.error(`  - ${f}`));
     process.exit(1);
   }
-  console.log('\n✅ [3-19] PASSED — restart, next puzzle and the level picker keep the mode and leave the daily behind');
+  console.log('\n✅ [3-19] PASSED — restart, next puzzle and the level picker keep the mode and the kind, and leave the daily behind');
 }
 
 run().catch((err) => {

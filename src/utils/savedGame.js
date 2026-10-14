@@ -18,13 +18,8 @@
  *
  * It also says how long a saved game had been played (playedSecondsOf).
  */
-import { isValidCageSet } from '../engine/variants.js';
-import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine.js';
-
-// Survival's clock gains this much for each correct cell (useGameInput's
-// addSurvivalBonusTime). Here it only works back an old save's time played;
-// gate 2-30 holds the two to the same number.
-export const SURVIVAL_CELL_BONUS_SECONDS = 7;
+import { isValidCageSet, variantOf } from '../engine/variants.js';
+import { survivalLimitSeconds, survivalCellBonusSeconds } from '../engine/survivalClock.js';
 
 const isGrid = (g, min, max) =>
   Array.isArray(g) && g.length === 9 &&
@@ -43,8 +38,10 @@ const correctCells = (board, initial, solution) =>
  *
  * A save from before it was kept (1.4.0 and earlier) has only the clock. Outside
  * Survival the clock ran with the time played, so it stands in. In Survival the
- * clock is the time LEFT, which gained 7 s for each correct cell: the time played
- * is the limit, less the time left, plus 7 s for every correct cell on the board.
+ * clock is the time LEFT, which gained a bonus for each correct cell: the time played
+ * is the limit, less the time left, plus the bonus for every correct cell on the
+ * board — the limit and the bonus of the save's own kind (survivalClock.js; a
+ * killer save always kept its count, but would be worked back on killer numbers).
  * That is a floor, not the exact time — a cell erased and placed again, or a
  * revive, gave time the board no longer shows — and it is only ever read for a
  * game saved before the update and finished after it.
@@ -54,9 +51,10 @@ export function playedSecondsOf(saved) {
   if (Number.isInteger(kept) && kept >= 0) return kept;
   const clock = Number.isFinite(saved?.timerSeconds) ? Math.max(0, Math.floor(saved.timerSeconds)) : 0;
   if (saved?.gameMode !== 'timeLimit') return clock;
-  const limit = DIFFICULTY_CONFIG[saved.level]?.timeLimitSeconds || 480;
+  const kind = variantOf(saved);
+  const limit = survivalLimitSeconds(kind, saved.level);
   const solved = correctCells(saved.board, saved.initialBoard, saved.solutionBoard);
-  return Math.max(0, limit - clock + SURVIVAL_CELL_BONUS_SECONDS * solved);
+  return Math.max(0, limit - clock + survivalCellBonusSeconds(kind, saved.level) * solved);
 }
 
 export function isResumableGame(saved) {

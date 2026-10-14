@@ -6,8 +6,9 @@
  * stats object (the cloud backup carries it without a new field). It is written
  * by the same code as the classic record (storage.js recordGameWin /
  * recordGameLoss with the kind), so it holds everything the classic one holds:
- * games, wins, flawless wins, the longest combo, the levels cleared, and best
- * times per mode (user, 2026-10-07: the two kinds differ in the puzzle only).
+ * games, wins, flawless wins, the longest combo, the levels cleared, best
+ * times per mode and Survival clears (user, 2026-10-07: the two kinds differ in
+ * the puzzle only).
  * progressMerge merges it by the classic rules.
  */
 import { loadStats, recordGameLoss } from './storage.js';
@@ -24,6 +25,10 @@ export function loadKillerRecord(stats = loadStats()) {
     clearedLevels: { ...(k.clearedLevels || {}) },
     bestTimes: { ...(k.bestTimes || {}) },
     timeAttackBestTimes: { ...(k.timeAttackBestTimes || {}) },
+    // Survival (KP-2, 2026-10-14): the fastest clear per level in seconds played
+    // (D16), and the clears — as the classic record keeps them.
+    survivalBestTimes: { ...(k.survivalBestTimes || {}) },
+    timeLimitSurvivalWins: k.timeLimitSurvivalWins || 0,
   };
 }
 

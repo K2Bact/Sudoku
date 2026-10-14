@@ -4,7 +4,7 @@
  */
 export const APP_INFO = {
   name: 'Sudoku',
-  version: '1.4.2',
+  version: '1.5.0',
   buildCode: '28',
   buildDate: '2026.10',
   copyright: '© 2026 K2Bact. All rights reserved.',

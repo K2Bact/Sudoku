@@ -6,7 +6,6 @@ export const killer = {
     switchLabel: 'パズルの種類',
     classic: 'スタンダード',
     killer: 'キラー',
-    comingSoon: 'キラーではまだ開発中です。',
     classicRules: {
       title: 'ナンプレのルール',
       grid: '各行・各列・3×3のブロックに1〜9を1つずつ入れます。',

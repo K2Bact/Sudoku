@@ -3,7 +3,7 @@
   "name": "A Game Still Being Played Can Be Resumed",
   "command": "node scripts/tests/unit/test_saved_game_resume.js",
   "greenMarker": "[2-22] PASSED",
-  "note": "Started 2026-10-01 with the killer section (5); the older sections had no manifest and still have none. Section 6 (the seconds played, BACKLOG D15) added 2026-10-08.",
+  "note": "Started 2026-10-01 with the killer section (5); the older sections had no manifest and still have none. Section 6 (the seconds played, BACKLOG D15) added 2026-10-08; its killer numbers 2026-10-14 (KP-2, Diary 132).",
   "mutations": [
     {
       "name": "a killer save is offered without its cages",
@@ -54,12 +54,20 @@
       "expectFailure": "for each RIGHT cell"
     },
     {
-      "name": "the old-save bonus drifts from the game's",
-      "why": "If the game ever gives a different bonus, old saves would be worked back with the wrong one.",
+      "name": "the game pays a Survival bonus of its own again",
+      "why": "Replaces 'the old-save bonus drifts from the game's' (its anchor, savedGame.js's own 7, went on 2026-10-14). With the game paying a number of its own, the table old saves are worked back with can drift from it — and a killer would be paid the classic 7 s.",
+      "file": "src/hooks/useGameInput.js",
+      "find": "          addSurvivalBonusTime(survivalCellBonusSeconds(variant, level));",
+      "replace": "          addSurvivalBonusTime(7);",
+      "expectFailure": "the game must pay the Survival bonus from survivalClock.js"
+    },
+    {
+      "name": "a killer save is worked back on classic numbers",
+      "why": "Added 2026-10-14 with killer Survival (KP-2). A killer is played on 7 min and 9 s a cell at Lv.1; worked back on 4 min and 7 s its seconds played come out short, and the grade with them.",
       "file": "src/utils/savedGame.js",
-      "find": "export const SURVIVAL_CELL_BONUS_SECONDS = 7;",
-      "replace": "export const SURVIVAL_CELL_BONUS_SECONDS = 6;",
-      "expectFailure": "works old saves back with"
+      "find": "  const kind = variantOf(saved);",
+      "replace": "  const kind = 'classic';",
+      "expectFailure": "a killer Survival save worked back on classic numbers"
     },
     {
       "name": "the save leaves the seconds played out",

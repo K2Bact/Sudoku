@@ -212,6 +212,126 @@
       "find": "  const lk = isObject(lg.killer) ? lg.killer : {};",
       "replace": "  const lk = {};",
       "expectFailure": "a killer ghost only on this phone survives the merge"
+    },
+    {
+      "name": "a killer Survival game gets the classic limit",
+      "why": "Killer Survival (KP-2, 2026-10-14). The limit stops being stretched by the killer ratio: 4 minutes for a killer Lv.1 that takes about 1.8 times a classic one, and almost every game is lost to the clock.",
+      "file": "src/engine/killer/killerTimes.js",
+      "find": "  return Math.max(60, Math.round((classicLimitSeconds * ratio) / 60) * 60);",
+      "replace": "  return classicLimitSeconds;",
+      "expectFailure": "the killer Survival limits are"
+    },
+    {
+      "name": "the Survival clock ignores the kind",
+      "why": "The one place that chooses between the two limits picks classic for both: every killer Survival starts at 4/6/8/12/18 minutes.",
+      "file": "src/engine/survivalClock.js",
+      "find": "  return variant === 'killer' ? killerSurvivalLimit(classicLimit(level), level) : classicLimit(level);",
+      "replace": "  return classicLimit(level);",
+      "expectFailure": "the killer Survival limits are"
+    },
+    {
+      "name": "a killer pays the classic 7 s a cell",
+      "why": "The bonus agreed for killers is gone: a killer Lv.4 game, 38 minutes and 71 open cells, gains 7 s a cell and is far tighter than the classic one it is meant to match.",
+      "file": "src/engine/survivalClock.js",
+      "find": "  if (variant !== 'killer') return CLASSIC_SURVIVAL_CELL_BONUS;",
+      "replace": "  return CLASSIC_SURVIVAL_CELL_BONUS;",
+      "expectFailure": "a right cell adds"
+    },
+    {
+      "name": "the killer card reads no Survival best times",
+      "why": "The stats card's killer Survival rows have no table to read for a player with no killer record yet, and the screen throws instead of showing --:--.",
+      "file": "src/utils/killerStats.js",
+      "find": "    survivalBestTimes: { ...(k.survivalBestTimes || {}) },",
+      "replace": "",
+      "expectFailure": "a record with no killer must still give the card its Survival rows"
+    },
+    {
+      "name": "the killer card has no count of Survival clears",
+      "why": "The card's Survival line is handed undefined for a player with no killer Survival clear, not 0 — whatever the translation does with a missing number is what the player reads.",
+      "file": "src/utils/killerStats.js",
+      "find": "    timeLimitSurvivalWins: k.timeLimitSurvivalWins || 0,",
+      "replace": "",
+      "expectFailure": "a count of Survival clears, 0"
+    },
+    {
+      "name": "the Logic Score counts classic Survival clears only",
+      "why": "A killer Survival clear is a Survival clear (user, 2026-10-07: the kinds differ in the puzzle only); left out, the endurance metric of a killer player never moves.",
+      "file": "src/services/iqStatsService.js",
+      "find": "    timeLimitSurvivalWins: n(stats.timeLimitSurvivalWins) + n(k.timeLimitSurvivalWins),",
+      "replace": "    timeLimitSurvivalWins: n(stats.timeLimitSurvivalWins),",
+      "expectFailure": "the Logic Score counts Survival clears of both kinds"
+    },
+    {
+      "name": "the AI room is a classic whatever the lobby asked for",
+      "why": "The player picks Killer in the AI lobby and is dealt a classic: the switch does nothing, and killer order ⑦ (KP-11) is undone without a word on screen.",
+      "file": "src/firebase/aiBattleSession.js",
+      "find": "  const puzzle = createPuzzle(variant, level);",
+      "replace": "  const puzzle = createPuzzle('classic', level);",
+      "expectFailure": "a killer AI room at Lv.1 holds a classic puzzle"
+    },
+    {
+      "name": "the AI room drops its cages",
+      "why": "A killer board without its cages is a page of givens — often none — with nothing to solve it by; the board draws no outlines and every digit is checked against a solution the player cannot reach.",
+      "file": "src/firebase/aiBattleSession.js",
+      "find": "    cages: puzzle.cages || null,",
+      "replace": "    cages: null,",
+      "expectFailure": "has no playable cages"
+    },
+    {
+      "name": "the AI room deals only its board and solution again",
+      "why": "The hand-off before KP-11: the room is a killer, the game is not — no cages drawn, notes not cleared by cage, mistakes not told about cages, the win in the classic record.",
+      "file": "src/firebase/aiBattleSession.js",
+      "find": "  return { board: room.puzzle, solution: room.solution, variant: variantOf(room), cages: room.cages || null };",
+      "replace": "  return { board: room.puzzle, solution: room.solution };",
+      "expectFailure": "handed only its board, a killer is played as a classic"
+    },
+    {
+      "name": "the dealt game keeps the kind but loses the cages",
+      "why": "The game knows it is a killer and has no cages: nothing to draw, and the solution is worked out again from nothing.",
+      "file": "src/firebase/aiBattleSession.js",
+      "find": "  return { board: room.puzzle, solution: room.solution, variant: variantOf(room), cages: room.cages || null };",
+      "replace": "  return { board: room.puzzle, solution: room.solution, variant: variantOf(room), cages: null };",
+      "expectFailure": "does not carry the room's cages"
+    },
+    {
+      "name": "the killer bot runs at the classic pace",
+      "why": "A killer takes 1.77-3.19 times as long as a classic at the same level (killerTimes.js); at the classic pace the Lv.3 bot finishes a killer in 2m 40s, and nobody beats it.",
+      "file": "src/engine/aiBotService.js",
+      "find": "  return { ...classic, tickMs: Math.round(classic.tickMs * ratio) };",
+      "replace": "  return classic;",
+      "expectFailure": "the killer bot at Lv.1 takes a step every 9000 ms"
+    },
+    {
+      "name": "the bot match ignores the room it races",
+      "why": "The killer pace exists and is never asked for: the room is a killer, the bot is started as a classic, and the player races a bot two to three times too fast.",
+      "file": "src/firebase/aiBattleSession.js",
+      "find": "    variantOf(getRoom())",
+      "replace": "    'classic'",
+      "expectFailure": "a killer room raced at the classic pace"
+    },
+    {
+      "name": "the bot drops the kind it is started with",
+      "why": "Same race, one step further down: the session asks for a killer bot and the service plays the classic one.",
+      "file": "src/engine/aiBotService.js",
+      "find": "    const profile = botProfile(level, variant);",
+      "replace": "    const profile = botProfile(level);",
+      "expectFailure": "a killer room raced at the classic pace"
+    },
+    {
+      "name": "a duel won counts in the games played and won again",
+      "why": "BT-1: a duel won came through the win path and a duel lost to a faster board did not, so every duel could raise the win rate — and with it the Logic Score on the leaderboard — and none could lower it. A killer duel must stay out as a classic one does.",
+      "file": "src/utils/storage.js",
+      "find": "  if (!isDuelMode(mode)) {",
+      "replace": "  if (true) {",
+      "expectFailure": "a killer AI battle won counted"
+    },
+    {
+      "name": "a duel lost on mistakes counts as a game played",
+      "why": "The other half of BT-1: the duel record already counts the loss, and counting it here too lowers the killer win rate for a match the win path never counts.",
+      "file": "src/utils/storage.js",
+      "find": "  if (isDuelMode(mode)) return all;",
+      "replace": "  if (false) return all;",
+      "expectFailure": "a killer AI battle lost on mistakes counted"
     }
   ]
 }

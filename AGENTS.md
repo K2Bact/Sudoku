@@ -130,15 +130,37 @@ npm run qa         # 문구·화면·CSS·게이트를 바꿨을 때, 그리고 
 
 ---
 
-## 5. 이 앱의 문서
+## 5. 이 앱의 문서 — 어디에 무엇이 있나
+
+**모든 AI(Claude·ChatGPT·Gemini)가 이 지도 하나를 본다.** 다른 파일에 같은 지도를 복사하지 않는다 — 가리키기만 한다.
 
 ```
-docs/BACKLOG.md            할 일 — 단일 원본. archive/ 는 읽지 마십시오
-docs/RELEASE_STATE.md      콘솔 신고 이력 · 실기 검증 · 출시 전 전환 목록
-docs/SudokuDiary.md        경위·발견·검증 (서사). 할 일을 여기 쓰지 마십시오
-docs/SESSIONS.md           어느 대화(세션)에서 무엇을 했나 — 세션 이름 → Diary 번호. 찾을 때만 읽는다
-docs/TECHNICAL_SPECIFICATION.md
-docs/POST_MORTEM_MISTAKES_REGISTRY.md   2026-08-15 시점 스냅샷. 이후는 일지
+할 일·상태
+  docs/BACKLOG.md            할 일 — 단일 원본. 「현재 상태」 블록이 지금 어디까지 왔는지
+  docs/RELEASE_STATE.md      출시·콘솔 신고 이력 · 실기 검증 · 출시 전 전환 목록
+
+무엇을 왜 했나
+  docs/SudokuDiary.md        코드 변경의 경위·발견·검증(번호 붙은 항목). 할 일을 여기 쓰지 않는다
+  docs/SESSIONS.md           어느 대화(세션)에서 무엇을 했나 — 세션 이름 → Diary 번호. 찾을 때만
+
+다른 AI 의 검토
+  SudokuAITalk.md            검토를 쓰는 곳 + 목차. 새 검토는 맨 아래에 새 절로(날짜·작성자·결과·검사 한계).
+                             남이 쓴 판단·목차 줄은 고치지 않는다. 진행 중인 검토만 여기 둔다
+  docs/archive/SudokuAITalk_2026-09-11_to_09-18.md   끝난 검토 — 첫 교차검증 회차들
+  docs/archive/SudokuAITalk_2026-09-19_to_10-10.md   끝난 검토 — 힌디·일본·독일·아랍어 검수, 레드티밍, 정책·리뷰 자료, 테스트 보고
+  docs/archive/SudokuAITalk_2026-10-13_to_10-14.md   끝난 검토 — 프랑스어 검수(1~7차), 제미나이 22개 점검·18회 테스트
+                             (끝난 검토는 Claude 가 판단을 달아 보관본으로 옮긴다. 지난 검토를 찾을 때만 읽는다)
+
+기준·자료
+  ../../app_common/AGENTS.md                     모든 앱 공통 규칙
+  ../../app_common/l10n_engine/rules/<언어>/      언어별 기준 — 검수에서 정한 용어·조판(fr·ja·ar·es …)
+  docs/research/             조사 — ASO(aso_2026-10-07.md), 경쟁 앱 리뷰(reviews/), 퍼즐 변형(sudoku_variants.md)
+  docs/reference/google_policy/   구글 공식 정책 모음(INDEX.md 부터)
+  docs/TECHNICAL_SPECIFICATION.md · docs/POST_MORTEM_MISTAKES_REGISTRY.md(2026-08-15 스냅샷, 이후는 Diary)
+
+읽지 않는 것
+  docs/archive/PROJECT_IDEAS_AND_BACKLOG.md · ROADMAP_AND_SPEC.md · HANDOFF_감사대응.md · ja_review.md
+                             끝나서 BACKLOG·Diary 로 옮겨진 옛 문서. 기록으로만 둔다 (docs/archive/README.md)
 ```
 
 `docs/archive/` 의 `PROJECT_IDEAS_AND_BACKLOG.md` 와 `ROADMAP_AND_SPEC.md` 는

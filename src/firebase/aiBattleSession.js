@@ -8,16 +8,24 @@
  * `isAiMatch: true` is the flag every caller branches on.
  */
 
-import { generatePuzzle } from '../engine/SudokuEngine.js';
+import { createPuzzle, variantOf } from '../engine/variants.js';
 import { aiBotService } from '../engine/aiBotService.js';
 
 const BOT_NAMES = ['AI Grandmaster', 'AI Solver', 'AI Logic', 'AI Swift'];
 
-export function createAIRoom(level = 3) {
-  const puzzle = generatePuzzle(level);
+/**
+ * A new match against the bot, on a puzzle of the kind asked for — classic or
+ * killer (KP-11, 2026-10-14). A killer room carries its cages, and the game is
+ * dealt from the room (aiRoomGame), so the board, the bot's pace and a rematch
+ * all read the one kind the room was made with.
+ */
+export function createAIRoom(level = 3, variant = 'classic') {
+  const puzzle = createPuzzle(variant, level);
   return {
     code: 'AI_' + Math.random().toString(36).substring(2, 6).toUpperCase(),
     level,
+    variant: variantOf(puzzle),
+    cages: puzzle.cages || null,
     puzzle: puzzle.puzzle,
     solution: puzzle.solution,
     initialEmptyCount: puzzle.puzzle.flat().filter((v) => v === 0).length,
@@ -35,8 +43,20 @@ export function createAIRoom(level = 3) {
 }
 
 /**
+ * The game an AI room deals — what startNewGame is handed, for the first match
+ * and every rematch. The kind and the cages travel with the board: handed only
+ * the board and the solution, a killer was played as a classic with a killer's
+ * givens (often none), no cages drawn and no cage told about in a mistake.
+ */
+export function aiRoomGame(room) {
+  return { board: room.puzzle, solution: room.solution, variant: variantOf(room), cages: room.cages || null };
+}
+
+/**
  * Drive the bot for `room`. `getRoom` is read every tick so a match that has
- * been left or replaced stops updating a stale object.
+ * been left or replaced stops updating a stale object. The bot's pace is the
+ * room's kind's (botProfile): read off the room, it cannot race a killer board
+ * at the classic pace.
  */
 export function runAIBattle(level, getRoom, notify) {
   const finish = (winner, reason) => {
@@ -75,6 +95,7 @@ export function runAIBattle(level, getRoom, notify) {
       getRoom().opponentProgress = 100;
       finish('opponent', 'opponent_completion');
       notify();
-    }
+    },
+    variantOf(getRoom())
   );
 }

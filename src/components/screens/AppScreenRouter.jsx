@@ -12,6 +12,7 @@ import { GameScreen } from './GameScreen';
 import { hasSavedGameState } from '../../utils/storage';
 import { adsService } from '../../services/adsService';
 import { battleService } from '../../firebase/battleService';
+import { aiRoomGame } from '../../firebase/aiBattleSession';
 
 export function AppScreenRouter({
   activeScreen,
@@ -123,12 +124,12 @@ export function AppScreenRouter({
       {activeScreen === 'aiBattle' && (
         <AIBattleScreen
           onBack={() => returnToParent(false)}
-          onStartAIBattle={(aiLevel) => {
+          onStartAIBattle={(aiLevel, variant) => {
             battleService.startAIBattle(aiLevel, (room) => {
               setActiveBattleRoom(room);
-              startNewGame(aiLevel, 'aiBattle', { board: room.puzzle, solution: room.solution });
+              startNewGame(aiLevel, 'aiBattle', aiRoomGame(room));
               setActiveScreen('game');
-            });
+            }, variant);
           }}
         />
       )}

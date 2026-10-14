@@ -1,5 +1,5 @@
 import React from 'react';
-import { SquareDashed, Zap } from 'lucide-react';
+import { SquareDashed, Zap, Hourglass } from 'lucide-react';
 import { DIFFICULTY_CONFIG } from '../../engine/SudokuEngine';
 import { loadKillerRecord } from '../../utils/killerStats';
 import { useTranslation } from '../../i18n/i18nContext';
@@ -10,8 +10,9 @@ import { useTranslation } from '../../i18n/i18nContext';
  * Killer games are counted apart from the standard ones (killerStats.js), so
  * they get their own games and wins as well as their own best times: folded
  * into the totals at the top, they would change a win rate this screen labels
- * as the one the Logic Score uses. Speedrun best times have their own list, as
- * on the standard side: their clock carries the +10 s penalties.
+ * as the one the Logic Score uses. Speedrun and Survival best times have their
+ * own lists, as on the standard side: a speedrun clock carries the +10 s
+ * penalties, and a Survival best is the seconds played, not the time left.
  *
  * Laid out like the standard record above it — the same summary (games, wins,
  * win rate) with the same words, then the best times — since the two kinds
@@ -52,7 +53,7 @@ export function KillerStatsCard({ formatTime }) {
           </div>
         ))}
       </div>
-      <h5 className="fw-bold killer-speedrun-title">
+      <h5 className="fw-bold killer-mode-title">
         <Zap size={15} className="text-yellow inline-icon" /> {t('stats.speedrunBest')}
       </h5>
       <div className="best-times-list killer-speedrun-list">
@@ -68,6 +69,29 @@ export function KillerStatsCard({ formatTime }) {
             </div>
           );
         })}
+      </div>
+      {/* Survival (KP-2, 2026-10-14): the fastest clear per level, seconds played
+          (D16), and the clears — the classic Survival card's rows and words. */}
+      <h5 className="fw-bold killer-mode-title">
+        <Hourglass size={15} className="text-red inline-icon" /> {t('stats.survivalTitle')}
+      </h5>
+      <div className="best-times-list killer-survival-list">
+        {Object.values(DIFFICULTY_CONFIG).map((cfg) => {
+          const bestSecs = killer.survivalBestTimes[cfg.level];
+          return (
+            <div key={cfg.level} className="best-time-row">
+              <div className="level-info">
+                <span className="lvl-badge killer-lvl-badge">⏳ Lv.{cfg.level}</span>
+                <span className="lvl-name">{t(`levels.${cfg.level}`)}</span>
+              </div>
+              <span className="best-time-val fw-bold" style={{ color: bestSecs ? '#ef4444' : 'inherit' }}>{formatTime(bestSecs)}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="killer-survival-total">
+        <span className="text-muted total-label">{t('stats.survivalTotalWins')}</span>
+        <span className="fw-bold total-value">{t('stats.survivalWinsUnit', { count: killer.timeLimitSurvivalWins })}</span>
       </div>
     </div>
   );

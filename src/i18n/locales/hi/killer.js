@@ -6,7 +6,6 @@ export const killer = {
     switchLabel: 'पहेली का प्रकार',
     classic: 'मानक',
     killer: 'किलर',
-    comingSoon: 'किलर के लिए अभी विकास में है।',
     classicRules: {
       title: 'सुडोकू के नियम',
       grid: 'हर पंक्ति, कॉलम और 3×3 बॉक्स में 1 से 9 तक की संख्याएं एक-एक बार भरें।',

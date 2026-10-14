@@ -4,38 +4,38 @@
   "command": "node scripts/tests/ui/test_killer_screens.js",
   "greenMarker": "[3-18] PASSED",
   "rebuild": true,
-  "note": "Written with the gate on 2026-10-01. Each mutation breaks one thing a killer player sees. Ghost and Time Gap on killer (KP-3) added 2026-10-14, Diary 130.",
+  "note": "Written with the gate on 2026-10-01. Each mutation breaks one thing a killer player sees. Ghost and Time Gap on killer (KP-3) added 2026-10-14, Diary 130. Killer Survival (KP-2) added 2026-10-14, Diary 132: Survival opens on killer, so the \"coming\" note and the two mutations that broke its hand-off with the Ghost chip's note went with it.",
   "mutations": [
     {
-      "name": "a killer's Survival tab switches instead of saying it is coming",
-      "why": "The tab sets the home mode silently. Killer has Speedrun since 2026-10-07 but no Survival yet; on the killer card the tab would seem to do nothing — a kind without the mode plays its first one — so the player is never told why. (Written for the Speedrun tab, which was the missing mode until 2026-10-07.)",
-      "file": "src/components/HomeScreen.jsx",
-      "find": "    if (modes.includes(m)) {",
-      "replace": "    if (true) {",
-      "expectFailure": "said nothing"
+      "name": "killer has no Survival again",
+      "why": "Replaces \"a killer's Survival tab switches instead of saying it is coming\" (2026-10-14, KP-2: killer has Survival, and the \"coming\" note went with nothing left to say it about). The killer's modes lose Survival: the tab does nothing on the killer card and the killer Survival is gone without anything else failing.",
+      "file": "src/engine/variants.js",
+      "find": "  { id: 'killer', modes: ['classic', 'timeAttack', 'timeLimit'] },",
+      "replace": "  { id: 'killer', modes: ['classic', 'timeAttack'] },",
+      "expectFailure": "the Survival tab on the killer switch did not switch to Survival"
     },
     {
       "name": "killer has no Speedrun again",
       "why": "The killer's modes list loses Speedrun; the tab goes back to \"coming soon\" and the killer speedrun is gone without anything else failing.",
       "file": "src/engine/variants.js",
-      "find": "  { id: 'killer', modes: ['classic', 'timeAttack'] },",
-      "replace": "  { id: 'killer', modes: ['classic'] },",
+      "find": "  { id: 'killer', modes: ['classic', 'timeAttack', 'timeLimit'] },",
+      "replace": "  { id: 'killer', modes: ['classic', 'timeLimit'] },",
       "expectFailure": "did not switch to Speedrun"
     },
     {
       "name": "a new killer from the Speedrun tab starts as Classic",
       "why": "Home's killer button used to start Classic whatever tab was chosen. With the tab open the player sees the speedrun button and gets a classic game: no ⚡, no +10 s, hints back, the time in the wrong table.",
       "file": "src/components/HomeScreen.jsx",
-      "find": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, effectiveRivalMode, 'killer');",
-      "replace": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, 'classic', effectiveRivalMode, 'killer');",
+      "find": "  const startGame = () => handleStart && handleStart(selectedLevel, false, mode, effectiveRivalMode, variant);",
+      "replace": "  const startGame = () => handleStart && handleStart(selectedLevel, false, 'classic', effectiveRivalMode, variant);",
       "expectFailure": "started without ⚡"
     },
     {
       "name": "Home's killer button drops the rival again",
       "why": "Until 2026-10-14 the killer start passed 'standard' whatever chip was chosen. The player picks Ghost, sees the record's time on the chip, and gets a new puzzle with no one to race.",
       "file": "src/components/HomeScreen.jsx",
-      "find": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, effectiveRivalMode, 'killer');",
-      "replace": "  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, 'standard', 'killer');",
+      "find": "  const startGame = () => handleStart && handleStart(selectedLevel, false, mode, effectiveRivalMode, variant);",
+      "replace": "  const startGame = () => handleStart && handleStart(selectedLevel, false, mode, 'standard', variant);",
       "expectFailure": "no ghost banner on the killer Ghost race"
     },
     {
@@ -53,22 +53,6 @@
       "find": "          <div className=\"mode-tab-group\">",
       "replace": "          <div className=\"mode-tab-group\" style={{ display: variant === 'classic' ? undefined : 'none' }}>",
       "expectFailure": "the layout jumps"
-    },
-    {
-      "name": "a locked Ghost chip leaves Home's note up",
-      "why": "Replaces 'the Ghost chip on killer shows its own note' (its anchor, the comingSoon branch, went with the coming-soon chips on 2026-10-14). The worry is the same: two notes stacked in the one spot at the bottom of the screen, the Survival tab's 'coming' under the chip's 'clear this level once'.",
-      "file": "src/components/home/RivalModeChips.jsx",
-      "find": "    if (onNote) onNote();",
-      "replace": "",
-      "expectFailure": "left the \"coming\" note up"
-    },
-    {
-      "name": "Home's note leaves the chip's note up",
-      "why": "The other way round: the Survival tab's 'coming' opens over the Ghost chip's note. Home cannot reach the chip's state, so the chips close their own notes when Home's opens.",
-      "file": "src/components/home/RivalModeChips.jsx",
-      "find": "    if (homeNoteOpen) {",
-      "replace": "    if (false) {",
-      "expectFailure": "after the Ghost chip's note, the Survival tab"
     },
     {
       "name": "the killer Ghost chip stays locked",
@@ -170,8 +154,8 @@
       "name": "the first killer starts without its rules",
       "why": "A classic player meets dashed cages and small numbers and has nothing to say the numbers are sums.",
       "file": "src/components/HomeScreen.jsx",
-      "find": "                onClick={() => (loadSettings().killerRulesSeen ? startKiller() : setShowKillerRules(true))}",
-      "replace": "                onClick={() => startKiller()}",
+      "find": "  const onPlayNew = () => (variant === 'killer' && !loadSettings().killerRulesSeen ? setShowKillerRules(true) : startGame());",
+      "replace": "  const onPlayNew = () => startGame();",
       "expectFailure": "the first killer started without its rules"
     },
     {
@@ -205,6 +189,134 @@
       "find": "          onOpenLeaderboard={onOpenLeaderboard}",
       "replace": "          onOpenLeaderboard={variant === 'killer' ? null : onOpenLeaderboard}",
       "expectFailure": "a killer win offers no leaderboard"
+    },
+    {
+      "name": "the Ghost chip in Survival gives the \"clear this level\" reason",
+      "why": "In Survival Ghost and Time Gap are off by design; telling the player to go and earn them sends them after something that never comes (user report, 2026-09-26) — now on the killer card too.",
+      "file": "src/components/home/RivalModeChips.jsx",
+      "find": "    setLockedToast(t(isTimeLimit ? 'home.rivalModes.timeLimitToast' : 'home.rivalModes.lockedToast'));",
+      "replace": "    setLockedToast(t('home.rivalModes.lockedToast'));",
+      "expectFailure": "the Ghost chip in killer Survival says"
+    },
+    {
+      "name": "a new game takes the limit of the kind played before",
+      "why": "Added 2026-10-14 (KP-2). The new kind is set in state for the next render, so the clock read it too early: a killer Survival started after a classic game (or on a fresh launch) gets the classic 4 minutes.",
+      "file": "src/hooks/useSudokuGame.js",
+      "find": "    resetGameState(newLevel, mode, puzzle.variant);",
+      "replace": "    resetGameState(newLevel, mode, variant);",
+      "expectFailure": "started with"
+    },
+    {
+      "name": "a killer is paid the classic 7 s a cell",
+      "why": "The killer bonus (9 s at Lv.1) is what keeps a killer Survival as tight as a classic one; at 7 s it runs out sooner on every level.",
+      "file": "src/hooks/useGameInput.js",
+      "find": "          addSurvivalBonusTime(survivalCellBonusSeconds(variant, level));",
+      "replace": "          addSurvivalBonusTime(survivalCellBonusSeconds('classic', level));",
+      "expectFailure": "a right cell moved the killer Survival clock"
+    },
+    {
+      "name": "a killer lost on time counts against the classic record",
+      "why": "The clock running out on a killer lowers the classic win rate — the Logic Score's accuracy — and the killer card never shows the loss.",
+      "file": "src/hooks/useSudokuGame.js",
+      "find": "      recordLoss(variant);",
+      "replace": "      recordLoss('classic');",
+      "expectFailure": "a killer Survival lost on time left"
+    },
+    {
+      "name": "a killer Survival is graded on the time left",
+      "why": "Without the seconds played the victory screen grades the clock — in Survival the time left (D15) — so a fast clear with time to spare reads as the slowest grade.",
+      "file": "src/components/VictoryModal.jsx",
+      "find": "  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds, variant, playedSeconds);",
+      "replace": "  const rankInfo = speedrunRankFor(level, gameMode, actualSeconds, variant);",
+      "expectFailure": "expected S+ on the killer times, by the seconds played"
+    },
+    {
+      "name": "the killer card's Survival rows read the plain best times",
+      "why": "The Survival block on the killer card shows the wrong table: a killer Survival clear never appears, and a plain killer time sits under the hourglass.",
+      "file": "src/components/stats/KillerStatsCard.jsx",
+      "find": "          const bestSecs = killer.survivalBestTimes[cfg.level];",
+      "replace": "          const bestSecs = killer.bestTimes[cfg.level];",
+      "expectFailure": "the killer card's Survival Lv.1 says"
+    },
+    {
+      "name": "the AI lobby starts the match without the kind picked",
+      "why": "The switch moves and nothing follows it: Killer picked in the AI lobby, a classic dealt.",
+      "file": "src/components/AIBattleScreen.jsx",
+      "find": "  const startMatch = () => onStartAIBattle(selectedAiLevel, variant);",
+      "replace": "  const startMatch = () => onStartAIBattle(selectedAiLevel);",
+      "expectFailure": "Killer in the AI lobby dealt a classic room"
+    },
+    {
+      "name": "the router drops the kind on its way to the AI room",
+      "why": "Same promise broken one step later: the lobby names the kind and the router starts the match without it.",
+      "file": "src/components/screens/AppScreenRouter.jsx",
+      "find": "            }, variant);",
+      "replace": "            });",
+      "expectFailure": "Killer in the AI lobby dealt a classic room"
+    },
+    {
+      "name": "the first AI match deals only the board and the solution",
+      "why": "The hand-off before KP-11: the room is a killer and the game is a classic on its givens — no cages drawn, mistakes not told about cages.",
+      "file": "src/components/screens/AppScreenRouter.jsx",
+      "find": "              startNewGame(aiLevel, 'aiBattle', aiRoomGame(room));",
+      "replace": "              startNewGame(aiLevel, 'aiBattle', { board: room.puzzle, solution: room.solution });",
+      "expectFailure": "the killer AI battle board is not a killer board"
+    },
+    {
+      "name": "a rematch after a killer is a classic",
+      "why": "The player asks for the same match again and gets the other kind — as solo follow-ups did before gate 3-19.",
+      "file": "src/hooks/useBattleMultiplayer.js",
+      "find": "      }, variantOf(activeBattleRoom));",
+      "replace": "      });",
+      "expectFailure": "the rematch after a killer AI battle is a classic"
+    },
+    {
+      "name": "a rematch deals only the board and the solution",
+      "why": "The rematch room is a killer and the board drawn is not: no outlines, no sums.",
+      "file": "src/hooks/useBattleMultiplayer.js",
+      "find": "        startNewGame(lvl, 'aiBattle', aiRoomGame(newRoom));",
+      "replace": "        startNewGame(lvl, 'aiBattle', { board: newRoom.puzzle, solution: newRoom.solution });",
+      "expectFailure": "rematch outline"
+    },
+    {
+      "name": "the first killer AI battle starts without its rules",
+      "why": "A player who has only played standard sudoku meets dashed cages and small numbers against a running bot, with no way to guess the numbers are sums.",
+      "file": "src/components/AIBattleScreen.jsx",
+      "find": "    if (variant === 'killer' && !loadSettings().killerRulesSeen) setShowKillerRules(true);",
+      "replace": "    if (false) setShowKillerRules(true);",
+      "expectFailure": "the first killer AI battle started without its rules"
+    },
+    {
+      "name": "the rules card in the AI lobby only closes",
+      "why": "The player reads the rules, taps Start and is back in the lobby: the first killer match never begins.",
+      "file": "src/components/AIBattleScreen.jsx",
+      "find": "            startMatch();",
+      "replace": "            void 0;",
+      "expectFailure": "the rules card did not start the AI battle"
+    },
+    {
+      "name": "the AI lobby keeps a kind of its own",
+      "why": "Two answers to \"which kind am I playing\": Killer in the lobby, standard on Home (user, 2026-10-14: one remembered choice).",
+      "file": "src/components/AIBattleScreen.jsx",
+      "find": "  const [variant, setVariant] = usePuzzleKind();",
+      "replace": "  const [variant, setVariant] = useState('classic');",
+      "expectFailure": "Killer was picked in the AI lobby and Home shows standard"
+    },
+    {
+      "name": "a killer duel lost on mistakes counts as a killer played",
+      "why": "BT-1, on the screen: the duel record already counts the loss, and counting it in the killer record too lowers the killer win rate for a match the win path never counts.",
+      "file": "src/utils/storage.js",
+      "find": "  if (isDuelMode(mode)) return all;",
+      "replace": "  if (false) return all;",
+      "expectFailure": "a killer AI battle lost on mistakes counted"
+    },
+    {
+      "name": "the AI lobby switch runs off the screen",
+      "why": "Proves section 6 measures the switch in the AI lobby and not only on Home: pushed past the edge there, every language must say so.",
+      "file": "src/components/AIBattleScreen.jsx",
+      "find": "            <VariantSwitch variant={variant} onChange={setVariant} />",
+      "replace": "            <div style={{ width: '130%' }}><VariantSwitch variant={variant} onChange={setVariant} /></div>",
+      "expectFailure": "AI lobby switch — "
     }
   ]
 }

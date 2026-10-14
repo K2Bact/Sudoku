@@ -6,7 +6,6 @@ export const killer = {
     switchLabel: '谜题类型',
     classic: '标准',
     killer: '杀手',
-    comingSoon: '杀手数独暂不支持，仍在开发中。',
     classicRules: {
       title: '数独规则',
       grid: '每行、每列和每个 3×3 宫都填入 1 到 9，每个数字只出现一次。',

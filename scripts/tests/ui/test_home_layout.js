@@ -200,6 +200,17 @@ async function run() {
     await page.screenshot({ path: path.join(SHOT_DIR, 'home_killer_ghost_selected.png') });
     console.log('Saved home_killer_ghost_selected.png');
 
+    // 8. The killer switch, Survival (2026-10-14, KP-2): the tab opens — it said
+    //    "coming" until then — the start is the Survival one, and the rival chips
+    //    are off in Survival (--:--) though a killer speedrun record exists.
+    await page.click('.time-limit-tab');
+    await page.waitForTimeout(400);
+    await checkLayout(page, 'killer survival', '--:--');
+    const survivalOpen = await page.evaluate(() => Boolean(document.querySelector('.time-limit-tab.active') && document.querySelector('.btn-play-new .lucide-hourglass')));
+    if (!survivalOpen) layoutProblems.push('killer survival: the Survival tab on the killer switch did not switch to Survival (no active tab, no Survival start)');
+    await page.screenshot({ path: path.join(SHOT_DIR, 'home_killer_survival_verified.png') });
+    console.log('Saved home_killer_survival_verified.png');
+
     await browser.close();
     if (layoutProblems.length) {
       console.error(`❌ [3-5] ${layoutProblems.length} layout problem(s) on the home screen:`);
@@ -207,7 +218,7 @@ async function run() {
       shutdownPreview(viteProcess);
       process.exit(1);
     }
-    console.log('  ✅ 7 home states (2 on the killer switch): no sideways scroll, no overlapping blocks, tabs and chips in their rows, the ghost time of the kind shown');
+    console.log('  ✅ 8 home states (3 on the killer switch): no sideways scroll, no overlapping blocks, tabs and chips in their rows, the ghost time of the kind shown');
     console.log('All screenshots captured successfully!');
   } finally {
     shutdownPreview(viteProcess);

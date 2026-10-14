@@ -7,7 +7,8 @@
  * RT-6 (F13): a save whose board was not a 9x9 grid made Resume throw and the screen
  * went blank. One rule now answers both (src/utils/savedGame.js).
  * A killer save must also carry its cages (section 5, 2026-10-01).
- * And its seconds played, which Survival is graded on (section 6, BACKLOG D15).
+ * And its seconds played, which Survival is graded on (section 6, BACKLOG D15) —
+ * a killer's worked back on killer numbers (2026-10-14, KP-2).
  */
 import assert from 'assert';
 import fs from 'fs';
@@ -15,7 +16,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
-const { isResumableGame, playedSecondsOf, SURVIVAL_CELL_BONUS_SECONDS } = await import('../../../src/utils/savedGame.js');
+const { isResumableGame, playedSecondsOf } = await import('../../../src/utils/savedGame.js');
+const { survivalLimitSeconds, survivalCellBonusSeconds } = await import('../../../src/engine/survivalClock.js');
 
 console.log('\n▶️ [2-22] A game still being played can be resumed; a broken save cannot blank the app');
 
@@ -77,18 +79,25 @@ console.log('  ✅ 2. Home, resume, saved-state check and quit-as-loss all ask t
   board[5][0] = solution[5][0] === 9 ? 1 : solution[5][0] + 1;                       // 1 wrong
   const survival = { board, initialBoard: initial, solutionBoard: solution, notes: grid().map((r) => r.map(() => [])), mistakes: 1, gameMode: 'timeLimit', level: 1 };
 
-  // The 7 s here must be the 7 s the game gives — or old saves are worked back wrong.
+  // The bonus worked back here must be the bonus the game gives — or old saves are
+  // worked back wrong. Since killer Survival (KP-2) both read survivalClock.js, of the
+  // save's kind and level; the game's side is read from its source (a React hook).
   const input = fs.readFileSync(path.join(ROOT, 'src/hooks/useGameInput.js'), 'utf8');
-  const given = Number((input.match(/addSurvivalBonusTime\((\d+)\)/) || [])[1]);
-  assert.strictEqual(SURVIVAL_CELL_BONUS_SECONDS, given, `savedGame.js works old saves back with ${SURVIVAL_CELL_BONUS_SECONDS} s a cell, the game gives ${given}`);
+  assert(input.includes('addSurvivalBonusTime(survivalCellBonusSeconds(variant, level));'),
+    'the game must pay the Survival bonus from survivalClock.js — the table old saves are worked back with');
 
   assert.strictEqual(playedSecondsOf({ ...survival, timerSeconds: 150, playedSeconds: 333 }), 333, 'a save that kept its seconds played brings them back as they were');
   assert.strictEqual(playedSecondsOf({ ...good(), timerSeconds: 412 }), 412, 'an old Classic save: its clock ran with the time played');
   assert.strictEqual(playedSecondsOf({ ...good({ gameMode: 'timeAttack' }), timerSeconds: 95 }), 95, 'an old Speedrun save: the same');
   // An old Survival save: Lv.1 has 240 s; 150 left after 9 right cells (+63) → 153 s played.
-  const worked = 240 - 150 + SURVIVAL_CELL_BONUS_SECONDS * 9;
+  const worked = 240 - 150 + 7 * 9;
   assert.strictEqual(playedSecondsOf({ ...survival, timerSeconds: 150 }), worked,
     'an old Survival save: limit − time left + 7 s for each RIGHT cell on the board (the wrong one gave nothing)');
+  // A killer save is worked back on the killer's numbers: 7 min at Lv.1, 9 s a cell.
+  const killerSave = { ...survival, variant: 'killer', timerSeconds: 150 };
+  assert.strictEqual(survivalLimitSeconds('killer', 1), 420);
+  assert.strictEqual(playedSecondsOf(killerSave), 420 - 150 + survivalCellBonusSeconds('killer', 1) * 9,
+    'a killer Survival save worked back on classic numbers (4 min, 7 s a cell) — not the limit and bonus it was played with');
   assert.strictEqual(playedSecondsOf({ ...survival, timerSeconds: 150, playedSeconds: -4 }), worked, 'a broken count is read as missing, not as negative time');
   assert.strictEqual(playedSecondsOf({ ...survival, timerSeconds: 150, solutionBoard: undefined }), 90, 'without the solution no cell is known right: the floor, limit − left');
   assert.strictEqual(playedSecondsOf(null), 0);
@@ -135,7 +144,7 @@ console.log('  ✅ 2. Home, resume, saved-state check and quit-as-loss all ask t
   // The hook needs React to run; what it must contain is short, so it is read.
   const input = fs.readFileSync(path.join(ROOT, 'src/hooks/useGameInput.js'), 'utf8');
   const gate = input.indexOf('if (firstRightAnswer(playFactsRef?.current, r * 9 + c)) {');
-  for (const pay of ['handleComboSuccess();', 'addSurvivalBonusTime(7);']) {
+  for (const pay of ['handleComboSuccess();', 'addSurvivalBonusTime(survivalCellBonusSeconds(variant, level));']) {
     const at = input.indexOf(pay);
     assert(gate > 0 && input.split(pay).length === 2 && at > gate && at - gate < 300,
       `${pay} must be paid in one place, inside the once-a-cell check (useGameInput.js)`);

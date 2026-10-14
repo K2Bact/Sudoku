@@ -9,13 +9,12 @@
  * right game. This plays it in a browser:
  *
  *   1. Home — both kinds show the same card (same tabs, same chips, the ⓘ),
- *      so switching does not change its height; Speedrun switches the killer
- *      card to a speedrun start (2026-10-07); a mode the killer does not have
- *      yet (Survival) says it is coming instead of switching (user, 2026-10-01);
- *      the Ghost chip with no killer record is locked for the classic reason
- *      (2026-10-14, it said "coming" until then), and its note and Survival's
- *      take turns in the spot they share; the ⓘ opens the selected kind's
- *      rules; the switch survives a reload
+ *      so switching does not change its height; Speedrun (2026-10-07) and
+ *      Survival (2026-10-14, KP-2) switch the killer card to their own start —
+ *      Survival said "coming" until then; in Survival the Ghost chip says it is
+ *      off there, and with no killer record it is locked for the classic reason
+ *      (2026-10-14, KP-3); the ⓘ opens the selected kind's rules; the switch
+ *      survives a reload
  *   2. the first killer starts after its rules; the board's outlines and sums
  *      match the cages saved for the game, cell by cell
  *   3. the second killer starts straight away; 3b. a new killer started on the
@@ -35,8 +34,16 @@
  *      10 s and does not end the game, the grade is the killer one, and the win
  *      lands in the killer's own speedrun table — not its plain one, not the
  *      classic speedrun table
- *   6. 13 languages at 360px and at 320px with a 1.3x font: the switch, the rules
- *      card and the killer stats card are not cut and do not scroll sideways
+ *   5d. killer Survival (2026-10-14, KP-2): 7 min on the clock at Lv.1, +9 s a
+ *      right cell, a loss in the killer record when the clock runs out, a win
+ *      kept by its seconds played, graded on killer times, on the killer card
+ *   5e. a killer AI battle (2026-10-14, KP-11): the AI lobby's switch opens on
+ *      Home's kind and shares it, the first killer starts after its rules, the
+ *      board draws the room's cages, a cage mistake is named, the loss stays out
+ *      of the killer record, a rematch is a killer; standard still deals a classic
+ *   6. 13 languages at 360px and at 320px with a 1.3x font: the switch (on Home
+ *      and in the AI lobby), the rules card and the killer stats card are not cut
+ *      and do not scroll sideways
  */
 import { chromium } from 'playwright';
 import { spawn, execSync } from 'child_process';
@@ -169,25 +176,23 @@ async function run() {
     if (!(await visible('.rival-mode-chip-group'))) fail('1: no rival chips on the killer switch');
     await tap(page, '.mode-tab-btn.time-attack-tab', '1: killer Speedrun tab');
     if (!(await page.locator('.mode-tab-btn.time-attack-tab.active').count())) fail('1: the Speedrun tab on the killer switch did not switch to Speedrun');
-    if (await page.locator('.coming-soon-popup').count()) fail('1: the Speedrun tab on the killer switch says it is coming — killer has Speedrun now');
     if (!(await page.locator('.home-screen-container .btn-play-new .lucide-zap').count())) fail('1: on killer Speedrun the start button is not the speedrun one');
+    // Survival opens on killer too since 2026-10-14 (KP-2); until then it said "coming".
     await tap(page, '.mode-tab-btn.time-limit-tab', '1: killer Survival tab');
-    const activeTab = await page.locator('.mode-tab-btn.active').innerText().catch(() => '');
-    if (!(await page.locator('.mode-tab-btn.time-attack-tab.active').count())) fail(`1: the Survival tab on the killer switch changed the mode (active: "${activeTab}") instead of saying it is coming`);
-    if (!(await page.locator('.coming-soon-popup').count())) fail('1: the Survival tab on the killer switch said nothing');
-    // The Ghost chip on killer, with no killer record yet, is locked for the reason a
-    // classic one is — no longer "coming" (2026-10-14, KP-3). Its note and the
-    // Survival tab's share one spot: one note at a time, whichever came last.
+    if (!(await page.locator('.mode-tab-btn.time-limit-tab.active').count())) fail('1: the Survival tab on the killer switch did not switch to Survival');
+    if (!(await page.locator('.home-screen-container .btn-play-new .lucide-hourglass').count())) fail('1: on killer Survival the start button is not the Survival one');
+    // Ghost and Time Gap are off in Survival on either kind, and the note says why.
+    await tap(page, '.rival-chip.ghost-chip', '1: killer Ghost chip in Survival');
+    const survivalLine = await page.locator('.locked-mode-popup[role="alert"] .locked-popup-text').first().innerText().catch(() => '');
+    if (!survivalLine.includes('not available in Survival')) fail(`1: the Ghost chip in killer Survival says "${survivalLine}" — expected the Survival reason, as on classic`);
+    // On Speedrun, with no killer record yet, the Ghost chip is locked for the reason a
+    // classic one is — no longer "coming" (2026-10-14, KP-3). One note at a time.
+    await tap(page, '.mode-tab-btn.time-attack-tab', '1: back to killer Speedrun');
     await tap(page, '.rival-chip.ghost-chip', '1: killer Ghost chip');
-    let notes = await page.locator('.locked-mode-popup').count();
-    if (await page.locator('.coming-soon-popup').count()) fail('1: the locked Ghost chip on the killer switch left the "coming" note up');
-    if (notes !== 1) fail(`1: after the Survival tab, the locked Ghost chip on the killer switch put ${notes} notes in the same spot — one note at a time`);
+    const notes = await page.locator('.locked-mode-popup').count();
+    if (notes !== 1) fail(`1: the locked Ghost chip on the killer switch put ${notes} notes in the same spot — one note at a time`);
     const lockedLine = await page.locator('.locked-mode-popup[role="alert"] .locked-popup-text').first().innerText().catch(() => '');
     if (!lockedLine.includes('Clear this difficulty')) fail(`1: the locked Ghost chip on the killer switch says "${lockedLine}" — expected the classic reason: clear this level once`);
-    await tap(page, '.mode-tab-btn.time-limit-tab', '1: killer Survival tab again');
-    notes = await page.locator('.locked-mode-popup').count();
-    const comingNotes = await page.locator('.coming-soon-popup').count();
-    if (notes !== 1 || comingNotes !== 1) fail(`1: after the Ghost chip's note, the Survival tab on the killer switch shows ${notes} note(s), ${comingNotes} of them "coming soon" — one note at a time`);
     if (await tap(page, '.variant-rules-btn', '1: killer ⓘ') &&
         !(await page.locator('.variant-rules-card[data-variant="killer"]').count())) fail('1: the ⓘ on killer did not open the killer rules');
     await page.locator('.variant-rules-card button').click().catch(() => {});
@@ -195,7 +200,7 @@ async function run() {
     await page.waitForSelector('.home-bottom-nav');
     if (!(await page.locator('.variant-option.active[data-variant="killer"]').count())) fail('1: the killer switch was forgotten on reload');
     await tap(page, '.mode-tab-btn:not(.time-attack-tab):not(.time-limit-tab)', '1: back to the Classic tab');
-    console.log(`  ▶ 1. home: one card shape (${standardAgain}px both; first look ${standardHeight}px), killer Speedrun opens, Survival coming, Ghost locked like classic, one note at a time, rules for each kind`);
+    console.log(`  ▶ 1. home: one card shape (${standardAgain}px both; first look ${standardHeight}px), killer Speedrun and Survival open, Ghost off in Survival and locked like classic, one note at a time, rules for each kind`);
 
     // ── 2. The first killer ──────────────────────────────────────────────
     await prime(page, { settings: { homeVariant: 'killer' } });
@@ -444,6 +449,188 @@ async function run() {
     }
     console.log('  ▶ 5b. killer speedrun: ⚡, no hints, +10 s a mistake, own best time');
 
+    // ── 5d. Killer Survival (2026-10-14, KP-2) ───────────────────────────
+    // Classic Survival on a killer board: the killer's limit on the clock at the
+    // start (7 min at Lv.1, classic has 4), the killer's bonus for a right cell
+    // (+9 s, classic 7), a loss in the killer record when the clock runs out, and
+    // a win kept as a killer Survival clear by its seconds played, graded on
+    // killer times and shown on the killer card.
+    await prime(page, { settings: { homeVariant: 'killer', killerRulesSeen: true } });
+    await tap(page, '.mode-tab-btn.time-limit-tab', '5d: killer Survival tab');
+    await tap(page, '.level-chip-group button:nth-child(1)', '5d: Lv.1');
+    await page.click('.home-screen-container .btn-play-new').catch(() => fail('5d: no start button on killer Survival'));
+    if (!(await page.waitForSelector('.killer-board', { timeout: 8000 }).catch(() => null))) fail('5d: the Survival start on the killer switch did not open a killer');
+    else {
+      await page.waitForTimeout(400);
+      const started = await clock();
+      const tag = await page.locator('.current-level-badge .lvl-tag').innerText().catch(() => '');
+      if (!tag.includes('⏳')) fail(`5d: the header says "${tag}" — no ⏳ on a killer Survival`);
+      if (!(await page.locator('.game-header .version-tag[data-variant="killer"]').count())) fail('5d: the killer Survival header does not say killer');
+      if (started < 410 || started > 420) fail(`5d: a killer Survival Lv.1 started with ${started} s on the clock — its limit is 7 min (420 s), classic's 4 (240 s)`);
+      const game = await readJSON(page, 'suidoku_game_state_v1');
+      if (game?.gameMode !== 'timeLimit' || game?.variant !== 'killer') fail(`5d: the Survival start saved a ${game?.variant} ${game?.gameMode} game`);
+      else {
+        const open = game.initialBoard.flat().findIndex((d) => !d);
+        const before = await clock();
+        await page.locator('.sudoku-cell').nth(open).click();
+        await page.locator(`.number-pad .num-btn:nth-child(${game.solutionBoard[Math.floor(open / 9)][open % 9]})`).click();
+        await page.waitForTimeout(150);
+        const gained = (await clock()) - before;
+        const shown = await page.locator('.time-floating-indicator').innerText().catch(() => '');
+        if (gained < 8 || gained > 9 || !shown.includes('+9s')) fail(`5d: a right cell moved the killer Survival clock by ${gained} s ("${shown}") — a killer Lv.1 adds 9 s a cell, classic 7`);
+      }
+    }
+    // The clock runs out on a killer saved with 2 s left.
+    await prime(page, { settings: { homeVariant: 'killer', killerRulesSeen: true }, state: { ...state, board: twoOpen, gameMode: 'timeLimit', timerSeconds: 2, playedSeconds: 300 } });
+    await tap(page, '.mode-tab-btn.time-limit-tab', '5d: killer Survival tab');
+    if (!(await page.locator('.btn-resume').count())) fail('5d: the killer Survival tab does not offer the killer Survival in progress');
+    await page.click('.btn-resume').catch(() => {});
+    if (!(await page.locator('.game-over-card').waitFor({ state: 'visible', timeout: 8000 }).then(() => true, () => false))) {
+      fail('5d: a killer Survival whose clock ran out did not end');
+    } else {
+      const stats = await readJSON(page, 'suidoku_user_stats_v1');
+      if (stats?.killer?.gamesPlayed !== 1) fail(`5d: a killer Survival lost on time left ${stats?.killer?.gamesPlayed} killer games played — expected 1`);
+      if (stats?.gamesPlayed) fail('5d: a killer Survival lost on time counted in the classic record');
+      const left = await readJSON(page, 'suidoku_game_state_v1');
+      if (left && !left.isGameOver) fail('5d: a killer Survival lost on time can still be resumed');
+    }
+    // A win: 105 s played, 500 s left. Graded on the seconds played and killer times —
+    // S+ (≤110 s); on the time left it would be the slowest grade.
+    await prime(page, { settings: { homeVariant: 'killer', killerRulesSeen: true }, state: { ...state, gameMode: 'timeLimit', timerSeconds: 500, playedSeconds: 105 } });
+    await tap(page, '.mode-tab-btn.time-limit-tab', '5d: killer Survival tab');
+    await page.click('.btn-resume').catch(() => fail('5d: no resume on killer Survival'));
+    await page.waitForSelector('.killer-board', { timeout: 8000 }).catch(() => fail('5d: resume did not open the killer Survival'));
+    await page.locator('.sudoku-cell').nth(last).click();
+    await page.locator(`.number-pad .num-btn:nth-child(${right})`).click();
+    if (!(await page.locator('.victory-card').waitFor({ state: 'visible', timeout: 8000 }).then(() => true, () => false))) {
+      fail('5d: no victory card after the last correct digit of a killer Survival');
+    } else {
+      const grade = await page.locator('.victory-rank-banner').innerText().catch(() => '');
+      if (!grade.includes('S+')) fail(`5d: a killer Survival won in about 105 s played says "${grade}" — expected S+ on the killer times, by the seconds played`);
+      const stats = await readJSON(page, 'suidoku_user_stats_v1');
+      const best = stats?.killer?.survivalBestTimes?.[1];
+      if (stats?.killer?.timeLimitSurvivalWins !== 1) fail(`5d: the killer record shows ${stats?.killer?.timeLimitSurvivalWins} Survival clears after one`);
+      if (!(best >= 105 && best <= 110)) fail(`5d: the killer Survival Lv.1 best is ${best} — expected the seconds played (about 105), not the time left (500)`);
+      if (stats?.survivalBestTimes || stats?.timeLimitSurvivalWins) fail('5d: a killer Survival win moved the classic Survival record');
+      const ghostTable = await readJSON(page, 'suidoku_ghost_records_v1');
+      if (ghostTable?.killer?.classic?.[1] || ghostTable?.killer?.timeAttack?.[1]) fail('5d: a killer Survival win set a killer ghost — its clock is the time left; Survival keeps none (D19)');
+      await page.goto(URL);
+      await page.waitForSelector('.home-bottom-nav');
+      await page.click('.home-bottom-nav .nav-item:nth-child(1)');
+      await page.waitForSelector('.killer-stats-card');
+      const row = await page.locator('.killer-survival-list .best-time-row').first().locator('.best-time-val').innerText().catch(() => '');
+      const expected = `${String(Math.floor(best / 60)).padStart(2, '0')}:${String(best % 60).padStart(2, '0')}`;
+      if (row !== expected) fail(`5d: the killer card's Survival Lv.1 says "${row}" — the killer Survival best is ${expected}`);
+      const clears = await page.locator('.killer-survival-total .total-value').innerText().catch(() => '');
+      if (clears.trim() !== '1') fail(`5d: the killer card counts "${clears}" Survival clears — expected 1`);
+    }
+    console.log('  ▶ 5d. killer Survival: 7 min on the clock, +9 s a right cell, a loss on time in the killer record, a win by seconds played on the killer card');
+
+    // ── 5e. A killer AI battle (2026-10-14, KP-11, killer order ⑦) ───────
+    // The AI lobby has the puzzle switch (user, 2026-10-14: a switch on the AI
+    // screen, one remembered choice with Home's). It opens on the kind Home shows;
+    // the first killer starts after its rules; the board draws the room's cages
+    // and both sides count the killer's open cells; a wrong digit that breaks a
+    // cage is told so; the duel stays out of the killer record (BT-1) and in the
+    // duel record; a rematch is another killer; Home shows the kind picked in the
+    // lobby; and the standard switch still deals a classic. The bot's pace is
+    // gate 2-28's (9).
+    const aiRoom = () => page.evaluate(() => {
+      const r = window.suidokuBattle?.currentRoom;
+      return r ? { code: r.code, variant: r.variant, cages: r.cages, puzzle: r.puzzle, solution: r.solution, open: r.initialEmptyCount } : null;
+    });
+    // An open cell and a digit that push its cage past its sum while no row, column,
+    // box or cage already holds the digit — so the only thing wrong is the cage.
+    const sumBreak = (room) => {
+      const digit = (cell) => room.puzzle[Math.floor(cell / 9)][cell % 9];
+      const sees = (a, b) => Math.floor(a / 9) === Math.floor(b / 9) || a % 9 === b % 9 ||
+        (Math.floor(a / 27) === Math.floor(b / 27) && Math.floor((a % 9) / 3) === Math.floor((b % 9) / 3));
+      for (const cage of room.cages) {
+        const left = cage.sum - cage.cells.reduce((s, c) => s + digit(c), 0);
+        for (const cell of cage.cells.filter((c) => !digit(c))) {
+          for (let d = 9; d > left; d--) {
+            const seen = [...Array(81).keys()].some((i) => i !== cell && sees(i, cell) && digit(i) === d);
+            if (!seen && !cage.cells.some((c) => digit(c) === d)) return { cell, d, sum: cage.sum };
+          }
+        }
+      }
+      return null;
+    };
+    const enter = async (cell, d) => {
+      await page.locator('.game-screen-wrapper .sudoku-cell').nth(cell).click();
+      await page.locator(`.number-pad .num-btn:nth-child(${d})`).click();
+      await page.waitForTimeout(150);
+    };
+    const checkCages = async (room, where) => {
+      const b = await page.evaluate(readBoard, room.cages);
+      b.wrong.slice(0, 6).forEach((w) => fail(`5e: ${where} outline — ${w}`));
+      b.misplaced.slice(0, 6).forEach((m) => fail(`5e: ${where} sum — ${m}`));
+      if (b.sumCount !== room.cages.length) fail(`5e: ${where}: ${b.sumCount} sums on the board for ${room.cages.length} cages`);
+    };
+    await prime(page);
+    await tap(page, '.ai-card-banner', '5e: the AI battle banner');
+    await page.waitForSelector('.battle-lobby-container .variant-switch', { timeout: 5000 }).catch(() => fail('5e: the AI lobby has no puzzle switch'));
+    if (!(await page.locator('.battle-lobby-container .variant-option.active[data-variant="classic"]').count())) fail('5e: the AI lobby did not open on standard, the kind Home shows');
+    await tap(page, '.battle-lobby-container .variant-option[data-variant="killer"]', '5e: Killer in the AI lobby');
+    await tap(page, '.btn-battle-action', '5e: start the AI battle');
+    await page.waitForTimeout(300);
+    if (!(await page.locator('.variant-rules-card[data-variant="killer"]').count())) fail('5e: the first killer AI battle started without its rules');
+    else if (await page.locator('.battle-header-card').count()) fail('5e: the AI battle started behind the rules card');
+    await page.locator('.variant-rules-card button').click().catch(() => fail('5e: the rules card has no button to start the AI battle'));
+    await page.waitForSelector('.battle-header-card', { timeout: 8000 }).catch(() => fail('5e: the rules card did not start the AI battle'));
+    await page.waitForTimeout(400);
+    const first = await aiRoom();
+    if (first?.variant !== 'killer' || !Array.isArray(first?.cages)) {
+      fail(`5e: Killer in the AI lobby dealt a ${first?.variant} room with ${first?.cages?.length ?? 'no'} cages`);
+    } else {
+      if (!(await page.locator('.killer-board').count())) fail('5e: the killer AI battle board is not a killer board');
+      await checkCages(first, 'first match');
+      const mine = await page.locator('.my-box .countdown-number-val').innerText().catch(() => '');
+      const theirs = await page.locator('.opp-box .countdown-number-val').innerText().catch(() => '');
+      if (!mine.startsWith(`${first.open} `) || !theirs.startsWith(`${first.open} `)) fail(`5e: the battle header says "${mine}" / "${theirs}" — the killer has ${first.open} open cells`);
+      const brk = sumBreak(first);
+      if (!brk) fail('5e: no cell on this killer can break its cage alone — nothing to test the cage message with');
+      else {
+        await enter(brk.cell, brk.d);
+        const said = await page.locator('.conflict-toast-banner').innerText().catch(() => '');
+        if (!said.includes(`This cage no longer adds up to ${brk.sum}`)) fail(`5e: a ${brk.d} past its cage's ${brk.sum} in the AI battle says "${said}" — the mistake must name the cage`);
+        const others = [...Array(81).keys()].filter((c) => c !== brk.cell && !first.puzzle[Math.floor(c / 9)][c % 9]).slice(0, 2);
+        for (const c of others) await enter(c, (first.solution[Math.floor(c / 9)][c % 9] % 9) + 1);
+      }
+      if (!(await page.locator('.battle-result-card').waitFor({ state: 'visible', timeout: 8000 }).then(() => true, () => false))) {
+        fail('5e: three wrong digits did not end the killer AI battle');
+      } else {
+        const stats = await readJSON(page, 'suidoku_user_stats_v1');
+        if (stats?.killer?.gamesPlayed || stats?.gamesPlayed) fail(`5e: a killer AI battle lost on mistakes counted ${stats?.killer?.gamesPlayed ?? 0} killer / ${stats?.gamesPlayed ?? 0} classic games played — a duel counts in the duel record only (BT-1)`);
+        const duel = await readJSON(page, 'suidoku_battle_profile_v1');
+        if (duel?.losses !== 1) fail(`5e: the duel record shows ${duel?.losses} losses after a killer AI battle lost`);
+        await tap(page, '.battle-result-card .btn-primary', '5e: rematch');
+        await page.waitForFunction((code) => window.suidokuBattle?.currentRoom && window.suidokuBattle.currentRoom.code !== code, first.code, { timeout: 8000 })
+          .catch(() => fail('5e: the rematch did not deal a new match'));
+        await page.waitForTimeout(400);
+        const again = await aiRoom();
+        if (again?.variant !== 'killer' || !Array.isArray(again?.cages)) fail(`5e: the rematch after a killer AI battle is a ${again?.variant} with ${again?.cages?.length ?? 'no'} cages`);
+        else await checkCages(again, 'rematch');
+      }
+    }
+    // One choice: the kind picked in the AI lobby is the one Home shows, and back.
+    await page.goto(URL);
+    await page.waitForSelector('.home-bottom-nav');
+    if (!(await page.locator('.home-screen-container .variant-option.active[data-variant="killer"]').count())) fail('5e: Killer was picked in the AI lobby and Home shows standard — two answers to which kind is played');
+    await tap(page, '.ai-card-banner', '5e: the AI battle banner again');
+    await page.waitForSelector('.battle-lobby-container .variant-switch', { timeout: 5000 }).catch(() => {});
+    if (!(await page.locator('.battle-lobby-container .variant-option.active[data-variant="killer"]').count())) fail('5e: the AI lobby did not open on Killer, the kind Home shows');
+    // The standard switch still deals a classic, with no rules card and no cages.
+    await tap(page, '.battle-lobby-container .variant-option[data-variant="classic"]', '5e: Standard in the AI lobby');
+    await tap(page, '.btn-battle-action', '5e: start a standard AI battle');
+    await page.waitForSelector('.battle-header-card', { timeout: 8000 }).catch(() => fail('5e: the standard AI battle did not start'));
+    await page.waitForTimeout(400);
+    const plain = await aiRoom();
+    if (plain?.variant !== 'classic' || plain?.cages) fail(`5e: Standard in the AI lobby dealt a ${plain?.variant} room with ${plain?.cages?.length ?? 'no'} cages`);
+    if (await page.locator('.cage-sum').count()) fail('5e: the standard AI battle draws cage sums');
+    if ((await readJSON(page, 'suidoku_settings_v1'))?.homeVariant !== 'classic') fail('5e: Standard picked in the AI lobby was not remembered for Home');
+    console.log('  ▶ 5e. killer AI battle: the lobby switch shares Home\'s choice, rules first, the room\'s cages drawn, a cage mistake named, the loss in the duel record only, a rematch on killer; standard still classic');
+
     // ── 6. Thirteen languages ────────────────────────────────────────────
     let measured = 0;
     const CASES = [[360, 1], [320, 1.3]];
@@ -477,11 +664,6 @@ async function run() {
         await prime(page, { settings: { language: lang, homeVariant: 'killer', killerRulesSeen: true } });
         if (s !== 1) await scale('.variant-switch-row', s);
         (await cuts('.variant-switch-row')).forEach((c) => fail(`6: ${where} switch — ${c}`));
-        if (await tap(page, '.mode-tab-btn.time-limit-tab', `6: ${where}`) && await page.locator('.coming-soon-popup').count()) {
-          if (s !== 1) await scale('.coming-soon-popup', s);
-          (await cuts('.coming-soon-popup')).forEach((c) => fail(`6: ${where} coming-soon note — ${c}`));
-          await tap(page, '.coming-soon-popup .locked-popup-close-btn', `6: ${where}`);
-        }
         for (const kind of ['classic', 'killer']) {
           await tap(page, `.variant-option[data-variant="${kind}"]`, `6: ${where}`);
           if (!(await tap(page, '.variant-rules-btn', `6: ${where} ${kind} ⓘ`))) continue;
@@ -497,6 +679,14 @@ async function run() {
         await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== 'running'));
         if (s !== 1) await scale('.killer-stats-card', s);
         (await cuts('.killer-stats-card')).forEach((c) => fail(`6: ${where} stats — ${c}`));
+        // The same switch in the AI lobby (KP-11), in a card of its own width.
+        await page.goto(URL);
+        await page.waitForSelector('.home-bottom-nav');
+        await tap(page, '.ai-card-banner', `6: ${where} AI lobby`);
+        await page.waitForSelector('.battle-lobby-container .variant-switch-row', { timeout: 5000 }).catch(() => {});
+        await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== 'running'));
+        if (s !== 1) await scale('.battle-lobby-container .variant-switch-row', s);
+        (await cuts('.battle-lobby-container .variant-switch-row')).forEach((c) => fail(`6: ${where} AI lobby switch — ${c}`));
         measured++;
       }
     }

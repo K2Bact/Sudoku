@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { battleService } from '../firebase/battleService';
+import { aiRoomGame } from '../firebase/aiBattleSession';
+import { variantOf } from '../engine/variants';
 import { soundHaptic } from '../utils/soundHaptic';
 import { applyBattleResult } from '../utils/battleRating';
 import { checkAndUnlockAchievements } from '../utils/achievementManager';
@@ -186,10 +188,11 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
       soundHaptic.playCompleteChime();
       setShowBattleResultModal(false);
       const lvl = activeBattleRoom?.level || 3;
+      // The same kind again: a rematch after a killer is a killer (KP-11).
       battleService.startAIBattle(lvl, (newRoom) => {
         setActiveBattleRoom({ ...newRoom });
-        startNewGame(lvl, 'aiBattle', { board: newRoom.puzzle, solution: newRoom.solution });
-      });
+        startNewGame(lvl, 'aiBattle', aiRoomGame(newRoom));
+      }, variantOf(activeBattleRoom));
       return;
     }
 

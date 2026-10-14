@@ -3,6 +3,11 @@ import { Swords, Bot, AlertCircle, ArrowLeft, Timer } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useConfirm } from './common/ConfirmProvider';
 import { useTranslation } from '../i18n/i18nContext';
+import { variantOf } from '../engine/variants';
+
+// The kind of puzzle, in the AI lobby switch's own words, written out so every
+// key is findable (gate 2-15).
+const KIND_KEY = { classic: 'variants.classic', killer: 'variants.killer' };
 
 export function BattleHeader({
   room,
@@ -90,8 +95,14 @@ export function BattleHeader({
           </div>
         </div>
 
-        {/* Center: VS Badge */}
-        <div className="battle-vs-badge">VS</div>
+        {/* Center: which puzzle, over the VS badge (KP-11, user 2026-10-14: "킬러인지
+            클래식인지 알 수 있게 해야지"). Here, not in the top row: at 320px with the
+            1.3x font that row has 17px to spare, and this column is two lines next
+            to the three on either side, so the header grows no taller. */}
+        <div className="battle-vs-stack">
+          <span className="battle-kind-tag" data-variant={variantOf(room)}>{t(KIND_KEY[variantOf(room)])}</span>
+          <div className="battle-vs-badge">VS</div>
+        </div>
 
         {/* Right: Opponent / AI Bot */}
         <div className="player-countdown-box opp-box">

@@ -6,7 +6,6 @@ export const killer = {
     switchLabel: 'Rätseltyp',
     classic: 'Standard',
     killer: 'Killer',
-    comingSoon: 'Für Killer noch in Entwicklung.',
     classicRules: {
       title: 'Sudoku-Regeln',
       grid: 'Fülle jede Zeile, Spalte und jeden 3×3-Block mit den Zahlen 1 bis 9, jede genau einmal.',

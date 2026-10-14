@@ -6,7 +6,6 @@ export const killer = {
     switchLabel: 'Tipo di puzzle',
     classic: 'Standard',
     killer: 'Killer',
-    comingSoon: 'Ancora in sviluppo per il Killer.',
     classicRules: {
       title: 'Regole del sudoku',
       grid: 'Riempi ogni riga, colonna e riquadro 3×3 con i numeri da 1 a 9, una volta ciascuno.',

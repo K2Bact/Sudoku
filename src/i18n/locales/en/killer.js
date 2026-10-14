@@ -6,7 +6,6 @@ export const killer = {
     switchLabel: 'Puzzle type',
     classic: 'Standard',
     killer: 'Killer',
-    comingSoon: 'Not in Killer yet — still in development.',
     classicRules: {
       title: 'Sudoku rules',
       grid: 'Fill every row, column and 3×3 box with 1 to 9, each digit once.',

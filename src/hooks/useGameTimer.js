@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine';
+import { survivalLimitSeconds } from '../engine/survivalClock';
 import { soundHaptic } from '../utils/soundHaptic';
 import { playedSecondsOf } from '../utils/savedGame';
 
@@ -8,7 +8,8 @@ import { playedSecondsOf } from '../utils/savedGame';
  * Manages game timer, 3.5s combo streaks, and floating time bonus/penalty indicators.
  *
  * Two clocks. timerSeconds is the one on screen: in Survival it is the time left
- * and gains 7 s a correct cell, in Speedrun combos take seconds off it and
+ * and gains a few seconds a correct cell (7 on classic, the kind's own on a
+ * killer — survivalClock.js), in Speedrun combos take seconds off it and
  * mistakes put them on. playedSeconds is how long the game has been played — the
  * same ticks and nothing else — which is what Survival is graded on (BACKLOG D15).
  */
@@ -109,16 +110,19 @@ export function useGameTimer({
     showFloatingIndicator('penalty', `+${penaltySeconds}s`);
   };
 
-  // Add bonus time in Survival mode (+7s per correct cell, balanced)
-  const addSurvivalBonusTime = (bonusSeconds = 7) => {
+  // Add bonus time in Survival mode — the kind's bonus for a correct cell
+  // (useGameInput, from survivalClock.js; 7 s on classic).
+  const addSurvivalBonusTime = (bonusSeconds) => {
     setTimerSeconds(prev => prev + bonusSeconds);
     showFloatingIndicator('bonus', `+${bonusSeconds}s Bonus!`);
   };
 
   // Reset both clocks for a new game — Survival's limit or zero, nothing played.
   // Given a saved game instead, its own two clocks come back (resumeSavedGame).
-  const resetTimer = (newLevel = level, newMode = gameMode, saved = null) => {
-    const tailoredLimit = DIFFICULTY_CONFIG[newLevel]?.timeLimitSeconds || 480;
+  // The limit is the kind's, named by the caller: a new game names the kind it is
+  // about to be, which the game's state does not hold yet (startNewGame).
+  const resetTimer = (newLevel = level, newMode = gameMode, saved = null, newVariant = 'classic') => {
+    const tailoredLimit = survivalLimitSeconds(newVariant, newLevel);
     if (saved) {
       setTimerSeconds(saved.timerSeconds || 0);
       setPlayedSeconds(playedSecondsOf(saved));

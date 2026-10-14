@@ -700,10 +700,13 @@ assert(!victoryModalCode.includes('playGamesService.showLeaderboards()'), 'Victo
 
 const timerCode = fs.readFileSync(path.join(rootDir, 'src', 'hooks', 'useGameTimer.js'), 'utf8');
 assert(timerCode.includes('bonusReduction = nextCombo >= 4 ? 2 : 1'), 'Speedrun combo reduction must be strictly balanced');
-assert(timerCode.includes('bonusSeconds = 7'), 'Survival bonus time must be calibrated to 7s');
+// Survival's bonus a cell is the kind's since killer Survival (KP-2, 2026-10-14):
+// 7 s on classic, kept in one place (survivalClock.js); gate 2-28 holds the killer one.
+const { survivalCellBonusSeconds } = await import('../../../src/engine/survivalClock.js');
+for (let lv = 1; lv <= 5; lv++) assert.strictEqual(survivalCellBonusSeconds('classic', lv), 7, `classic Survival Lv.${lv} must stay at 7 s a cell`);
 
 const inputCode = fs.readFileSync(path.join(rootDir, 'src', 'hooks', 'useGameInput.js'), 'utf8');
-assert(inputCode.includes('addSurvivalBonusTime(7)'), 'useGameInput must pass 7s bonus time in survival mode');
+assert(inputCode.includes('addSurvivalBonusTime(survivalCellBonusSeconds(variant, level))'), 'useGameInput must pay the Survival bonus of the kind and level being played');
 
 const keypadActionsCode = fs.readFileSync(path.join(rootDir, 'src', 'hooks', 'useKeypadActions.js'), 'utf8');
 assert(keypadActionsCode.includes('adHintsUsedThisGame >= 2'), 'useKeypadActions must enforce 2-hint ad limit per game');

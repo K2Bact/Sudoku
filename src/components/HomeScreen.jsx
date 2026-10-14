@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { isResumableGame } from '../utils/savedGame';
-import { Play, BarChart3, Brain, BookOpen, ChevronRight, Zap, RefreshCw, Hourglass, Lock, X } from 'lucide-react';
+import { Play, BarChart3, Brain, BookOpen, ChevronRight, Zap, RefreshCw, Hourglass } from 'lucide-react';
 import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine';
 import { loadStats, loadGameState, loadSettings, saveSettings } from '../utils/storage';
 import { modesOf, variantOf } from '../engine/variants';
@@ -14,6 +14,14 @@ import { RivalModeChips } from './home/RivalModeChips';
 import { HomeBottomBanners } from './home/HomeBottomBanners';
 import { VariantSwitch } from './home/VariantSwitch';
 import { RulesModal } from './home/RulesModal';
+import { usePuzzleKind } from '../hooks/usePuzzleKind';
+
+// The start button in each mode, the same on either kind of puzzle.
+const START_LOOK = {
+  classic: { Icon: Play, label: 'common.newGame' },
+  timeAttack: { Icon: Zap, label: 'home.modes.timeAttack.startBtn', style: { background: 'linear-gradient(135deg, #f59e0b, #d97706)' } },
+  timeLimit: { Icon: Hourglass, label: 'home.modes.timeLimit.startBtn', style: { background: 'linear-gradient(135deg, #ef4444, #b91c1c)' } },
+};
 
 export function HomeScreen({
   onStartSingleGame,
@@ -50,31 +58,25 @@ export function HomeScreen({
   };
 
   // Standard or killer. Remembered across launches, so a killer player opens the
-  // app on their own puzzle (and its Resume button).
-  const [variant, setVariantState] = useState(() => variantOf({ variant: loadSettings().homeVariant }));
-  const setVariant = (v) => {
-    setVariantState(v);
-    setComingSoon(false);
-    saveSettings({ ...loadSettings(), homeVariant: v });
-  };
-  // A kind without the chosen mode plays its first one: a killer has no Survival yet.
+  // app on their own puzzle (and its Resume button) — the one choice the AI lobby's
+  // switch shares (usePuzzleKind.js, KP-11).
+  const [variant, setVariant] = usePuzzleKind();
+  // Every kind shows the same tabs, so the card keeps one shape (user, 2026-10-01),
+  // and since killer Survival (2026-10-14, KP-2) every kind has every mode. A kind
+  // without the chosen mode would play its first. Until then a mode the killer
+  // lacked was dimmed and said "coming"; with none left, that note went (Diary 132).
   const modes = modesOf(variant);
   const mode = modes.includes(currentSelectedMode) ? currentSelectedMode : modes[0];
   const [showKillerRules, setShowKillerRules] = useState(false);
-  // Every kind shows the same tabs, so the card keeps one shape (user, 2026-10-01).
-  // A mode the kind does not have yet says so instead of switching. It stays until
-  // dismissed: an explanation that times out is one the player can miss (gate 2-6).
-  const [comingSoon, setComingSoon] = useState(false);
   const pickMode = (m) => {
     soundHaptic.playSelectSound();
-    if (modes.includes(m)) {
-      setComingSoon(false);
-      setMode(m);
-    } else {
-      setComingSoon(true);
-    }
+    if (modes.includes(m)) setMode(m);
   };
-  const startKiller = () => handleStart && handleStart(selectedLevel, false, mode, effectiveRivalMode, 'killer');
+  // One start button for every kind and mode: the kinds differ in the puzzle only
+  // (user, 2026-10-07). The first killer starts after its rules.
+  const startGame = () => handleStart && handleStart(selectedLevel, false, mode, effectiveRivalMode, variant);
+  const onPlayNew = () => (variant === 'killer' && !loadSettings().killerRulesSeen ? setShowKillerRules(true) : startGame());
+  const StartIcon = START_LOOK[mode].Icon;
 
   const savedGame = loadGameState();
   const hasSavedGame = isResumableGame(savedGame);
@@ -106,11 +108,10 @@ export function HomeScreen({
         <div className="modern-game-card single-card">
           <VariantSwitch variant={variant} onChange={setVariant} />
 
-          {/* Top 3-Mode Selector Tabs. A mode the kind does not have yet is dimmed and
-              says so when tapped (variants.js). */}
+          {/* Top 3-Mode Selector Tabs — the same three on every kind (variants.js). */}
           <div className="mode-tab-group">
             <button type="button"
-              className={`mode-tab-btn ${mode === 'classic' ? 'active' : ''} ${modes.includes('classic') ? '' : 'coming-soon'}`}
+              className={`mode-tab-btn ${mode === 'classic' ? 'active' : ''}`}
               onClick={() => pickMode('classic')}
             >
               <Play size={13} />
@@ -118,7 +119,7 @@ export function HomeScreen({
             </button>
 
             <button type="button"
-              className={`mode-tab-btn time-attack-tab ${mode === 'timeAttack' ? 'active' : ''} ${modes.includes('timeAttack') ? '' : 'coming-soon'}`}
+              className={`mode-tab-btn time-attack-tab ${mode === 'timeAttack' ? 'active' : ''}`}
               onClick={() => pickMode('timeAttack')}
             >
               <Zap size={13} />
@@ -126,7 +127,7 @@ export function HomeScreen({
             </button>
 
             <button type="button"
-              className={`mode-tab-btn time-limit-tab ${mode === 'timeLimit' ? 'active' : ''} ${modes.includes('timeLimit') ? '' : 'coming-soon'}`}
+              className={`mode-tab-btn time-limit-tab ${mode === 'timeLimit' ? 'active' : ''}`}
               onClick={() => pickMode('timeLimit')}
             >
               <Hourglass size={13} />
@@ -153,15 +154,12 @@ export function HomeScreen({
 
           {/* Row 3: Rival Race Mode Selector Chips (Standard on Top, Ghost & Delta on Bottom).
               Each kind races its own record (ghostManager.js ghostSlot, 2026-10-14) — a
-              killer's ghost is a killer time. They share the bottom spot with the
-              "coming" note below, one note at a time. */}
+              killer's ghost is a killer time. */}
           <RivalModeChips
             selectedMode={mode}
             selectedLevel={selectedLevel}
             onChange={setEffectiveRivalMode}
             variant={variant}
-            homeNoteOpen={comingSoon}
-            onNote={() => setComingSoon(false)}
           />
 
           {/* Full-Width Mobile Action Buttons */}
@@ -176,47 +174,15 @@ export function HomeScreen({
               </button>
             )}
 
-            {variant === 'killer' ? (
-              /* A killer speedrun starts from the same button the standard one does. */
-              <button type="button"
-                className={`btn-modern btn-play-new ${mode === 'timeAttack' ? '' : 'btn-play-killer'}`}
-                onClick={() => (loadSettings().killerRulesSeen ? startKiller() : setShowKillerRules(true))}
-                style={mode === 'timeAttack' ? { background: 'linear-gradient(135deg, #f59e0b, #d97706)' } : undefined}
-              >
-                {mode === 'timeAttack' ? <Zap size={16} /> : <Play size={16} />}
-                <span>{mode === 'timeAttack' ? t('home.modes.timeAttack.startBtn') : t('common.newGame')}</span>
-                <ChevronRight size={16} className="arrow-icon" />
-              </button>
-            ) : currentSelectedMode === 'classic' ? (
-              <button type="button"
-                className="btn-modern btn-play-new"
-                onClick={() => handleStart && handleStart(selectedLevel, false, 'classic', effectiveRivalMode, 'classic')}
-              >
-                <Play size={16} />
-                <span>{t('common.newGame')}</span>
-                <ChevronRight size={16} className="arrow-icon" />
-              </button>
-            ) : currentSelectedMode === 'timeAttack' ? (
-              <button type="button"
-                className="btn-modern btn-play-new"
-                onClick={() => handleStart && handleStart(selectedLevel, false, 'timeAttack', effectiveRivalMode)}
-                style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}
-              >
-                <Zap size={16} />
-                <span>{t('home.modes.timeAttack.startBtn')}</span>
-                <ChevronRight size={16} className="arrow-icon" />
-              </button>
-            ) : (
-              <button type="button"
-                className="btn-modern btn-play-new"
-                onClick={() => handleStart && handleStart(selectedLevel, false, 'timeLimit')}
-                style={{ background: 'linear-gradient(135deg, #ef4444, #b91c1c)' }}
-              >
-                <Hourglass size={16} />
-                <span>{t('home.modes.timeLimit.startBtn')}</span>
-                <ChevronRight size={16} className="arrow-icon" />
-              </button>
-            )}
+            <button type="button"
+              className="btn-modern btn-play-new"
+              onClick={onPlayNew}
+              style={START_LOOK[mode].style}
+            >
+              <StartIcon size={16} />
+              <span>{t(START_LOOK[mode].label)}</span>
+              <ChevronRight size={16} className="arrow-icon" />
+            </button>
           </div>
         </div>
 
@@ -228,22 +194,9 @@ export function HomeScreen({
             onStart={() => {
               saveSettings({ ...loadSettings(), killerRulesSeen: true });
               setShowKillerRules(false);
-              startKiller();
+              startGame();
             }}
           />
-        )}
-
-        {comingSoon && (
-          <div className="locked-mode-popup coming-soon-popup" role="alert" onClick={() => setComingSoon(false)}>
-            <Lock size={12} className="locked-popup-icon" />
-            <span className="locked-popup-text">{t('variants.comingSoon')}</span>
-            <button type="button" className="locked-popup-close-btn"
-              onClick={(e) => { e.stopPropagation(); setComingSoon(false); }}
-              aria-label={t('common.close')}
-            >
-              <X size={12} />
-            </button>
-          </div>
         )}
 
         {/* Bottom Banner Cards: Online PvP, AI Battle & Daily Challenge */}

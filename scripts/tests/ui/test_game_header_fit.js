@@ -1,10 +1,13 @@
 /**
  * test_game_header_fit.js — gate 3-16
  *
- * The game header fits: every language × every mode, at 360px and 320px, at the
- * normal font and at the 1.3x text zoom MainActivity allows. Since 2026-10-01 a
- * killer game is the fourth case: its badge says KILLER / КИЛЛЕР / 杀手数独
- * where the mode name was.
+ * The game header fits: every language × every kind of puzzle × every mode it
+ * plays, at 360px and 320px, at the normal font and at the 1.3x text zoom
+ * MainActivity allows. A killer's badge says KILLER / КИЛЛЕР / 杀手数独 where the
+ * mode name was (2026-10-01). The cases come from variants.js since 2026-10-14
+ * (killer Survival, KP-2): the list had one killer case, Classic, and killer
+ * Speedrun (2026-10-07) was never measured — a mode a kind gains is now measured
+ * with it.
  *
  * ── Why (2026-09-30) ──────────────────────────────────────────────────────
  * Measuring something else, a German speedrun header came up overflowing at
@@ -28,6 +31,10 @@
  *   3. At 360px and the normal font — the common phone — no text is shortened
  *      at all. "…" there would be text the player cannot read on an ordinary
  *      screen.
+ *   4. The AI battle's header (KP-11, 2026-10-14), standard and killer, under the
+ *      same rules with the longest bot name — and it names the kind, in the lobby
+ *      switch's word, over the VS without making the header taller. Until then no
+ *      gate measured the battle header at all.
  *   Self-checks: the header was found in every case, and the narrow cases did
  *   make something wrap or shorten — otherwise the sweep never reached the
  *   squeeze it exists to test.
@@ -40,11 +47,14 @@ import { chromium } from 'playwright';
 import { spawn, execSync } from 'child_process';
 import http from 'http';
 import { LOCALES } from '../../lib/locales.js';
+import { VARIANTS } from '../../../src/engine/variants.js';
 
 const PORT = 5213;
 const URL = `http://localhost:${PORT}`;
-// [name, mode tab]; killer has no tab — it is chosen with the puzzle switch above them.
-const MODES = [['classic', 1], ['timeAttack', 2], ['timeLimit', 3], ['killer', null]];
+// Every kind × every mode it plays: [name, mode, its tab on Home, kind]. The kind is
+// chosen with the puzzle switch above the tabs.
+const TAB = { classic: 1, timeAttack: 2, timeLimit: 3 };
+const MODES = VARIANTS.flatMap((v) => v.modes.map((mode) => [v.id === 'classic' ? mode : `${v.id} ${mode}`, mode, TAB[mode], v.id]));
 const CASES = [[360, 1], [320, 1], [360, 1.3], [320, 1.3]];
 
 function waitForServer(timeout = 20000) {
@@ -107,7 +117,7 @@ function readHeader() {
   };
 }
 
-async function openGame(page, lang, tab) {
+async function openGame(page, lang, tab, kind) {
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto(URL);
   await page.evaluate(({ l, killer }) => {
@@ -117,7 +127,7 @@ async function openGame(page, lang, tab) {
     if (killer) Object.assign(settings, { homeVariant: 'killer', killerRulesSeen: true });
     localStorage.setItem('suidoku_settings_v1', JSON.stringify(settings));
     localStorage.setItem('suidoku_review_prompted', '1');
-  }, { l: lang, killer: tab === null });
+  }, { l: lang, killer: kind === 'killer' });
   await page.reload();
   await page.waitForSelector('.home-bottom-nav');
   for (let i = 0; i < 3; i++) {
@@ -125,18 +135,87 @@ async function openGame(page, lang, tab) {
     await page.locator('.modal-overlay button').last().click({ timeout: 2000 }).catch(() => {});
     await page.waitForTimeout(200);
   }
-  if (tab !== null) await page.click(`.mode-tab-btn:nth-child(${tab})`, { timeout: 5000 });
+  await page.click(`.mode-tab-btn:nth-child(${tab})`, { timeout: 5000 });
   await page.click('.home-screen-container .btn-play-new', { timeout: 6000 });
   await page.waitForSelector('.game-header', { timeout: 8000 });
-  if (tab === null && !(await page.locator('.killer-board').count())) {
-    throw new Error(`${lang}: the killer case opened a game that is not a killer`);
+  if ((kind === 'killer') !== Boolean(await page.locator('.killer-board').count())) {
+    throw new Error(`${lang}: the ${kind} case opened a game of the other kind`);
   }
   return (await page.locator('.game-header .version-tag').innerText()).trim();
 }
 
+/**
+ * The AI battle's header (KP-11, 2026-10-14): what readHeader reads for the solo
+ * one, plus the kind of puzzle over the VS — the lobby switch's word on both
+ * kinds (user: "킬러인지 클래식인지 알 수 있게 해야지") — and whether that tag made
+ * the header taller than the three lines either side of it.
+ */
+function readBattleHeader() {
+  const h = document.querySelector('.battle-header-card');
+  if (!h) return null;
+  const hb = h.getBoundingClientRect();
+  const out = [];
+  const cut = [];
+  const shortened = [];
+  for (const e of h.querySelectorAll('*')) {
+    if (!e.offsetParent) continue;
+    const b = e.getBoundingClientRect();
+    if (b.width === 0) continue;
+    const name = (typeof e.className === 'string' && e.className.split(' ')[0]) || e.tagName.toLowerCase();
+    const text = (e.innerText || '').trim().replace(/\s+/g, ' ').slice(0, 24);
+    if (b.right > Math.min(hb.right, innerWidth) + 1 || b.left < Math.max(hb.left, 0) - 1) {
+      out.push(`${name} "${text}"`);
+      continue;
+    }
+    const s = getComputedStyle(e);
+    if (s.overflow === 'visible' || e.scrollWidth <= e.clientWidth + 1) continue;
+    (s.textOverflow === 'ellipsis' ? shortened : cut).push(`${name} ${e.scrollWidth - e.clientWidth}px "${text}"`);
+  }
+  const tag = h.querySelector('.battle-kind-tag');
+  const stack = h.querySelector('.battle-vs-stack');
+  const sides = [...h.querySelectorAll('.player-countdown-box')].map((e) => e.getBoundingClientRect().height);
+  return {
+    pageScroll: document.documentElement.scrollWidth - innerWidth,
+    out, cut, shortened,
+    kind: tag ? { text: tag.innerText.trim(), variant: tag.dataset.variant, shown: Boolean(tag.offsetParent) } : null,
+    taller: stack && sides.length ? Math.round(stack.getBoundingClientRect().height - Math.max(...sides)) : null,
+  };
+}
+
+/** An AI battle of this kind, started from the lobby's switch; returns the switch's word. */
+async function openBattle(page, lang, kind) {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto(URL);
+  await page.evaluate((l) => {
+    localStorage.clear();
+    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: l, theme: 'matte-dark', killerRulesSeen: true }));
+    localStorage.setItem('suidoku_review_prompted', '1');
+  }, lang);
+  await page.reload();
+  await page.waitForSelector('.home-bottom-nav');
+  for (let i = 0; i < 3; i++) {
+    if (!(await page.locator('.modal-overlay').count())) break;
+    await page.locator('.modal-overlay button').last().click({ timeout: 2000 }).catch(() => {});
+    await page.waitForTimeout(200);
+  }
+  await page.click('.ai-card-banner', { timeout: 5000 });
+  const option = page.locator(`.battle-lobby-container .variant-option[data-variant="${kind}"]`);
+  await option.click({ timeout: 5000 });
+  const word = (await option.innerText()).trim();
+  await page.click('.btn-battle-action', { timeout: 5000 });
+  await page.waitForSelector('.battle-header-card', { timeout: 8000 });
+  // The longest bot name: the opponent's side is the one that runs short of room.
+  await page.evaluate(() => {
+    window.suidokuBattle.currentRoom.opponentName = 'AI Grandmaster';
+    window.suidokuBattle.notifyListeners();
+  });
+  await page.waitForTimeout(150);
+  return word;
+}
+
 async function run() {
   console.log('======================================================');
-  console.log('📐 Gate 3-16: the game header fits (13 languages × 3 modes + killer × 360/320px × font 1/1.3)');
+  console.log(`📐 Gate 3-16: the game header fits (13 languages × ${MODES.length} kinds and modes × 360/320px × font 1/1.3)`);
   console.log('======================================================');
 
   const vite = spawn('cmd', ['/c', `npx vite preview --port ${PORT} --strictPort`], { stdio: 'ignore' });
@@ -145,17 +224,20 @@ async function run() {
   let measured = 0;
   let squeezed = 0;
   let expected = 0;
+  let battleMeasured = 0;
+  let battleSqueezed = 0;
+  let battleExpected = 0;
   try {
     await waitForServer();
     const page = await browser.newPage({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true });
     for (const lang of LOCALES) {
-      let classicBadge = null;
-      for (const [mode, tab] of MODES) {
-        const badge = await openGame(page, lang, tab);
-        if (mode === 'classic') classicBadge = badge;
-        // The killer badge is the one string this case adds; measuring a header that
-        // still says the mode name would measure the classic header a fourth time.
-        if (mode === 'killer' && badge === classicBadge) failures.push(`${lang} killer: the header says "${badge}", the classic badge — not its own`);
+      const classicBadge = {};
+      for (const [name, mode, tab, kind] of MODES) {
+        const badge = await openGame(page, lang, tab, kind);
+        if (kind === 'classic') classicBadge[mode] = badge;
+        // The killer badge is the one string a killer case adds; measuring a header that
+        // still says the mode name would measure the classic header a second time.
+        else if (badge === classicBadge[mode]) failures.push(`${lang} ${name}: the header says "${badge}", the classic badge — not its own`);
         let scaled = false;
         for (const [width, scale] of CASES) {
           expected++;
@@ -170,7 +252,7 @@ async function run() {
           await page.setViewportSize({ width, height: 800 });
           await page.waitForTimeout(120);
           const r = await page.evaluate(readHeader);
-          const where = `${lang} ${mode} ${width}px font×${scale}`;
+          const where = `${lang} ${name} ${width}px font×${scale}`;
           if (!r) { failures.push(`${where}: no .game-header — the case was not measured`); continue; }
           measured++;
           if (width === 320 || scale !== 1) squeezed += r.wrapped + r.shortened.length;
@@ -178,6 +260,39 @@ async function run() {
           if (r.pageScroll > 0) failures.push(`${where}: the page scrolls sideways by ${r.pageScroll}px`);
           for (const o of r.out) failures.push(`${where}: off the screen — ${o}`);
           for (const o of r.overlaps) failures.push(`${where}: covers a button — ${o}`);
+          for (const c of r.cut) failures.push(`${where}: text cut without "…" — ${c}`);
+          if (width === 360 && scale === 1) for (const s of r.shortened) failures.push(`${where}: shortened on an ordinary phone — ${s}`);
+        }
+      }
+    }
+
+    // The AI battle's header, on either kind (KP-11). Same rules; and it names the kind.
+    for (const lang of LOCALES) {
+      for (const kind of VARIANTS.map((v) => v.id)) {
+        const word = await openBattle(page, lang, kind);
+        let scaled = false;
+        for (const [width, scale] of CASES) {
+          battleExpected++;
+          if (scale !== 1 && !scaled) {
+            await page.evaluate((s) => {
+              const els = [...document.querySelectorAll('.battle-header-card, .battle-header-card *')];
+              const sizes = els.map((e) => parseFloat(getComputedStyle(e).fontSize));
+              els.forEach((e, i) => { e.style.fontSize = `${sizes[i] * s}px`; });
+            }, scale);
+            scaled = true;
+          }
+          await page.setViewportSize({ width, height: 800 });
+          await page.waitForTimeout(120);
+          const r = await page.evaluate(readBattleHeader);
+          const where = `${lang} ${kind} AI battle ${width}px font×${scale}`;
+          if (!r) { failures.push(`${where}: no .battle-header-card — the case was not measured`); continue; }
+          battleMeasured++;
+          if (width === 320 || scale !== 1) battleSqueezed += r.shortened.length;
+          if (!r.kind?.shown) failures.push(`${where}: no kind on the battle header — a standard and a killer match look the same`);
+          else if (r.kind.variant !== kind || r.kind.text !== word) failures.push(`${where}: the battle header says "${r.kind.text}" (${r.kind.variant}) on a ${kind} match — the lobby switch said "${word}"`);
+          if (r.taller > 1) failures.push(`${where}: the kind over the VS makes the battle header taller by ${r.taller}px`);
+          if (r.pageScroll > 0) failures.push(`${where}: the page scrolls sideways by ${r.pageScroll}px`);
+          for (const o of r.out) failures.push(`${where}: off the screen — ${o}`);
           for (const c of r.cut) failures.push(`${where}: text cut without "…" — ${c}`);
           if (width === 360 && scale === 1) for (const s of r.shortened) failures.push(`${where}: shortened on an ordinary phone — ${s}`);
         }
@@ -192,6 +307,9 @@ async function run() {
   console.log(`▶ measured ${measured} of ${expected} cases; wraps and "…" in the narrow cases: ${squeezed}`);
   if (measured !== expected) failures.push(`only ${measured} of ${expected} cases were measured`);
   if (squeezed === 0) failures.push('no case wrapped or shortened anything — the sweep never reached the squeeze it exists to test');
+  console.log(`▶ AI battle header: measured ${battleMeasured} of ${battleExpected} cases; "…" in the narrow cases: ${battleSqueezed}`);
+  if (battleMeasured !== battleExpected) failures.push(`only ${battleMeasured} of ${battleExpected} AI battle cases were measured`);
+  if (battleSqueezed === 0) failures.push('no AI battle case shortened anything — the battle sweep never reached the squeeze it exists to test');
 
   if (failures.length) {
     console.error(`\n❌ [FAIL] The game header does not fit (${failures.length}):`);

@@ -1,6 +1,6 @@
 {
   "gate": "3-16",
-  "name": "The Game Header Fits (13 languages × 3 modes + killer × 360/320px × font 1/1.3)",
+  "name": "The Game Header Fits (13 languages × every kind and mode, and the AI battle header × 360/320px × font 1/1.3)",
   "command": "node scripts/tests/ui/test_game_header_fit.js",
   "greenMarker": "[3-16] PASSED",
   "rebuild": true,
@@ -37,6 +37,38 @@
       "find": "            {variant === 'killer' ? t('killer.badge') : (t(`home.modes.${gameMode}.badge`) || t('home.badge'))}",
       "replace": "            {t(`home.modes.${gameMode}.badge`) || t('home.badge')}",
       "expectFailure": "the classic badge — not its own"
+    },
+    {
+      "name": "the battle header names no kind",
+      "why": "A standard and a killer match look the same from the header (user, 2026-10-14: \"킬러인지 클래식인지 알 수 있게 해야지\"); the cages alone are a guess to a player who has not met them.",
+      "file": "src/components/BattleHeader.jsx",
+      "find": "          <span className=\"battle-kind-tag\" data-variant={variantOf(room)}>{t(KIND_KEY[variantOf(room)])}</span>",
+      "replace": "          {null}",
+      "expectFailure": "no kind on the battle header"
+    },
+    {
+      "name": "the battle header says standard on a killer",
+      "why": "Worse than saying nothing: the header names the other kind than the board.",
+      "file": "src/components/BattleHeader.jsx",
+      "find": "          <span className=\"battle-kind-tag\" data-variant={variantOf(room)}>{t(KIND_KEY[variantOf(room)])}</span>",
+      "replace": "          <span className=\"battle-kind-tag\" data-variant=\"classic\">{t(KIND_KEY.classic)}</span>",
+      "expectFailure": "on a killer match — the lobby switch said"
+    },
+    {
+      "name": "the kind over the VS makes the battle header taller",
+      "why": "Every pixel the header takes comes off the board (3-12 measures the solo screen only). The tag was squeezed into the height the three lines either side already use; roomier, it grew the header by 7px.",
+      "file": "src/styles/battle.css",
+      "find": ".battle-vs-stack .battle-vs-badge { padding: 2px 6px; line-height: 1.2; }",
+      "replace": ".battle-vs-stack .battle-vs-badge { padding: 6px 6px; line-height: 1.2; }",
+      "expectFailure": "makes the battle header taller"
+    },
+    {
+      "name": "the kind tag takes the room the names need",
+      "why": "A wide tag in the middle column narrows both sides, and on an ordinary phone the opponent shows as \"AI Grandm…\".",
+      "file": "src/styles/battle.css",
+      "find": "  padding: 1px 6px;",
+      "replace": "  padding: 1px 40px;",
+      "expectFailure": "AI battle 360px font×1: shortened on an ordinary phone"
     }
   ]
 }

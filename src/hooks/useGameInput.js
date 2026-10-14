@@ -12,6 +12,7 @@ import { handleGameWinLogic } from '../utils/gameCompletion.js';
 import { handleMistakeLogic } from '../utils/gameMistakeHandler.js';
 import { useKeypadActions } from './useKeypadActions.js';
 import { ensureValidSolution } from '../engine/puzzleSetup.js';
+import { survivalCellBonusSeconds } from '../engine/survivalClock.js';
 import { notePlaced, digitPlaced, winFacts, firstRightAnswer } from '../utils/playFacts.js';
 
 export function useGameInput({
@@ -200,13 +201,14 @@ export function useGameInput({
       }
 
       // A cell earns its reward once a game (playFacts.js, D17): erasing a right
-      // digit and placing it again used to pay again — Survival +7 s, a Speedrun
-      // combo off the clock — as often as it was repeated.
+      // digit and placing it again used to pay again — Survival's bonus, a Speedrun
+      // combo off the clock — as often as it was repeated. The bonus is the kind's:
+      // 7 s on classic, more on a killer (survivalClock.js, KP-2).
       if (firstRightAnswer(playFactsRef?.current, r * 9 + c)) {
         if (gameMode === 'timeAttack') {
           handleComboSuccess();
         } else if (gameMode === 'timeLimit') {
-          addSurvivalBonusTime(7);
+          addSurvivalBonusTime(survivalCellBonusSeconds(variant, level));
         }
       }
     }

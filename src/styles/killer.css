@@ -45,12 +45,6 @@
   border-color: var(--board-grid-line);
 }
 
-/* A mode or rival the selected kind does not have yet: still there, so the card
-   keeps one shape, but dimmed; tapping it says it is coming (HomeScreen.jsx). */
-.mode-tab-btn.coming-soon {
-  opacity: 0.5;
-}
-
 /* Cages. Each cell draws its part of the dashed outline (KillerCage.jsx); the
    lines sit under the digits so a note or a number is never crossed out. */
 .cage-outline {
@@ -150,12 +144,34 @@ html[lang="ko"] .variant-rules-example {
   color: #fff;
 }
 
-/* Speedrun best times under the plain ones, set off the way the totals are. */
-.killer-speedrun-title {
+/* Speedrun and Survival best times under the plain ones, each set off the way
+   the totals are. */
+.killer-mode-title {
   margin: 14px 0 8px;
   padding-top: 10px;
   border-top: 1px solid var(--board-grid-line);
   font-size: 14px;
+}
+
+/* Survival clears under its best times — the classic card's line, as classes. */
+.killer-survival-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--board-grid-line);
+}
+
+.killer-survival-total .total-label {
+  font-size: 12.5px;
+}
+
+.killer-survival-total .total-value {
+  font-size: 15px;
+  color: #ef4444;
+  white-space: nowrap;
 }
 
 .killer-summary-grid {

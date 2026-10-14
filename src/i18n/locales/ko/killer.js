@@ -6,7 +6,6 @@ export const killer = {
     switchLabel: '퍼즐 종류',
     classic: '표준',
     killer: '킬러',
-    comingSoon: '킬러에서는 아직 개발 중이에요.',
     classicRules: {
       title: '스도쿠 규칙',
       grid: '가로줄, 세로줄, 3×3 상자마다 1부터 9까지 한 번씩 넣어요.',

@@ -45,6 +45,22 @@
       "find": "    setActiveDailyDateKey(null);   // a follow-up is never the daily puzzle",
       "replace": "    // daily key left on",
       "expectFailure": "granted the daily hint again"
+    },
+    {
+      "name": "a follow-up forgets the kind",
+      "why": "Added 2026-10-14 with killer Survival (KP-2). The next game takes no kind from the one being played: a killer player picks another level and gets a classic puzzle on a classic clock.",
+      "file": "src/hooks/useSudokuGame.js",
+      "find": "    const puzzle = startingPuzzle(newLevel, customData, variant);",
+      "replace": "    const puzzle = startingPuzzle(newLevel, customData, 'classic');",
+      "expectFailure": "killer Survival → New game → Lv.2 started classic"
+    },
+    {
+      "name": "the header's Restart sets the classic clock on a killer",
+      "why": "The same puzzle starts again with the classic limit: a killer Survival Lv.2 restarted with 6 minutes instead of 13.",
+      "file": "src/hooks/useSudokuGame.js",
+      "find": "    resetGameState(level, gameMode, variant);",
+      "replace": "    resetGameState(level, gameMode);",
+      "expectFailure": "the header's Restart started with"
     }
   ]
 }

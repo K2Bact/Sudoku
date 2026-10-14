@@ -360,8 +360,8 @@ class BattleService {
   subscribeRematch(cb) { this.rematchListeners.push(cb); return () => { this.rematchListeners = this.rematchListeners.filter(fn => fn !== cb); }; }
   subscribeOpponentLeft(cb) { this.opponentLeftListeners.push(cb); return () => { this.opponentLeftListeners = this.opponentLeftListeners.filter(fn => fn !== cb); }; }
 
-  startAIBattle(level = 3, onMatched) {
-    this.currentRoom = createAIRoom(level);
+  startAIBattle(level = 3, onMatched, variant = 'classic') {
+    this.currentRoom = createAIRoom(level, variant);
     runAIBattle(level, () => this.currentRoom, () => this.notifyListeners());
     this.notifyListeners();
     if (onMatched) onMatched(this.currentRoom);

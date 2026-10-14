@@ -3,14 +3,25 @@ import { Bot, Zap } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
+import { loadSettings, saveSettings } from '../utils/storage';
+import { usePuzzleKind } from '../hooks/usePuzzleKind';
+import { VariantSwitch } from './home/VariantSwitch';
+import { RulesModal } from './home/RulesModal';
 
 export function AIBattleScreen({ onBack, onStartAIBattle }) {
   const { t } = useTranslation();
   const [selectedAiLevel, setSelectedAiLevel] = useState(3);
+  // Standard or killer, the choice Home's switch shows (KP-11, user 2026-10-14).
+  const [variant, setVariant] = usePuzzleKind();
+  const [showKillerRules, setShowKillerRules] = useState(false);
 
+  const startMatch = () => onStartAIBattle(selectedAiLevel, variant);
+  // The first killer starts after its rules, here as on Home — one setting, so
+  // the rules seen on either screen are seen.
   const handleStartMatch = () => {
     soundHaptic.playSelectSound();
-    onStartAIBattle(selectedAiLevel);
+    if (variant === 'killer' && !loadSettings().killerRulesSeen) setShowKillerRules(true);
+    else startMatch();
   };
 
   const levelConfigs = [
@@ -47,8 +58,9 @@ export function AIBattleScreen({ onBack, onStartAIBattle }) {
             </div>
           </div>
 
-          {/* Difficulty Level Selection Card */}
+          {/* Difficulty Level Selection Card — the kind first, as on Home's card */}
           <div className="battle-mode-card">
+            <VariantSwitch variant={variant} onChange={setVariant} />
             <div className="card-header">
               <Zap size={22} className="text-yellow" />
               <div>
@@ -109,6 +121,18 @@ export function AIBattleScreen({ onBack, onStartAIBattle }) {
           </div>
         </div>
       </div>
+
+      {showKillerRules && (
+        <RulesModal
+          variant="killer"
+          onClose={() => setShowKillerRules(false)}
+          onStart={() => {
+            saveSettings({ ...loadSettings(), killerRulesSeen: true });
+            setShowKillerRules(false);
+            startMatch();
+          }}
+        />
+      )}
     </div>
   );
 }

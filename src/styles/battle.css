@@ -106,6 +106,40 @@ body.dark-theme .countdown-gauge-bar { background: rgba(255, 255, 255, 0.12); }
 .my-gauge-fill { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
 .opp-gauge-fill { background: linear-gradient(90deg, #a855f7, #c084fc); }
 
+/* The kind of puzzle over the VS (KP-11): the lobby switch's word, so a standard
+   and a killer match can be told apart at a glance — on a killer, dashed like
+   its cages. Tight enough that the two stay within the three lines either side
+   (40px at 320px): with roomier spacing the header grew by 7px. */
+.battle-vs-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.battle-vs-stack .battle-vs-badge { padding: 2px 6px; line-height: 1.2; }
+
+.battle-kind-tag {
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  padding: 1px 6px;
+  border-radius: 6px;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border: 1px solid var(--board-grid-line);
+}
+
+.battle-kind-tag[data-variant="killer"] {
+  color: #7c3aed;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px dashed #7c3aed;
+}
+/* The dark theme's class is theme-matte-dark (useThemeManager); `body.dark-theme`
+   above is a name nothing sets. */
+body.theme-matte-dark .battle-kind-tag[data-variant="killer"],
+body.theme-dark .battle-kind-tag[data-variant="killer"] { color: #c4b5fd; border-color: #a78bfa; }
+
 .battle-vs-badge {
   font-size: 11px;
   font-weight: 900;

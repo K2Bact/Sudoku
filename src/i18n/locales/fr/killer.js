@@ -6,7 +6,6 @@ export const killer = {
     switchLabel: 'Type de grille',
     classic: 'Standard',
     killer: 'Killer',
-    comingSoon: 'Encore en développement pour le Killer.',
     classicRules: {
       title: 'Règles du sudoku',
       grid: 'Remplissez chaque ligne, colonne et bloc 3×3 avec les chiffres de 1 à 9, une seule fois chacun.',

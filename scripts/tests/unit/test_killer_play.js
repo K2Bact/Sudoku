@@ -22,6 +22,12 @@
  *   7. the Logic Score counts both kinds (user, 2026-10-08) — and a classic-only
  *      player's score is exactly what it was before: 3000 random classic records
  *      against the formula as it stood (copied below), the leaderboard holds it
+ *   8. killer Survival — its limit and bonus a cell, and a clear counted, graded,
+ *      merged and scored as a classic Survival clear is (2026-10-14, KP-2). After
+ *      4-7, so that they catch their own mutations first
+ *   9. the killer AI battle — a killer room at every level, the game it deals,
+ *      the bot's pace on its timer (classic × the killer ratio), and the duel
+ *      kept out of the killer record (2026-10-14, KP-11)
  *
  * Decisions behind 3 and 4: killer records are kept apart (user, 2026-10-01),
  * and hold what a classic record holds (user, 2026-10-07: the two kinds differ
@@ -52,8 +58,15 @@ const { speedrunRankFor } = await import('../../../src/utils/speedrunRank.js');
 const { iqStatsService, combinedRecord } = await import('../../../src/services/iqStatsService.js');
 const { LOCALES } = await import('../../lib/locales.js');
 const { mergeStats, mergeProgress } = await import('../../../src/services/progressMerge.js');
+const { survivalLimitSeconds, survivalCellBonusSeconds } = await import('../../../src/engine/survivalClock.js');
+const { loadUnlockedAchievements } = await import('../../../src/utils/achievementManager.js');
+const { loadKillerRecord, recordLoss } = await import('../../../src/utils/killerStats.js');
 const { cloudSyncService } = await import('../../../src/services/cloudSyncService.js');
 const { playGamesService } = await import('../../../src/services/playGamesService.js');
+const { createAIRoom, aiRoomGame, runAIBattle } = await import('../../../src/firebase/aiBattleSession.js');
+const { botProfile, aiBotService } = await import('../../../src/engine/aiBotService.js');
+const { KILLER_TIME_RATIO } = await import('../../../src/engine/killer/killerTimes.js');
+const { isValidCageSet } = await import('../../../src/engine/variants.js');
 cloudSyncService.saveToCloud = async () => ({ success: true });
 let submissions = 0;
 let scoreSubmissions = 0;
@@ -102,10 +115,12 @@ const L_CAGE = { cells: [20, 29, 30], sum: 6 };
 // ── 3. The win ──────────────────────────────────────────────────────────────
 // board: what useGameInput hands the win about the board — the givens, the solution,
 // a killer's cages and the run's pace — which the ghost keeps (KP-3, 2026-10-14).
-const win = (variant, { level = 3, time = 200, hints = 0, mode = 'classic', mistakes = 0, combo = 0, board = {} } = {}) => {
+// played: the seconds played, which Survival is graded and kept by (its clock, time,
+// is the time left).
+const win = (variant, { level = 3, time = 200, played = null, hints = 0, mode = 'classic', mistakes = 0, combo = 0, board = {} } = {}) => {
   localStorage.setItem('suidoku_settings_v1', JSON.stringify({ limitMistakes: true }));
   handleGameWinLogic({
-    level, timerSeconds: time, gameMode: mode, variant, mistakes, hintsUsed: hints, comboCount: combo,
+    level, timerSeconds: time, playedSeconds: played, gameMode: mode, variant, mistakes, hintsUsed: hints, comboCount: combo,
     activeDailyDateKey: null, clearGameState: () => {}, setIsVictory: () => {}, setHintsRemaining: () => {},
     ...board
   });
@@ -393,6 +408,163 @@ const BEFORE = {
   // Home's "puzzles cleared" counts both.
   assert.strictEqual(combinedRecord({ gamesWon: 4, killer: { gamesWon: 3 } }).gamesWon, 7, 'the cleared count beside the Logic Score leaves killer wins out');
   console.log('  ✅ 7. one Logic Score for both kinds — 3000 classic-only records score exactly as before; a killer counts as a classic with the same record, at killer par');
+}
+
+// ── 8. Killer Survival (2026-10-14, KP-2, killer order ⑥) ───────────────────
+// Classic Survival on a killer board: the limit and the bonus a cell are the
+// killer's own (survivalClock.js ← killerTimes.js); a win counts the clear and
+// keeps the fastest one in seconds played (D16), in the killer record only, and
+// grades on killer times; the badges, the Logic Score and the cloud merge count
+// it; Survival keeps no ghost (D19); a loss counts against the killer record.
+// The clock on the screen — limit at the start, bonus, timeout — is gate 3-18's.
+{
+  // The numbers agreed with the user. The limit follows the ratio: if KP-8's real
+  // times move it, this fails, and the new limits are the user's to agree to.
+  const LV = [1, 2, 3, 4, 5];
+  const minutes = LV.map((lv) => survivalLimitSeconds('killer', lv) / 60);
+  assert.deepStrictEqual(minutes, [7, 13, 19, 38, 57], `the killer Survival limits are ${minutes.join('/')} min — agreed 7/13/19/38/57 (classic × the killer time ratio, to whole minutes, 2026-10-14)`);
+  const bonus = LV.map((lv) => survivalCellBonusSeconds('killer', lv));
+  assert.deepStrictEqual(bonus, [9, 12, 14, 16, 16], `a right cell adds ${bonus.join('/')} s on a killer — agreed 9/12/14/16/16 (as tight as classic's 7 s, 2026-10-14)`);
+  assert.deepStrictEqual(LV.map((lv) => survivalLimitSeconds('classic', lv) / 60), [4, 6, 8, 12, 18], 'killer Survival moved the classic limits');
+  assert.deepStrictEqual(LV.map((lv) => survivalCellBonusSeconds('classic', lv)), [7, 7, 7, 7, 7], 'killer Survival moved the classic bonus');
+
+  // A win at Lv.1: 105 s played, the clock at 420 − 105 + 9 s × 45 cells.
+  localStorage.clear();
+  submissions = 0;
+  const left = 420 - 105 + 9 * 45;
+  let s = win('killer', { level: 1, mode: 'timeLimit', time: left, played: 105 });
+  assert.strictEqual(s.killer?.timeLimitSurvivalWins, 1, `a killer Survival win counted ${s.killer?.timeLimitSurvivalWins} Survival clears in the killer record`);
+  assert.strictEqual(s.killer.survivalBestTimes?.[1], 105, `a killer Survival win kept ${s.killer.survivalBestTimes?.[1]} as its fastest clear — the seconds played were 105 (the clock, ${left}, is the time left)`);
+  assert.strictEqual(s.killer.gamesWon, 1, 'a killer Survival win is a killer win');
+  assert.ok(!s.timeLimitSurvivalWins && !s.survivalBestTimes && !s.gamesWon, 'a killer Survival win moved the classic record');
+  assert.strictEqual(submissions, 0, 'a killer Survival win was sent to a per-level board — those rank classic times');
+  const g = ghosts();
+  assert.ok(!g.killer?.classic?.[1] && !g.killer?.timeAttack?.[1] && !g.classic?.[1] && !g.timeAttack?.[1], `a killer Survival win set a ghost (${JSON.stringify(g).slice(0, 80)}) — its clock is the time left; Survival keeps none (D19)`);
+  const ach = loadUnlockedAchievements();
+  assert.ok(ach.survival_hero, 'a killer Survival win did not earn "survival_hero" — a Survival clear of either kind does');
+
+  s = win('killer', { level: 1, mode: 'timeLimit', time: 3, played: 400 });
+  assert.strictEqual(s.killer.survivalBestTimes[1], 105, 'a slower killer Survival clear replaced the fastest');
+  assert.ok(loadUnlockedAchievements().survival_clutch, 'a killer Survival won with 3 s left did not earn "survival_clutch"');
+  s = win('killer', { level: 1, mode: 'timeLimit', time: 500, played: 90 });
+  assert.strictEqual(s.killer.survivalBestTimes[1], 90, 'a faster killer Survival clear must replace the best');
+  assert.strictEqual(s.killer.timeLimitSurvivalWins, 3);
+  // Control: the same measurement moves for a classic Survival win.
+  s = win('classic', { level: 1, mode: 'timeLimit', time: 200, played: 150 });
+  assert.strictEqual(s.survivalBestTimes?.[1], 150, 'control: a classic Survival win sets the classic table — without this, "the classic record did not move" proves nothing');
+  assert.strictEqual(s.killer.survivalBestTimes[1], 90, 'a classic Survival win touched the killer table');
+
+  // The stats card reads the killer's Survival rows (KillerStatsCard ← loadKillerRecord).
+  const card = loadKillerRecord(s);
+  assert.strictEqual(card.timeLimitSurvivalWins, 3, `the killer card would show ${card.timeLimitSurvivalWins} Survival clears`);
+  assert.deepStrictEqual(card.survivalBestTimes, { 1: 90 }, 'the killer card would show the wrong Survival best times');
+  assert.deepStrictEqual(loadKillerRecord({}).survivalBestTimes, {}, 'a record with no killer must still give the card its Survival rows');
+  assert.strictEqual(loadKillerRecord({}).timeLimitSurvivalWins, 0, 'a record with no killer must still give the card a count of Survival clears, 0');
+
+  // The grade: killer times, on the seconds played — 105 s at Lv.1 is S+ on a killer, A on classic.
+  assert.strictEqual(speedrunRankFor(1, 'timeLimit', left, 'killer', 105).rank, 'S+', 'a killer Survival in 105 s played must grade S+ — graded on classic times, or on the time left');
+  assert.strictEqual(speedrunRankFor(1, 'timeLimit', left, 'classic', 105).rank, 'A', 'control: the same 105 s on the classic times is A');
+
+  // The Logic Score: one record for both kinds (combinedRecord) — endurance counts killer clears.
+  assert.strictEqual(combinedRecord(s).timeLimitSurvivalWins, 4, 'the Logic Score counts Survival clears of both kinds (3 killer + 1 classic)');
+  const without = { ...s, killer: { ...s.killer, timeLimitSurvivalWins: 0 } };
+  assert.ok(iqStatsService.calculateCognitiveProfile(s).endurance > iqStatsService.calculateCognitiveProfile(without).endurance, 'killer Survival clears did not raise the endurance metric');
+
+  // The cloud merge: both phones, by the classic rules.
+  const m = mergeStats({ killer: { survivalBestTimes: { 1: 250, 3: 900 }, timeLimitSurvivalWins: 4 } },
+    { killer: { survivalBestTimes: { 1: 300, 2: 500 }, timeLimitSurvivalWins: 2 } }).killer;
+  assert.deepStrictEqual(m.survivalBestTimes, { 1: 250, 2: 500, 3: 900 }, 'killer Survival best times: the faster per level, from either phone');
+  assert.strictEqual(m.timeLimitSurvivalWins, 4, 'killer Survival clears: the larger count, as the classic one merges');
+
+  // A loss (the clock ran out): the killer record, not the classic one.
+  localStorage.clear();
+  s = recordLoss('killer');
+  assert.strictEqual(s.killer?.gamesPlayed, 1, 'a killer Survival lost on time must count as a killer played');
+  assert.ok(!s.gamesPlayed, 'a killer Survival lost on time counted in the classic record');
+  console.log('  ✅ 8. killer Survival: 7/13/19/38/57 min and 9/12/14/16/16 s a cell; a clear counts in the killer record with its seconds played, grades on killer times, earns the Survival badges, adds to the Logic Score and merges; no ghost');
+}
+
+// ── 9. A killer AI battle (2026-10-14, KP-11, killer order ⑦) ───────────────
+// The bot match on a killer board: the room holds a killer and its cages, the
+// game it deals is that killer — not its givens played as a classic — the bot's
+// pace is the classic one × the killer time ratio (killerTimes.js), checked where
+// it lands, on the bot's timer; and the duel stays out of the killer's games and
+// wins as it does out of the classic ones (BT-1). The screen — the lobby switch,
+// the cages drawn, a mistake told about its cage, a rematch on the same kind — is
+// gate 3-18's (5e).
+{
+  const LV = [1, 2, 3, 4, 5];
+  const digitAt = (grid, cell) => grid[Math.floor(cell / 9)][cell % 9];
+  let killerRoom = null;
+  for (const lv of LV) {
+    const room = createAIRoom(lv, 'killer');
+    killerRoom = room;
+    assert.strictEqual(room.variant, 'killer', `a killer AI room at Lv.${lv} holds a ${room.variant} puzzle`);
+    assert.ok(isValidCageSet(room.cages), `a killer AI room at Lv.${lv} has no playable cages (${room.cages?.length ?? 'none'}) — the board would be a killer's givens with nothing to solve it by`);
+    room.cages.forEach((cage) => {
+      const sum = cage.cells.reduce((acc, cell) => acc + digitAt(room.solution, cell), 0);
+      assert.strictEqual(sum, cage.sum, `a killer AI room's cage ${JSON.stringify(cage.cells)} says ${cage.sum}; its solution adds up to ${sum}`);
+    });
+    for (let cell = 0; cell < 81; cell++) {
+      assert.ok(!digitAt(room.puzzle, cell) || digitAt(room.puzzle, cell) === digitAt(room.solution, cell), `a killer AI room at Lv.${lv} gives a digit its solution does not have (cell ${cell})`);
+    }
+    const open = room.puzzle.flat().filter((d) => d === 0).length;
+    assert.strictEqual(room.initialEmptyCount, open, `a killer AI room at Lv.${lv} counts ${room.initialEmptyCount} open cells, its board has ${open} — both progress bars are shares of this`);
+    const dealt = startingPuzzle(lv, aiRoomGame(room));
+    assert.strictEqual(dealt.variant, 'killer', `the game a killer AI room deals at Lv.${lv} is a ${dealt.variant} — handed only its board, a killer is played as a classic on its givens`);
+    assert.deepStrictEqual(dealt.cages, room.cages, `the game a killer AI room deals at Lv.${lv} does not carry the room's cages — nothing to draw, notes and mistakes blind to them`);
+    assert.deepStrictEqual(dealt.solution, room.solution, `the game a killer AI room deals at Lv.${lv} is checked against another solution`);
+    assert.deepStrictEqual(dealt.board, room.puzzle, `the game a killer AI room deals at Lv.${lv} is another board`);
+  }
+  // Classic as it was: no kind asked is classic, and it deals a classic.
+  const classicRoom = createAIRoom(3);
+  assert.strictEqual(classicRoom.variant, 'classic', `an AI room with no kind asked holds a ${classicRoom.variant}`);
+  assert.strictEqual(classicRoom.cages, null, 'a classic AI room has cages');
+  assert.strictEqual(startingPuzzle(3, aiRoomGame(classicRoom)).variant, 'classic', 'a classic AI room deals something other than a classic');
+  // Control: the board and the solution alone — the hand-off before KP-11 — make a
+  // classic, so the "deals a killer" check above can tell the two apart.
+  assert.strictEqual(startingPuzzle(3, { board: killerRoom.puzzle, solution: killerRoom.solution }).variant, 'classic', 'control: a board handed in without its kind is classic');
+
+  // The bot's pace: the classic one stays as it was; a killer step takes ratio × as long.
+  assert.deepStrictEqual(LV.map((lv) => botProfile(lv).tickMs), [9000, 7100, 5900, 4200, 2900], 'the classic bot pace moved');
+  for (const lv of LV) {
+    const classic = botProfile(lv);
+    const killer = botProfile(lv, 'killer');
+    const expected = Math.round(classic.tickMs * KILLER_TIME_RATIO[lv]);
+    assert.strictEqual(killer.tickMs, expected, `the killer bot at Lv.${lv} takes a step every ${killer.tickMs} ms — the classic ${classic.tickMs} ms × the killer time ratio ${KILLER_TIME_RATIO[lv]} is ${expected}`);
+    assert.deepStrictEqual({ ...killer, tickMs: 0 }, { ...classic, tickMs: 0 }, `the killer bot at Lv.${lv} makes different mistakes or gains from the classic one — only its pace may differ`);
+  }
+  // Where the pace lands: the timer the bot runs on, started from the room's kind.
+  const realSetInterval = globalThis.setInterval;
+  const steps = [];
+  globalThis.setInterval = (fn, ms) => { steps.push(ms); return 0; };
+  try {
+    for (const [lv, variant] of [[2, 'killer'], [2, 'classic'], [5, 'killer']]) {
+      const room = { isAiMatch: true, status: 'playing', winner: null, variant };
+      runAIBattle(lv, () => room, () => {});
+      aiBotService.stopMatch();
+    }
+  } finally {
+    globalThis.setInterval = realSetInterval;
+  }
+  const want = [botProfile(2, 'killer').tickMs, botProfile(2).tickMs, botProfile(5, 'killer').tickMs];
+  assert.deepStrictEqual(steps, want, `the bot ran a killer Lv.2, a classic Lv.2 and a killer Lv.5 room at ${steps.join('/')} ms a step — expected ${want.join('/')}: a killer room raced at the classic pace`);
+
+  // The duel record: a killer duel won or lost is the duel record's (battleRating.js),
+  // not the killer's games, wins or best times — as for a classic duel (BT-1).
+  localStorage.clear();
+  let s = win('killer', { level: 3, mode: 'aiBattle', time: 400, board: { initialBoard: killerRoom.puzzle, solutionBoard: killerRoom.solution, cages: killerRoom.cages } });
+  assert.ok(!s.killer?.gamesPlayed && !s.killer?.gamesWon, `a killer AI battle won counted ${s.killer?.gamesPlayed} played / ${s.killer?.gamesWon} won in the killer record — a duel counts in the duel record only (BT-1)`);
+  assert.ok(!s.killer?.bestTimes?.[3], 'a killer AI battle won set a killer best time — a duel is not a time trial (BT-1)');
+  assert.ok(!s.gamesPlayed && !s.gamesWon && !s.bestTimes?.[3], 'a killer AI battle won moved the classic record');
+  const g = ghosts();
+  assert.ok(!g.killer?.classic?.[3] && !g.classic?.[3], 'a killer AI battle won set a ghost — the duels keep none (D19)');
+  s = win('killer', { level: 3, mode: 'classic', time: 400 });
+  assert.strictEqual(s.killer?.gamesWon, 1, 'control: a solo killer win counts — without it, "the duel did not count" proves nothing');
+  localStorage.clear();
+  s = recordLoss('killer', 'aiBattle');
+  assert.ok(!s.killer?.gamesPlayed && !s.gamesPlayed, 'a killer AI battle lost on mistakes counted as a game played — the duel record counts it (BT-1)');
+  console.log('  ✅ 9. killer AI battle: a killer room with sound cages at every level deals that killer; the bot steps at classic × the killer ratio on its timer; a duel win or loss stays out of the killer record');
 }
 
 console.log('\n✅ [2-28] PASSED — a killer game plays and counts as a killer');
