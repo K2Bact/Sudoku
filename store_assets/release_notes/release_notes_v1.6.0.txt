@@ -1,0 +1,52 @@
+<en-US>
+• Sudoku Academy: a new Killer tab with 8 cage techniques, each with a lesson and practice boards.
+• Italian texts revised throughout the app.
+</en-US>
+<ar>
+• أكاديمية السودوكو: تبويب كيلر جديد فيه 8 تقنيات للأقفاص، لكل منها شرح وتمارين.
+• تحسين النصوص الإيطالية في التطبيق كله.
+</ar>
+<de-DE>
+• Sudoku-Akademie: neuer Killer-Tab mit 8 Käfig-Techniken, jeweils mit Erklärung und Übungen.
+• Italienische Texte in der ganzen App überarbeitet.
+</de-DE>
+<es-ES>
+• Academia Sudoku: nueva pestaña Killer con 8 técnicas de jaulas, cada una con explicación y ejercicios.
+• Textos en italiano revisados en toda la app.
+</es-ES>
+<fr-FR>
+• Académie Sudoku : nouvel onglet Killer avec 8 techniques de cages, chacune avec explication et exercices.
+• Textes italiens revus dans toute l’application.
+</fr-FR>
+<hi-IN>
+• सुडोकू अकादमी: नया किलर टैब — समूह की 8 तकनीकें, हर एक की व्याख्या और अभ्यास के साथ।
+• पूरे ऐप में इतालवी पाठ सुधारे गए।
+</hi-IN>
+<it-IT>
+• Accademia Sudoku: nuova scheda Killer con 8 tecniche delle gabbie, ognuna con spiegazione ed esercizi.
+• Testi italiani rivisti in tutta l’app.
+</it-IT>
+<ja-JP>
+• ナンプレアカデミーに「キラー」タブを追加。ケージのテクニック 8 種を解説と練習問題つきで学べます。
+• アプリ全体のイタリア語の表現を改善しました。
+</ja-JP>
+<ko-KR>
+• 스도쿠 아카데미에 「킬러」 탭이 생겼어요. 묶음 테크닉 8가지를 설명과 연습 문제로 배워요.
+• 앱 전체의 이탈리아어 문구를 다듬었어요.
+</ko-KR>
+<pt-BR>
+• Academia Sudoku: nova aba Killer com 8 técnicas de gaiolas, cada uma com explicação e exercícios.
+• Textos em italiano revisados em todo o app.
+</pt-BR>
+<ru-RU>
+• Академия судоку: новая вкладка «Киллер» — 8 техник областей с объяснениями и упражнениями.
+• Улучшены итальянские тексты во всём приложении.
+</ru-RU>
+<zh-CN>
+• 数独学院新增「杀手」分页：8 种笼子技巧，每种都有讲解和练习。
+• 改进了整个应用的意大利语文本。
+</zh-CN>
+<zh-TW>
+• 數獨學院新增「殺手」分頁：8 種籠子技巧，每種都有講解和練習。
+• 改進了整個應用程式的義大利語文字。
+</zh-TW>
