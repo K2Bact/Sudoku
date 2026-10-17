@@ -1,6 +1,6 @@
 {
   "gate": "3-11",
-  "name": "Academy Practice Play-Through (64 missions × 13 languages)",
+  "name": "Academy Practice Play-Through (every mission × 13 languages)",
   "command": "node scripts/tests/ui/test_academy_practice_play.js",
   "greenMarker": "Every academy practice plays correctly in every language",
   "note": "Gate 2-5 proves each practice's answer follows from its board data. This gate proves the screen: the drawn board, the prompt, and what tapping does. Each mutation breaks one of those while leaving the data — and therefore gate 2-5 — untouched.",

@@ -68,6 +68,22 @@
       "find": "searching: 'Recherche d’un adversaire…',",
       "replace": "searching: 'Recherche d’un adversaire...',",
       "expectFailure": "three dots"
+    },
+    {
+      "name": "an Italian replay line goes back to a straight apostrophe",
+      "why": "Italian launch prep (2026-10-15): the 1v1 replay texts were the only Italian lines with a straight apostrophe (19 of them) while 64 used ’. Gate 11 rule 1 keeps one form.",
+      "file": "src/i18n/locales/it/replay.js",
+      "find": "declined: 'L’avversario ha disattivato",
+      "replace": "declined: 'L\\'avversario ha disattivato",
+      "expectFailure": "Italian typography: straight apostrophe"
+    },
+    {
+      "name": "a Cyrillic look-alike letter inside an Italian UI word",
+      "why": "Cyrillic о (U+043E) looks exactly like Latin o, so no reader catches 「Sоpravvivenza」 — and search, sort and the store text no longer match. Gate 12 (2026-10-16) checks every letter against the locale's own scripts.",
+      "file": "src/i18n/locales/it/screens.js",
+      "find": "survivalTitle: '⏳ Modalità Sopravvivenza'",
+      "replace": "survivalTitle: '⏳ Modalità Sоpravvivenza'",
+      "expectFailure": "is not Latin"
     }
   ]
 }

@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: "タイムアタック最高記録",
     survivalTitle: "⏳ タイムリミット (サバイバル)",
     survivalTotalWins: "サバイバルのクリア回数",
-    survivalWinsUnit: "{count}回 成功",
+    survivalWinsUnit: "{count}回 成功",
     summaryTitle: '総合成績サマリー',
     pvpRating: "レーティング",
     pvpRecordLabel: "戦績",
@@ -145,7 +145,7 @@ export const screens = {
     winRate: '勝率'
   },
   brainReport: {
-    scoreLabel: 'ロジックスコア',
+    scoreLabel: 'ロジックスコア',
     scoreHowTitle: "ⓘ ロジックスコアの決まり方",
     scoreHowBody: "盤面をすべて埋めて勝つと上がります。スタンダードとキラーのどちらも反映されます。ヒントなしでクリアした最も難しいレベルが最も大きく反映され、勝利数と勝率も少し反映されます。1v1対戦とAIボット対戦は勝利数と勝率には含まれず、統計の戦績に別に記録されます。ゲームオーバーになったり、途中でやめたりすると、勝率が下がり、スコアが少し下がることがあります。ランキングは Play ゲームにログインしているとき、このスコアで決まります。",
     shareText: "[ナンプレ プレイ分析]\nロジックスコア: {iq}点\nランク: {tier}\nあなたもナンプレに挑戦してみよう！",
@@ -155,7 +155,7 @@ export const screens = {
     accuracy: "クリア率",
     logic: "難易度",
     speed: "スピード",
-    shareCardBtn: '🔗 レポート共有',
+    shareCardBtn: '🔗 レポート共有',
     attributesTitle: "📈 5つのプレイ指標",
     title: 'プレイ分析',
     shareTitle: '私のナンプレ プレイ分析',
@@ -238,7 +238,7 @@ export const screens = {
   },
   academy: {
     tabs: { stage1: '第1段階', stage2: '第2段階', stage3: '第3段階', stage4: '第4段階', stage5: '第5段階' },
-    stageTitles: {"stage1":"第1段階: 初級テクニック (シングル)","stage2":"第2段階: 中級テクニック (ロックト・キャンディデート＆ペア)","stage3":"第3段階: 上級テクニック (ウィング＆BUG)","stage4":"第4段階: 名人テクニック (フィッシュ＆カラーリング)","stage5":"第5段階: グランドマスター (AIC・ALS・エクソセ)"},
+    stageTitles: {"stage1":"第1段階: 初級テクニック (シングル)","stage2":"第2段階: 中級テクニック (ロックト・キャンディデート＆ペア)","stage3":"第3段階: 上級テクニック (ウィング＆BUG)","stage4":"第4段階: 名人テクニック (フィッシュ＆カラーリング)","stage5":"第5段階: グランドマスター (AIC・ALS・エクソセ)","killer":"キラー: ケージのテクニック (ケージ & 45の法則)"},
     title: 'ナンプレアカデミー',
     theoryBoard: {
       patternTab: 'パターン',

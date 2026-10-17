@@ -3,6 +3,8 @@
 > **문서 버전**: 2.1.0 (2026-09-30, 1.3.2 코드와 대조 — §2·§4·§5 정정)  
 > **상위 공통 명세서**: [`COMMON_APP_TECHNICAL_SPEC.md`](file:///D:/PowerNeJa/PythonWorkspace/app_common/docs/COMMON_APP_TECHNICAL_SPEC.md) (전역 공통 표준 상속)  
 > **타깃 런타임**: Android SDK 35 (Android 15), React 19, Vite 8, Capacitor 8  
+> **⚠️ 빠진 것 (2026-10-16 확인)**: 킬러 스도쿠(2026-10-01~)는 이 명세에 없다 — 생성·풀이·묶음 그리기·난이도·기록·모드·대전 전부.
+> 코드는 `src/engine/killer/`(`killerGenerator.js`·`killerSolver.js`·`cageLayout.js`·`killerTimes.js`)·`src/engine/variants.js`, 경위는 Diary 91 이후. 아래 §3 의 아카데미 숫자만 2026-10-16 에 맞췄다.  
 
 ---
 
@@ -62,7 +64,7 @@ graph TD
 
 ---
 
-## 🎓 3. 스도쿠 아카데미 32기법 5단계 시스템 (Sudoku Academy)
+## 🎓 3. 스도쿠 아카데미 40기법 6탭 시스템 (Sudoku Academy)
 
 아카데미는 단순한 텍스트 가이드가 아닌 **인터랙티브 실전 훈련 엔진**으로 동작함 (`src/components/AcademyScreen.jsx`, `src/data/academy/`).
 
@@ -93,6 +95,10 @@ classDiagram
 3. **Stage 3 (고급 - Wing Family)**: X-Wing, XY-Wing / Y-Wing, XYZ-Wing, W-Wing, Bivalue Universal Grave (BUG), Remote Pairs (6개)
 4. **Stage 4 (전문가 - Fish, Coloring & UR)**: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles (8개)
 5. **Stage 5 (마스터 - AIC, ALS & Exocet)**: Finned X-Wing / Swordfish, Alternating Inference Chains (AIC), Almost Locked Sets (ALS), Forcing Chains, Exocet (5개)
+6. **킬러 탭** (`src/data/academy/stageKiller.js`, 2026-10-15): 묶음의 마지막 칸, 조합이 하나뿐인 묶음, 두 칸 묶음의 합, 45 규칙, 꼭 들어가는 숫자, 여러 칸의 45 규칙(숨은 묶음), 들어감·나감 차이, 묶음 쪼개기 (8개).
+   연습판은 킬러 9×9 판(묶음 그림 포함) — `scripts/academy/killer/write_killer.mjs` 가 `src/data/academy/practice/killerPractice.js` 를 만든다(손으로 고치지 않는다).
+
+연습은 기법마다 2개, 모두 80개 — 게이트 2-5(수학)·3-11(13개 언어 실제 풀이).
 
 ### 3.2 2계층 카드 타이틀 렌더링 아키텍처
 * 전략 카드는 상단의 **공식 영문 기법명(굵은 15px)**과 하단의 **현지화 해설명(12.5px)**으로 2줄 분리 렌더링되어 다국어 UI 줄바꿈을 완벽 방어함.

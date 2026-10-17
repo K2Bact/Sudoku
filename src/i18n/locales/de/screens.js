@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: 'Zeitrennen-Bestzeit',
     survivalTitle: '⏳ Überleben (Zeitlimit)',
     survivalTotalWins: 'Überlebens-Erfolge',
-    survivalWinsUnit: '{count} geschafft',
+    survivalWinsUnit: '{count} geschafft',
     summaryTitle: 'Leistungsübersicht',
     pvpRating: "Wertung",
     pvpRecordLabel: "Bilanz",
@@ -145,7 +145,7 @@ export const screens = {
     winRate: 'Gewinnrate'
   },
   brainReport: {
-    scoreLabel: 'Logic Score',
+    scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Wie wird der Logic Score bestimmt?",
     scoreHowBody: "Er steigt, wenn du das ganze Brett füllst und gewinnst. Standard- und Killer-Spiele zählen beide. Am meisten zählt die schwierigste Stufe, die du ohne Tipps geschafft hast; Anzahl der Siege und Siegquote zählen ein wenig. 1v1- und KI-Duelle zählen nicht zu Siegen und Siegquote – sie haben eine eigene Bilanz in der Statistik. Game Over und abgebrochene Spiele senken die Siegquote und können ein paar Punkte kosten. Die Rangliste nutzt diesen Wert, wenn du bei Play Spiele angemeldet bist.",
     shareText: '[Sudoku-Spielanalyse]\nLogic Score: {iq}\nRang: {tier}\nProbier Sudoku jetzt aus!',
@@ -155,7 +155,7 @@ export const screens = {
     accuracy: 'Lösungsquote',
     logic: 'Schwierigkeit',
     speed: 'Tempo',
-    shareCardBtn: '🔗 Bericht teilen',
+    shareCardBtn: '🔗 Bericht teilen',
     attributesTitle: '📈 5 Spielwerte',
     title: 'Spielanalyse',
     shareTitle: 'Meine Sudoku-Spielanalyse',
@@ -243,7 +243,8 @@ export const screens = {
       stage2: 'Stufe 2: Mittlere Techniken (Paare & Schnittmengen)',
       stage3: 'Stufe 3: Fortgeschrittene Techniken (Wing-Familie)',
       stage4: 'Stufe 4: Meister-Techniken (Fish, Coloring & Unique Rectangle)',
-      stage5: 'Stufe 5: Großmeister-Techniken (AIC, ALS & Exocet)'
+      stage5: 'Stufe 5: Großmeister-Techniken (AIC, ALS & Exocet)',
+      killer: "Killer: Käfig-Techniken (Käfige & 45er-Regel)"
     },
     title: 'Sudoku-Akademie',
     theoryBoard: {

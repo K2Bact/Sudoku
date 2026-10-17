@@ -30,6 +30,14 @@
       "find": "<span>{t('home.title')} <bdi dir=\"ltr\">",
       "replace": "<span>{APP_INFO.name} <bdi dir=\"ltr\">",
       "expectFailure": "JA_NIKOLI_MARK_ON_SCREEN"
+    },
+    {
+      "name": "the academy tab bar grows past a 360px phone",
+      "why": "With the killer stage the academy has six tabs; at the old padding the sixth (Killer) sat wholly off screen and could only be found by swiping. The killer tab check opens that tab in every language, and the boundary check sees a tab drawn beyond the screen edge.",
+      "file": "src/styles/academy.css",
+      "find": "  padding: 7px 5px;",
+      "replace": "  padding: 7px 14px;",
+      "expectFailure": "VIEWPORT_BOUNDARY_OVERFLOW"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "gate": "2-4",
-  "name": "Wallet Balance, Smart Hint & Attendance Streak Engine",
+  "name": "Hint Wallet (a count of hints, no coins), Smart Hint & Daily Attendance",
   "command": "node scripts/tests/unit/test_wallet_and_hint_engine.js",
   "greenMarker": "Wallet, Hint Engine & Attendance Streak 100% Verified",
   "note": "This gate was green for the whole life of the desync bug, because it tested wallet.js alone and the wallet was always right. What was wrong was the seam between the wallet and the screen. Cases 6-8 exist for that seam and these mutations are what prove they work.",

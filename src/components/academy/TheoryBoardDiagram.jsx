@@ -19,6 +19,9 @@ export const BOARD_THEORY = new Set([
   'pointing-pairs', 'x-wing', 'w-wing', 'bug', 'remote-pairs',
   'swordfish', 'jellyfish', 'unique-rectangles', 'simple-colouring', '3d-medusa', 'xy-chains', 'wxyz-wing', 'empty-rectangles',
   'finned-xwing', 'aic', 'als', 'exocet',
+  // the killer stage: every lesson draws its first board, cages and all
+  'killer-cage-remainder', 'killer-unique-combination', 'killer-two-cell-sums', 'killer-rule-45',
+  'killer-must-contain', 'killer-hidden-cage', 'killer-innie-outie-difference', 'killer-cage-splitting',
 ]);
 
 const allNotes = (c) => [...new Set([...(c.notes || []), ...(c.eliminatedNotes || [])])].sort((a, b) => a - b);
@@ -82,7 +85,7 @@ export function TheoryBoardDiagram({ type }) {
         </button>
       </div>
       <div className="cross-step-pane">
-        <PracticeBoardRenderer mission={{ layoutType: 'grid9x9', cells, targetIndex: -1 }} />
+        <PracticeBoardRenderer mission={{ layoutType: 'grid9x9', cells, targetIndex: -1, cages: m.cages }} />
         <div className="diagram-caption">
           {step === 1
             ? t('academy.theoryBoard.patternCaption')

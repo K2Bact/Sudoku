@@ -47,8 +47,11 @@ const GRAPHICS_CONFIG = {
     dir: 'ltr',
     badge: '☀ SUDOKU',
     title1: '数独',
-    title2: '经典逻辑谜题',
-    tagline: '经典 · 32种解法学院 · 大脑IQ报告与1v1对决',
+    // Store title and short description words (store_description_zh-CN.txt), for the Singapore
+    // launch 2026-10-15. The old tagline still sold a "大脑IQ报告" the app renamed to Logic Score.
+    // The 40 counts the killer academy (8) — upload with the version that has it.
+    title2: '逻辑谜题学院',
+    tagline: '经典与杀手 · 40 种解题技巧 · 1v1 与 AI 对战',
     font: '"PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif'
   },
   'zh-TW': {
@@ -77,8 +80,12 @@ const GRAPHICS_CONFIG = {
     dir: 'ltr',
     badge: '☀ SUDOKU',
     title1: 'Sudoku',
-    title2: 'Logic Puzzle Academy',
-    tagline: '5 Levels · 32 Techniques · 1v1 & AI Battles',
+    // The store title's words (store_description_en.txt) — it said "Logic Puzzle Academy" while the
+    // title says "Classic Puzzle Academy". Singapore launch 2026-10-15; 40 = 32 + 8 killer, so it
+    // goes up with the version that carries the killer academy.
+    title2: 'Classic Puzzle Academy',
+    title2Size: 42,   // at 48px the title ran into the board card (2026-10-15)
+    tagline: 'Classic & Killer · 40 Techniques · 1v1 & AI Duels',
     font: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
   },
   'ja-JP': {
@@ -129,8 +136,11 @@ const GRAPHICS_CONFIG = {
     dir: 'ltr',
     badge: '☀ SUDOKU',
     title1: 'Sudoku',
-    title2: 'Rompicapo di logica',
-    tagline: 'Classico · 32 tecniche · Report QI e duelli 1v1',
+    // The store title's words (store_description_it.txt), for the Italy launch 2026-10-15. The old
+    // tagline sold a "Report QI" the app renamed to Logic Score. 40 = 32 + 8 killer — upload with
+    // the version that carries the killer academy.
+    title2: 'Accademia di logica',
+    tagline: 'Classico e Killer · 40 tecniche · duelli 1v1 e con l’IA',
     font: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
   },
   'ru-RU': {

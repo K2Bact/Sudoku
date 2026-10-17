@@ -1,9 +1,10 @@
 import { ALL_PRACTICE_MISSIONS } from '../../../src/data/academy/practice/index.js';
 import { ACADEMY_STAGES } from '../../../src/data/academyStrategies.js';
 import { LOCALES } from '../../lib/locales.js';
+import { solveKiller } from '../../../src/engine/killer/killerSolver.js';
 
 console.log('====================================================');
-console.log('🧪 ACADEMY INTERACTIVE PRACTICE HARNESS (64 MISSIONS)');
+console.log('🧪 ACADEMY INTERACTIVE PRACTICE HARNESS');
 console.log('====================================================');
 
 let totalStrategies = 0;
@@ -12,8 +13,8 @@ let errors = [];
 
 // 지금 저장소에 실제로 존재하는 수. 아래에서 단언한다.
 // 늘어나면 이 숫자를 같이 올리고, 줄었다면 왜 줄었는지 먼저 확인할 것.
-const EXPECTED_STRATEGIES = 32;
-const EXPECTED_MISSIONS = 64;
+const EXPECTED_STRATEGIES = 40;
+const EXPECTED_MISSIONS = 80;
 
 /**
  * 한 자리 숫자를 감싼 대괄호만 고른다. 후보 묶음은 제외한다.
@@ -242,33 +243,61 @@ const PEERS = Array.from({ length: 81 }, (_, i) => {
   return [...set];
 });
 let fullChecked = 0;
+let killerChecked = 0;
 for (const missions of Object.values(ALL_PRACTICE_MISSIONS)) {
   for (const m of missions) {
     if (m.layoutType !== 'grid9x9') continue;
     fullChecked++;
-    const allowed = m.cells.map((c) => (c.notes ? [...new Set([...c.notes, ...(c.eliminatedNotes || [])])] : [c.val]));
-    const g = m.cells.map((c) => (c.notes ? 0 : c.val));
-    const sols = [];
-    const solve = () => {
-      if (sols.length > 1) return;
-      let best = -1;
-      let bestC = null;
-      for (let i = 0; i < 81; i++) {
-        if (g[i]) continue;
-        const used = new Set(PEERS[i].map((p) => g[p]));
-        const c = allowed[i].filter((d) => !used.has(d));
-        if (!c.length) return;
-        if (!bestC || c.length < bestC.length) { best = i; bestC = c; }
+    let sol;
+    if (m.cages) {
+      // A killer lesson. Its board shows few digits and leaves most cells blank (notes
+      // only where the step works), so the search below would wander. The cages must
+      // tile the board, the app's killer solver (gate 2-27) must find exactly one
+      // solution from the cages and the digits shown, and every note must hold that
+      // solution's digit — notes that rule out the answer make a wrong board.
+      killerChecked++;
+      const cover = m.cages.flatMap((c) => c.cells);
+      if (cover.length !== 81 || new Set(cover).size !== 81) {
+        errors.push(`[${m.id}] 묶음이 판을 정확히 한 번씩 덮지 않는다 (칸 ${cover.length}개, 서로 다른 칸 ${new Set(cover).size}개)`);
+        continue;
       }
-      if (best < 0) { sols.push(g.slice()); return; }
-      for (const d of bestC) { g[best] = d; solve(); g[best] = 0; }
-    };
-    solve();
-    if (sols.length !== 1) {
-      errors.push(`[${m.id}] 판에 적힌 값·후보로 풀면 해가 ${sols.length}개다 — 판이 틀어졌다`);
-      continue;
+      const givens = Array.from({ length: 9 }, (_, r) => m.cells.slice(r * 9, r * 9 + 9).map((c) => c.val || 0));
+      const res = solveKiller(m.cages, givens, { limit: 2, nodeLimit: 200000 });
+      if (res.aborted || res.count !== 1) {
+        errors.push(`[${m.id}] 묶음과 판의 숫자로 풀면 해가 ${res.aborted ? '정해지지 않는다(탐색 한도)' : `${res.count}개다`} — 판이 틀어졌다`);
+        continue;
+      }
+      sol = res.solutions[0].flat();
+      m.cells.forEach((c, i) => {
+        if (c.notes && ![...c.notes, ...(c.eliminatedNotes || [])].includes(sol[i])) {
+          errors.push(`[${m.id}] r${Math.floor(i / 9) + 1}c${(i % 9) + 1} 의 후보 ${c.notes.join('')} 에 해 ${sol[i]} 가 없다`);
+        }
+      });
+    } else {
+      const allowed = m.cells.map((c) => (c.notes ? [...new Set([...c.notes, ...(c.eliminatedNotes || [])])] : [c.val]));
+      const g = m.cells.map((c) => (c.notes ? 0 : c.val));
+      const sols = [];
+      const solve = () => {
+        if (sols.length > 1) return;
+        let best = -1;
+        let bestC = null;
+        for (let i = 0; i < 81; i++) {
+          if (g[i]) continue;
+          const used = new Set(PEERS[i].map((p) => g[p]));
+          const c = allowed[i].filter((d) => !used.has(d));
+          if (!c.length) return;
+          if (!bestC || c.length < bestC.length) { best = i; bestC = c; }
+        }
+        if (best < 0) { sols.push(g.slice()); return; }
+        for (const d of bestC) { g[best] = d; solve(); g[best] = 0; }
+      };
+      solve();
+      if (sols.length !== 1) {
+        errors.push(`[${m.id}] 판에 적힌 값·후보로 풀면 해가 ${sols.length}개다 — 판이 틀어졌다`);
+        continue;
+      }
+      sol = sols[0];
     }
-    const sol = sols[0];
     m.cells.forEach((c, i) => {
       for (const d of c.eliminatedNotes || []) {
         if (d === sol[i]) errors.push(`[${m.id}] r${Math.floor(i / 9) + 1}c${(i % 9) + 1} 에서 해 ${d} 를 지운다고 표시했다`);
@@ -301,7 +330,7 @@ for (const missions of Object.values(ALL_PRACTICE_MISSIONS)) {
     }
   }
 }
-console.log(`▶ 9x9 예제 ${fullChecked}개를 판에 적힌 대로 다시 풀어 해답과 대조`);
+console.log(`▶ 9x9 예제 ${fullChecked}개를 판에 적힌 대로 다시 풀어 해답과 대조 (그중 킬러 ${killerChecked}개는 묶음까지)`);
 
 // ── 이론 탭 도식: 검사 밖에 둔 것이 없는가 ──────────────────────────────────
 //

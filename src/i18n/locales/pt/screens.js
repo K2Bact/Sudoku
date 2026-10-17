@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: 'Melhor Contra o Tempo',
     survivalTitle: '⏳ Modo Sobrevivência',
     survivalTotalWins: 'Vitórias em Sobrevivência',
-    survivalWinsUnit: '{count}',
+    survivalWinsUnit: '{count}',
     summaryTitle: 'Resumo de Desempenho',
     pvpRating: "Pontuação",
     pvpRecordLabel: "Histórico",
@@ -145,7 +145,7 @@ export const screens = {
     winRate: 'Taxa de Vitória'
   },
   brainReport: {
-    scoreLabel: 'Logic Score',
+    scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Como o Logic Score é calculado?",
     scoreHowBody: "Ele sobe quando você preenche todo o tabuleiro e vence. Contam tanto as partidas Padrão quanto as Killer. O nível mais difícil vencido sem dicas é o que mais conta; o número de vitórias e a taxa de vitórias contam um pouco. Duelos 1v1 e contra IA não entram no número de vitórias nem na taxa de vitórias: eles têm um histórico próprio em Estatísticas. Fim de jogo e partidas abandonadas diminuem a taxa de vitórias e podem tirar alguns pontos. O placar usa essa pontuação quando você está conectado ao Play Games.",
     shareText: '[Análise de jogo Sudoku]\nLogic Score: {iq}\nNível: {tier}\nExperimente o Sudoku hoje!',
@@ -155,7 +155,7 @@ export const screens = {
     accuracy: 'Taxa de conclusão',
     logic: 'Dificuldade',
     speed: 'Velocidade',
-    shareCardBtn: '🔗 Compartilhar',
+    shareCardBtn: '🔗 Compartilhar',
     attributesTitle: '📈 5 métricas de jogo',
     title: 'Análise de jogo',
     shareTitle: 'Minha análise de jogo Sudoku',
@@ -243,7 +243,8 @@ export const screens = {
       stage2: 'Etapa 2: Técnicas Intermediárias (Pares & Interseções)',
       stage3: 'Etapa 3: Técnicas Avançadas (Família Wing)',
       stage4: 'Etapa 4: Técnicas de Mestre (Fish, Coloração & Retângulo Único)',
-      stage5: 'Etapa 5: Técnicas de Grão-Mestre (AIC, ALS & Exocet)'
+      stage5: 'Etapa 5: Técnicas de Grão-Mestre (AIC, ALS & Exocet)',
+      killer: "Killer: técnicas de gaiolas (gaiolas e regra do 45)"
     },
     title: 'Academia Sudoku',
     theoryBoard: {

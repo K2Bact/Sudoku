@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: "스피드런 최고 기록",
     survivalTitle: "⏳ 서바이벌",
     survivalTotalWins: "서바이벌 생존 성공",
-    survivalWinsUnit: "{count}회 성공",
+    survivalWinsUnit: "{count}회 성공",
     summaryTitle: '종합 성적 요약',
     pvpRating: "레이팅",
     pvpRecordLabel: "전적",
@@ -145,7 +145,7 @@ export const screens = {
     winRate: '승률'
   },
   brainReport: {
-    scoreLabel: 'Logic Score',
+    scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Logic Score는 어떻게 정해지나요?",
     scoreHowBody: "판을 끝까지 채워 이길 때 올라가요. 표준과 킬러 모두 반영돼요. 힌트 없이 깬 가장 어려운 레벨이 가장 크게 반영되고, 이긴 판 수와 승률도 조금씩 반영돼요. 1v1 배틀과 AI 봇 대전은 이긴 판 수와 승률에 들어가지 않고, 나의 통계의 전적에 따로 남아요. 게임 오버가 되거나 중간에 그만두면 승률이 내려가 점수가 조금 깎일 수 있어요. 순위표는 Play 게임즈에 로그인했을 때 이 점수로 매겨져요.",
     shareText: "[Sudoku 플레이 분석]\nLogic Score: {iq}점\n등급: {tier}\n지금 Sudoku에 도전해 보세요!",
@@ -155,7 +155,7 @@ export const screens = {
     accuracy: "클리어율",
     logic: "난이도",
     speed: "속도",
-    shareCardBtn: "🔗 플레이 분석 공유",
+    shareCardBtn: "🔗 플레이 분석 공유",
     attributesTitle: "📈 5가지 플레이 지표",
     title: '플레이 분석',
     shareTitle: '나의 Sudoku 플레이 분석',
@@ -238,7 +238,7 @@ export const screens = {
   },
   academy: {
     tabs: { stage1: '1단계', stage2: '2단계', stage3: '3단계', stage4: '4단계', stage5: '5단계' },
-    stageTitles: {"stage1":"1단계: 기본 테크닉 (기초 싱글 & 라인)","stage2":"2단계: 중급 테크닉 (블록 페어 & 인터섹션)","stage3":"3단계: 고급 테크닉 (윙 시리즈)","stage4":"4단계: 마스터 테크닉 (피쉬, 컬러링 & 유일 사각형)","stage5":"5단계: 그랜드마스터 테크닉 (AIC, ALS & 엑소셋)"},
+    stageTitles: {"stage1":"1단계: 기본 테크닉 (기초 싱글 & 라인)","stage2":"2단계: 중급 테크닉 (블록 페어 & 인터섹션)","stage3":"3단계: 고급 테크닉 (윙 시리즈)","stage4":"4단계: 마스터 테크닉 (피쉬, 컬러링 & 유일 사각형)","stage5":"5단계: 그랜드마스터 테크닉 (AIC, ALS & 엑소셋)","killer":"킬러: 묶음 테크닉 (묶음 & 45 규칙)"},
     title: '스도쿠 아카데미',
     theoryBoard: {
       patternTab: '패턴',

@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: 'स्पीडरन सर्वश्रेष्ठ',
     survivalTitle: '⏳ सर्वाइवल मोड',
     survivalTotalWins: 'सर्वाइवल में जीत',
-    survivalWinsUnit: '{count}',
+    survivalWinsUnit: '{count}',
     summaryTitle: 'प्रदर्शन सारांश',
     pvpRating: "रेटिंग",
     pvpRecordLabel: "रिकॉर्ड",
@@ -145,7 +145,7 @@ export const screens = {
     winRate: 'जीत प्रतिशत'
   },
   brainReport: {
-    scoreLabel: 'Logic Score',
+    scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Logic Score कैसे तय होता है?",
     scoreHowBody: "पूरा बोर्ड भरकर जीतने पर यह बढ़ता है। मानक और किलर, दोनों के खेल गिने जाते हैं। बिना संकेत के पार किया गया सबसे कठिन स्तर सबसे ज़्यादा गिना जाता है; जीत की संख्या और जीत दर थोड़ा गिने जाते हैं। 1v1 और एआई बॉट मुकाबले जीत की संख्या और जीत दर में नहीं गिने जाते; उनका रिकॉर्ड आंकड़ों में अलग रहता है। खेल हारने या बीच में छोड़ने पर जीत दर घटती है और कुछ अंक कम हो सकते हैं। Play Games में साइन इन होने पर रैंकिंग इसी स्कोर से तय होती है।",
     shareText: '[Sudoku खेल विश्लेषण]\nLogic Score: {iq}\nस्तर: {tier}\nआज ही Sudoku आज़माएं!',
@@ -155,7 +155,7 @@ export const screens = {
     accuracy: 'पूरा करने की दर',
     logic: 'कठिनाई',
     speed: 'गति',
-    shareCardBtn: '🔗 विश्लेषण साझा करें',
+    shareCardBtn: '🔗 विश्लेषण साझा करें',
     attributesTitle: '📈 5 खेल संकेतक',
     title: 'खेल विश्लेषण',
     shareTitle: 'मेरा Sudoku खेल विश्लेषण',
@@ -243,7 +243,8 @@ export const screens = {
       stage2: 'चरण 2: मध्यम तकनीकें (पेयर्स और इंटरसेक्शन)',
       stage3: 'चरण 3: उन्नत तकनीकें (विंग सीरीज)',
       stage4: 'चरण 4: मास्टर तकनीकें (फिश, कलरिंग और यूनीक रेक्टेंगल)',
-      stage5: 'चरण 5: ग्रैंडमास्टर तकनीकें (AIC, ALS और Exocet)'
+      stage5: 'चरण 5: ग्रैंडमास्टर तकनीकें (AIC, ALS और Exocet)',
+      killer: "किलर: समूह की तकनीकें (समूह और 45 का नियम)"
     },
     title: 'सुडोकू अकादमी',
     theoryBoard: {

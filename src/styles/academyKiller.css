@@ -1,0 +1,67 @@
+/* Killer lessons in the academy: the practice board with the game's cages.
+   The outline itself is styled once, for the game and here, in killer.css
+   (.cage-outline). This file only fits it into the academy's smaller cells. */
+
+.mini-9x9-full-board.killer-mini {
+  /* The sum and the notes are sized from the board, like the game board's. */
+  container-type: inline-size;
+  /* Cells touch, as on the game board. With the academy's gaps and per-cell frames
+     every cell looked like a cage of its own and the real cages could not be read.
+     The academy's blue box lines stay (academyMiniGrids.css). */
+  gap: 0;
+}
+
+.killer-mini .mini-cell {
+  position: relative;
+  overflow: hidden;
+  border: 0.5px solid var(--board-grid-line);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* The target keeps its colour and pulse, with a solid frame — a dashed one reads
+   as a cage here. */
+.killer-mini .mini-cell.target-interactive {
+  border-style: solid !important;
+}
+
+.killer-mini .mini-cell .cage-sum {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  z-index: 1;
+  padding: 0 1px;
+  /* The cell's own colour behind the number cuts the dashed corner, as in the game. */
+  background: inherit;
+  border-radius: 2px;
+  color: var(--text-main);
+  /* Never smaller than the classic boards' notes (7px at 360px). */
+  font-size: max(7px, 2.8cqw);
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Digits and notes sit above the outline; notes keep inside it and below the sum. */
+.killer-mini .mini-cell-value {
+  position: relative;
+  z-index: 1;
+}
+
+.killer-mini .mini-cell .mini-note-grid {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  padding: 8%;
+}
+
+.killer-mini .mini-cell.has-cage-sum .mini-note-grid {
+  padding-top: 22%;
+}
+
+.killer-mini .mini-note-grid span {
+  font-size: max(7px, 2.7cqw);
+}
+
+/* The killer stage's badge: violet, the colour of the killer cage marks elsewhere. */
+.strategy-badge.killer { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }

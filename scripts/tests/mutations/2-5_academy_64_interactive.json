@@ -1,6 +1,6 @@
 {
   "gate": "2-5",
-  "name": "Academy 64 Interactive Missions Math & Logic Truth",
+  "name": "Academy Interactive Missions Math & Logic Truth (classic and killer)",
   "command": "node scripts/tests/unit/test_practice_missions.js",
   "greenMarker": "INTERACTIVE MISSIONS ARE 100% VALIDATED",
   "note": "This gate has now been wrong in two different ways, and both were the same mistake wearing different clothes. First it held a stale expected count of 27/54, so deleting a stage made the numbers agree and it printed PERFECT — it rewarded the deletion it existed to prevent. Then it turned out to check the guide text for the answer and never the title, and 34 of 64 missions had been naming the wrong number in their titles across all thirteen languages. In both cases the gate looked at whether something was present rather than whether two things agreed. The counts are pinned to constants now, and every number a title or guide claims is checked twice: against the target cell the screen actually draws, and against what the other twelve languages say about the same puzzle. Neither check alone is enough — the first passes a title that swaps the answer for the eliminated candidate, the second passes a mistake all thirteen languages share — and the mutation list below records the SURVIVED verdict that proved it.",
@@ -108,6 +108,46 @@
       "find": "eliminations: [[12, [4]], [39, [4]]],",
       "replace": "eliminations: [[12, [5]], [39, [4]]],",
       "expectFailure": "후보 5 가 없는데"
+    },
+    {
+      "name": "a killer cage carries the wrong sum",
+      "why": "The killer lessons are checked by solving the board from its cages; a wrong sum leaves no solution — the lesson would teach a board that cannot exist.",
+      "file": "src/data/academy/practice/killerPractice.js",
+      "find": "{\"cells\":[2,11,12,20,21],\"sum\":25}",
+      "replace": "{\"cells\":[2,11,12,20,21],\"sum\":26}",
+      "expectFailure": "묶음과 판의 숫자로 풀면 해가"
+    },
+    {
+      "name": "a killer board loses a cage",
+      "why": "A killer board must be tiled by its cages exactly once; a missing cage leaves cells with no sum, and the solver could still find one answer.",
+      "file": "src/data/academy/practice/killerPractice.js",
+      "find": "{\"cells\":[3,4,13],\"sum\":12},",
+      "replace": "",
+      "expectFailure": "묶음이 판을 정확히 한 번씩 덮지 않는다"
+    },
+    {
+      "name": "a killer placement names the wrong digit",
+      "why": "The rule-of-45 lesson asks for one digit; a wrong correctVal would refuse the right answer on screen.",
+      "file": "src/data/academy/practice/killerPractice.js",
+      "find": "\"targetIndex\":6,\"correctVal\":6,",
+      "replace": "\"targetIndex\":6,\"correctVal\":7,",
+      "expectFailure": "correctVal 7 이 목표 칸의 해 6 와 다르다"
+    },
+    {
+      "name": "a killer lesson strikes the solution",
+      "why": "The theory frame draws eliminations; striking the true digit would teach a wrong deduction.",
+      "file": "src/data/academy/practice/killerPractice.js",
+      "find": "\"eliminations\":[[54,[6]],",
+      "replace": "\"eliminations\":[[54,[6,9]],",
+      "expectFailure": "r7c1 의 해 9 를 지운다고 적었다"
+    },
+    {
+      "name": "a killer note leaves out the answer",
+      "why": "The board shows notes only where the step works; a note set without the solution is a board the reasoning cannot reach.",
+      "file": "src/data/academy/practice/killerPractice.js",
+      "find": "\"notes\":[1,2,3,4,5,6,8,9]",
+      "replace": "\"notes\":[1,2,4,5,6,8,9]",
+      "expectFailure": "에 해 3 가 없다"
     }
   ]
 }

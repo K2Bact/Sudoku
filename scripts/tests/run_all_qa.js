@@ -97,8 +97,8 @@ runStep('1. Global L10N Master 9-Gate & Profile Audit', 'node ../../app_common/l
 runStep('2-1. Sudoku Mathematical Integrity & Unique Solver Engine', 'node scripts/tests/unit/test_sudoku_math_engine.js');
 runStep('2-2. Deterministic PRNG & Daily Challenge Global Sync', 'node scripts/tests/unit/test_deterministic_prng.js');
 runStep('2-3. Ghost PB Replay & Delta Pace Calculation Engine', 'node scripts/tests/unit/test_ghost_delta_mode.js');
-runStep('2-4. Wallet Balance, Smart Hint & Attendance Streak Engine', 'node scripts/tests/unit/test_wallet_and_hint_engine.js');
-runStep('2-5. Academy 64 Interactive Missions Math & Logic Truth', 'node scripts/tests/unit/test_practice_missions.js');
+runStep('2-4. Hint Wallet (a count of hints, no coins), Smart Hint & Daily Attendance', 'node scripts/tests/unit/test_wallet_and_hint_engine.js');
+runStep('2-5. Academy Interactive Missions Math & Logic Truth (classic and killer)', 'node scripts/tests/unit/test_practice_missions.js');
 runStep('2-5b. Academy Text Purity & Diagram Structure', 'node scripts/tests/unit/test_academy_purity.js');
 runStep('2-6. AI Battle vs 1v1 PvP Isolation & Popup Audit', 'node scripts/tests/unit/test_battle_ai_separation.js');
 runStep('2-7. Global Leaderboards & Cloud Account Save Safety', 'node scripts/tests/unit/test_cloud_leaderboard_safety.js');
@@ -150,7 +150,7 @@ runStep('3-7. Playwright 13-Language Visual UI Overflow Scan', 'node scripts/tes
 runStep('3-8. Real Gameplay End-to-End (play, tap, win)', 'node scripts/tests/ui/test_gameplay_e2e.js');
 runStep('3-9. Ad Placements End-to-End (banner, purchase)', 'node scripts/tests/ui/test_ads_placements_e2e.js');
 runStep('3-10. 1v1 Matchmaking & Rematch End-to-End (two browsers)', 'node scripts/tests/unit/test_rematch_flow.js');
-runStep('3-11. Academy Practice Play-Through (64 missions × 13 languages)', 'node scripts/tests/ui/test_academy_practice_play.js');
+runStep('3-11. Academy Practice Play-Through (every mission × 13 languages)', 'node scripts/tests/ui/test_academy_practice_play.js');
 runStep('3-12. The Game Screen Fits the Phone (sizes × font scale, banner gap)', 'node scripts/tests/ui/test_game_layout_fit.js');
 runStep('3-13. Each Academy Card Is As Tall As Its Tallest Tab', 'node scripts/tests/ui/test_academy_card_height.js');
 runStep('3-14. The 1v1 Lobby Says When It Cannot Connect (blocked sign-in, 13 languages)', 'node scripts/tests/ui/test_battle_connect_failure.js');

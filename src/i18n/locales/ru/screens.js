@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: 'Рекорд в спидране',
     survivalTitle: '⏳ Режим выживания',
     survivalTotalWins: 'Побед в выживании',
-    survivalWinsUnit: 'Пройдено: {count}',
+    survivalWinsUnit: 'Пройдено: {count}',
     summaryTitle: 'Общие показатели',
     pvpRating: "Рейтинг",
     pvpRecordLabel: "Итоги",
@@ -145,7 +145,7 @@ export const screens = {
     winRate: 'Процент побед'
   },
   brainReport: {
-    scoreLabel: 'Logic Score',
+    scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Как считается Logic Score?",
     scoreHowBody: "Он растёт, когда вы заполняете всё поле и побеждаете. Учитываются игры и «Стандарт», и «Киллер». Больше всего значит самый сложный уровень, пройденный без подсказок; число побед и доля побед значат немного. Дуэли 1v1 и против ИИ не входят в число побед и долю побед — у них свои итоги в «Статистике». Проигрыш и брошенная игра снижают долю побед и могут отнять несколько очков. Таблица лидеров использует этот счёт, когда вы вошли в Play Игры.",
     shareText: '[Анализ игры Sudoku]\nLogic Score: {iq}\nРанг: {tier}\nПопробуй Sudoku прямо сейчас!',
@@ -155,7 +155,7 @@ export const screens = {
     accuracy: 'Процент решений',
     logic: 'Сложность',
     speed: 'Скорость',
-    shareCardBtn: '🔗 Поделиться',
+    shareCardBtn: '🔗 Поделиться',
     attributesTitle: '📈 5 игровых показателей',
     title: 'Анализ игры',
     shareTitle: 'Мой анализ игры в Sudoku',
@@ -243,7 +243,8 @@ export const screens = {
       stage2: 'Этап 2: Средние техники (Пары и пересечения)',
       stage3: 'Этап 3: Продвинутые техники (Семейство Wing)',
       stage4: 'Этап 4: Техники мастера (рыбы, раскраска и уникальный прямоугольник)',
-      stage5: 'Этап 5: Техники гроссмейстера (AIC, ALS и Exocet)'
+      stage5: 'Этап 5: Техники гроссмейстера (AIC, ALS и Exocet)',
+      killer: "Киллер: техники областей (области и правило 45)"
     },
     title: 'Академия судоку',
     theoryBoard: {

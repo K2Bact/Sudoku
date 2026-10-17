@@ -105,6 +105,10 @@ async function runScanner() {
         { name: 'Achievements Tab', path: 'achievements', trigger: ['.home-bottom-nav button:nth-child(1)', '.seg-tab-btn:has(.lucide-trophy)'], expect: '.achievements-view-wrapper' },
         { name: 'Play Analysis Screen', path: 'brain', trigger: '.home-bottom-nav button:nth-child(2)', expect: '.brain-screen-container' },
         { name: 'Academy Screen', path: 'academy', trigger: '.home-bottom-nav button:nth-child(3)', expect: '.academy-tab-bar' },
+        // The killer stage (2026-10-15): eight cards whose titles, badges and theory
+        // boards are drawn only on that tab, and the sixth tab itself — on a 360px phone
+        // it once sat wholly off screen, which the boundary check below now catches.
+        { name: 'Academy Killer Tab', path: 'academyKiller', trigger: ['.home-bottom-nav button:nth-child(3)', '.academy-tab-bar .seg-tab-btn:last-child'], expect: '.strategy-badge.killer' },
         { name: 'AI Battle Screen', path: 'aiBattle', trigger: '.ai-card-banner', expect: '.battle-lobby-container' },
         { name: 'Daily Challenge Screen', path: 'daily', trigger: '.daily-card-banner', expect: '.daily-screen-container' }
       ];

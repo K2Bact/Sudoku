@@ -1,5 +1,7 @@
 import React from 'react';
 import { renderNoteGrid } from '../renderNoteGrid';
+import { CageOutline } from '../../KillerCage';
+import { cageLayout } from '../../../engine/killer/cageLayout';
 
 export function PracticeBoardRenderer({
   mission,
@@ -11,12 +13,28 @@ export function PracticeBoardRenderer({
   if (!mission) return null;
 
   const { layoutType, cells, targetIndex } = mission;
+  // A killer lesson's board carries its cages, drawn by the game's own pieces —
+  // the dashed outline and the sum in the top-left cell — so it looks like the
+  // killer the player will meet. Only full 9x9 boards: the outline reads cell
+  // numbers as row * 9 + column.
+  const killer = mission.cages && layoutType === 'grid9x9' ? cageLayout(mission.cages) : null;
+  const cageParts = (idx) => {
+    if (!killer) return null;
+    const sum = killer.sumAt.get(idx);
+    return (
+      <>
+        <CageOutline cell={idx} cageOf={killer.cageOf} />
+        {sum !== undefined && <span className="cage-sum">{sum}</span>}
+      </>
+    );
+  };
 
   const renderCell = (cell, idx) => {
     const isTarget = idx === targetIndex;
     let cellVal = cell.val;
 
     let cellClass = 'mini-cell';
+    if (killer && killer.sumAt.has(idx)) cellClass += ' has-cage-sum';
     if (cell.type === 'cause') cellClass += ' cause-cell';
     if (cell.type === 'blocked') cellClass += ' disabled-cell';
     if (cell.type === 'pivot') cellClass += ' pivot-cell';
@@ -45,6 +63,7 @@ export function PracticeBoardRenderer({
           onClick={isTarget && !isSolved && onTargetCellTap ? onTargetCellTap : undefined}
           style={cell.style || undefined}
         >
+          {cageParts(idx)}
           {renderNoteGrid(
             cell.notes,
             cell.highlightNotes || (isTarget ? cell.notes : []),
@@ -62,7 +81,8 @@ export function PracticeBoardRenderer({
         onClick={isTarget && !isSolved && onTargetCellTap ? onTargetCellTap : undefined}
         style={cell.style || undefined}
       >
-        {cellVal}
+        {cageParts(idx)}
+        {killer ? <span className="mini-cell-value">{cellVal}</span> : cellVal}
       </div>
     );
   };
@@ -93,7 +113,7 @@ export function PracticeBoardRenderer({
 
   if (layoutType === 'grid9x9') {
     return (
-      <div className="mini-9x9-full-board">
+      <div className={`mini-9x9-full-board${killer ? ' killer-mini' : ''}`}>
         {cells.map((cell, idx) => renderCell(cell, idx))}
       </div>
     );

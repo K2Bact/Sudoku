@@ -142,7 +142,7 @@ export const screens = {
     speedrunBest: 'Mejor contrarreloj',
     survivalTitle: '⏳ Límite de tiempo (Supervivencia)',
     survivalTotalWins: 'Supervivencias exitosas',
-    survivalWinsUnit: '{count}',
+    survivalWinsUnit: '{count}',
     summaryTitle: 'Resumen de rendimiento',
     pvpRating: "Puntuación",
     pvpRecordLabel: "Historial",
@@ -152,7 +152,7 @@ export const screens = {
     winRate: 'Tasa de victoria'
   },
   brainReport: {
-    scoreLabel: 'Logic Score',
+    scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ ¿Cómo se calcula el Logic Score?",
     scoreHowBody: "Sube cuando completas todo el tablero y ganas. Cuentan tanto las partidas Estándar como las Killer. Lo que más cuenta es el nivel más difícil que has superado sin pistas; el número de victorias y tu porcentaje de victorias cuentan un poco. Los duelos 1v1 y contra IA no cuentan para las victorias ni para el porcentaje de victorias: tienen su propio historial en Estadísticas. Perder o abandonar una partida baja tu porcentaje de victorias y puede restar algunos puntos. La clasificación usa esta puntuación cuando inicias sesión en Play Juegos.",
     shareText: '[Análisis de juego Sudoku]\nLogic Score: {iq}\nRango: {tier}\n¡Prueba Sudoku hoy!',
@@ -162,7 +162,7 @@ export const screens = {
     accuracy: 'Tasa de resolución',
     logic: 'Dificultad',
     speed: 'Velocidad',
-    shareCardBtn: '🔗 Compartir informe',
+    shareCardBtn: '🔗 Compartir informe',
     attributesTitle: '📈 5 métricas de juego',
     title: 'Análisis de juego',
     shareTitle: 'Mi análisis de juego de Sudoku',
@@ -250,7 +250,8 @@ export const screens = {
       stage2: 'Etapa 2: Técnicas intermedias (Pares e intersecciones)',
       stage3: 'Etapa 3: Técnicas avanzadas (Familia Wing)',
       stage4: 'Etapa 4: Técnicas de maestría (Peces, coloreado y rectángulo único)',
-      stage5: 'Etapa 5: Técnicas de gran maestro (AIC, ALS y Exocet)'
+      stage5: 'Etapa 5: Técnicas de gran maestro (AIC, ALS y Exocet)',
+      killer: "Killer: técnicas de jaulas (jaulas y regla del 45)"
     },
     title: 'Academia Sudoku',
     theoryBoard: {

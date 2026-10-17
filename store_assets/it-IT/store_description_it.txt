@@ -2,38 +2,42 @@
 Sudoku: Accademia di logica
 
 [간단한 설명 (Short description - 최대 80자)]
-Sudoku classico e Killer, 32 tecniche, sfide quotidiane, duelli 1v1 e con l’IA.
+Sudoku classico e Killer, 40 tecniche, sfide quotidiane, duelli 1v1 e con l’IA.
 
 [자세한 설명 (Full description - 최대 4000자)]
 Sudoku per tutti, da chi inizia a chi risolve schemi da anni.
 
-Gioca su 5 livelli di difficoltà, impara 32 tecniche di risoluzione con illustrazioni ed esercizi, e sfida altri giocatori nei duelli 1v1 online oppure l’IA.
+Gioca a sudoku classico e Killer su 5 livelli di difficoltà, impara 40 tecniche di risoluzione con illustrazioni ed esercizi, e sfida altri giocatori nei duelli 1v1 online oppure l’IA.
 
 ━━━━━━━━━━━━━━━━━━━━━
 🌟 IN EVIDENZA
 ━━━━━━━━━━━━━━━━━━━━━
 
-🧩 1. 5 livelli di difficoltà
+🧩 1. Classico e Killer, 5 livelli di difficoltà
 - Iniziazione, Facile, Medio, Difficile ed Esperto.
 - Ogni schema viene generato in modo da avere una sola soluzione.
-- Modalità Classico, Cronometro e Sopravvivenza.
+- Sudoku Killer: la somma dei numeri di ogni gabbia tratteggiata è il numero piccolo nel suo angolo.
+- Modalità Classico, Cronometro e Sopravvivenza, sia per lo Standard sia per il Killer.
+- Fantasma e Distacco: rigioca lo schema del tuo record contro la tua stessa partita, oppure guarda quanto sei avanti rispetto al tuo ritmo migliore.
 - 4 temi riposanti per la vista.
 
-🎓 2. Accademia: 32 tecniche di risoluzione
+🎓 2. Accademia: 40 tecniche di risoluzione
 - Ogni tecnica ha una spiegazione illustrata e 2 esercizi su griglie reali.
 - Principiante: Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
 - Intermedio: Pointing, Claiming, Naked/Hidden Pairs, Triples e Quads
 - Avanzato: X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
 - Maestro: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
 - Gran Maestro: Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
+- Killer: Ultima casella della gabbia, Combinazione unica, Somme di due caselle, Regola del 45, Cifra obbligata, Gabbia nascosta, Differenza dentro-fuori, Dividere la gabbia
 
 ⚔️ 3. Duelli 1v1 e contro l’IA
 - Duelli online in tempo reale: sfida un altro giocatore sulla stessa griglia.
 - Segui i progressi del tuo avversario mentre giochi.
-- Duelli contro l’IA con 5 livelli di difficoltà.
+- Dopo il duello, rivedi la partita mossa per mossa.
+- Duelli contro l’IA con 5 livelli di difficoltà, su schemi Standard o Killer.
 
 🏆 4. Obiettivi e analisi di gioco
-- 30 obiettivi da sbloccare.
+- 40 obiettivi da sbloccare, anche su Google Play Giochi.
 - Il tuo gioco analizzato in 5 indicatori, come la velocità e le partite senza errori.
 - Competi nella classifica Logic Score di Google Play Giochi.
 

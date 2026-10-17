@@ -388,6 +388,6 @@ export const ACHIEVEMENTS_LIST = [
     category: 'special',
     titleKey: 'achievements.academy_all.title',
     descKey: 'achievements.academy_all.desc',
-    target: 32
+    target: 40
   }
 ];

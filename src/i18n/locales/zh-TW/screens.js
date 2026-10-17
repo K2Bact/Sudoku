@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: '競速最高紀錄',
     survivalTitle: '⏳ 極限生存模式',
     survivalTotalWins: '生存挑戰成功',
-    survivalWinsUnit: '{count}次 成功',
+    survivalWinsUnit: '{count}次 成功',
     summaryTitle: '總體戰績摘要',
     pvpRating: "積分",
     pvpRecordLabel: "戰績",
@@ -145,7 +145,7 @@ export const screens = {
     winRate: '勝率'
   },
   brainReport: {
-    scoreLabel: 'Logic Score',
+    scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Logic Score 是怎麼決定的？",
     scoreHowBody: "填滿整個棋盤獲勝時會上升。標準和殺手都會計入。不用提示通關的最高難度影響最大，獲勝局數和勝率也有少量影響。1v1 對決和 AI 機器人對戰不計入獲勝局數和勝率，會另外記在個人統計的戰績裡。遊戲結束或中途放棄會降低勝率，分數可能略微下降。登入 Play 遊戲後，排行榜依這個分數排名。",
     shareText: '[Sudoku 遊戲分析]\nLogic Score: {iq}分\n等級: {tier}\n快來挑戰 Sudoku 吧！',
@@ -155,7 +155,7 @@ export const screens = {
     accuracy: '通關率',
     logic: '難度',
     speed: '速度',
-    shareCardBtn: '🔗 分享遊戲分析',
+    shareCardBtn: '🔗 分享遊戲分析',
     attributesTitle: '📈 5 項遊戲指標',
     title: '遊戲分析',
     shareTitle: '我的 Sudoku 遊戲分析',
@@ -243,7 +243,8 @@ export const screens = {
       stage2: '第2階段: 中級技巧 (區塊數對與交集排除)',
       stage3: '第3階段: 高級技巧 (翼系列)',
       stage4: '第4階段: 大師技巧 (魚類、著色法與唯一矩形)',
-      stage5: '第5階段: 宗師技巧 (AIC、ALS 與 Exocet)'
+      stage5: '第5階段: 宗師技巧 (AIC、ALS 與 Exocet)',
+      killer: "殺手: 籠子技巧 (籠子與 45 法則)"
     },
     title: '數獨學院',
     theoryBoard: {

@@ -149,12 +149,13 @@ npm run qa         # 문구·화면·CSS·게이트를 바꿨을 때, 그리고 
   docs/archive/SudokuAITalk_2026-09-11_to_09-18.md   끝난 검토 — 첫 교차검증 회차들
   docs/archive/SudokuAITalk_2026-09-19_to_10-10.md   끝난 검토 — 힌디·일본·독일·아랍어 검수, 레드티밍, 정책·리뷰 자료, 테스트 보고
   docs/archive/SudokuAITalk_2026-10-13_to_10-14.md   끝난 검토 — 프랑스어 검수(1~7차), 제미나이 22개 점검·18회 테스트
+  docs/archive/SudokuAITalk_2026-10-15.md            끝난 검토 — 제미나이 플립5 실기 확인·23개·21개 점검·킬러 아카데미 33개 점검·기법 이름 11개 언어·이탈리아어 전수 검수
                              (끝난 검토는 Claude 가 판단을 달아 보관본으로 옮긴다. 지난 검토를 찾을 때만 읽는다)
 
 기준·자료
   ../../app_common/AGENTS.md                     모든 앱 공통 규칙
   ../../app_common/l10n_engine/rules/<언어>/      언어별 기준 — 검수에서 정한 용어·조판(fr·ja·ar·es …)
-  docs/research/             조사 — ASO(aso_2026-10-07.md), 경쟁 앱 리뷰(reviews/), 퍼즐 변형(sudoku_variants.md)
+  docs/research/             조사 — ASO(aso_2026-10-07.md), 경쟁 앱 리뷰(reviews/), 퍼즐 변형(sudoku_variants.md), 킬러 기법(killer_strategies_2026-10-15.md)
   docs/reference/google_policy/   구글 공식 정책 모음(INDEX.md 부터)
   docs/TECHNICAL_SPECIFICATION.md · docs/POST_MORTEM_MISTAKES_REGISTRY.md(2026-08-15 스냅샷, 이후는 Diary)
 

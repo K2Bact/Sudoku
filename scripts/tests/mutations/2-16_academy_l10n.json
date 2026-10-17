@@ -52,6 +52,22 @@
       "find": "Exemple pratique 1 : Réduction bloc-ligne sur une ligne",
       "replace": "Exemple pratique 1: Réduction bloc-ligne sur une ligne",
       "expectFailure": "no space before :"
+    },
+    {
+      "name": "an Italian killer lesson writes perchè with a grave accent",
+      "why": "The most common Italian spelling slip; gate 11 rule 4 runs over the academy here as well as over the UI.",
+      "file": "src/data/academy/stageKiller.js",
+      "find": "entrambe hanno l’1",
+      "replace": "entrambe hanno l’1 perchè sì",
+      "expectFailure": "Italian typography: -chè"
+    },
+    {
+      "name": "a Hindi word inside an Italian academy sentence",
+      "why": "Gemini's Italian review (2026-10-15) found this exact word in the Hidden Triple description — 「Elimina tutti gli अन्य candidati」. No gate saw it: gate 4 is a deny-list of CJK pairs. Gate 12 allows each locale only its own scripts plus Latin.",
+      "file": "src/data/academy/stage2.js",
+      "find": "gli altri candidati da quelle tre caselle",
+      "replace": "gli अन्य candidati da quelle tre caselle",
+      "expectFailure": "is not Latin"
     }
   ]
 }

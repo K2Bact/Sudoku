@@ -1,0 +1,91 @@
+<en-US>
+• Academy — content showed in English for Traditional Chinese and Spanish, and practice titles named a number that was not the answer. Both fixed.
+• Corrected characters from the wrong writing system in Japanese and Chinese text.
+• 1v1 — fixed an opponent who never responded, and both players being shown as the loser when they finished together.
+• Fixed ads failing to load and a banner appearing over the wrong screen.
+• Tidied wording on achievements, daily rewards and the result screen.
+</en-US>
+<ar>
+• الأكاديمية — كان المحتوى يظهر بالإنجليزية في الصينية التقليدية والإسبانية، وكانت عناوين التمارين تذكر رقمًا ليس هو الحل. تم إصلاح الأمرين.
+• تم تصحيح أحرف من نظام كتابة آخر اختلطت بالنصوص اليابانية والصينية.
+• مباريات 1v1 — تم إصلاح مشكلة الخصم الذي لا يستجيب، ومشكلة ظهور اللاعبَين كخاسرَين عند الإنهاء في الوقت نفسه.
+• تم إصلاح عدم تحميل الإعلانات، وظهور الشريط الإعلاني فوق الشاشة الخطأ.
+• تم تحسين نصوص الإنجازات والمكافآت اليومية وشاشة النتيجة.
+</ar>
+<de-DE>
+• Akademie — Inhalte erschienen auf Traditionellem Chinesisch und Spanisch in Englisch, und Übungstitel nannten eine falsche Zahl. Beides behoben.
+• Falsche Zeichen in japanischen und chinesischen Texten korrigiert.
+• 1v1 — behoben: ein Gegner ohne Reaktion und beide Spieler als Verlierer bei gleichzeitigem Abschluss.
+• Behoben: Anzeigen luden nicht, Banner lag über dem falschen Bildschirm.
+• Texte bei Erfolgen, Tagesbelohnungen und Duellergebnis überarbeitet.
+</de-DE>
+<es-ES>
+• Academia — el contenido aparecía en inglés en chino tradicional y en español, y los títulos de los ejercicios indicaban un número erróneo. Ambos corregidos.
+• Corregidos caracteres de otro sistema de escritura en los textos en japonés y chino.
+• 1v1 — corregido un rival que nunca respondía y ambos jugadores mostrados como perdedores al terminar a la vez.
+• Corregidos anuncios que no cargaban y un banner sobre la pantalla equivocada.
+• Textos revisados: logros, recompensas y resultados.
+</es-ES>
+<fr-FR>
+• Académie — le contenu s'affichait en anglais en chinois traditionnel et en espagnol, et les titres d'exercices annonçaient un nombre erroné. Corrigé.
+• Caractères d'un autre système d'écriture corrigés dans les textes japonais et chinois.
+• 1v1 — correction d'un adversaire sans réponse et des deux joueurs affichés perdants en cas d'égalité.
+• Correction des publicités qui ne chargeaient pas et d'une bannière sur le mauvais écran.
+• Textes revus : succès, récompenses, résultats.
+</fr-FR>
+<hi-IN>
+• अकादमी — पारंपरिक चीनी और स्पेनिश में सामग्री अंग्रेज़ी में दिख रही थी, और अभ्यास शीर्षक ऐसी संख्या बताते थे जो उत्तर नहीं थी। दोनों ठीक किए गए।
+• जापानी और चीनी पाठ में मिली दूसरी लेखन प्रणाली की वर्तनी ठीक की गई।
+• 1v1 मुकाबले — ऐसा प्रतिद्वंद्वी जो कभी जवाब नहीं देता था, और एक साथ पूरा करने पर दोनों खिलाड़ियों को हारा हुआ दिखाने वाली गड़बड़ी ठीक की गई।
+• विज्ञापन न लोड होने और बैनर के गलत स्क्रीन पर आने की समस्या ठीक की गई।
+• उपलब्धियों, दैनिक इनाम और परिणाम स्क्रीन के शब्द सुधारे गए।
+</hi-IN>
+<it-IT>
+• Accademia — i contenuti apparivano in inglese in cinese tradizionale e spagnolo, e i titoli degli esercizi indicavano un numero errato. Entrambi risolti.
+• Corretti caratteri di un altro sistema di scrittura nei testi in giapponese e cinese.
+• 1v1 — risolti un avversario che non rispondeva e entrambi i giocatori mostrati come sconfitti in caso di pareggio.
+• Risolti annunci che non si caricavano e un banner sulla schermata sbagliata.
+• Testi rivisti: obiettivi, ricompense e risultati.
+</it-IT>
+<ja-JP>
+• アカデミー — 繁体字中国語とスペイン語で内容が英語で表示される問題、および練習問題のタイトルに正解と異なる数字が表示される問題を修正しました。
+• 日本語と中国語の文章に混ざっていた別の文字体系の文字を修正しました。
+• 1v1対戦 — 相手が応答しない問題と、同時にクリアした際に両者とも敗北と表示される問題を修正しました。
+• 広告が表示されない問題と、別の画面に重なって表示される問題を修正しました。
+• 実績名、ログインボーナス、対戦結果画面の表記を整えました。
+</ja-JP>
+<ko-KR>
+• 아카데미 — 번체 중국어와 스페인어에서 내용이 영어로 나오던 문제를 고쳤습니다. 연습문제 제목의 숫자가 실제 정답과 다르던 문제도 바로잡았습니다.
+• 일본어와 중국어 문장에 섞여 있던 다른 문자 체계의 글자를 바로잡았습니다.
+• 1v1 대전 — 상대가 응답하지 않거나, 동시에 완성했을 때 양쪽 모두 패배로 표시되던 문제를 고쳤습니다.
+• 광고가 뜨지 않거나 다른 화면 위에 겹치던 문제를 고쳤습니다.
+• 업적 이름, 출석 보상, 대전 결과 화면의 표기를 다듬었습니다.
+</ko-KR>
+<pt-BR>
+• Academia — o conteúdo aparecia em inglês no chinês tradicional e no espanhol, e os títulos dos exercícios indicavam um número errado. Ambos corrigidos.
+• Corrigidos caracteres de outro sistema de escrita em textos em japonês e chinês.
+• 1v1 — corrigido um oponente que nunca respondia e os dois jogadores mostrados como perdedores ao concluírem juntos.
+• Corrigidos anúncios que não carregavam e um banner sobre a tela errada.
+• Textos revisados: conquistas, recompensas e resultados.
+</pt-BR>
+<ru-RU>
+• Академия — содержимое отображалось на английском в традиционном китайском и испанском, а заголовки упражнений называли неверное число. Исправлено.
+• Исправлены символы другой системы письма в японском и китайском тексте.
+• 1v1 — исправлены не отвечавший соперник и показ обоих игроков проигравшими при одновременном завершении.
+• Исправлены незагружавшаяся реклама и баннер поверх другого экрана.
+• Уточнены тексты достижений, наград и результатов.
+</ru-RU>
+<zh-CN>
+• 学院 — 修复了繁体中文和西班牙语下内容显示为英文的问题，以及练习题标题显示的数字与实际答案不符的问题。
+• 修正了日文与中文句子中混入的其他文字体系的字符。
+• 1v1 对战 — 修复了对手无响应的问题，以及双方同时完成时都被判定为失败的问题。
+• 修复了广告无法加载，以及横幅广告覆盖其他画面的问题。
+• 优化了成就名称、每日奖励与对战结果画面的文字。
+</zh-CN>
+<zh-TW>
+• 學院 — 修正了繁體中文與西班牙文下內容顯示為英文的問題，以及練習題標題顯示的數字與實際答案不符的問題。
+• 修正了日文與中文句子中混入的其他文字體系的字元。
+• 1v1 對戰 — 修正了對手無回應的問題，以及雙方同時完成時都被判定為失敗的問題。
+• 修正了廣告無法載入，以及橫幅廣告覆蓋其他畫面的問題。
+• 優化了成就名稱、每日獎勵與對戰結果畫面的文字。
+</zh-TW>

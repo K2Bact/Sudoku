@@ -8,9 +8,9 @@ export const common = {
     confirm: 'OK',
     cancel: 'Annulla',
     restart: 'Ricomincia',
-    restartConfirm: "Ricominciare questo puzzle? La partita in corso conterà come sconfitta.",
+    restartConfirm: "Ricominciare questo schema? La partita in corso conterà come sconfitta.",
     abandonConfirm: "C’è una partita in corso. Iniziandone una nuova, conterà come sconfitta. Iniziare comunque?",
-    newGame: 'Nuova Partita',
+    newGame: 'Nuova partita',
     home: 'Home',
     pause: 'Pausa',
     resume: 'Riprendi',
@@ -56,27 +56,27 @@ export const common = {
     notesOff: 'Note OFF',
     hint: 'Suggerimento',
     rewardHint: '+1 aiuto',
-    fastEntry: 'Modo Rapido'
+    fastEntry: 'Modo rapido'
   },
   board: {
-    pausedTitle: 'Partita in Pausa',
+    pausedTitle: 'Partita in pausa',
     tapToResume: 'Tocca per riprendere ▶️',
     resumeTooltip: 'Tocca per riprendere'
   },
   themes: {
-    clay: '🏺 Ceramica & Argilla',
-    matteDark: '🌌 Resina Scura Opaca',
-    pureCeramic: '🧊 Claymorphism Puro',
-    editorial: '📰 Carta di Giornale Classica'
+    clay: '🏺 Ceramica e argilla',
+    matteDark: '🌌 Resina scura opaca',
+    pureCeramic: '🧊 Claymorphism puro',
+    editorial: '📰 Carta di giornale classica'
   },
   conflicts: {
-    boxDuplicate: '⚠️ Il numero {num} esiste già nel [quadrante 3x3 {box}]! {suffix}',
+    boxDuplicate: '⚠️ Il numero {num} esiste già nel [blocco 3×3 {box}]! {suffix}',
     rowDuplicate: '⚠️ Il numero {num} esiste già nella riga {row}! {suffix}',
     colDuplicate: '⚠️ Il numero {num} esiste già nella colonna {col}! {suffix}',
-    multipleDuplicates: '⚠️ Il numero {num} esiste già nello stesso quadrante / riga / colonna! {suffix}',
+    multipleDuplicates: '⚠️ Il numero {num} esiste già nello stesso blocco / riga / colonna! {suffix}',
     notSolution: '⚠️ Il numero {num} non è la soluzione di questa casella! {suffix}',
     cageDuplicate: '⚠️ Il numero {num} è già in questa gabbia! {suffix}',
-    cageSum: '⚠️ Questa gabbia non somma più {sum}! {suffix}',
+    cageSum: '⚠️ La somma di questa gabbia non corrisponde più a {sum}! {suffix}',
     boardFullHasMistakes: '⚠️ Lo schema è completo ma contiene degli errori. Ricontrolla!',
     timeAttackSuffix: '(Errore {count} | penalità +10s)',
     classicSuffix: '(Errori {count}/3)',
@@ -90,11 +90,11 @@ export const common = {
     },
     expert: {
       title: '🧠 Esperto',
-      desc: 'Risolvi con costanza puzzle difficili.'
+      desc: 'Risolvi con costanza schemi difficili.'
     },
     superior: {
       title: '⚡ Avanzato',
-      desc: 'Sei pronto per puzzle avanzati.'
+      desc: 'Sei pronto per schemi avanzati.'
     },
     aboveAverage: {
       title: '💡 Intermedio',

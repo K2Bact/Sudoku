@@ -1,17 +1,17 @@
 export const modals = {
   modals: {
     victory: {
-      title: 'Schema Risolto!',
+      title: 'Schema risolto!',
       desc: 'Congratulazioni!\nHai completato il sudoku con successo.',
       rankLabel: 'Valutazione: {title}',
       difficultyLabel: 'Difficoltà',
-      timeLabel: 'Tempo Impiegato',
-      timeRemainingLabel: 'Tempo Rimanente',
+      timeLabel: 'Tempo impiegato',
+      timeRemainingLabel: 'Tempo rimanente',
       mistakesLabel: 'Errori',
       mistakesCount: '{count}',
       notRecordedHint: "Hai usato dei suggerimenti, quindi questo tempo non conta come record.",
       notRecordedNoLimit: "Hai giocato senza il limite di 3 errori, quindi questo tempo non conta come record.",
-      nextGame: 'Prossima Partita',
+      nextGame: 'Prossima partita',
       leaderboardBtn: "📊 I miei record",
       shareBtn: 'Condividi',
       copiedToast: '🎉 Record copiato negli appunti!',
@@ -25,14 +25,14 @@ export const modals = {
       }
     },
     gameOver: {
-      title: 'Partita Terminata',
+      title: 'Partita terminata',
       desc: 'Hai commesso 3 errori.\nGuarda un annuncio per rivivere e continuare!',
       descNoRevive: 'Tutti gli errori sono stati esauriti.\n(Opportunità di rivincita già utilizzata)',
       reviveBtn: 'Rivivi (+1 vita)',
       restartBtn: 'Ricomincia'
     },
     newGame: {
-      title: 'Seleziona Difficoltà',
+      title: 'Seleziona difficoltà',
       desc: 'Scegli il tuo livello\nper il nuovo schema.'
     },
     storeReview: {
@@ -42,7 +42,7 @@ export const modals = {
       laterBtn: 'Forse più tardi'
     },
     dailyReward: {
-      title: 'Ricompensa Giornaliera!',
+      title: 'Ricompensa giornaliera!',
       streakBadge: 'Serie di {days} giorno/i',
       desc: 'Serie di {days} giorno/i raggiunta!\n+{count} suggerimento/i gratuito/i aggiunto/i.',
       confirm: 'Riscatta'
@@ -52,9 +52,9 @@ export const modals = {
       unavailable: 'Al momento non ci sono annunci disponibili.\nRiprova tra poco.'
     },
     hintReward: {
-      title: 'Ricarica Suggerimenti Gratis',
+      title: 'Ricarica suggerimenti gratis',
       desc: 'Guarda un breve annuncio per\nottenere subito +1 suggerimento.',
-      watchAd: 'Guarda Annuncio (+1 Suggerimento)',
+      watchAd: 'Guarda annuncio (+1 suggerimento)',
       adWatching: '📺 Annuncio in riproduzione…',
       adPlaceholder: '📺 Spazio annuncio (nessun annuncio)',
       chancesLeft: 'Ricariche rimaste in questa partita: {remaining}/{max}',

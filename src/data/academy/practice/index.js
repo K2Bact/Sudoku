@@ -8,13 +8,15 @@ import { STAGE2_PRACTICE } from './stage2Practice.js';
 import { STAGE3_PRACTICE } from './stage3Practice.js';
 import { STAGE4_PRACTICE } from './stage4Practice.js';
 import { STAGE5_PRACTICE } from './stage5Practice.js';
+import { KILLER_PRACTICE } from './killerPractice.js';
 
 export const ALL_PRACTICE_MISSIONS = {
   ...STAGE1_PRACTICE,
   ...STAGE2_PRACTICE,
   ...STAGE3_PRACTICE,
   ...STAGE4_PRACTICE,
-  ...STAGE5_PRACTICE
+  ...STAGE5_PRACTICE,
+  ...KILLER_PRACTICE
 };
 
 export function getPracticeMissions(strategyId) {

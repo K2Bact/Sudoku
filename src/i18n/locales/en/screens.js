@@ -243,7 +243,8 @@ export const screens = {
       stage2: 'Stage 2: Intermediate Techniques (Pairs & Intersections)',
       stage3: 'Stage 3: Advanced Techniques (Wing Family)',
       stage4: 'Stage 4: Master Techniques (Fish, Coloring & Unique Rectangle)',
-      stage5: 'Stage 5: Grandmaster Techniques (AIC, ALS & Exocet)'
+      stage5: 'Stage 5: Grandmaster Techniques (AIC, ALS & Exocet)',
+      killer: "Killer: Cage Techniques (Cages & the Rule of 45)"
     },
     title: 'Sudoku Academy',
     theoryBoard: {

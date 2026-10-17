@@ -135,7 +135,7 @@ export const screens = {
     speedrunBest: 'Meilleur chrono',
     survivalTitle: '⏳ Mode survie',
     survivalTotalWins: 'Victoires en survie',
-    survivalWinsUnit: '{count} victoire(s)',
+    survivalWinsUnit: '{count} victoire(s)',
     summaryTitle: 'Résumé des performances',
     pvpRating: "Classement",
     pvpRecordLabel: "Bilan",
@@ -145,7 +145,7 @@ export const screens = {
     winRate: 'Taux de victoire'
   },
   brainReport: {
-    scoreLabel: 'Logic Score',
+    scoreLabel: 'Logic Score',
     scoreHowTitle: "ⓘ Comment le Logic Score est-il calculé ?",
     scoreHowBody: "Il augmente quand vous remplissez toute la grille et gagnez. Les parties Standard et Killer comptent toutes les deux. Le niveau le plus difficile réussi sans indice compte le plus ; le nombre de victoires et le taux de victoire comptent un peu. Les duels 1v1 et contre l’IA ne comptent ni dans les victoires ni dans le taux de victoire : ils ont leur propre bilan dans Statistiques. Perdre ou abandonner une partie fait baisser le taux de victoire et peut retirer quelques points. Le classement utilise ce score quand vous êtes connecté à Play Jeux.",
     shareText: '[Analyse de jeu Sudoku]\nLogic Score : {iq}\nRang : {tier}\nEssayez Sudoku dès aujourd’hui !',
@@ -155,7 +155,7 @@ export const screens = {
     accuracy: 'Taux de réussite',
     logic: 'Difficulté',
     speed: 'Vitesse',
-    shareCardBtn: '🔗 Partager l’analyse',
+    shareCardBtn: '🔗 Partager l’analyse',
     attributesTitle: '📈 5 indicateurs de jeu',
     title: 'Analyse de jeu',
     shareTitle: 'Mon analyse de jeu Sudoku',
@@ -243,7 +243,8 @@ export const screens = {
       stage2: 'Étape 2 : techniques intermédiaires (paires & intersections)',
       stage3: 'Étape 3 : techniques avancées (famille Wing)',
       stage4: 'Étape 4 : techniques de maître (Fish, coloriage & rectangle unique)',
-      stage5: 'Étape 5 : techniques de grand maître (AIC, ALS & Exocet)'
+      stage5: 'Étape 5 : techniques de grand maître (AIC, ALS & Exocet)',
+      killer: "Killer : techniques de cages (cages et règle des 45)"
     },
     title: 'Académie Sudoku',
     theoryBoard: {

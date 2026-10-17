@@ -2,14 +2,19 @@
    ACADEMY STYLES (스도쿠 정석 아카데미 스타일)
    ========================================================= */
 @import './academyMiniGrids.css';
+@import './academyKiller.css';
 @import './interactivePractice.css';
 
+/* Six tabs (five stages and the killer stage) fit a 360px phone in every language —
+   the widest, Arabic, needs 359px. With the old 64px minimum and wider padding the
+   killer tab sat wholly off screen and could only be found by swiping the bar.
+   On wider screens the tabs still stretch to fill the bar. */
 .academy-tab-bar {
   display: flex;
   overflow-x: auto;
-  gap: 6px;
+  gap: 4px;
   background: var(--bg-surface);
-  padding: 8px 10px;
+  padding: 8px 8px;
   border-bottom: 1px solid var(--board-grid-line);
   scrollbar-width: none;
 }
@@ -20,7 +25,7 @@
 
 .academy-tab-bar .seg-tab-btn {
   flex: 1 0 auto;
-  min-width: 64px;
+  min-width: 0;
   box-sizing: border-box;
   background: var(--btn-bg);
   color: var(--text-muted);
@@ -28,7 +33,7 @@
   font-family: inherit;
   font-size: clamp(10.5px, 2.8vw, 12px);
   font-weight: 800;
-  padding: 7px 10px;
+  padding: 7px 5px;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
   transition: all 0.15s ease;

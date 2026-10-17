@@ -2,38 +2,42 @@
 Sudoku: Classic Puzzle Academy
 
 [Short Description (max 80 chars)]
-Classic & Killer Sudoku, 32 techniques to learn, daily puzzles, 1v1 & AI duels.
+Classic & Killer Sudoku, 40 techniques to learn, daily puzzles, 1v1 & AI duels.
 
 [Full Description]
 Sudoku for everyone, from first-timers to seasoned solvers.
 
-Play at 5 difficulty levels, learn 32 solving techniques with diagrams and practice puzzles, and race other players in online 1v1 battles or take on the AI.
+Play classic and Killer sudoku at 5 difficulty levels, learn 40 solving techniques with diagrams and practice puzzles, and race other players in online 1v1 battles or take on the AI.
 
 ━━━━━━━━━━━━━━━━━━━━━
 🌟 KEY HIGHLIGHTS
 ━━━━━━━━━━━━━━━━━━━━━
 
-🧩 1. 5 Difficulty Levels
+🧩 1. Classic and Killer, 5 Difficulty Levels
 - Intro, Easy, Medium, Hard and Expert.
 - Every puzzle is generated to have exactly one solution.
-- Classic, Speedrun and Survival modes.
+- Killer Sudoku: the digits in each dashed cage add up to the small number in its corner.
+- Classic, Speedrun and Survival modes, for Standard and Killer alike.
+- Ghost and Time Gap: replay your record puzzle against your own run, or see how far ahead of your best pace you are.
 - 4 easy-on-the-eyes themes (Warm Clay, Matte Dark, Pure Ceramic, Classic Paper).
 
-🎓 2. Academy: 32 Solving Techniques
+🎓 2. Academy: 40 Solving Techniques
 - Each technique comes with an illustrated explanation and 2 practice puzzles on real boards.
 - Beginner: Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
 - Intermediate: Pointing, Claiming, Naked/Hidden Pairs, Triples and Quads
 - Advanced: X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
 - Master: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
 - Grandmaster: Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
+- Killer: Last Cell of a Cage, Unique Combination, Two-Cell Sums, Rule of 45, Must-Contain Digit, Hidden Cage, Innie-Outie Difference, Cage Splitting
 
 ⚔️ 3. 1v1 and AI Battles
 - Real-time online battles: race another player on the same board.
 - Watch your opponent's progress as you play.
-- AI battles with 5 difficulty levels.
+- After a battle, replay it move by move.
+- AI battles with 5 difficulty levels, on Standard or Killer puzzles.
 
 🏆 4. Achievements and Play Analysis
-- 30 achievements to unlock.
+- 40 achievements to unlock, also on Google Play Games.
 - See your play broken down into 5 metrics, such as speed and mistake-free clears.
 - Compete on the Logic Score leaderboard on Google Play Games.
 
