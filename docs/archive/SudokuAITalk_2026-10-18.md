@@ -1,9 +1,10 @@
-# SudokuAITalk 보관본 — 2026-10-18 (제미나이 1.6.0 (29) 9개 각도 검수 · 챗지피티 기능·저장 검수와 재검토)
+# SudokuAITalk 보관본 — 2026-10-18 (제미나이 1.6.0 (29) 9개 각도 검수 · 챗지피티 기능·저장 검수, 재검토와 콤보 수정 확인)
 
 > 2026-10-18 SudokuAITalk.md 에서 옮겨 옴(사용자: *"문제없는 걸로 보이는데, 맞나?"*). 판단이 끝났고 고칠 코드는 없다.
 > 같은 날 챗지피티 기능·저장 검수를 더함(사용자: *"아래는 챗지피티가 검수한 내용이야."*) — 결함 4개는 고쳤다(Diary 143).
 > 같은 날 챗지피티의 `b39f1a2` 재검토를 더함(사용자: *"챗지피티가 위에 같이 대답했어"*) — 콤보 유실 1개를 고쳤다(Diary 144).
-> 본문은 옮기기 전 그대로 — 경로는 저장소 루트 기준.
+> 같은 날 챗지피티의 `bb29bd7` 콤보 수정 확인을 더함 — 새 지적 없음, 전체 QA 61/61 한 번에.
+> 본문은 옮기기 전 그대로 — 경로는 저장소 루트 기준. 다만 챗지피티 절의 `test_output/` 증거 링크는 이 폴더에서 열리게 `../../test_output/` 로 맞췄다(챗지피티 보정 10-18 · 마지막 절은 Claude 가 옮기며).
 
 ---
 
@@ -177,17 +178,17 @@
 - 3-11의 러너 제목은 `every mission × 13 languages`, 마지막 출력도 모든 언어의 모든 연습을 확인한 듯 표현하지만, **구현은 한국어·아랍어 전수 + 다른 11개 언어의 레이아웃/단계 표본**이다. 파일 앞 주석에는 이 범위가 올바르게 설명돼 있다. 본 검수는 최종 통과 문장을 전수의 증거로 확대하지 않는다. 이것은 보고 범위의 주의점이며 위 기능 결함 수에 더하지 않았다.
 - 이번 3-11 실행은 한국어·아랍어 각각 80개, 다른 11개 언어 각각 8개, 한국어의 다른 테마 3개에서 각각 80개, 태블릿 폭에서 8개를 실행해 **중복 포함 연습 496회·입력 632회**가 로그에 남았다. 모두 통과했다. 이는 고유 연습 수가 496개라는 뜻이 아니다.
 - 2-21·2-22 같은 단위 검사의 통과와 위 UI 연결 오류는 함께 존재할 수 있다. 검사 함수가 올바른 입력을 받았을 때의 정답과, 실제 앱이 그 입력을 올바르게 만드는지는 별도다.
-- 변형 정의 **57개 파일의 치환 기준 505개**가 현행 소스에서 각각 정확히 한 번 일치하는지 읽기 전용으로 대조했다. 누락·중복은 없었다. [상세 결과](test_output/chatgpt-review-20261018/mutation-anchor-compatibility.json). 이는 오래된 치환 기준 때문에 실행 자체가 깨지는지 확인한 것이며, 실제 소스 변형 주입과 505회 게이트 재실행을 수행했다는 뜻은 아니다.
+- 변형 정의 **57개 파일의 치환 기준 505개**가 현행 소스에서 각각 정확히 한 번 일치하는지 읽기 전용으로 대조했다. 누락·중복은 없었다. [상세 결과](../../test_output/chatgpt-review-20261018/mutation-anchor-compatibility.json). 이는 오래된 치환 기준 때문에 실행 자체가 깨지는지 확인한 것이며, 실제 소스 변형 주입과 505회 게이트 재실행을 수행했다는 뜻은 아니다.
 
 ### 증거와 변경 범위
 
 로컬 증거는 `test_output/chatgpt-review-20261018/`에 있다(git 제외, 새 복제본에 없을 수 있음).
 
-- [첫 QA 로그](test_output/chatgpt-review-20261018/qa-full.log) · [전체 QA 재실행 로그](test_output/chatgpt-review-20261018/qa-full-unrestricted.log).
-- [추가 브라우저 재현 7개](test_output/chatgpt-review-20261018/targeted-browser-results.json) · [마지막 보너스 대조 3개](test_output/chatgpt-review-20261018/extended-browser-results.json). 입력·출력·저장 값·관련 소스 SHA256을 남겼다. 이 10개에서 페이지 JS 예외는 수집되지 않았다.
-- [재현 스크립트](test_output/chatgpt-review-20261018/targeted-browser-review.mjs): 현재 웹 번들이 있는 상태에서 `node test_output/chatgpt-review-20261018/targeted-browser-review.mjs`는 앞의 7개, `--extended`를 붙이면 뒤의 3개를 실행한다. 계정 없이 새 브라우저 저장소를 쓰고 외부 요청은 차단한다. 이것은 로컬 조사 증거이며 정식 QA에 이미 편입된 게이트는 아니다.
-- [정통 마지막 힌트 화면](test_output/chatgpt-review-20261018/classic-last-cell-hint.png) · [킬러 마지막 힌트 화면](test_output/chatgpt-review-20261018/killer-last-cell-hint.png) · [메모 모드 힌트](test_output/chatgpt-review-20261018/hint-while-note-mode.png).
-- [데일리 중단 없는 완료](test_output/chatgpt-review-20261018/daily-reload-false.png) · [데일리 재시작 후 완료](test_output/chatgpt-review-20261018/daily-reload-true.png) · [정통 스피드런 마지막 보너스](test_output/chatgpt-review-20261018/speedrun-final-classic.png) · [킬러 스피드런 마지막 보너스](test_output/chatgpt-review-20261018/speedrun-final-killer.png).
+- [첫 QA 로그](../../test_output/chatgpt-review-20261018/qa-full.log) · [전체 QA 재실행 로그](../../test_output/chatgpt-review-20261018/qa-full-unrestricted.log).
+- [추가 브라우저 재현 7개](../../test_output/chatgpt-review-20261018/targeted-browser-results.json) · [마지막 보너스 대조 3개](../../test_output/chatgpt-review-20261018/extended-browser-results.json). 입력·출력·저장 값·관련 소스 SHA256을 남겼다. 이 10개에서 페이지 JS 예외는 수집되지 않았다.
+- [재현 스크립트](../../test_output/chatgpt-review-20261018/targeted-browser-review.mjs): 현재 웹 번들이 있는 상태에서 `node test_output/chatgpt-review-20261018/targeted-browser-review.mjs`는 앞의 7개, `--extended`를 붙이면 뒤의 3개를 실행한다. 계정 없이 새 브라우저 저장소를 쓰고 외부 요청은 차단한다. 이것은 로컬 조사 증거이며 정식 QA에 이미 편입된 게이트는 아니다.
+- [정통 마지막 힌트 화면](../../test_output/chatgpt-review-20261018/classic-last-cell-hint.png) · [킬러 마지막 힌트 화면](../../test_output/chatgpt-review-20261018/killer-last-cell-hint.png) · [메모 모드 힌트](../../test_output/chatgpt-review-20261018/hint-while-note-mode.png).
+- [데일리 중단 없는 완료](../../test_output/chatgpt-review-20261018/daily-reload-false.png) · [데일리 재시작 후 완료](../../test_output/chatgpt-review-20261018/daily-reload-true.png) · [정통 스피드런 마지막 보너스](../../test_output/chatgpt-review-20261018/speedrun-final-classic.png) · [킬러 스피드런 마지막 보너스](../../test_output/chatgpt-review-20261018/speedrun-final-killer.png).
 
 앱 소스·설정·번역·검사 게이트는 수정하지 않았다. 이 기록과 로컬 재현 자료만 추가했다. QA가 쓰는 웹 `dist/`는 검사 과정의 산출물이며 APK·AAB를 만들거나 설치하지 않았다. 실기 WebView, 실제 광고·결제·Play Games 클라우드, 배포 중인 바이너리와 서버 규칙의 동작은 이번 검수의 직접 확인 범위 밖이다. 각 결함이 어느 과거 버전에 처음 들어갔는지도 이번에는 추적하지 않았다.
 
@@ -294,12 +295,80 @@
 
 변이 정의 6개는 내용을 읽었으며, 이번 재검토에서는 앱 소스에 변이를 주입해 재실행하지 않았다. Claude가 보고한 6/6과 이번에 직접 실행한 검사는 구분한다.
 
-- [이번 전체 QA 로그](test_output/chatgpt-rereview-20261018/qa-full.log).
-- [3-10 단독 재실행](test_output/chatgpt-rereview-20261018/gate-3-10-retry.log) · [3-20 단독 실행](test_output/chatgpt-rereview-20261018/gate-3-20.log).
-- [3-11~3-19 결과·소요 시간·각 로그 경로](test_output/chatgpt-rereview-20261018/remaining-gates.json). 개별 로그는 같은 폴더의 `gate-3-11.log`~`gate-3-19.log`다.
-- [최고 콤보 대조 6개 결과](test_output/chatgpt-rereview-20261018/combo-resume-results.json) · [대조 스크립트](test_output/chatgpt-rereview-20261018/combo-resume-review.mjs) · [실행 로그](test_output/chatgpt-rereview-20261018/combo-resume.log). 결과 JSON에 진행 중 저장값·승리 후 통계·업적·관련 소스 해시를 남겼다.
-- 화면: [정통 대조군](test_output/chatgpt-rereview-20261018/combo-classic-none.png) · [정통 재시작](test_output/chatgpt-rereview-20261018/combo-classic-reload.png) · [정통 홈 왕복](test_output/chatgpt-rereview-20261018/combo-classic-home.png) · [킬러 대조군](test_output/chatgpt-rereview-20261018/combo-killer-none.png) · [킬러 재시작](test_output/chatgpt-rereview-20261018/combo-killer-reload.png) · [킬러 홈 왕복](test_output/chatgpt-rereview-20261018/combo-killer-home.png).
-- [기존 AAB와 현재 웹 번들 비교](test_output/chatgpt-rereview-20261018/aab-comparison.json).
-- [기존 문서 보존·앱 소스 해시·AAB 미변경 확인](test_output/chatgpt-rereview-20261018/review-validation.json).
+- [이번 전체 QA 로그](../../test_output/chatgpt-rereview-20261018/qa-full.log).
+- [3-10 단독 재실행](../../test_output/chatgpt-rereview-20261018/gate-3-10-retry.log) · [3-20 단독 실행](../../test_output/chatgpt-rereview-20261018/gate-3-20.log).
+- [3-11~3-19 결과·소요 시간·각 로그 경로](../../test_output/chatgpt-rereview-20261018/remaining-gates.json). 개별 로그는 같은 폴더의 `gate-3-11.log`~`gate-3-19.log`다.
+- [최고 콤보 대조 6개 결과](../../test_output/chatgpt-rereview-20261018/combo-resume-results.json) · [대조 스크립트](../../test_output/chatgpt-rereview-20261018/combo-resume-review.mjs) · [실행 로그](../../test_output/chatgpt-rereview-20261018/combo-resume.log). 결과 JSON에 진행 중 저장값·승리 후 통계·업적·관련 소스 해시를 남겼다.
+- 화면: [정통 대조군](../../test_output/chatgpt-rereview-20261018/combo-classic-none.png) · [정통 재시작](../../test_output/chatgpt-rereview-20261018/combo-classic-reload.png) · [정통 홈 왕복](../../test_output/chatgpt-rereview-20261018/combo-classic-home.png) · [킬러 대조군](../../test_output/chatgpt-rereview-20261018/combo-killer-none.png) · [킬러 재시작](../../test_output/chatgpt-rereview-20261018/combo-killer-reload.png) · [킬러 홈 왕복](../../test_output/chatgpt-rereview-20261018/combo-killer-home.png).
+- [기존 AAB와 현재 웹 번들 비교](../../test_output/chatgpt-rereview-20261018/aab-comparison.json).
+- [기존 문서 보존·앱 소스 해시·AAB 미변경 확인](../../test_output/chatgpt-rereview-20261018/review-validation.json).
 
 증거 폴더 `test_output/`는 git 제외인 로컬 자료다. 이 절과 로컬 조사 증거만 추가했다. 앱 소스·설정·검사 게이트·APK·AAB는 변경하지 않았다. 실제 Android WebView·Play Games 전송·광고 동작을 실기로 다시 검증한 결과는 아니다. 코드 검수·웹 회귀 결과와 출시 산출물의 상태를 구분해서 읽는다.
+
+---
+
+<a id="chatgpt-bb29bd7-20261018"></a>
+
+## 챗지피티 bb29bd7 콤보 수정 확인 — 2026-10-18
+
+### Claude 판단 — 이 보고 (2026-10-18)
+
+사용자: *"위에가 챗지피티 대답"*. 새 지적은 없고, 주장은 확인한 대로 맞다.
+
+- **전체 QA 61/61 한 번에** — `test_output/qa_runs/qa-20261018-130758.tsv`: 61단계 pass · fail 0 · total pass 1,026.5초(3-10 12.9초 · 3-20 33.7초). 그때 앱 코드는 `bb29bd7` 그대로(그 뒤 바뀐 건 문서뿐). 이 코드로 29 를 다시 빌드할 때 새로 돌릴 QA 는 필요 없다 — 바뀌는 게 없으면.
+- **콤보 여섯 경로** — 3-20 의 경우 6(정통 홈 · 킬러 재시작)과 같은 결과, 거기에 정통 재시작 · 킬러 홈까지. 완료 전 저장에 `playFacts.bestCombo: 5` 까지 본 것은 3-20 보다 한 단계 더 깊다.
+- **보관본 증거 링크 28개 보정** — Claude 가 보관본과 지금 판을 대조: 바뀐 것은 링크 대상 경로(`test_output/` → `../../test_output/`)뿐, 판단 글·원문 내용 변경 0. 보관본 머리말의 「경로는 저장소 루트 기준」 과 어긋나 머리말에 한 줄 더함. 이 절도 옮기며 같은 방식으로 경로를 맞춤.
+- **3-10** — 이번엔 통과, 지난 한 번의 시간 초과는 원인 미확인 그대로(Diary 144).
+- **변이 54/54** 는 Claude 의 실행이라고 구분해 적었다 — 맞다.
+
+### ChatGPT 원문 (받은 그대로 — 링크 경로만 보관본 위치에 맞춤)
+<a id="chatgpt-bb29bd7-20261018"></a>
+
+## bb29bd7 콤보 수정 확인 — 2026-10-18 · ChatGPT
+
+**상태: CH18-R01 수정 확인 완료. 여섯 경로 재현 통과·현재 커밋의 전체 QA 61/61 한 번에 통과. 앱 소스 미수정.** 사용자가 붙여 준 Claude의 두 번째 수정 보고를 현재 커밋 `bb29bd7`에서 대조했다. 앞선 지적·Claude 판단은 [10-18 보관본](#chatgpt-rereview-20261018)에 그대로 둔다.
+
+### 저장·복원 코드 확인
+
+- 최고 콤보를 시계의 임시 `bestComboRef`에서 `playFacts.bestCombo`로 옮겼다. `comboReached`가 더 짧은 연속으로 최고값을 낮추지 않는다(`src/utils/playFacts.js:84`).
+- `useGameLifecycle`의 기존 판 저장에 `playFacts`가 포함된다. 이어하기는 `restorePlayFacts(saved)`로 최고 콤보를 복원하고, 승리는 그 값을 읽는다(`useSudokuGame.js:223`, `useGameInput.js:260`).
+- 새 판·다시 시작은 `newPlayFacts()`로 0부터 시작하고, 최고 콤보를 저장하지 않던 옛 판도 0으로 읽는다. 옛 저장에서 이미 잃었던 수치를 추측해 만들지 않는다.
+- `b39f1a2..bb29bd7` diff에서 서바이벌/스피드런 보상 분기의 순서를 바꾼 것은 두 분기가 여전히 한 칸당 한 번 보상 가드 안에 있어 의미가 같다.
+
+### 이전 재현 스크립트로 독립 대조
+
+지난 검수의 스크립트에서 증거 경로·커밋 표기·해시 수집 대상만 바꿨다. 퍼즐·실제 버튼 입력·대기·판 완료 경로는 그대로다. 현재 소스를 제공하는 Vite 개발 서버와 격리 Chromium(360×800)에서 외부 요청을 차단하고 실행했다. 기존 29 AAB나 오래된 웹 번들을 시험한 것이 아니다.
+
+각 실행은 생성한 Lv.3 스피드런 판에서 빈칸 6개를 남긴 저장으로 시작한다. 앞의 5칸을 화면 버튼으로 맞혀 `-2s (5 COMBO!)`를 확인하고 4.2초 쉰 뒤, 아래 경로를 거쳐 마지막 칸을 채운다.
+
+| 퍼즐 종류 | 5콤보 이후 경로 | 승리 후 maxCombo | combo_streak_5 업적 |
+|---|---|---:|---|
+| 정통 | 계속 플레이 — 대조군 | 5 | 획득 |
+| 정통 | 페이지 새로고침 → 이어하기 | 5 | 획득 |
+| 정통 | 홈 → 이어하기 | 5 | 획득 |
+| 킬러 | 계속 플레이 — 대조군 | 5 | 획득 |
+| 킬러 | 페이지 새로고침 → 이어하기 | 5 | 획득 |
+| 킬러 | 홈 → 이어하기 | 5 | 획득 |
+
+**여섯 경로 모두 스크립트 오류·페이지 JS 예외 없이 완료했다.** `b39f1a2`에서 이어하기 네 경로가 최고 1·업적 미획득이던 결과가 최고 5·획득으로 바뀌었다. 따라서 앞선 CH18-R01은 이 코드·브라우저 재현 범위에서 수정됐다고 판단한다.
+
+이 여섯 실행 모두 완료 전의 판 저장에도 `playFacts.bestCombo: 5`가 들어 있었다. 통계 값만 맞춘 것이 아니라 진행 중인 판이 최고 수를 보존하는 것도 대조했다.
+
+### 검사 범위와 남은 확인
+
+- 현재 커밋에서 전체 `npm run qa`를 새로 실행해 **61/61 한 번에 통과, 종료 코드 0**을 확인했다. **13:07:58–13:25:05, 1,026.5초.** 이전 커밋의 분할 통과를 이번 결과로 옮겨 적은 것이 아니다. QA용 웹 번들은 만들었으며 APK·AAB 빌드·설치는 하지 않았다.
+- **3-20의 12개 사례 모두 통과.** 기존 10개와 이번에 추가된 정통 홈 왕복·킬러 새로고침 두 사례다. 현재 소스로 빌드한 웹 번들을 제공하는 preview에서 실행됐다. 별도의 여섯 경로 대조는 정통 새로고침·킬러 홈 왕복도 확인했다.
+- 3-10은 이번 전체 실행에서 양쪽 결과 화면·복기 전달·재대결까지 12.9초에 통과했다. 이전 실행의 시간 초과 원인은 이번 통과만으로 규명된 것이 아니므로 미확인 기록을 유지한다.
+- 변이 정의는 2-22에 11개, 2-30에 36개, 3-20에 7개로 합계 54개다. 새 변이는 복원할 최고 콤보를 0으로 되돌린다. **54개를 모두 잡았다는 실행 결과는 Claude의 보고이며, 이번 재검토에서 변이를 주입해 다시 돌리지는 않았다.**
+- 저장된 원격 추적 브랜치와 비교하면 `5523fdb`·`b39f1a2`·`bb29bd7` 세 커밋 앞이다. 실제 원격을 새로 조회하거나 푸시하지 않았다.
+- 기존 `release_archive/sudoku-v1.6.0-build29.aab`의 SHA256은 `7E3CF01E911D871EE29A4AA2278F3EBB77FEC7771F9C94D01139D3F426996B01`로 직전 검수와 같다. 수정 전 파일 그대로이며, 이번에도 APK·AAB를 만들거나 덮어쓰지 않았다.
+- 보관본의 내 두 검토 원문에 남은 증거 링크는 `test_output/...`가 보관본 폴더에서 해석돼 깨져 있었다. 실제 파일 존재를 확인하고 `../../test_output/...`로 경로만 보정했다. [보정 내역](../../test_output/chatgpt-bb29bd7-20261018/archive-link-repair.json)에 대상과 전후 해시를 남겼다.
+- 플립5 실기·실제 Android WebView·광고·Play Games 전송은 이번에 검사하지 않았다. 브라우저 재현과 실기 검증을 구분한다.
+
+### 로컬 증거
+
+- [여섯 경로의 저장·통계·업적·소스 해시](../../test_output/chatgpt-bb29bd7-20261018/combo-resume-results.json) · [동일 경로 재현 스크립트](../../test_output/chatgpt-bb29bd7-20261018/combo-resume-review.mjs) · [실행 로그](../../test_output/chatgpt-bb29bd7-20261018/combo-resume.log).
+- [이번 전체 QA 로그](../../test_output/chatgpt-bb29bd7-20261018/qa-full.log).
+- [기존 문서·소스·AAB 보존과 여섯 경로 확인](../../test_output/chatgpt-bb29bd7-20261018/review-validation.json).
+
+증거는 git 제외인 `test_output/`에 있다. 이 검토 절·로컬 증거를 추가하고 내 보관본의 증거 링크 28개를 보정했다. 앱 소스·설정·검사 게이트·APK·AAB는 변경하지 않았다. 커밋·푸시는 하지 않았다.
