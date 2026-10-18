@@ -3,7 +3,8 @@ import { getDailyPuzzle } from '../utils/dailyChallenge';
 import { getGhostForModeLevel, ghostPuzzle } from '../utils/ghostManager';
 import { useConfirm } from '../components/common/ConfirmProvider';
 import { gameInProgress } from '../utils/abandonedGame';
-import { isDuelMode } from '../utils/storage';
+import { isDuelMode, loadGameState } from '../utils/storage';
+import { savedDailyDateKey } from '../utils/savedGame';
 
 /**
  * Every way of starting a game — Home, the daily puzzle and missions, the tutorial,
@@ -41,6 +42,9 @@ export function useGameStarters({
     setIsGuidedTutorial(false);
 
     if (isResume && resumeSavedGame(selectedLevel, variant)) {
+      // A daily goes on being the daily (CH18-03): the key cleared above comes
+      // back from the save, null for any other game.
+      setActiveDailyDateKey(savedDailyDateKey(loadGameState()));
       setActiveScreen('game');
       return;
     }

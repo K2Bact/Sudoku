@@ -1,0 +1,58 @@
+{
+  "gate": "3-20",
+  "name": "The Last Move Writes What The Screen Shows (a hint on the last cell or with the pencil on, a resumed daily, a final Speedrun combo)",
+  "command": "node scripts/tests/ui/test_hints_and_last_moves.js",
+  "greenMarker": "[3-20] PASSED",
+  "rebuild": true,
+  "note": "Written with the gate on 2026-10-18 (ChatGPT's review, CH18-01…04, Diary 143). Each mutation puts one of the fixed bugs back as it was in 1.5.0 and earlier.",
+  "mutations": [
+    {
+      "name": "the win reads the hint count from before this hint",
+      "why": "CH18-01: setHintsUsedCount lands a render after the win is recorded, so the first hint on the last cell saved a best time, a ghost and a hint-free clear under a card that said 'not a record'.",
+      "file": "src/hooks/useGameInput.js",
+      "find": "        hintsUsed: (hintsUsedCount || 0) + (fromHint ? 1 : 0),",
+      "replace": "        hintsUsed: hintsUsedCount || 0,",
+      "expectFailure": "a hint game saved as a record"
+    },
+    {
+      "name": "a hint follows the pencil and goes in as a note",
+      "why": "CH18-02: the hint is spent and the cell stays empty.",
+      "file": "src/hooks/useGameInput.js",
+      "find": "    const asNote = isNoteMode && !fromHint;",
+      "replace": "    const asNote = isNoteMode;",
+      "expectFailure": "hint with the pencil on"
+    },
+    {
+      "name": "resuming a game forgets the day it is the daily of",
+      "why": "CH18-03: the key cleared before the resume never comes back, so a resumed daily ends as a plain win.",
+      "file": "src/hooks/useGameStarters.js",
+      "find": "      setActiveDailyDateKey(savedDailyDateKey(loadGameState()));",
+      "replace": "      setActiveDailyDateKey(null);",
+      "expectFailure": "daily after a relaunch"
+    },
+    {
+      "name": "the save stops carrying the daily's day",
+      "why": "CH18-03, the other half: the resume reads the day from the save; a save without it is a game of no day.",
+      "file": "src/hooks/useGameLifecycle.js",
+      "find": "      dailyDateKey: s.dailyDateKey || null",
+      "replace": "      dailyDateKey: null",
+      "expectFailure": "daily after a"
+    },
+    {
+      "name": "the win takes the clock from before the last cell's combo bonus",
+      "why": "CH18-04: 04:59 on the card, 300 s saved as the best.",
+      "file": "src/hooks/useGameInput.js",
+      "find": "        timerSeconds: finalSeconds,",
+      "replace": "        timerSeconds,",
+      "expectFailure": "Speedrun, last cell in a combo"
+    },
+    {
+      "name": "the win keeps only the streak alive at the last cell",
+      "why": "CH18-04 and the streak found with it: a 2-combo before a pause, or the last cell's own combo, never reached the stats or the combo achievements.",
+      "file": "src/hooks/useGameInput.js",
+      "find": "        comboCount: Math.max(comboCount, bestCombo ? bestCombo() : 0),",
+      "replace": "        comboCount,",
+      "expectFailure": "Speedrun 2-combo, pause"
+    }
+  ]
+}

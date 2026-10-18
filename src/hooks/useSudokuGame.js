@@ -12,12 +12,13 @@ import {
 import { recordLoss } from '../utils/killerStats.js';
 import { recordAbandonedGame } from '../utils/abandonedGame';
 import { isResumableGame } from '../utils/savedGame';
-import { loadWallet, addHints, subscribeToWallet } from '../utils/wallet.js';
+import { loadWallet, subscribeToWallet } from '../utils/wallet.js';
 import { useTranslation } from '../i18n/i18nContext.jsx';
 import { useGameTimer } from './useGameTimer.js';
 import { useGameHistory } from './useGameHistory.js';
 import { useGameLifecycle } from './useGameLifecycle.js';
 import { useGameInput } from './useGameInput.js';
+import { useRewardHint } from './useRewardHint.js';
 import { observe as observeForReplay } from '../utils/replay/matchRecorder.js';
 import { newPlayFacts, restorePlayFacts } from '../utils/playFacts.js';
 import { boardProgress } from '../utils/boardProgress.js';
@@ -68,6 +69,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     setTimerSeconds,
     playedSeconds,
     comboCount,
+    bestCombo,
     timeFloatingText,
     handleComboSuccess,
     handleTimePenalty,
@@ -126,6 +128,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     adHintsUsedThisGame,
     hintsUsedCount,
     playFactsRef,
+    dailyDateKey: activeDailyDateKey,
     activeScreen,
     isGameOver,
     isVictory,
@@ -284,24 +287,16 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     runTimelineRef,
     playFactsRef,
     comboCount,
+    bestCombo,
     variant,
     cages,
     t
   });
 
-  // Rewarded Video Ad Completion Handler (with instant Auto-Apply)
-  const handleRewardHint = () => {
-    if (adHintsUsedThisGame >= 2) return;
-    setAdHintsUsedThisGame(prev => prev + 1);
-    const newCount = addHints(1, 'ad_reward');
-    setHintsRemaining(newCount);
-    setShowHintRewardModal(false);
-
-    // Automatically apply the rewarded hint directly onto the board
-    setTimeout(() => {
-      handleGetHint();
-    }, 120);
-  };
+  // The hint a rewarded video pays, spent at once (useRewardHint.js).
+  const handleRewardHint = useRewardHint({
+    adHintsUsedThisGame, setAdHintsUsedThisGame, setHintsRemaining, setShowHintRewardModal, handleGetHint
+  });
 
   const { remainingCounts, userFilledCount, totalEmptyCount } = boardProgress(board, initialBoard);
 

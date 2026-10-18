@@ -27,6 +27,7 @@ export function useGameTimer({
   const [timeFloatingText, setTimeFloatingText] = useState(null);
 
   const lastSuccessTimeRef = useRef(0);
+  const bestComboRef = useRef(0);
   const comboTimeoutRef = useRef(null);
   const floatTimeoutRef = useRef(null);
 
@@ -80,25 +81,37 @@ export function useGameTimer({
     floatTimeoutRef.current = setTimeout(() => setTimeFloatingText(null), 1500);
   };
 
-  // Trigger combo success in Speedrun mode
+  // Trigger combo success in Speedrun mode. Returns this success's own combo and
+  // the seconds it took off, which the caller needs in the same render when the
+  // cell ends the game — the state set here lands only on the next (CH18-04).
   const handleComboSuccess = () => {
     const now = Date.now();
     const diff = (now - lastSuccessTimeRef.current) / 1000;
     lastSuccessTimeRef.current = now;
 
+    let nextCombo = 1;
+    let bonusReduction = 0;
     if (diff <= 3.5) {
-      const nextCombo = comboCount + 1;
+      nextCombo = comboCount + 1;
       setComboCount(nextCombo);
       soundHaptic.playComboSound(nextCombo);
 
-      const bonusReduction = nextCombo >= 4 ? 2 : 1;
+      bonusReduction = nextCombo >= 4 ? 2 : 1;
       setTimerSeconds(prev => Math.max(0, prev - bonusReduction));
       showFloatingIndicator('bonus', `-${bonusReduction}s (${nextCombo} COMBO!)`);
     } else {
       setComboCount(1);
     }
+    bestComboRef.current = Math.max(bestComboRef.current, nextCombo);
     resetComboTimer();
+    return { combo: nextCombo, bonus: bonusReduction };
   };
+
+  // The longest streak this game. comboCount is the streak still running and goes
+  // back to 0 after 3.5 s, so a win used to record only whatever streak was alive at
+  // the last cell — a 5-combo earlier in the game never reached the stats or the
+  // combo achievements (found with CH18-04, 2026-10-18).
+  const bestCombo = () => bestComboRef.current;
 
   // Trigger time penalty (+10s in speedrun)
   const handleTimePenalty = (penaltySeconds = 10) => {
@@ -131,6 +144,7 @@ export function useGameTimer({
       setPlayedSeconds(0);
     }
     setComboCount(0);
+    bestComboRef.current = 0;
     lastSuccessTimeRef.current = 0;
     setTimeFloatingText(null);
     if (comboTimeoutRef.current) clearTimeout(comboTimeoutRef.current);
@@ -142,6 +156,7 @@ export function useGameTimer({
     setTimerSeconds,
     playedSeconds,
     comboCount,
+    bestCombo,
     timeFloatingText,
     handleComboSuccess,
     handleTimePenalty,

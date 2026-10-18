@@ -57,6 +57,18 @@ export function playedSecondsOf(saved) {
   return Math.max(0, limit - clock + survivalCellBonusSeconds(kind, saved.level) * solved);
 }
 
+/**
+ * The day a saved game is the daily puzzle of — a YYYY-MM-DD string — or null.
+ * A resumed daily is still that day's daily: finished, it marks the calendar and
+ * pays the daily hint, also when the day has since changed. Before 2026-10-18 the
+ * day was not saved and a resumed daily ended as a plain win (CH18-03). Anything
+ * that is not a date — an old save, a broken one — is a game of no day.
+ */
+export function savedDailyDateKey(saved) {
+  const key = saved?.dailyDateKey;
+  return typeof key === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(key) ? key : null;
+}
+
 export function isResumableGame(saved) {
   if (!saved || typeof saved !== 'object') return false;
   if (saved.isGameOver || saved.isVictory) return false;

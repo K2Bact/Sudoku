@@ -440,7 +440,14 @@ async function run() {
       if (!grade) fail('5b: a killer speedrun shows no grade');
       else if (!grade.includes('S (')) fail(`5b: a killer speedrun at about 115-160 s says "${grade}" — the killer grade there is S`);
       const stats = await readJSON(page, 'suidoku_user_stats_v1');
-      if (!(stats?.killer?.timeAttackBestTimes?.[1] >= 115)) fail(`5b: the killer speedrun set Lv.1 speedrun best ${stats?.killer?.timeAttackBestTimes?.[1]} — expected the clock with its 10 s penalty (105 s saved + 10)`);
+      // 105 s saved + 10 for the wrong digit − 1 for the last cell, a 2-combo. Until
+      // 2026-10-18 the win dropped that last bonus and this asked for ≥ 115 — the bug's
+      // number (CH18-04, Diary 143). The best is the time the victory card shows.
+      const cardText = await page.locator('.victory-card .stat-box').nth(1).innerText().catch(() => '');
+      const cardMatch = cardText.match(/(\d+):(\d{2})/);
+      const card = cardMatch ? Number(cardMatch[1]) * 60 + Number(cardMatch[2]) : null;
+      const best = stats?.killer?.timeAttackBestTimes?.[1];
+      if (!(best >= 114) || best !== card) fail(`5b: the killer speedrun set Lv.1 speedrun best ${best}, the card shows ${card} — expected the card's time, with the 10 s penalty and the last cell's 1 s combo bonus (105 + 10 − 1 = 114 or more)`);
       if (stats?.killer?.bestTimes?.[1]) fail('5b: the killer speedrun set the plain killer best time — speedrun times are kept apart');
       if (stats?.timeAttackBestTimes?.[1]) fail('5b: the killer speedrun set the classic speedrun best time');
       if (stats?.killer?.gamesWon !== 1) fail(`5b: the killer record shows ${stats?.killer?.gamesWon} wins after one speedrun`);

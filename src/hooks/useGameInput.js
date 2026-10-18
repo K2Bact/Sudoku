@@ -60,6 +60,7 @@ export function useGameInput({
   runTimelineRef,
   playFactsRef = null,
   comboCount = 0,
+  bestCombo = null,
   variant = 'classic',
   cages = null,
   t
@@ -102,16 +103,20 @@ export function useGameInput({
     }
   };
 
-  const handleInputNumber = (num, targetCell = selectedCell) => {
+  // fromHint: a hint's answer (useKeypadActions.handleGetHint). It is placed as a
+  // digit with the pencil on too, and is never turned away by the digit count — a
+  // spent hint always fills its cell (CH18-02, 2026-10-18).
+  const handleInputNumber = (num, targetCell = selectedCell, { fromHint = false } = {}) => {
     if (!targetCell || isPaused || isGameOver || isVictory) return;
     const [r, c] = targetCell;
     if (initialBoard[r][c] !== 0) return;
+    const asNote = isNoteMode && !fromHint;
 
     const validSolution = ensureValidSolution(initialBoard, solutionBoard, cages);
     const isCorrectCell = board[r][c] !== 0 && board[r][c] === validSolution[r][c];
-    if (!isNoteMode && isCorrectCell && board[r][c] !== num) return;
+    if (!asNote && isCorrectCell && board[r][c] !== num) return;
 
-    if (!isNoteMode && board[r][c] !== num) {
+    if (!asNote && !fromHint && board[r][c] !== num) {
       const counts = calculateRemainingCounts(board);
       if (counts[num] <= 0) {
         soundHaptic.playSelectSound();
@@ -121,7 +126,7 @@ export function useGameInput({
 
     pushHistory();
 
-    if (isNoteMode) {
+    if (asNote) {
       if (board[r][c] !== 0) return;
       soundHaptic.playNoteSound();
       if (!(notes?.[r]?.[c] || []).includes(num)) notePlaced(playFactsRef?.current);
@@ -189,6 +194,11 @@ export function useGameInput({
       return;
     }
 
+    // What this input itself changes, read by the win below in this same render: the
+    // Speedrun bonus and combo reach state only on the next one, and the last cell's
+    // were left out — 04:59 on screen, 300 s saved, "2 COMBO" saved as 1 (CH18-04).
+    let finalSeconds = timerSeconds;
+
     if (num === validSolution[r][c]) {
       soundHaptic.playPlaceNumberSound();
       setConflictInfo(null);
@@ -206,7 +216,8 @@ export function useGameInput({
       // 7 s on classic, more on a killer (survivalClock.js, KP-2).
       if (firstRightAnswer(playFactsRef?.current, r * 9 + c)) {
         if (gameMode === 'timeAttack') {
-          handleComboSuccess();
+          const combo = handleComboSuccess();
+          if (combo) finalSeconds = Math.max(0, timerSeconds - combo.bonus);
         } else if (gameMode === 'timeLimit') {
           addSurvivalBonusTime(survivalCellBonusSeconds(variant, level));
         }
@@ -229,7 +240,7 @@ export function useGameInput({
       soundHaptic.playCompleteChime();
       handleGameWinLogic({
         level,
-        timerSeconds,
+        timerSeconds: finalSeconds,
         playedSeconds,
         gameMode,
         variant,
@@ -238,11 +249,13 @@ export function useGameInput({
         clearGameState,
         setIsVictory,
         setHintsRemaining,
-        hintsUsed: hintsUsedCount || 0,
+        hintsUsed: (hintsUsedCount || 0) + (fromHint ? 1 : 0),
         initialBoard,
         solutionBoard: validSolution,
         cages,
-        comboCount,
+        // The game's best streak, this input's included — not the one still running
+        // at the last cell, which a pause had reset (useGameTimer bestCombo).
+        comboCount: Math.max(comboCount, bestCombo ? bestCombo() : 0),
         ...winFacts(playFactsRef?.current),
         timeline: runTimelineRef ? runTimelineRef.current.slice() : [],
         totalEmptyCells: initialBoard.reduce((acc, row) => acc + row.filter(v => v === 0).length, 0)

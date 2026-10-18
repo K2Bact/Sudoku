@@ -108,6 +108,11 @@ export function useKeypadActions({
   const handleGetHint = () => {
     if (activeBattleRoom || isPaused || isGameOver || isVictory || gameMode === 'timeAttack') return;
 
+    // Find the answer before spending a hint: a hint that has nothing to show
+    // must not cost one.
+    const hint = getSmartHint(board, solutionBoard, selectedCell);
+    if (!hint) return;
+
     const success = consumeHint();
     if (!success) {
       soundHaptic.playSelectSound();
@@ -131,12 +136,14 @@ export function useKeypadActions({
       showToast(t('game.ghost.ghostHintNotice'), 2300);
     }
 
-    const hint = getSmartHint(board, solutionBoard, selectedCell);
-    if (!hint) return;
-
+    // fromHint (CH18-01, CH18-02, 2026-10-18): the hint places the answer even with
+    // the pencil on — it used to go in as a note, the hint spent and the cell empty —
+    // and a win it completes is a win with this hint used. setHintsUsedCount above
+    // lands next render; the win is recorded in this one, and the first hint on the
+    // last cell saved a best time and a ghost the victory card called a hint game.
     const { row, col, num } = hint;
     setSelectedCell([row, col]);
-    handleInputNumber(num, [row, col]);
+    handleInputNumber(num, [row, col], { fromHint: true });
   };
 
   const handleToggleFastEntryMode = () => {

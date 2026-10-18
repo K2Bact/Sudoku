@@ -33,6 +33,7 @@ export function useGameLifecycle({
   adHintsUsedThisGame = 0,
   hintsUsedCount = 0,
   playFactsRef = null,
+  dailyDateKey = null,
   activeScreen,
   isGameOver,
   isVictory,
@@ -59,6 +60,7 @@ export function useGameLifecycle({
     adHintsUsedThisGame,
     hintsUsedCount,
     playFactsRef,
+    dailyDateKey,
     activeScreen,
     isGameOver,
     isVictory,
@@ -94,7 +96,11 @@ export function useGameLifecycle({
       // Notes placed and Fast Entry used so far — the achievements read them at
       // the win, and a resumed game must still know them (playFacts.js). Saved
       // whenever the board or the notes change, which is when they change.
-      playFacts: s.playFactsRef?.current ? { ...s.playFactsRef.current } : undefined
+      playFacts: s.playFactsRef?.current ? { ...s.playFactsRef.current } : undefined,
+      // The day this game is the daily puzzle of, or null. It lived only in App's
+      // state, so a daily finished after a relaunch or a trip home was a plain win:
+      // no calendar mark, no daily hint (CH18-03, 2026-10-18; savedGame.js).
+      dailyDateKey: s.dailyDateKey || null
     });
   };
 
@@ -115,6 +121,7 @@ export function useGameLifecycle({
     isFastEntryMode,
     lockedNumber,
     adHintsUsedThisGame,
+    dailyDateKey,
     activeScreen,
     isGameOver,
     isVictory,

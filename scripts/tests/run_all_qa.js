@@ -150,7 +150,7 @@ runStep('3-7. Playwright 13-Language Visual UI Overflow Scan', 'node scripts/tes
 runStep('3-8. Real Gameplay End-to-End (play, tap, win)', 'node scripts/tests/ui/test_gameplay_e2e.js');
 runStep('3-9. Ad Placements End-to-End (banner, purchase)', 'node scripts/tests/ui/test_ads_placements_e2e.js');
 runStep('3-10. 1v1 Matchmaking & Rematch End-to-End (two browsers)', 'node scripts/tests/unit/test_rematch_flow.js');
-runStep('3-11. Academy Practice Play-Through (every mission × 13 languages)', 'node scripts/tests/ui/test_academy_practice_play.js');
+runStep('3-11. Academy Practice Play-Through (every mission in ko and ar, each layout and stage in the other 11 languages)', 'node scripts/tests/ui/test_academy_practice_play.js');
 runStep('3-12. The Game Screen Fits the Phone (sizes × font scale, banner gap)', 'node scripts/tests/ui/test_game_layout_fit.js');
 runStep('3-13. Each Academy Card Is As Tall As Its Tallest Tab', 'node scripts/tests/ui/test_academy_card_height.js');
 runStep('3-14. The 1v1 Lobby Says When It Cannot Connect (blocked sign-in, 13 languages)', 'node scripts/tests/ui/test_battle_connect_failure.js');
@@ -159,6 +159,7 @@ runStep('3-16. The Game Header Fits (13 languages × every kind and mode, and th
 runStep('3-17. The 1v1 Replay Screen (opens, ends on its moves, says why, fits; 13 languages)', 'node scripts/tests/ui/test_match_replay_screen.js');
 runStep('3-18. A Killer Game On The Screen (home switch, cages drawn, killer record only; 13 languages)', 'node scripts/tests/ui/test_killer_screens.js');
 runStep('3-19. A Game Started From Inside A Game Keeps Its Mode And Leaves The Daily (restart, next, level picker)', 'node scripts/tests/ui/test_follow_up_game.js');
+runStep('3-20. The Last Move Writes What The Screen Shows (a hint on the last cell or with the pencil on, a resumed daily, a final Speedrun combo)', 'node scripts/tests/ui/test_hints_and_last_moves.js');
 
 console.log('======================================================');
 summary('pass');

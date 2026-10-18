@@ -714,7 +714,9 @@ assert(keypadActionsCode.includes("gameMode === 'timeAttack'"), 'useKeypadAction
 assert(keypadActionsCode.includes('activeBattleRoom'), 'useKeypadActions must strictly prevent hints in Battle mode');
 
 const sudokuGameCode = fs.readFileSync(path.join(rootDir, 'src', 'hooks', 'useSudokuGame.js'), 'utf8');
-assert(sudokuGameCode.includes('adHintsUsedThisGame >= 2'), 'useSudokuGame handleRewardHint must cap at 2 ad hints');
+// The ad-reward hint moved out of useSudokuGame.js on 2026-10-18 (gate 0-1, its code-line budget).
+const rewardHintCode = fs.readFileSync(path.join(rootDir, 'src', 'hooks', 'useRewardHint.js'), 'utf8');
+assert(rewardHintCode.includes('adHintsUsedThisGame >= 2'), 'useRewardHint (handleRewardHint) must cap at 2 ad hints');
 assert(sudokuGameCode.includes('setAdHintsUsedThisGame(0)'), 'useSudokuGame must reset ad hints on new/restarted game');
 
 const hintRewardModalCode = fs.readFileSync(path.join(rootDir, 'src', 'components', 'HintRewardModal.jsx'), 'utf8');
