@@ -220,8 +220,8 @@ const CASES = {
   assert.strictEqual(winFacts(old).notesUsedCount, null, 'an old save\'s notes are unknown, not zero');
   notePlaced(old);
   assert.strictEqual(winFacts(old).notesPlaced, 1, 'notes placed after the resume still count');
-  assert.deepStrictEqual(restorePlayFacts({ playFacts: { notesPlaced: 4, fastEntryUsed: true, fromStart: true, rewardedCells: [3, 9] } }),
-    { notesPlaced: 4, fastEntryUsed: true, fromStart: true, rewardedCells: [3, 9] }, 'a saved game\'s facts come back as they were');
+  assert.deepStrictEqual(restorePlayFacts({ playFacts: { notesPlaced: 4, fastEntryUsed: true, fromStart: true, rewardedCells: [3, 9], bestCombo: 3 } }),
+    { notesPlaced: 4, fastEntryUsed: true, fromStart: true, rewardedCells: [3, 9], bestCombo: 3 }, 'a saved game\'s facts come back as they were');
   localStorage.clear();
   win({ level: 3 });
   assert(!unlocked().no_notes, 'a win that says nothing about notes must not count as one without them');

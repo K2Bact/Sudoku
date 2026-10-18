@@ -65,8 +65,8 @@
       "name": "an old save counts as known from the start",
       "why": "A game saved before the notes were counted could have had notes already; it must not earn \"no notes\".",
       "file": "src/utils/playFacts.js",
-      "find": "  return { notesPlaced: 0, fastEntryUsed: false, fromStart: false, rewardedCells };",
-      "replace": "  return { notesPlaced: 0, fastEntryUsed: false, fromStart: true, rewardedCells };",
+      "find": "  return { notesPlaced: 0, fastEntryUsed: false, fromStart: false, rewardedCells, bestCombo };",
+      "replace": "  return { notesPlaced: 0, fastEntryUsed: false, fromStart: true, rewardedCells, bestCombo };",
       "expectFailure": "an old save's notes are unknown, not zero"
     },
     {

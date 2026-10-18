@@ -19,6 +19,9 @@
  *      The saved best must be the time on the victory card, the combo counted.
  *   5. A combo early in a Speedrun, then a pause. The win kept only the streak
  *      still running at the last cell, so a 2-combo followed by a pause saved 1.
+ *   6. A 5-combo, a pause, then home or a relaunch and Resume (classic, killer).
+ *      The first fix for 5 kept the best beside the clock, which a resume resets:
+ *      saved 1, "combo 5" missed (ChatGPT's re-review, CH18-R01). Kept in the save.
  *
  * Each case writes a finished-but-one save the way the app does (createPuzzle,
  * the same shape useGameLifecycle saves) and resumes it from Home, except the
@@ -264,6 +267,35 @@ async function run() {
       const rec = recordOf(await read(page, 'suidoku_user_stats_v1'), 'classic');
       if (!(rec.maxCombo >= 2)) fail(`5. Speedrun 2-combo, pause, last cell: saved combo ${rec.maxCombo} (want 2 — the game's best streak)`);
       else pass('5. a 2-combo before a pause is kept as the game\'s best streak');
+    }
+
+    // 6. A 5-combo, a pause, then away and back (ChatGPT CH18-R01, 2026-10-18): the
+    //    game's best was kept beside the clock, and a resume resets the clock — the
+    //    win saved 1 and "combo 5" was missed. It is saved with the game now.
+    for (const [variant, away] of [['classic', 'home'], ['killer', 'relaunch']]) {
+      const { state, left } = nearlyDone(variant, 6, 'timeAttack');
+      await prime(page, { variant, save: state });
+      await resume(page, 'timeAttack');
+      for (const cell of left.slice(0, 5)) await enter(page, cell);
+      const floating = await page.locator('.time-floating-indicator').innerText().catch(() => '');
+      await page.waitForTimeout(4200);
+      if (away === 'home') {
+        await page.click('.back-home-btn');
+        await confirmIfAsked(page);
+        await page.waitForSelector('.home-bottom-nav');
+      } else {
+        await page.reload();
+        await page.waitForSelector('.home-bottom-nav');
+      }
+      await resume(page, 'timeAttack');
+      await enter(page, left[5]);
+      await victory(page);
+      const rec = recordOf(await read(page, 'suidoku_user_stats_v1'), variant);
+      const combo5 = Boolean((await read(page, 'sudoku_achievements_v1'))?.combo_streak_5);
+      const tag = `6. ${variant} Speedrun 5-combo, pause, ${away}, resume, last cell`;
+      if (!floating.includes('5 COMBO')) fail(`${tag}: the five quick cells showed "${floating}" — no 5-combo to keep (the case did not set itself up)`);
+      else if (rec.maxCombo !== 5 || !combo5) fail(`${tag}: saved combo ${rec.maxCombo} (want 5), combo_streak_5 ${combo5} (want true) — the best was lost over the resume`);
+      else pass(`${tag}: the 5-combo kept over the resume, "combo 5" earned`);
     }
 
     if (pageErrors.length) fail(`page errors: ${pageErrors.join(' | ')}`);

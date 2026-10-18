@@ -13,6 +13,12 @@
  * could not be lost, and the Speedrun clock could be run down towards zero. A
  * cell now earns its reward once a game (user: "맞힌 칸에 대한 시간 추가는 없는걸로").
  *
+ * And the longest Speedrun combo of the game (2026-10-18). The streak on screen
+ * resets after 3.5 s, and the win used to see only the one still running at the
+ * last cell; then the best was kept beside the clock, which a resume resets — a
+ * 5-combo before a trip home was saved as 1 and "combo 5" was missed (ChatGPT
+ * CH18-R01). Here it is saved with the game. An old save knows none: 0.
+ *
  * The facts live in a ref beside the game and are saved with it, so a game
  * resumed after the app closed still knows them. A game saved before they were
  * kept has fromStart false: notes it had then are unknown, so it cannot earn the
@@ -21,7 +27,7 @@
  */
 
 export function newPlayFacts() {
-  return { notesPlaced: 0, fastEntryUsed: false, fromStart: true, rewardedCells: [] };
+  return { notesPlaced: 0, fastEntryUsed: false, fromStart: true, rewardedCells: [], bestCombo: 0 };
 }
 
 const isCellList = (v) => Array.isArray(v) && v.every((c) => Number.isInteger(c) && c >= 0 && c <= 80);
@@ -43,12 +49,13 @@ function rightCells(saved) {
 export function restorePlayFacts(saved) {
   const f = saved?.playFacts;
   const rewardedCells = isCellList(f?.rewardedCells) ? [...new Set(f.rewardedCells)] : rightCells(saved);
+  const bestCombo = Number.isInteger(f?.bestCombo) && f.bestCombo >= 0 ? f.bestCombo : 0;
   if (f && typeof f === 'object'
     && Number.isInteger(f.notesPlaced) && f.notesPlaced >= 0
     && typeof f.fastEntryUsed === 'boolean' && typeof f.fromStart === 'boolean') {
-    return { notesPlaced: f.notesPlaced, fastEntryUsed: f.fastEntryUsed, fromStart: f.fromStart, rewardedCells };
+    return { notesPlaced: f.notesPlaced, fastEntryUsed: f.fastEntryUsed, fromStart: f.fromStart, rewardedCells, bestCombo };
   }
-  return { notesPlaced: 0, fastEntryUsed: false, fromStart: false, rewardedCells };
+  return { notesPlaced: 0, fastEntryUsed: false, fromStart: false, rewardedCells, bestCombo };
 }
 
 /** A note was added to a cell (taking one away is not using notes). */
@@ -71,6 +78,11 @@ export function firstRightAnswer(facts, cell) {
   if (facts.rewardedCells.includes(cell)) return false;
   facts.rewardedCells.push(cell);
   return true;
+}
+
+/** A Speedrun combo reached `combo`; the game keeps its longest. */
+export function comboReached(facts, combo) {
+  if (facts && Number.isInteger(combo)) facts.bestCombo = Math.max(facts.bestCombo || 0, combo);
 }
 
 /** What the win reports. notesUsedCount is null when the game's notes are not all known. */

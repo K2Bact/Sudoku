@@ -141,6 +141,19 @@ console.log('  ✅ 2. Home, resume, saved-state check and quit-as-loss all ask t
   assert.deepStrictEqual(old.rewardedCells, [36], 'an old save counts the cells it shows right as paid — not the wrong one, not the givens');
   assert.deepStrictEqual(restorePlayFacts({ board: 'broken' }).rewardedCells, [], 'a save without a board to read pays nothing back');
 
+  // The game's best Speedrun combo is kept with the facts (ChatGPT CH18-R01,
+  // 2026-10-18): kept beside the clock it was reset by a resume, and a 5-combo
+  // before a trip home was saved as 1. An old save knows none.
+  const { comboReached } = await import('../../../src/utils/playFacts.js');
+  const run = newPlayFacts();
+  assert.strictEqual(run.bestCombo, 0, 'a new game has no combo yet');
+  comboReached(run, 5);
+  comboReached(run, 1);
+  assert.strictEqual(run.bestCombo, 5, 'the best combo stays the best when a shorter streak follows');
+  const back = restorePlayFacts({ board, initialBoard: initial, solutionBoard: solution, playFacts: JSON.parse(JSON.stringify(run)) });
+  assert.strictEqual(back.bestCombo, 5, 'a resumed game keeps the best combo it had reached');
+  assert.strictEqual(restorePlayFacts({ board, initialBoard: initial, solutionBoard: solution }).bestCombo, 0, 'a save from before the best was kept reads as none');
+
   // The hook needs React to run; what it must contain is short, so it is read.
   const input = fs.readFileSync(path.join(ROOT, 'src/hooks/useGameInput.js'), 'utf8');
   const gate = input.indexOf('if (firstRightAnswer(playFactsRef?.current, r * 9 + c)) {');

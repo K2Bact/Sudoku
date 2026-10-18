@@ -4,7 +4,7 @@
   "command": "node scripts/tests/ui/test_hints_and_last_moves.js",
   "greenMarker": "[3-20] PASSED",
   "rebuild": true,
-  "note": "Written with the gate on 2026-10-18 (ChatGPT's review, CH18-01…04, Diary 143). Each mutation puts one of the fixed bugs back as it was in 1.5.0 and earlier.",
+  "note": "Written with the gate on 2026-10-18 (ChatGPT's review, CH18-01…04, Diary 143; the re-review CH18-R01, Diary 144). Each mutation puts one of the fixed bugs back as it was in 1.5.0 and earlier, or as the first fix left it.",
   "mutations": [
     {
       "name": "the win reads the hint count from before this hint",
@@ -50,9 +50,17 @@
       "name": "the win keeps only the streak alive at the last cell",
       "why": "CH18-04 and the streak found with it: a 2-combo before a pause, or the last cell's own combo, never reached the stats or the combo achievements.",
       "file": "src/hooks/useGameInput.js",
-      "find": "        comboCount: Math.max(comboCount, bestCombo ? bestCombo() : 0),",
+      "find": "        comboCount: Math.max(comboCount, playFactsRef?.current?.bestCombo || 0),",
       "replace": "        comboCount,",
       "expectFailure": "Speedrun 2-combo, pause"
+    },
+    {
+      "name": "a resume forgets the game's best combo",
+      "why": "CH18-R01 (ChatGPT's re-review of b39f1a2): the best was kept beside the clock and a resume reset it — a 5-combo before a trip home was saved as 1 and 'combo 5' was missed. It is restored from the save now.",
+      "file": "src/utils/playFacts.js",
+      "find": "  const bestCombo = Number.isInteger(f?.bestCombo) && f.bestCombo >= 0 ? f.bestCombo : 0;",
+      "replace": "  const bestCombo = 0;",
+      "expectFailure": "the best was lost over the resume"
     }
   ]
 }

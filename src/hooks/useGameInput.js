@@ -13,7 +13,7 @@ import { handleMistakeLogic } from '../utils/gameMistakeHandler.js';
 import { useKeypadActions } from './useKeypadActions.js';
 import { ensureValidSolution } from '../engine/puzzleSetup.js';
 import { survivalCellBonusSeconds } from '../engine/survivalClock.js';
-import { notePlaced, digitPlaced, winFacts, firstRightAnswer } from '../utils/playFacts.js';
+import { notePlaced, digitPlaced, winFacts, firstRightAnswer, comboReached } from '../utils/playFacts.js';
 
 export function useGameInput({
   board,
@@ -60,7 +60,6 @@ export function useGameInput({
   runTimelineRef,
   playFactsRef = null,
   comboCount = 0,
-  bestCombo = null,
   variant = 'classic',
   cages = null,
   t
@@ -215,11 +214,14 @@ export function useGameInput({
       // combo off the clock — as often as it was repeated. The bonus is the kind's:
       // 7 s on classic, more on a killer (survivalClock.js, KP-2).
       if (firstRightAnswer(playFactsRef?.current, r * 9 + c)) {
-        if (gameMode === 'timeAttack') {
-          const combo = handleComboSuccess();
-          if (combo) finalSeconds = Math.max(0, timerSeconds - combo.bonus);
-        } else if (gameMode === 'timeLimit') {
+        if (gameMode === 'timeLimit') {
           addSurvivalBonusTime(survivalCellBonusSeconds(variant, level));
+        } else if (gameMode === 'timeAttack') {
+          const combo = handleComboSuccess();
+          if (combo) {
+            finalSeconds = Math.max(0, timerSeconds - combo.bonus);
+            comboReached(playFactsRef?.current, combo.combo);
+          }
         }
       }
     }
@@ -253,9 +255,9 @@ export function useGameInput({
         initialBoard,
         solutionBoard: validSolution,
         cages,
-        // The game's best streak, this input's included — not the one still running
-        // at the last cell, which a pause had reset (useGameTimer bestCombo).
-        comboCount: Math.max(comboCount, bestCombo ? bestCombo() : 0),
+        // The game's best streak, this input's included and kept over a resume — not
+        // the one still running at the last cell, which a pause had reset (playFacts.js).
+        comboCount: Math.max(comboCount, playFactsRef?.current?.bestCombo || 0),
         ...winFacts(playFactsRef?.current),
         timeline: runTimelineRef ? runTimelineRef.current.slice() : [],
         totalEmptyCells: initialBoard.reduce((acc, row) => acc + row.filter(v => v === 0).length, 0)

@@ -69,7 +69,6 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     setTimerSeconds,
     playedSeconds,
     comboCount,
-    bestCombo,
     timeFloatingText,
     handleComboSuccess,
     handleTimePenalty,
@@ -287,7 +286,6 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
     runTimelineRef,
     playFactsRef,
     comboCount,
-    bestCombo,
     variant,
     cages,
     t
