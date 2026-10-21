@@ -21,7 +21,15 @@ export function useBoardFit() {
     const update = () => {
       const kids = [...main.children].filter((c) => !c.classList.contains('board-zone'));
       const gap = parseFloat(getComputedStyle(main).rowGap) || 0;
-      const rest = kids.reduce((sum, c) => sum + c.getBoundingClientRect().height, 0) + gap * kids.length;
+      // The margin box, not the border box. The rival banner had an 8px margin
+      // under it, and leaving that out made the board 8px too tall: the keypad
+      // ended 20px above the ad instead of 28 (D20 — gate 3-12 had no banner).
+      // The margin is gone now; a neighbour that brings one back is still counted.
+      const outer = (c) => {
+        const cs = getComputedStyle(c);
+        return c.getBoundingClientRect().height + (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
+      };
+      const rest = kids.reduce((sum, c) => sum + outer(c), 0) + gap * kids.length;
       main.style.setProperty('--board-rest', `${Math.ceil(rest)}px`);
     };
     update();

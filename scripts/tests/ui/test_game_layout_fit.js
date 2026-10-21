@@ -26,6 +26,15 @@
  * slot at the height the SDK reports at that width (about 15.5% of it), exactly
  * where the app puts it; without it the test would measure a screen with no ad
  * and pass for the wrong reason (it did, once, while this was being written).
+ *
+ * Every size is measured twice: an ordinary game, and a race against a ghost.
+ * The race adds the rival banner above the board, and this gate used to measure
+ * only boards without it. Lying down, the banner became a third item in the row
+ * beside the board and keypad, and the row ran off both sides of the screen:
+ * 8 of the 9 landscape sizes here, 1280x720 by 77px (BACKLOG D20, Diary 148).
+ * Nothing here was red, because nothing here had a banner. A ghost run that
+ * draws no banner is an error of its own — it would be an ordinary game measured
+ * twice.
  */
 import { chromium } from 'playwright';
 import { spawn, execSync } from 'child_process';
@@ -58,6 +67,11 @@ const SIZES = [[360, 640], [384, 939], [412, 891], [600, 960],
                [1280, 720], [1280, 760]];
 const SCALES = [1, 1.3];
 const MIN_AD_GAP = 24;
+// A best time at every level, so the Ghost chip is open whichever level the
+// home screen has selected. No puzzle with it: the race deals a new board and
+// races the time (ghostManager.getGhostForModeLevel), which is all the banner needs.
+const GHOST_STATS = { bestTimes: { 1: 300, 2: 300, 3: 300, 4: 300, 5: 300 } };
+const overlaps = (a, b) => a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1;
 
 function waitForServer(url, timeout = 20000) {
   const start = Date.now();
@@ -84,11 +98,14 @@ try {
   await waitForServer(URL);
   const browser = await chromium.launch();
   for (const [w, h] of SIZES) {
-    for (const S of SCALES) {
+    for (const S of SCALES) for (const ghost of [false, true]) {
       const page = await (await browser.newContext({ viewport: { width: w, height: h } })).newPage();
       page.on('pageerror', (e) => errors.push(`${w}x${h} ×${S}: page error ${e.message}`));
       await page.goto(URL);
-      await page.evaluate(() => localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'ko', theme: 'clay' })));
+      await page.evaluate((stats) => {
+        localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'ko', theme: 'clay' }));
+        if (stats) localStorage.setItem('suidoku_user_stats_v1', JSON.stringify(stats));
+      }, ghost ? GHOST_STATS : null);
       await page.reload();
       // Wait for the home screen to exist before clicking into it. Without this
       // the click lands while the screen is still arriving — it animates in over
@@ -97,6 +114,7 @@ try {
       // failed inside the full suite on 2026-09-26, which is what a missing wait
       // looks like: fine when the machine is idle, not when it is not.
       await page.waitForSelector('.home-bottom-nav');
+      if (ghost) await page.locator('.rival-chip.ghost-chip').click();
       await page.locator('.home-screen-container .btn-play-new').first().click();
       await page.waitForSelector('.sudoku-board-container', { timeout: 8000 });
       await page.evaluate(() => {
@@ -118,6 +136,8 @@ try {
       await page.waitForTimeout(250);
       const r = await page.evaluate(() => {
         const rect = (sel) => document.querySelector(sel)?.getBoundingClientRect() || null;
+        // Plain numbers: a DOMRect does not survive the trip out of the page.
+        const box = (sel) => { const x = rect(sel); return x && { left: x.left, right: x.right, top: x.top, bottom: x.bottom }; };
         const kp = document.querySelector('.keypad-container');
         const kb = kp.getBoundingClientRect();
         const cells = [...document.querySelectorAll('.sudoku-cell')];
@@ -129,8 +149,12 @@ try {
           keypadBottom: kb.bottom,
           adTop: rect('.ad-slot-container')?.top,
           board: rect('.sudoku-board-container')?.width,
+          banner: box('.ghost-rival-banner-container'),
+          header: box('.game-header'),
+          boardBox: box('.sudoku-board-container'),
+          keypadBox: box('.keypad-container'),
           // Side by side, the board reaches further down than the keypad.
-          lowest: Math.max(kb.bottom, rect('.sudoku-board-container')?.bottom || 0),
+          lowest: Math.max(kb.bottom, rect('.sudoku-board-container')?.bottom || 0, rect('.ghost-rival-banner-container')?.bottom || 0),
           sideBySide: (() => {
             const b = rect('.sudoku-board-container'), k = rect('.keypad-container');
             return Boolean(b && k && k.left >= b.right - 2);
@@ -146,7 +170,7 @@ try {
           })(),
         };
       });
-      const where = `${w}x${h} font×${S}`;
+      const where = `${w}x${h} font×${S}${ghost ? ' ghost' : ''}`;
       if (r.scroll > 0) errors.push(`${where}: the page scrolls by ${r.scroll}px — the game screen is taller than the phone`);
       if (r.cells !== 81) errors.push(`${where}: ${r.cells} cells on the board`);
       if (r.overflow) errors.push(`${where}: ${r.overflow} cells overflow — digits bigger than their cells`);
@@ -160,6 +184,17 @@ try {
       // Wide and lying down, the two halves must be side by side; stacked, the
       // board is starved by a keypad taller than the window.
       if (w >= 720 && w > h && !r.sideBySide) errors.push(`${where}: landscape and ${w}px wide, but the keypad is still under the board`);
+      // Off the sides. The page does not scroll sideways when this happens — the
+      // app clips it — so the scroll check above cannot see it; only the boxes can.
+      for (const [name, b] of [['board', r.boardBox], ['keypad', r.keypadBox], ['ghost banner', r.banner]]) {
+        if (b && (b.left < -0.5 || b.right > w + 0.5)) errors.push(`${where}: the ${name} runs off the screen (${Math.round(b.left)}..${Math.round(b.right)} of ${w}px) — D20`);
+      }
+      if (ghost && !r.banner) errors.push(`${where}: no ghost banner — the race did not start, so this run measured an ordinary game`);
+      if (r.banner) {
+        for (const [name, b] of [['board', r.boardBox], ['keypad', r.keypadBox], ['header', r.header]]) {
+          if (b && overlaps(r.banner, b)) errors.push(`${where}: the ghost banner overlaps the ${name}`);
+        }
+      }
       // Nine digits in a row is the only shape that fits across a phone. Lying
       // down on a tablet it makes 46px keys in a column a thousand pixels tall,
       // with the pad floating in the middle of it (㊸). 3x3 is the board's own
@@ -201,7 +236,7 @@ try {
       if (w >= 840 && h > w && r.usedWidth < 0.68) {
         errors.push(`${where}: board and keypad use ${Math.round(r.usedWidth * 100)}% of the width — a tablet showing this much nothing is an app Play reads as not supporting it`);
       }
-      console.log(`  ${where.padEnd(22)} board ${Math.round(r.board)}px · ${r.sideBySide ? 'side-by-side' : 'stacked'} · pad ${r.padColumns}col · width ${Math.round(r.usedWidth * 100)}% · lowest→banner ${Math.round(r.adTop - r.lowest)}px`);
+      console.log(`  ${where.padEnd(28)} board ${Math.round(r.board)}px · ${r.sideBySide ? 'side-by-side' : 'stacked'} · pad ${r.padColumns}col · width ${Math.round(r.usedWidth * 100)}% · lowest→banner ${Math.round(r.adTop - r.lowest)}px`);
       await page.close();
     }
   }

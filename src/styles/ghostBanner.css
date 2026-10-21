@@ -5,7 +5,10 @@
   gap: 6px;
   width: 100%;
   max-width: 440px;
-  margin: 0 auto 8px auto;
+  /* No margin below: .game-main's 14px gap already spaces it from the board.
+     The 8px it had on top of that cost the board 8px, which at 360x640 with a
+     1.3x font is 204px or 196 — under the 200 gate 3-12 calls playable (D20). */
+  margin: 0 auto;
   padding: 8px 12px;
   background: var(--card-bg, rgba(30, 41, 59, 0.7));
   border: 1px solid var(--board-grid-line, rgba(255, 255, 255, 0.1));

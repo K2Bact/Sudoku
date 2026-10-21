@@ -3,7 +3,7 @@
   "name": "The Game Screen Fits the Phone",
   "command": "node scripts/tests/ui/test_game_layout_fit.js",
   "greenMarker": "The game screen fits every size and font scale checked",
-  "note": "BACKLOG U-1: a Galaxy S25 Ultra at a larger system font had the banner over the keypad. The first three mutations put back one of the three causes. The rest put back the ways the app failed to USE a tablet rather than fit on one (Diary ㊸): a width cap that stops growing with the window, the row of nine digits kept on a wide screen, and the stacked layout kept lying down.",
+  "note": "BACKLOG U-1: a Galaxy S25 Ultra at a larger system font had the banner over the keypad. The first three mutations put back one of the three causes. The rest put back the ways the app failed to USE a tablet rather than fit on one (Diary ㊸): a width cap that stops growing with the window, the row of nine digits kept on a wide screen, and the stacked layout kept lying down. The last three (2026-10-21, D20) are about racing a ghost: every size is now measured with the rival banner too, which this gate never had.",
   "mutations": [
     {
       "name": "the keypad may shrink again",
@@ -68,6 +68,30 @@
       "find": "and (min-height: 760px) {",
       "replace": "and (min-height: 720px) {",
       "expectFailure": "1280x720 font×1: 3 keypad columns"
+    },
+    {
+      "name": "lying down, the ghost banner goes back into the row",
+      "why": "D20. The banner was a third item beside the board and keypad; at 1280x720 the row came to 1435px with 1256 to give and ran off both sides. 8 of the 9 landscape sizes, both font scales.",
+      "file": "src/styles/gameLayout.css",
+      "find": "    display: grid;",
+      "replace": "    display: flex;",
+      "expectFailure": "runs off the screen"
+    },
+    {
+      "name": "the 3x3 pad's height lock forgets the ghost banner",
+      "why": "D20. In a race the banner shares the 3x3 pad's column. Without giving up its room the column is taller than the board, and at 1280x760 the pad came 21px from the ad.",
+      "file": "src/styles/gameLayout.css",
+      "find": "    width: min(520px, 32cqw, calc(100cqh - 120px - 72px));",
+      "replace": "    width: min(520px, 32cqw, calc(100cqh - 120px));",
+      "expectFailure": "accidental ad taps"
+    },
+    {
+      "name": "the ghost banner's 8px margin comes back",
+      "why": "D20. The margin sat on top of .game-main's 14px gap. Counted (useBoardFit now measures the margin box) it costs the board 8px, and at 360x640 with a 1.3x font that is 196px — under the 200 this gate calls playable. Uncounted, as before, it cost the ad gap instead: 20px.",
+      "file": "src/styles/ghostBanner.css",
+      "find": "  margin: 0 auto;",
+      "replace": "  margin: 0 auto 8px auto;",
+      "expectFailure": "unplayable"
     }
   ],
   "rebuild": true

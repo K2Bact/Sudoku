@@ -70,6 +70,54 @@
   }
 }
 
+/* ── Racing a ghost, lying down: the banner goes over the keypad ──────────
+   The rival banner is the first child of .game-main. Upright that puts it above
+   the board, which is right. Lying down .game-main is a row, so it became a
+   third item BESIDE the board and keypad — 440px banner + board + keypad + gaps
+   came to 1435px on a 1280x720 window with 1256 to give, and the centred row ran
+   off both sides: banner from -77px, the hint button past the right edge. 8 of
+   the 9 landscape sizes gate 3-12 measures, at both font scales (D20). The gate
+   measured only games without a banner, so it stayed green.
+
+   The banner joins the keypad's column, at the keypad's width, and the two sit
+   together in the middle of it as the keypad alone did. The board keeps its
+   whole size — that column has height to spare and the board has none.
+   Rejected: the banner across the top, as upright. The board loses the banner's
+   height, 9-27% of its size, and at 1280x760 the 3x3 pad came 21px from the ad.
+
+   Grid rather than the row, because only a grid can stack two children in one
+   column and let the third span both. The two outer rows take the slack. With
+   the 3x3 pad the column needs one more rule — inside that block, below. */
+@media (orientation: landscape) and (min-width: 720px) {
+  .game-main:has(> .ghost-rival-banner-container) {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: 1fr auto auto 1fr;
+    column-gap: 20px;
+    row-gap: 0;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .game-main:has(> .ghost-rival-banner-container) > .board-zone {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+
+  .game-main > .ghost-rival-banner-container {
+    grid-column: 2;
+    grid-row: 2;
+    width: min(420px, 36cqw);
+    max-width: none;
+    margin: 0 0 14px;
+  }
+
+  .game-main:has(> .ghost-rival-banner-container) > .keypad-container {
+    grid-column: 2;
+    grid-row: 3;
+  }
+}
+
 /* ── A tablet held upright: centre the column ─────────────────────────────
    The board fills the width it is given and then stops, so on a 1650px-tall
    window the header, board and keypad came to about 1170px and the remaining
@@ -152,6 +200,17 @@
     width: min(520px, 32cqw, calc(100cqh - 120px));
     gap: 16px;
     padding: 16px;
+  }
+
+  /* Racing a ghost the banner shares this column (the section above), and the
+     lock gives up its room: 52px at the normal font, 57 at 1.3x, and the 14px
+     under it. Without that the column outgrew the board and at 1280x760 the pad
+     came 21px from the ad. The pad is narrower in a race (1280x760: 367px to
+     about 295); the board is not touched. Here and not in a media query of its
+     own, so the 760 line cannot move for one and stay for the other. */
+  .game-main > .ghost-rival-banner-container,
+  .game-main:has(> .ghost-rival-banner-container) > .keypad-container {
+    width: min(520px, 32cqw, calc(100cqh - 120px - 72px));
   }
 
   .game-main > .keypad-container .number-pad {
