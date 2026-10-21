@@ -53,8 +53,11 @@ function normalise(parsed) {
  *    loses the seconds between cells and gains 7 s for each.
  * Only Classic's slot: nothing else was ever written into the wrong place, and a
  * Speedrun clock does go down (a combo takes seconds off).
+ *
+ * Exported because the cloud merge judges by the same rule (progressMerge.js, D21):
+ * a stray must not win a merge it would then be dropped from.
  */
-function isStrayClassicGhost(ghost, bestTime) {
+export function isStrayClassicGhost(ghost, bestTime) {
   if (!ghost || typeof ghost.bestSeconds !== 'number') return false;
   if (!(typeof bestTime === 'number' && bestTime > 0) || ghost.bestSeconds < bestTime) return true;
   const times = Array.isArray(ghost.timeline) ? ghost.timeline.map((e) => e?.time) : [];

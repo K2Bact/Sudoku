@@ -26,8 +26,10 @@
  *   other stats fields                    local wins, cloud fills gaps
  *   achievements                          union, cloud wins a shared key
  *   wallet                                hints / streak / ads watched: larger
- *   daily records, ghost PBs              union, local wins a shared key
- *                                         (ghosts of both kinds, each in its slot)
+ *   daily records                         union, local wins a shared key
+ *   ghost PBs, each slot and level        the faster, as best times (D21) — but a
+ *                                         Classic ghost no Classic win wrote (D19)
+ *                                         never beats one that did; a tie: local
  *
  * Known limit, recorded rather than fixed here: hints are spendable, and "larger"
  * means a hint spent on one phone reappears after a merge with a phone that still
@@ -41,6 +43,8 @@
  * that fails them is treated as absent — the other side's value stands. A damaged
  * backup can fail to add anything; it cannot take anything away from the phone.
  */
+
+import { isStrayClassicGhost } from '../utils/ghostManager.js';
 
 // survivalBestTimes: Survival's fastest clears, seconds played (D16). timeLimitBestTimes
 // held the time left at a win until 2026-10-09; still merged so nothing a phone
@@ -220,13 +224,41 @@ export function mergeProgress(cloud, local) {
   // Ghosts by kind and mode (ghostManager.js): classic at the top, killer one level
   // down (2026-10-14). Dropping the killer slots here would lose them on every save,
   // since saving uploads what this returns.
-  const ghosts = (cloudSide, localSide) => ({ ...entries(cloudSide, isGhost), ...entries(localSide, isGhost) });
+  //
+  // A level both sides have goes to the FASTER ghost, the rule best times follow
+  // (D21). It used to be this phone's: with the other phone at 200 s and this one
+  // at 300, the record said 200 and the Ghost chip raced the 300.
+  // A Classic ghost that no Classic win wrote (D19 — a Survival win's time left, a
+  // duel's time) usually looks the faster, and it is read as no ghost at all; in
+  // the race it would win and hide the real one. So a stray never beats a clean
+  // ghost, judged by ghostManager's own rule against the best times of the side it
+  // came from — the table it was written beside. One side only, or two strays:
+  // kept as they were. A stray is dropped when read, never deleted on purpose
+  // (user, 2026-10-14), and a merge deleting it would be the same thing.
+  const ghosts = (cloudSide, localSide, stray = () => false) => {
+    const cg = entries(cloudSide, isGhost);
+    const lgs = entries(localSide, isGhost);
+    const out = { ...cg, ...lgs };
+    for (const lv of Object.keys(cg)) {
+      if (!(lv in lgs)) continue;
+      const cs = stray(cg[lv], 'cloud', lv);
+      const ls = stray(lgs[lv], 'local', lv);
+      if (cs !== ls) out[lv] = cs ? lgs[lv] : cg[lv];
+      else if (!cs && cg[lv].bestSeconds < lgs[lv].bestSeconds) out[lv] = cg[lv];
+    }
+    return out;
+  };
+  const classicBest = {
+    cloud: isObject(c.stats?.bestTimes) ? c.stats.bestTimes : {},
+    local: isObject(l.stats?.bestTimes) ? l.stats.bestTimes : {},
+  };
+  const strayClassic = (g, side, lv) => isStrayClassicGhost(g, seconds(classicBest[side][lv]));
   const lg = isObject(l.ghost) ? l.ghost : {};
   const ck = isObject(c.ghost?.killer) ? c.ghost.killer : {};
   const lk = isObject(lg.killer) ? lg.killer : {};
   const ghost = isObject(c.ghost)
     ? {
-        classic: ghosts(c.ghost.classic, lg.classic),
+        classic: ghosts(c.ghost.classic, lg.classic, strayClassic),
         timeAttack: ghosts(c.ghost.timeAttack, lg.timeAttack),
         killer: { classic: ghosts(ck.classic, lk.classic), timeAttack: ghosts(ck.timeAttack, lk.timeAttack) },
       }

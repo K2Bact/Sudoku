@@ -138,7 +138,9 @@ console.log('  ✅ 2. cloudSyncService round-trip restores stats, wallet, daily 
   };
   const cloudProgress = {
     userId: 'pg_same_account', version: '1.1.2',
-    stats: { gamesPlayed: 120, gamesWon: 90, bestTimes: { 1: 95, 2: 140 }, timeLimitSurvivalWins: 8 },
+    // Lv.3 at 180 s beside the 180 s ghost: a Classic win writes both from one time. Without it the
+    // ghost is a stray by ghostManager's rule (D19), and 2b-A would be testing a stray (D21).
+    stats: { gamesPlayed: 120, gamesWon: 90, bestTimes: { 1: 95, 2: 140, 3: 180 }, timeLimitSurvivalWins: 8 },
     achievements: { first_win: 1700000000000, streak_7: 1700000500000 },
     wallet: { hints: 12, streakDays: 30, totalAdsWatched: 40 },
     daily: { '2026-08-01': { completed: true }, '2026-08-02': { completed: true } },
@@ -162,7 +164,7 @@ console.log('  ✅ 2. cloudSyncService round-trip restores stats, wallet, daily 
     assert(uploaded.achievements.streak_7, 'an achievement unlocked on the other phone must survive the save');
     assert.strictEqual(uploaded.wallet.streakDays, 30, 'the longer streak must survive the save');
     assert.strictEqual(Object.keys(uploaded.daily).length, 2, 'daily records from the other phone must survive the save');
-    assert.strictEqual(uploaded.ghost.classic[3].bestSeconds, 180, 'ghost PBs from the other phone must survive the save');
+    assert.strictEqual(uploaded.ghost.classic[3]?.bestSeconds, 180, 'ghost PBs from the other phone must survive the save');
     assert.strictEqual(a.merged, true, 'the result must say a merge happened');
     assert.strictEqual(JSON.parse(localStorage.getItem(USER_STATS_KEY)).gamesWon, 1,
       'a save must not rewrite this phone\'s own progress — pulling the other phone in is restore\'s job');
@@ -480,7 +482,9 @@ const { iqStatsService } = await import('../../../src/services/iqStatsService.js
 
   const local = { gamesPlayed: 5, gamesWon: 3, bestTimes: { 3: 400, 5: 300 }, timeLimitSurvivalWins: 2, maxCombo: 4 };
   const cloud = {
-    gamesPlayed: 'broken', gamesWon: 'broken', bestTimes: { 2: 200, 3: 'fast', 5: -10 },
+    // 4: 120 is the real time behind the real ghost below (Lv.4, 120 s): a Classic win writes both,
+    // and a ghost with no best time behind it is a stray (D19) — not what this test is about (D21).
+    gamesPlayed: 'broken', gamesWon: 'broken', bestTimes: { 2: 200, 3: 'fast', 4: 120, 5: -10 },
     timeLimitSurvivalWins: 'x', maxCombo: Infinity, flawlessWins: -3,
     timeAttackBestTimes: 'not a table', clearedLevels: { 1: true, 2: 'yes' }, junk: 'text',
   };
@@ -532,6 +536,58 @@ const { iqStatsService } = await import('../../../src/services/iqStatsService.js
     pg.loadSnapshot = realLoad;
     localStorage.clear();
   }
+}
+
+// ── A merged ghost is the record the merged best time is (D21) ───────────
+//
+// Best times took the faster of the two phones; ghosts took this phone's. With
+// the other phone at 200 s on Lv.3 and this one at 300, a merge left the record
+// at 200 and the Ghost chip racing the 300 — one fact, two answers. Ghosts take
+// the faster now. And a Classic ghost that no Classic win wrote (D19: a Survival
+// win's time LEFT, a duel's time) must not win that race: it usually looks the
+// faster, and it is read as no ghost at all, so it would hide the real one.
+{
+  const { mergeProgress } = await import('../../../src/services/progressMerge.js');
+  const g = (s, extra = {}) => ({ bestSeconds: s, timeline: [], ...extra });
+  const side = (best, ghost) => ({ stats: { bestTimes: best }, ghost });
+
+  // A. The other phone is faster — in every slot.
+  const a = mergeProgress(
+    side({ 3: 200 }, { classic: { 3: g(200) }, timeAttack: { 2: g(90) }, killer: { classic: { 1: g(400) }, timeAttack: {} } }),
+    side({ 3: 300 }, { classic: { 3: g(300) }, timeAttack: { 2: g(120) }, killer: { classic: { 1: g(500) }, timeAttack: {} } }));
+  assert.strictEqual(a.stats.bestTimes[3], 200, 'the faster best time wins a level both sides have');
+  assert.strictEqual(a.ghost.classic[3].bestSeconds, 200,
+    `the merged ghost is ${a.ghost.classic[3].bestSeconds} s while the merged best time is 200 — ` +
+    'the other phone was faster and the Ghost chip races this phone\'s slower run (D21)');
+  assert.strictEqual(a.ghost.timeAttack[2].bestSeconds, 90, 'a Speedrun ghost takes the faster too');
+  assert.strictEqual(a.ghost.killer.classic[1].bestSeconds, 400, 'a killer ghost takes the faster too');
+  const mine = mergeProgress(side({ 3: 300 }, { classic: { 3: g(300) } }), side({ 3: 200 }, { classic: { 3: g(200, { mine: true }) } }));
+  assert(mine.ghost.classic[3].mine, 'this phone\'s ghost stays when it is the faster');
+  const tie = mergeProgress(side({ 3: 250 }, { classic: { 3: g(250) } }), side({ 3: 250 }, { classic: { 3: g(250, { mine: true }) } }));
+  assert(tie.ghost.classic[3].mine, 'a tie keeps this phone\'s ghost, as before');
+
+  // B. A stray looks faster and must not win — on either side, by either sign.
+  const b = mergeProgress(
+    side({ 3: 250 }, { classic: { 3: g(250, { clean: true }) } }),
+    side({ 3: 300 }, { classic: { 3: g(150) } })); // faster than its own phone's best: a Survival win's time left
+  assert(b.ghost.classic[3].clean,
+    'a stray Classic ghost (150 s, faster than its own phone\'s best of 300) won the merge over the cloud\'s real 250 s one — ' +
+    'it is read as no ghost, so the real one is lost behind it (D19 + D21)');
+  const b2 = mergeProgress(side({ 3: 300 }, { classic: { 3: g(150) } }), side({ 3: 250 }, { classic: { 3: g(250, { clean: true }) } }));
+  assert(b2.ghost.classic[3].clean, 'a stray in the cloud must not beat this phone\'s real ghost either');
+  const b3 = mergeProgress(
+    side({ 3: 250 }, { classic: { 3: g(250, { clean: true }) } }),
+    side({ 3: 150 }, { classic: { 3: g(150, { timeline: [{ time: 10 }, { time: 4 }] }) } })); // a clock that goes back
+  assert(b3.ghost.classic[3].clean, 'a ghost whose pace goes back in time (a Survival clock) is a stray even at its own best time');
+
+  // C. A stray with no rival is kept: dropped when read, never deleted on purpose (user 2026-10-14).
+  const alone = mergeProgress(side({}, { classic: {} }), side({ 3: 300 }, { classic: { 3: g(150) } }));
+  assert.strictEqual(alone.ghost.classic[3]?.bestSeconds, 150, 'a merge must not delete a stray that nothing replaces');
+
+  // D. Saving again does not flip it back.
+  const again = mergeProgress(a, side({ 3: 300 }, { classic: { 3: g(300) } }));
+  assert.strictEqual(again.ghost.classic[3].bestSeconds, 200, 'merging the result with the slower phone again keeps the faster ghost');
+  console.log('  ✅ 6d. a merged ghost is the record the merged best time is; a stray Classic ghost never wins (D21)');
 }
 
 // ── A restore either happens or it does not (RT-7 / F04) ─────────────────

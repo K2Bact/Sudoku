@@ -124,6 +124,30 @@
       "find": "const count = (v) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? Math.floor(v) : null);",
       "replace": "const count = (v) => (typeof v === 'number' ? v : null);",
       "expectFailure": "negative count"
+    },
+    {
+      "name": "a ghost both phones have goes back to this phone, slower or not",
+      "why": "D21. Best times took the faster phone and ghosts took this one: the record said 200 s and the Ghost chip raced 300.",
+      "file": "src/services/progressMerge.js",
+      "find": "      else if (!cs && cg[lv].bestSeconds < lgs[lv].bestSeconds) out[lv] = cg[lv];",
+      "replace": "      else if (false) out[lv] = cg[lv];",
+      "expectFailure": "races this phone's slower run"
+    },
+    {
+      "name": "a stray Classic ghost may win the merge",
+      "why": "D21 with D19. A Survival win's time left in the Classic slot looks faster than the real ghost, and is then read as no ghost at all — the real one is lost behind it.",
+      "file": "src/services/progressMerge.js",
+      "find": "        classic: ghosts(c.ghost.classic, lg.classic, strayClassic),",
+      "replace": "        classic: ghosts(c.ghost.classic, lg.classic),",
+      "expectFailure": "the real one is lost behind it"
+    },
+    {
+      "name": "the merge deletes a stray that nothing replaces",
+      "why": "D21. The user decided strays are dropped when read and never deleted on purpose (2026-10-14); a merge that removes them is a deletion by another route.",
+      "file": "src/services/progressMerge.js",
+      "find": "    const out = { ...cg, ...lgs };",
+      "replace": "    const out = Object.fromEntries(Object.entries({ ...cg, ...lgs }).filter(([lv, v]) => !stray(v, lv in lgs ? 'local' : 'cloud', lv)));",
+      "expectFailure": "must not delete a stray"
     }
   ]
 }
