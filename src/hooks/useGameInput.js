@@ -219,7 +219,7 @@ export function useGameInput({
         } else if (gameMode === 'timeAttack') {
           const combo = handleComboSuccess();
           if (combo) {
-            finalSeconds = Math.max(0, timerSeconds - combo.bonus);
+            finalSeconds = Math.max(1, timerSeconds - combo.bonus);   // never 0 — D26, as useGameTimer
             comboReached(playFactsRef?.current, combo.combo);
           }
         }

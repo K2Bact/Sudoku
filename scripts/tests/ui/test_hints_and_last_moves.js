@@ -22,6 +22,15 @@
  *   6. A 5-combo, a pause, then home or a relaunch and Resume (classic, killer).
  *      The first fix for 5 kept the best beside the clock, which a resume resets:
  *      saved 1, "combo 5" missed (ChatGPT's re-review, CH18-R01). Kept in the save.
+ *   7. A Speedrun finished at the bottom of the clock (classic, killer). Combos took
+ *      it to 0, and every reader of a time reads 0 as none: the best was kept as
+ *      0 with no ghost, and the next win at 30 s replaced it (ChatGPT CH21-02, D26).
+ *      The clock stops at 1 s; a later slower win leaves the record and its ghost.
+ *   8. A Speedrun saved at 0 s by an older version, resumed (classic, killer; ChatGPT
+ *      CH21-R01). The clock came back at 0, and a last cell that had already earned
+ *      its reward never reached the floor: card 0, best 0, no ghost, then a 30 s win
+ *      took the record. Ending on a first right answer saved 1 under a card saying 0.
+ *      The resumed clock starts at 1 s, so the screen, the card and the record agree.
  *
  * Each case writes a finished-but-one save the way the app does (createPuzzle,
  * the same shape useGameLifecycle saves) and resumes it from Home, except the
@@ -296,6 +305,92 @@ async function run() {
       if (!floating.includes('5 COMBO')) fail(`${tag}: the five quick cells showed "${floating}" — no 5-combo to keep (the case did not set itself up)`);
       else if (rec.maxCombo !== 5 || !combo5) fail(`${tag}: saved combo ${rec.maxCombo} (want 5), combo_streak_5 ${combo5} (want true) — the best was lost over the resume`);
       else pass(`${tag}: the 5-combo kept over the resume, "combo 5" earned`);
+    }
+
+    // 7. A Speedrun finished at the bottom of the clock (ChatGPT CH21-02, 2026-10-21, D26).
+    //    Four last cells in one run from 1 s: combos 2, 3 and 4 take 4 s off, more than
+    //    the clock can gain while they are typed, so the old clock always reached 0 here.
+    //    Then a slower win, 30 s, on the same kind and level — storage kept.
+    for (const variant of ['classic', 'killer']) {
+      const tag = `7. ${variant} Speedrun from 1 s, four cells in a combo`;
+      const first = nearlyDone(variant, 4, 'timeAttack');
+      first.state.timerSeconds = 1;
+      first.state.playedSeconds = 1;
+      await prime(page, { variant, save: first.state });
+      await resume(page, 'timeAttack');
+      for (const cell of first.left.slice(0, 3)) await enter(page, cell);
+      // The clock on screen, before the last cell: the same floor as the record (a combo
+      // that showed 00:00 and then a card saying 00:01 would be the screen disagreeing).
+      const [mm, ss] = (await page.locator('.time-display').innerText()).split(':').map(Number);
+      const clockBeforeLast = mm * 60 + ss;
+      await enter(page, first.left[3]);
+      const floating = await page.locator('.time-floating-indicator').innerText().catch(() => '');
+      await victory(page);
+      const shown = await cardSeconds(page);
+      const best1 = recordOf(await read(page, 'suidoku_user_stats_v1'), variant).timeAttackBestTimes?.[3];
+      const ghost1 = ghostOf(await read(page, 'suidoku_ghost_records_v1'), variant, 'timeAttack', 3)?.bestSeconds;
+      const second = nearlyDone(variant, 1, 'timeAttack');
+      second.state.timerSeconds = 30;
+      second.state.playedSeconds = 30;
+      await page.evaluate((s) => localStorage.setItem('suidoku_game_state_v1', JSON.stringify(s)), second.state);
+      await page.goto(URL);
+      await page.waitForSelector('.home-bottom-nav');
+      await resume(page, 'timeAttack');
+      await enter(page, second.left[0]);
+      await victory(page);
+      const best2 = recordOf(await read(page, 'suidoku_user_stats_v1'), variant).timeAttackBestTimes?.[3];
+      const ghost2 = ghostOf(await read(page, 'suidoku_ghost_records_v1'), variant, 'timeAttack', 3)?.bestSeconds;
+      if (!floating.includes('COMBO')) fail(`${tag}: no combo shown ("${floating}") — the case did not set itself up`);
+      else if (!(clockBeforeLast >= 1)) fail(`${tag}: the clock showed ${clockBeforeLast} s before the last cell (want at least 1 — it stops at 1 s)`);
+      else if (!(shown >= 1) || best1 !== shown || ghost1 !== shown) {
+        fail(`${tag}: card ${shown} s, best ${best1}, ghost ${ghost1} (want the card's time, at least 1 s, in all three — a 0 is read as no record)`);
+      } else if (best2 !== shown || ghost2 !== shown) {
+        fail(`${tag}, then a 30 s win: best ${best2}, ghost ${ghost2} (want ${shown} and ${shown} — the slower win replaced the record)`);
+      } else pass(`${tag}: card ${shown} s, best and ghost ${shown} s; a 30 s win after it leaves both`);
+    }
+
+    // 8. A Speedrun saved at 0 s, resumed (ChatGPT CH21-R01, 2026-10-21, D26). Saves like this
+    //    exist: until the 1 s floor, combos took the clock to 0 and the game was saved there.
+    //    Two ways to end: on a cell that already earned its reward (D17 — erased and placed
+    //    again; it never reaches the combo branch), and on a first right answer.
+    for (const variant of ['classic', 'killer']) {
+      for (const lastPaid of [true, false]) {
+        const tag = `8. ${variant} Speedrun saved at 0 s, resumed, ending on ${lastPaid ? 'a cell already paid for' : 'a first right answer'}`;
+        const { state, left } = nearlyDone(variant, 2, 'timeAttack');
+        state.timerSeconds = 0;
+        state.playedSeconds = 40;
+        if (lastPaid) state.playFacts = { ...state.playFacts, rewardedCells: [left[1].r * 9 + left[1].c] };
+        await prime(page, { variant, save: state });
+        const savedClock = (await read(page, 'suidoku_game_state_v1'))?.timerSeconds;
+        await resume(page, 'timeAttack');
+        const [mm, ss] = (await page.locator('.time-display').innerText()).split(':').map(Number);
+        const clockOnResume = mm * 60 + ss;
+        await enter(page, left[0]);
+        await enter(page, left[1]);
+        await victory(page);
+        const shown = await cardSeconds(page);
+        const best = recordOf(await read(page, 'suidoku_user_stats_v1'), variant).timeAttackBestTimes?.[3];
+        const ghost = ghostOf(await read(page, 'suidoku_ghost_records_v1'), variant, 'timeAttack', 3)?.bestSeconds;
+        let after = null;
+        if (lastPaid && shown >= 1 && best === shown) {
+          const next = nearlyDone(variant, 1, 'timeAttack');
+          next.state.timerSeconds = 30;
+          next.state.playedSeconds = 30;
+          await page.evaluate((x) => localStorage.setItem('suidoku_game_state_v1', JSON.stringify(x)), next.state);
+          await page.goto(URL);
+          await page.waitForSelector('.home-bottom-nav');
+          await resume(page, 'timeAttack');
+          await enter(page, next.left[0]);
+          await victory(page);
+          after = recordOf(await read(page, 'suidoku_user_stats_v1'), variant).timeAttackBestTimes?.[3];
+        }
+        if (savedClock !== 0) fail(`${tag}: the save held ${savedClock} s — the case did not set itself up (want 0)`);
+        else if (!(clockOnResume >= 1)) fail(`${tag}: the clock came back at ${clockOnResume} s (want at least 1 — the Speedrun floor)`);
+        else if (!(shown >= 1) || best !== shown || ghost !== shown) {
+          fail(`${tag}: card ${shown} s, best ${best}, ghost ${ghost} (want one time, at least 1 s, in all three)`);
+        } else if (lastPaid && after !== shown) fail(`${tag}, then a 30 s win: best ${after} (want ${shown} — the slower win replaced the record)`);
+        else pass(`${tag}: back at ${clockOnResume} s, card, best and ghost ${shown} s${lastPaid ? '; a 30 s win after it leaves the record' : ''}`);
+      }
     }
 
     if (pageErrors.length) fail(`page errors: ${pageErrors.join(' | ')}`);

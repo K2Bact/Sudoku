@@ -96,7 +96,10 @@ export function useGameTimer({
       soundHaptic.playComboSound(nextCombo);
 
       bonusReduction = nextCombo >= 4 ? 2 : 1;
-      setTimerSeconds(prev => Math.max(0, prev - bonusReduction));
+      // Never below 1 s, and never moved up (D26, ChatGPT CH21-02): every reader of a
+      // time — best times, ghosts, the merge — reads 0 as "no time", so a 0-second
+      // clear was kept as no record and the next slower win took its place.
+      setTimerSeconds(prev => (prev > 1 ? Math.max(1, prev - bonusReduction) : prev));
       showFloatingIndicator('bonus', `-${bonusReduction}s (${nextCombo} COMBO!)`);
     } else {
       setComboCount(1);
@@ -130,7 +133,13 @@ export function useGameTimer({
   const resetTimer = (newLevel = level, newMode = gameMode, saved = null, newVariant = 'classic') => {
     const tailoredLimit = survivalLimitSeconds(newVariant, newLevel);
     if (saved) {
-      setTimerSeconds(saved.timerSeconds || 0);
+      // A Speedrun saved at 0 s — older versions let combos take the clock there —
+      // comes back at 1 s, the floor every record reads (D26, ChatGPT CH21-R01).
+      // Floored here, where the clock comes in, and not only at the combo: a last
+      // cell that already earned its reward (D17) never reaches the combo, and won
+      // with the clock at 0 — card, best and ghost then disagreed or were lost.
+      const clock = saved.timerSeconds || 0;
+      setTimerSeconds(newMode === 'timeAttack' ? Math.max(1, clock) : clock);
       setPlayedSeconds(playedSecondsOf(saved));
     } else {
       setTimerSeconds(newMode === 'timeLimit' ? tailoredLimit : 0);

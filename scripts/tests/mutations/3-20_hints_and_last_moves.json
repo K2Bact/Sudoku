@@ -61,6 +61,30 @@
       "find": "  const bestCombo = Number.isInteger(f?.bestCombo) && f.bestCombo >= 0 ? f.bestCombo : 0;",
       "replace": "  const bestCombo = 0;",
       "expectFailure": "the best was lost over the resume"
+    },
+    {
+      "name": "a combo takes the clock on screen to 0 again",
+      "why": "D26. The record is floored where the win is decided, so this one shows only on screen: 00:00 during the run, then a card saying 00:01.",
+      "file": "src/hooks/useGameTimer.js",
+      "find": "      setTimerSeconds(prev => (prev > 1 ? Math.max(1, prev - bonusReduction) : prev));",
+      "replace": "      setTimerSeconds(prev => Math.max(0, prev - bonusReduction));",
+      "expectFailure": "before the last cell (want at least 1"
+    },
+    {
+      "name": "the last cell's combo takes the win to 0 s again",
+      "why": "D26, ChatGPT CH21-02. Every reader of a time reads 0 as none: the best kept as 0, no ghost, the next 30 s win took its place.",
+      "file": "src/hooks/useGameInput.js",
+      "find": "            finalSeconds = Math.max(1, timerSeconds - combo.bonus);   // never 0 — D26, as useGameTimer",
+      "replace": "            finalSeconds = Math.max(0, timerSeconds - combo.bonus);",
+      "expectFailure": "a 0 is read as no record"
+    },
+    {
+      "name": "a Speedrun saved at 0 s comes back at 0 again",
+      "why": "D26, ChatGPT CH21-R01. Older versions saved Speedruns at 0 s; resumed at 0, a last cell already paid for never reached the combo floor — card 0, best 0, no ghost, then a 30 s win took the record.",
+      "file": "src/hooks/useGameTimer.js",
+      "find": "      setTimerSeconds(newMode === 'timeAttack' ? Math.max(1, clock) : clock);",
+      "replace": "      setTimerSeconds(clock);",
+      "expectFailure": "the clock came back at"
     }
   ]
 }
