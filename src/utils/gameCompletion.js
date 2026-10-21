@@ -61,6 +61,14 @@ export function handleGameWinLogic({
   // killer slot (2026-10-14, killer order ④); only the per-level time boards still do.
   const isKiller = variant === 'killer';
 
+  // The day's mission as the player saw it — read BEFORE this win is counted.
+  // The mission's tier follows the wins (getUserSkillTier): read after, the 15th
+  // win made an intermediate player advanced, the Lv.3 mission they had just
+  // cleared became Lv.4, and the calendar mark and the hint never came (D25,
+  // ChatGPT CH21-01, 2026-10-21). A daily started from the calendar or the
+  // mission button carries its own day and needs no mission.
+  const mission = activeDailyDateKey ? null : getDailyMission(getTodayDateKey());
+
   // The time a best is kept by: the time taken — in Survival the seconds played,
   // not the clock, which there is the time left (D16; timeTakenFor, D15).
   recordGameWin(level, timeTakenFor(gameMode, timerSeconds, playedSeconds), gameMode, {
@@ -94,7 +102,6 @@ export function handleGameWinLogic({
   } else {
     const todayKey = getTodayDateKey();
     const dailyRecords = loadDailyRecords();
-    const mission = getDailyMission(todayKey);
 
     let missionPassed = false;
     if (mission.type === 'level_clear' && level >= mission.minLevel) {

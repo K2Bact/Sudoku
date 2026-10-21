@@ -303,7 +303,9 @@ async function run() {
         const d = new Date();
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       });
-      const mission = getDailyMission(dateKey, stats || {});
+      // Before the win, as the win path reads it since D25 (2026-10-21): this game's stats were
+      // empty (prime), and a mission read after the win can be a tier higher.
+      const mission = getDailyMission(dateKey, {});
       const missionDone = mission.type === 'level_clear' && 1 >= mission.minLevel;   // a Lv.1 game in plain mode
       const dayRecord = (await readJSON(page, 'suidoku_daily_records_v1'))?.[dateKey];
       if (missionDone && !dayRecord?.completed) fail(`5: today's mission (${mission.type}, Lv.${mission.minLevel}+) was met by the killer win and not recorded`);

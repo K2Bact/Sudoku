@@ -1,0 +1,17 @@
+{
+  "gate": "2-31",
+  "name": "A Win Pays The Mission On Its Card",
+  "command": "node scripts/tests/unit/test_daily_mission_win.js",
+  "greenMarker": "[2-31] PASSED",
+  "note": "ChatGPT CH21-01 (2026-10-21, D25): the 15th win of an intermediate player with Lv.4 cleared was judged against the advanced mission it had just unlocked, not the Lv.3 one on the card — no calendar mark, no hint. Each case checks that its day is still a boundary before it counts.",
+  "mutations": [
+    {
+      "name": "the mission is read after the win again",
+      "why": "The original order: the win counted first, the mission read from the moved count. The 14->15 cases lose their mark and hint; 13->14 and the mission's own game do not notice — which is why it shipped.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "    const dailyRecords = loadDailyRecords();",
+      "replace": "    const dailyRecords = loadDailyRecords(); const mission = getDailyMission(todayKey);",
+      "expectFailure": "the win was judged against the mission its own count unlocked"
+    }
+  ]
+}
