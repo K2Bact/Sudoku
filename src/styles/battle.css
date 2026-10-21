@@ -84,8 +84,11 @@
 
 .my-box .countdown-number-val { color: #2563eb; }
 .opp-box .countdown-number-val { color: #9333ea; }
-body.dark-theme .my-box .countdown-number-val { color: #60a5fa; }
-body.dark-theme .opp-box .countdown-number-val { color: #c084fc; }
+/* The dark theme is body.theme-matte-dark (useThemeManager). These two and the gauge
+   below were written for `body.dark-theme`, which nothing sets: on the dark theme the
+   counts stayed the light theme's #2563eb / #9333ea and read under 3:1 (D24). Gate 3-4. */
+body.theme-matte-dark .my-box .countdown-number-val { color: #60a5fa; }
+body.theme-matte-dark .opp-box .countdown-number-val { color: #c084fc; }
 
 .countdown-gauge-bar {
   width: 100%;
@@ -95,7 +98,7 @@ body.dark-theme .opp-box .countdown-number-val { color: #c084fc; }
   overflow: hidden;
 }
 
-body.dark-theme .countdown-gauge-bar { background: rgba(255, 255, 255, 0.12); }
+body.theme-matte-dark .countdown-gauge-bar { background: rgba(255, 255, 255, 0.12); }
 
 .countdown-gauge-fill {
   height: 100%;
@@ -135,8 +138,8 @@ body.dark-theme .countdown-gauge-bar { background: rgba(255, 255, 255, 0.12); }
   background: rgba(124, 58, 237, 0.08);
   border: 1px dashed #7c3aed;
 }
-/* The dark theme's class is theme-matte-dark (useThemeManager); `body.dark-theme`
-   above is a name nothing sets. */
+/* The dark theme's class is theme-matte-dark (useThemeManager); theme-dark is the old
+   setting's name, mapped to it on load and kept beside it as index.css does. */
 body.theme-matte-dark .battle-kind-tag[data-variant="killer"],
 body.theme-dark .battle-kind-tag[data-variant="killer"] { color: #c4b5fd; border-color: #a78bfa; }
 

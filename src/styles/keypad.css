@@ -70,10 +70,11 @@
   color: #713f12;
 }
 
-body.dark-theme .action-btn.hint-btn {
-  background: linear-gradient(135deg, #854d0e, #a16207);
-  color: #fef08a;
-}
+/* The same yellow on the dark theme too (D24, 2026-10-21). A dark-amber version sat
+   here under `body.dark-theme`, a class nothing sets, so it never showed. Measured
+   on the dark theme's surface (#1e293b) before choosing: this yellow reads 6.58:1
+   (text) and stands 11.1:1 off the surface; the dark amber would have read 4.23:1
+   and stood 2.14:1 — under 4.5 and 3, harder to read and to find. Gate 3-4. */
 
 .number-pad {
   display: grid;

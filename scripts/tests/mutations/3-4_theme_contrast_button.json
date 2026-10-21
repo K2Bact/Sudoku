@@ -28,6 +28,38 @@
       "find": "'linear-gradient(135deg, #d97706, #b45309)'",
       "replace": "'linear-gradient(135deg, #f59e0b, #d97706)'",
       "expectFailure": "Selected stats tab"
+    },
+    {
+      "name": "a dark-theme rule goes back to the class nothing sets",
+      "why": "D24: four dark-theme rules were written for body.dark-theme; the theme manager sets theme-<id>, so none applied.",
+      "file": "src/styles/battle.css",
+      "find": "body.theme-matte-dark .my-box .countdown-number-val { color: #60a5fa; }",
+      "replace": "body.dark-theme .my-box .countdown-number-val { color: #60a5fa; }",
+      "expectFailure": "never apply"
+    },
+    {
+      "name": "the opponent count keeps the light theme colour on the dark theme",
+      "why": "D24: #9333ea on the dark card reads under 3:1 — what players saw until 2026-10-21.",
+      "file": "src/styles/battle.css",
+      "find": "body.theme-matte-dark .opp-box .countdown-number-val { color: #c084fc; }",
+      "replace": "body.theme-matte-dark .opp-box .countdown-number-val { color: #9333ea; }",
+      "expectFailure": "opp-box count"
+    },
+    {
+      "name": "the battle gauge track goes back to a black wash",
+      "why": "D24: rgba(0,0,0,.08) on a dark card is darker than the card — the track does not show.",
+      "file": "src/styles/battle.css",
+      "find": "body.theme-matte-dark .countdown-gauge-bar { background: rgba(255, 255, 255, 0.12); }",
+      "replace": "body.theme-matte-dark .countdown-gauge-bar { background: rgba(0, 0, 0, 0.08); }",
+      "expectFailure": "does not show"
+    },
+    {
+      "name": "the hint button takes the dark amber",
+      "why": "D24: measured before choosing — the dark amber read 4.23:1 and stood 2.14:1 off the dark surface; the yellow 6.58 and 11.1.",
+      "file": "src/styles/keypad.css",
+      "find": "  background: linear-gradient(135deg, #fef08a, #fde047);",
+      "replace": "  background: linear-gradient(135deg, #854d0e, #a16207);",
+      "expectFailure": "hint button's text reads"
     }
   ],
   "rebuild": true

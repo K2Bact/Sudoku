@@ -71,6 +71,28 @@ if (undefinedVars.length > 0) {
 }
 console.log(`  ✅ 0 Undefined CSS variables! Inspected ${usedVars.size} unique variables across ${allSrcFiles.length} files.`);
 
+// Every theme class a stylesheet names must be one the app sets (D24, 2026-10-21). Four
+// dark-theme rules were written for `body.dark-theme`; the theme manager puts
+// `theme-<id>` on body, so none of them ever applied — the battle header kept the light
+// theme's blue and purple on the dark one. Comments are stripped first: they may name it.
+{
+  const themeSrc = readFileSync('src/hooks/useThemeManager.js', 'utf8');
+  const list = themeSrc.match(/const themes = (\[[^\]]+\])/);
+  assert(list, 'could not read the theme list in useThemeManager.js — this check would see nothing');
+  const ids = JSON.parse(list[1].replace(/'/g, '"'));
+  // 'dark' is the old setting's name: mapped to matte-dark on load, kept beside it in the CSS.
+  const allowed = new Set([...ids, 'dark'].map((id) => `theme-${id}`));
+  const strays = [];
+  for (const file of allSrcFiles.filter((p) => p.endsWith('.css'))) {
+    const css = readFileSync(file, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+    for (const m of css.matchAll(/body\.([a-zA-Z0-9_-]+)|\.(dark-theme|light-theme)\b/g)) {
+      if (!allowed.has(m[1] || m[2])) strays.push(`${file}: ${m[0]}`);
+    }
+  }
+  assert.deepStrictEqual(strays, [], `stylesheet rules for a body class the app never sets — they never apply (D24): ${strays.join(' · ')}`);
+  console.log(`  ✅ Every body class the stylesheets name is one the theme manager sets (${ids.length} themes).`);
+}
+
 // -------------------------------------------------------------
 // 2. Anti-White-on-White & Inline Active Override Scan
 // -------------------------------------------------------------
@@ -179,11 +201,23 @@ function contrastRatio(a, b) {
  * 검사가 조용히 건너뛰어지고 게이트는 통과한다. 요소가 사라진 것과 대비가
  * 멀쩡한 것을 구별할 수 없다는 뜻이다.
  *
- * 그래서 실제 수행 횟수를 세고 마지막에 단언한다. 테마 4개 × 버튼 3종 = 12회가
- * 나와야 한다. 화면이 사라지면 이 수가 줄고 게이트가 실패한다.
+ * 그래서 실제 수행 횟수를 세고 마지막에 단언한다. 테마 4개 × 버튼 3종 = 12회,
+ * 그리고 D24(2026-10-21): 테마 4개 × (힌트 단추 1 + 대전 머리 숫자 2) = 12회,
+ * 어두운 테마에서만 힌트 단추가 바탕에서 띄는 정도 1 + 게이지 바탕 1 — 합 26회.
+ * 화면이 사라지면 이 수가 줄고 게이트가 실패한다.
  */
 let contrastChecksRun = 0;
-const EXPECTED_CONTRAST_CHECKS = 12;
+const EXPECTED_CONTRAST_CHECKS = 26;
+
+/** The colour an element sits on: its nearest ancestor with a mostly opaque background. */
+const SURFACE_OF = (el) => {
+  for (let p = el.parentElement; p; p = p.parentElement) {
+    const bg = getComputedStyle(p).backgroundColor;
+    const v = (bg.match(/rgba?\(([^)]+)\)/) || [])[1]?.split(',').map(Number);
+    if (v && (v.length < 4 || v[3] > 0.5)) return bg;
+  }
+  return getComputedStyle(document.body).backgroundColor;
+};
 
 async function runVisualContrastTest() {
   const preview = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], {
@@ -311,8 +345,78 @@ async function runVisualContrastTest() {
       }
     }
 
+    // D24 (2026-10-21), on every theme: the hint button and the AI battle header.
+    for (const themeId of themesToTest) {
+      await page.goto(PREVIEW_URL);
+      await page.evaluate((th) => {
+        localStorage.clear();
+        localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en', theme: th, killerRulesSeen: true }));
+        localStorage.setItem('suidoku_review_prompted', '1');
+      }, themeId);
+      await page.reload();
+      await page.waitForSelector('.home-screen-container .btn-play-new', { timeout: 8000 });
+      for (const b of await page.locator('.modal-card button').all()) await b.click().catch(() => {});
+
+      // The hint button keeps its yellow on every theme. Its text must read at 4.5:1 (small
+      // text), and on the dark theme it must stand 3:1 off its surface — the two the dark
+      // amber it was meant to have there failed (4.23 and 2.14). On the light themes it is
+      // told apart by its hue, so only the text is held there.
+      await page.locator('.home-screen-container .btn-play-new').first().click();
+      const hint = page.locator('.action-btn.hint-btn').first();
+      await hint.waitFor({ state: 'visible', timeout: 8000 });
+      const h = await hint.evaluate((el, surfaceOf) => {
+        const cs = getComputedStyle(el);
+        // eslint-disable-next-line no-new-func
+        const surface = new Function(`return (${surfaceOf})`)()(el);
+        return { color: cs.color, backgroundColor: cs.backgroundColor, backgroundImage: cs.backgroundImage, surface };
+      }, SURFACE_OF.toString());
+      const hText = minContrast(parseRgb(h.color), h);
+      contrastChecksRun++;
+      assert(hText >= 4.5, `[${themeId}] the hint button's text reads ${hText.toFixed(2)}:1 against its gradient — under 4.5:1 (D24; image: ${h.backgroundImage})`);
+      if (themeId === 'matte-dark') {
+        const stops = gradientStops(h.backgroundImage);
+        const off = stops.length ? Math.min(...stops.map((st) => contrastRatio(st, parseRgb(h.surface)))) : 0;
+        contrastChecksRun++;
+        assert(off >= MIN_CONTRAST, `[matte-dark] the hint button stands ${off.toFixed(2)}:1 off its surface ${h.surface} — under ${MIN_CONTRAST}:1 it is hard to find (D24)`);
+      }
+
+      // The AI battle header's two counts, and on the dark theme the gauge's track. These
+      // dark-theme colours were written for a class nothing set (D24): on the dark theme the
+      // counts read under 3:1 and the track was a black wash on a dark card.
+      await page.goto(PREVIEW_URL);
+      await page.waitForSelector('.ai-card-banner', { timeout: 8000 });
+      await page.locator('.ai-card-banner').click();
+      const leave = page.locator('.confirm-overlay .btn-primary');
+      if (await leave.count()) await leave.click();
+      await page.locator('.btn-battle-action').click();
+      await page.waitForSelector('.battle-header-card', { timeout: 8000 });
+      for (const side of ['my-box', 'opp-box']) {
+        const c = await page.locator(`.${side} .countdown-number-val`).first().evaluate((el, surfaceOf) => {
+          // eslint-disable-next-line no-new-func
+          const surface = new Function(`return (${surfaceOf})`)()(el);
+          return { color: getComputedStyle(el).color, surface };
+        }, SURFACE_OF.toString());
+        const r = contrastRatio(parseRgb(c.color), parseRgb(c.surface));
+        contrastChecksRun++;
+        assert(r >= MIN_CONTRAST, `[${themeId}] the battle header's ${side} count ${c.color} reads ${r.toFixed(2)}:1 on ${c.surface} — under ${MIN_CONTRAST}:1 (D24)`);
+      }
+      if (themeId === 'matte-dark') {
+        const g = await page.locator('.countdown-gauge-bar').first().evaluate((el, surfaceOf) => {
+          // eslint-disable-next-line no-new-func
+          const surface = new Function(`return (${surfaceOf})`)()(el);
+          return { track: getComputedStyle(el).backgroundColor, surface };
+        }, SURFACE_OF.toString());
+        const t = (g.track.match(/rgba?\(([^)]+)\)/) || [])[1]?.split(',').map(Number) || [0, 0, 0, 0];
+        const under = parseRgb(g.surface);
+        const a = t.length > 3 ? t[3] : 1;
+        const shown = [0, 1, 2].map((k) => Math.round(t[k] * a + under[k] * (1 - a)));
+        contrastChecksRun++;
+        assert(luminance(shown) > luminance(under), `[matte-dark] the battle gauge's track ${g.track} on ${g.surface} is no lighter than the card — it does not show (D24)`);
+      }
+    }
+
     await browser.close();
-    console.log('  ✅ Playwright dynamic contrast verified across all 4 themes & active buttons!');
+    console.log('  ✅ Playwright dynamic contrast verified across all 4 themes & active buttons, the hint button and the battle header!');
   } finally {
     try {
       if (process.platform === 'win32') {
