@@ -4,6 +4,7 @@ import { Trophy, Skull, Swords, Flame, Home, Bot } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
 import { recordDailyCompletion, getDailyMission, getTodayDateKey, loadDailyRecords } from '../utils/dailyChallenge';
+import { variantOf } from '../engine/variants';
 import { addHints } from '../utils/wallet';
 
 import { ratingDeltaFor } from '../utils/battleRating';
@@ -57,7 +58,7 @@ export function BattleResultModal({
       const dailyRecords = loadDailyRecords();
       const mission = getDailyMission(todayKey);
       if (mission.type === 'play_battle' && !dailyRecords[todayKey]?.completed) {
-        recordDailyCompletion(todayKey, 0, 0);
+        recordDailyCompletion(todayKey, 0, 0, variantOf(room));
         addHints(1, 'daily_battle_mission');
       }
     } catch (e) {}

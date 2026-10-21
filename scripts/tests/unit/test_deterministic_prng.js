@@ -59,6 +59,23 @@ const day3 = getDailyPuzzle('2026-09-01');
 assert(JSON.stringify(day1.board) !== JSON.stringify(day2.board), '2026-08-29 vs 2026-08-30 produces distinct puzzles');
 assert(JSON.stringify(day2.board) !== JSON.stringify(day3.board), '2026-08-30 vs 2026-09-01 produces distinct puzzles');
 
+// 5. The killer daily (2026-10-21, KP-4). One calendar for both kinds (user
+// 2026-10-07: "통합"): the daily screen's switch picks the kind, and a killer day
+// must be one killer for every player, exactly as the standard day is.
+console.log('\n▶ Test 5: The Killer Daily — Same Date, Same Killer, For Everyone');
+const k1 = getDailyPuzzle('2026-08-29', 'killer');
+let killerSame = true;
+for (let i = 0; i < 5; i++) {
+  const t = getDailyPuzzle('2026-08-29', 'killer');
+  if (['board', 'solution', 'cages'].some((f) => JSON.stringify(t[f]) !== JSON.stringify(k1[f]))) { killerSame = false; break; }
+}
+assert(k1.variant === 'killer' && Array.isArray(k1.cages) && k1.cages.length > 0, 'The killer daily is a killer, with its cages');
+assert(killerSame, '5/5 killer dailies for one date are identical — board, solution and cages');
+assert(k1.level === baseDaily.level && k1.dateKey === '2026-08-29' && k1.isDaily === true,
+  'The killer daily has that day\'s level, date and daily flag — the mission sets the level for both kinds');
+assert(JSON.stringify(k1.cages) !== JSON.stringify(getDailyPuzzle('2026-08-30', 'killer').cages), 'Different dates produce distinct killer dailies');
+assert(baseDaily.variant !== 'killer' && !baseDaily.cages, 'The standard daily is still a standard puzzle');
+
 console.log('\n----------------------------------------------------');
 console.log(`🎉 ALL ${passedTests}/${totalTests} PRNG & DAILY CHALLENGE TESTS PASSED!`);
 console.log('----------------------------------------------------');

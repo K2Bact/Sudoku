@@ -3,7 +3,7 @@
  * Adaptive User Skill-based Daily Mission generator and monthly calendar storage manager.
  */
 
-import { generatePuzzle } from '../engine/SudokuEngine.js';
+import { createPuzzle } from '../engine/variants.js';
 import { loadStats } from './storage.js';
 import { getTodayDateKey } from './dateKey.js';
 
@@ -180,11 +180,14 @@ export function getDailyMission(dateKey = getTodayDateKey(), stats = loadStats()
   }
 }
 
-// Generate deterministic seeded puzzle for daily date
-export function getDailyPuzzle(dateKey = getTodayDateKey()) {
+// The day's puzzle, seeded by the date so every player gets the same one.
+// Of either kind since 2026-10-21 (KP-4, user 2026-10-07: one calendar, "통합"):
+// the daily screen's switch picks standard or killer, the day's mission sets the
+// level for both, and the killer generator is seeded the same way.
+export function getDailyPuzzle(dateKey = getTodayDateKey(), variant = 'classic') {
   const mission = getDailyMission(dateKey);
   const targetLevel = mission.actionLevel || mission.minLevel || 3;
-  const puzzleData = generatePuzzle(targetLevel, dateKey);
+  const puzzleData = createPuzzle(variant, targetLevel, dateKey);
   return {
     ...puzzleData,
     dateKey,
@@ -203,13 +206,15 @@ export function loadDailyRecords() {
   }
 }
 
-// Save completed daily challenge record
-export function recordDailyCompletion(dateKey = getTodayDateKey(), timeSeconds = 0, mistakes = 0) {
+// Save completed daily challenge record. One per day whichever kind cleared it —
+// the calendar is one (KP-4) — with the kind written down (variant).
+export function recordDailyCompletion(dateKey = getTodayDateKey(), timeSeconds = 0, mistakes = 0, variant = 'classic') {
   const records = loadDailyRecords();
   records[dateKey] = {
     completed: true,
     timeSeconds,
     mistakes,
+    variant,
     completedAt: new Date().toISOString(),
   };
 

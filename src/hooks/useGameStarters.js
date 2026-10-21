@@ -68,18 +68,20 @@ export function useGameStarters({
     setActiveScreen('game');
   };
 
-  const handleStartDailyPuzzle = async (dateKey) => {
+  // variant: the kind the daily screen's switch shows (KP-4, 2026-10-21) — the same
+  // switch as Home's. The day's puzzle of that kind, the same for every player.
+  const handleStartDailyPuzzle = async (dateKey, variant = 'classic') => {
     if (!(await confirmAbandon())) return;
     soundHaptic.playSelectSound();
     cleanupBattleSession();
     setActiveDailyDateKey(dateKey);
     setIsGuidedTutorial(false);
-    const dailyData = getDailyPuzzle(dateKey);
+    const dailyData = getDailyPuzzle(dateKey, variant);
     startNewGame(dailyData.level, 'classic', dailyData);
     setActiveScreen('game');
   };
 
-  const handleStartDailyMission = async (mission) => {
+  const handleStartDailyMission = async (mission, variant = 'classic') => {
     if (!(await confirmAbandon())) return;
     soundHaptic.playSelectSound();
     cleanupBattleSession();
@@ -90,11 +92,11 @@ export function useGameStarters({
       setActiveScreen('battleLobby');
     } else if (mission.actionType === 'play_speedrun') {
       setHomeSelectedMode('timeAttack');
-      const dailyData = getDailyPuzzle(mission.dateKey);
+      const dailyData = getDailyPuzzle(mission.dateKey, variant);
       startNewGame(mission.actionLevel || 3, 'timeAttack', dailyData);
       setActiveScreen('game');
     } else {
-      const dailyData = getDailyPuzzle(mission.dateKey);
+      const dailyData = getDailyPuzzle(mission.dateKey, variant);
       startNewGame(mission.actionLevel || mission.minLevel || 3, 'classic', dailyData);
       setActiveScreen('game');
     }

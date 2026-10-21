@@ -12,6 +12,14 @@
       "find": "export function getDailyPuzzle(",
       "replace": "export function __renamedDailyPuzzle(",
       "expectFailure": "getDailyPuzzle"
+    },
+    {
+      "name": "the day's puzzle ignores the kind",
+      "why": "KP-4. A killer daily that is the day's standard puzzle has no cages; one built without the date as its seed would differ between players.",
+      "file": "src/utils/dailyChallenge.js",
+      "find": "  const puzzleData = createPuzzle(variant, targetLevel, dateKey);",
+      "replace": "  const puzzleData = createPuzzle('classic', targetLevel, dateKey);",
+      "expectFailure": "The killer daily is a killer"
     }
   ]
 }

@@ -88,7 +88,7 @@ export function handleGameWinLogic({
 
   // The daily mission counts a win of either kind.
   if (activeDailyDateKey) {
-    recordDailyCompletion(activeDailyDateKey, timerSeconds, mistakes);
+    recordDailyCompletion(activeDailyDateKey, timerSeconds, mistakes, variant);
     addHints(1, 'daily_challenge');
     setHintsRemaining(loadWallet().hints);
   } else {
@@ -106,7 +106,7 @@ export function handleGameWinLogic({
     }
 
     if (missionPassed && !dailyRecords[todayKey]?.completed) {
-      recordDailyCompletion(todayKey, timerSeconds, mistakes);
+      recordDailyCompletion(todayKey, timerSeconds, mistakes, variant);
       addHints(1, 'daily_mission');
       setHintsRemaining(loadWallet().hints);
     }

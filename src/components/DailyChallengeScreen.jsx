@@ -7,10 +7,23 @@ import { adsService } from '../services/adsService';
 import { useTranslation } from '../i18n/i18nContext';
 import { useNotify } from './common/ConfirmProvider';
 import { adRewardMessage, watchRewardedAd } from './common/adRewardMessage';
+import { VariantSwitch } from './home/VariantSwitch';
+import { RulesModal } from './home/RulesModal';
+import { usePuzzleKind } from '../hooks/usePuzzleKind';
+import { loadSettings, saveSettings } from '../utils/storage';
 
 export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyMission }) {
   const { t, activeLanguage } = useTranslation();
   const notify = useNotify();
+  // The kind the day is played as: the switch Home and the AI lobby share
+  // (usePuzzleKind.js). One calendar for both — user 2026-10-07, KP-4: "통합" —
+  // so a day is ticked once, whichever kind cleared it.
+  const [variant, setVariant] = usePuzzleKind();
+  // The first killer starts after its rules, as on Home and in the AI lobby.
+  // Before the ad that unlocks a past day, not after it: closing the rules there
+  // would have spent the ad on nothing.
+  const [afterRules, setAfterRules] = useState(null);
+  const begin = (go) => (variant === 'killer' && !loadSettings().killerRulesSeen ? setAfterRules(() => go) : go());
   const records = loadDailyRecords();
   const todayKey = getTodayDateKey();
   const todayMission = getDailyMission(todayKey);
@@ -52,13 +65,18 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
       notify(adRewardMessage(result, t));
       return;
     }
-    if (onStartDailyPuzzle) onStartDailyPuzzle(targetDate);
+    if (onStartDailyPuzzle) onStartDailyPuzzle(targetDate, variant);
   };
 
   const handleStartMissionClick = () => {
     soundHaptic.playSelectSound();
-    if (onStartDailyMission) onStartDailyMission(todayMission);
-    else if (onStartDailyPuzzle) onStartDailyPuzzle(todayKey);
+    const go = () => {
+      if (onStartDailyMission) onStartDailyMission(todayMission, variant);
+      else if (onStartDailyPuzzle) onStartDailyPuzzle(todayKey, variant);
+    };
+    // A battle mission opens the lobby, which has the switch and the rules of its own.
+    if (todayMission.actionType === 'open_battle') go();
+    else begin(go);
   };
 
   const handleDayClick = (dayNum) => {
@@ -79,12 +97,12 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
 
     // 2. 지난 미완료 날짜는 광고 해금 확인 팝업
     if (dayNum < todayDateNum) {
-      setPendingUnlockDate(dateKey);
+      begin(() => setPendingUnlockDate(dateKey));
       return;
     }
 
     // 3. 오늘 미완료 퍼즐 시작
-    if (onStartDailyPuzzle) onStartDailyPuzzle(dateKey);
+    begin(() => onStartDailyPuzzle && onStartDailyPuzzle(dateKey, variant));
   };
 
   const weekdays = [
@@ -102,6 +120,9 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
       <ScreenHeader title={t('daily.header', { month: monthName })} icon={CalendarIcon} iconColorClass="text-blue" onBack={onBack} />
 
       <div className="screen-scroll-content">
+        {/* 0. Standard or killer — what the mission and the calendar start (KP-4) */}
+        <VariantSwitch variant={variant} onChange={setVariant} />
+
         {/* 1. Daily Mission Card */}
         <div className="daily-mission-card">
           <div className="mission-top-row">
@@ -230,6 +251,19 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
             </div>
           </div>
         </div>
+      )}
+
+      {afterRules && (
+        <RulesModal
+          variant="killer"
+          onClose={() => setAfterRules(null)}
+          onStart={() => {
+            saveSettings({ ...loadSettings(), killerRulesSeen: true });
+            const go = afterRules;
+            setAfterRules(null);
+            go();
+          }}
+        />
       )}
     </div>
   );

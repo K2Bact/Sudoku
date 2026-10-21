@@ -120,9 +120,9 @@
     },
     {
       "name": "the ghost banner slides under the board",
-      "why": "Proves the race's layout check measures it: the board pulled up over the banner hides the pace the player is racing.",
+      "why": "Proves the race's layout check measures it: the board pulled up over the banner hides the pace the player is racing. Repointed 2026-10-21: the banner lost its 8px bottom margin (D20, Diary 148), so the anchor is the margin it has now.",
       "file": "src/styles/ghostBanner.css",
-      "find": "  margin: 0 auto 8px auto;",
+      "find": "  margin: 0 auto;",
       "replace": "  margin: 0 auto -60px auto;",
       "expectFailure": ".ghost-rival-banner-container and .board-zone overlap"
     },
@@ -317,6 +317,38 @@
       "find": "            <VariantSwitch variant={variant} onChange={setVariant} />",
       "replace": "            <div style={{ width: '130%' }}><VariantSwitch variant={variant} onChange={setVariant} /></div>",
       "expectFailure": "AI lobby switch — "
+    },
+    {
+      "name": "the daily screen starts today as standard, whatever its switch says",
+      "why": "KP-4. The switch is the whole of the killer daily from the player's side: picked and not passed on, the calendar deals the standard puzzle under a killer switch.",
+      "file": "src/components/DailyChallengeScreen.jsx",
+      "find": "    begin(() => onStartDailyPuzzle && onStartDailyPuzzle(dateKey, variant));",
+      "replace": "    begin(() => onStartDailyPuzzle && onStartDailyPuzzle(dateKey));",
+      "expectFailure": "today on the killer switch did not open a killer"
+    },
+    {
+      "name": "the first killer daily skips its rules",
+      "why": "KP-4. Home and the AI lobby show the killer rules before the first killer; a player whose first killer is the daily would meet cages with no word on what they are.",
+      "file": "src/components/DailyChallengeScreen.jsx",
+      "find": "    begin(() => onStartDailyPuzzle && onStartDailyPuzzle(dateKey, variant));",
+      "replace": "    (onStartDailyPuzzle && onStartDailyPuzzle(dateKey, variant));",
+      "expectFailure": "the first killer daily started without its rules"
+    },
+    {
+      "name": "the mission's Start forgets the kind",
+      "why": "KP-5. The mission button opened today's standard puzzle whatever kind was picked. Checked on a day whose mission starts a puzzle, with the browser clock fixed: a check that waited for such a day skipped itself on 2026-10-21, a battle day.",
+      "file": "src/components/DailyChallengeScreen.jsx",
+      "find": "      if (onStartDailyMission) onStartDailyMission(todayMission, variant);",
+      "replace": "      if (onStartDailyMission) onStartDailyMission(todayMission);",
+      "expectFailure": "the mission's Start on the killer switch"
+    },
+    {
+      "name": "the day's record forgets which kind cleared it",
+      "why": "KP-4. One calendar for both kinds means the tick alone cannot say which; the record carries the kind.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "    recordDailyCompletion(activeDailyDateKey, timerSeconds, mistakes, variant);",
+      "replace": "    recordDailyCompletion(activeDailyDateKey, timerSeconds, mistakes);",
+      "expectFailure": "today was cleared as a killer and the record says"
     }
   ]
 }

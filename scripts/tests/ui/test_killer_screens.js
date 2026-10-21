@@ -41,6 +41,11 @@
  *      Home's kind and shares it, the first killer starts after its rules, the
  *      board draws the room's cages, a cage mistake is named, the loss stays out
  *      of the killer record, a rematch is a killer; standard still deals a classic
+ *   5f. the killer daily (2026-10-21, KP-4 — one calendar, user 2026-10-07): the
+ *      daily screen has the shared switch, the first killer starts after its
+ *      rules, today's killer is the day's own (board and cages as gate 2-2 pins
+ *      them) saved as the daily, the mission's Start opens the same kind, and the
+ *      win ticks today on the calendar and says it was a killer
  *   6. 13 languages at 360px and at 320px with a 1.3x font: the switch (on Home
  *      and in the AI lobby), the rules card and the killer stats card are not cut
  *      and do not scroll sideways
@@ -51,7 +56,7 @@ import http from 'http';
 import { LOCALES } from '../../lib/locales.js';
 import { generateKillerPuzzle } from '../../../src/engine/killer/killerGenerator.js';
 import { cloneGrid, generatePuzzle } from '../../../src/engine/SudokuEngine.js';
-import { getDailyMission } from '../../../src/utils/dailyChallenge.js';
+import { getDailyMission, getDailyPuzzle } from '../../../src/utils/dailyChallenge.js';
 
 const PORT = 5218;
 const URL = `http://localhost:${PORT}`;
@@ -637,6 +642,94 @@ async function run() {
     if (await page.locator('.cage-sum').count()) fail('5e: the standard AI battle draws cage sums');
     if ((await readJSON(page, 'suidoku_settings_v1'))?.homeVariant !== 'classic') fail('5e: Standard picked in the AI lobby was not remembered for Home');
     console.log('  ▶ 5e. killer AI battle: the lobby switch shares Home\'s choice, rules first, the room\'s cages drawn, a cage mistake named, the loss in the duel record only, a rematch on killer; standard still classic');
+
+    // ── 5f. The daily as a killer (2026-10-21, KP-4) ─────────────────────
+    // One calendar for both kinds (user 2026-10-07: "통합"). The daily screen has the
+    // switch Home and the AI lobby share; the day is the same killer for every
+    // player; it is saved as the daily so a resume stays the daily (CH18-03); and
+    // a win ticks the day once, whichever kind cleared it, saying which.
+    {
+      const today = await page.evaluate(() => {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      });
+      const expected = getDailyPuzzle(today, 'killer');
+      const openDaily = async (where) => {
+        await page.goto(URL);
+        await page.waitForSelector('.home-bottom-nav');
+        await tap(page, '.daily-card-banner', `${where}: the daily card`);
+        await page.waitForSelector('.daily-screen-container', { timeout: 5000 }).catch(() => fail(`${where}: the daily screen did not open`));
+      };
+      const killerSwitch = '.daily-screen-container .variant-option[data-variant="killer"]';
+
+      await prime(page, { settings: { homeVariant: 'classic' } });   // the killer rules not seen yet
+      await openDaily('5f');
+      if (!(await page.locator(killerSwitch).count())) fail('5f: the daily screen has no standard/killer switch');
+      await tap(page, killerSwitch, '5f: the killer switch on the daily screen');
+      await tap(page, '.calendar-day-btn.today', '5f: today on the calendar');
+      await page.waitForTimeout(300);
+      if (!(await page.locator('.variant-rules-card[data-variant="killer"]').count())) fail('5f: the first killer daily started without its rules');
+      else if (await page.locator('.sudoku-grid').count()) fail('5f: the killer daily started behind the rules card');
+      await page.locator('.variant-rules-card button').click().catch(() => fail('5f: the rules card has no button to start'));
+      await page.waitForSelector('.killer-board', { timeout: 8000 }).catch(() => fail('5f: today on the killer switch did not open a killer'));
+      await page.waitForTimeout(400);
+      const saved = await readJSON(page, 'suidoku_game_state_v1');
+      if (saved?.variant !== 'killer') fail(`5f: today on the killer switch saved a ${saved?.variant}`);
+      else if (JSON.stringify(saved.initialBoard) !== JSON.stringify(expected.board) || JSON.stringify(saved.cages) !== JSON.stringify(expected.cages)) {
+        fail('5f: today\'s killer is not the day\'s killer — another player would get another board');
+      }
+      if (saved?.level !== expected.level) fail(`5f: the killer daily is Lv.${saved?.level}; the day's mission sets Lv.${expected.level}`);
+      if (saved?.dailyDateKey !== today) fail(`5f: the killer daily saved with daily date "${saved?.dailyDateKey}" — a resume would not be the daily`);
+      if ((await readJSON(page, 'suidoku_settings_v1'))?.homeVariant !== 'killer') fail('5f: killer picked on the daily screen was not remembered for Home');
+
+      // The mission's Start opens the same kind. On a battle day it opens the lobby,
+      // and a third of days are battle days — 2026-10-21, the day this was written,
+      // was one, and a check that waited for the right date skipped itself. So it
+      // runs on its own page with the clock fixed to the next day whose mission
+      // starts a puzzle, whatever today is.
+      const dayKey = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      const puzzleDay = [...Array(14).keys()].map((n) => new Date(Date.parse(`${today}T12:00:00`) + n * 86400000))
+        .find((d) => getDailyMission(dayKey(d), {}).actionType !== 'open_battle');
+      const mp = await browser.newPage({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true });
+      await mp.clock.setFixedTime(puzzleDay);
+      await prime(mp, { settings: { homeVariant: 'killer', killerRulesSeen: true } });
+      await tap(mp, '.daily-card-banner', '5f mission: the daily card');
+      await tap(mp, '.daily-mission-card .btn-play-new', '5f: the mission\'s Start');
+      await mp.waitForSelector('.killer-board', { timeout: 8000 }).catch(() => fail(`5f: the mission's Start on the killer switch (${dayKey(puzzleDay)}) did not open a killer`));
+      await mp.waitForTimeout(400);
+      const m = await readJSON(mp, 'suidoku_game_state_v1');
+      const mExpected = getDailyPuzzle(dayKey(puzzleDay), 'killer');
+      if (m?.variant !== 'killer' || m?.dailyDateKey !== dayKey(puzzleDay)) fail(`5f: the mission's Start opened a ${m?.variant} with daily date "${m?.dailyDateKey}" on ${dayKey(puzzleDay)}`);
+      else if (JSON.stringify(m.cages) !== JSON.stringify(mExpected.cages)) fail('5f: the mission\'s Start dealt a killer that is not the day\'s');
+      await mp.close();
+
+      // Won — the save edited from Home, where no open game writes itself over it (Diary 144).
+      await page.goto(URL);
+      await page.waitForSelector('.home-bottom-nav');
+      const g = await readJSON(page, 'suidoku_game_state_v1');
+      const cell = (g?.board || []).flat().findIndex((d) => !d);
+      if (cell < 0) fail('5f: no open cell in the saved killer daily');
+      else {
+        await page.evaluate(({ game, at }) => {
+          const b = game.solutionBoard.map((row) => [...row]);
+          b[Math.floor(at / 9)][at % 9] = 0;
+          localStorage.setItem('suidoku_game_state_v1', JSON.stringify({ ...game, board: b }));
+        }, { game: g, at: cell });
+        await page.reload();
+        await page.waitForSelector('.home-bottom-nav');
+        await tap(page, '.btn-resume', '5f: resume the killer daily');
+        await page.waitForSelector('.killer-board', { timeout: 8000 }).catch(() => fail('5f: resume did not open the killer daily'));
+        await page.locator('.sudoku-cell').nth(cell).click();
+        await page.locator(`.number-pad .num-btn:nth-child(${g.solutionBoard[Math.floor(cell / 9)][cell % 9]})`).click();
+        await page.locator('.victory-card').waitFor({ state: 'visible', timeout: 8000 }).catch(() => fail('5f: no victory card after the killer daily\'s last digit'));
+        const day = (await readJSON(page, 'suidoku_daily_records_v1'))?.[today];
+        if (!day?.completed) fail('5f: a won killer daily did not tick today on the calendar');
+        else if (day.variant !== 'killer') fail(`5f: today was cleared as a killer and the record says "${day.variant}"`);
+        await openDaily('5f after the win');
+        if (!(await page.locator('.calendar-day-btn.today.completed').count())) fail('5f: the calendar does not show today done after the killer daily');
+      }
+      console.log('  ▶ 5f. killer daily: the switch on the daily screen, rules first, the day\'s own killer saved as the daily, the mission\'s Start the same kind, won → today ticked as a killer');
+    }
 
     // ── 6. Thirteen languages ────────────────────────────────────────────
     let measured = 0;
