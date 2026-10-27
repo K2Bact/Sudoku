@@ -20,6 +20,134 @@
       "find": ".option-desc { grid-area: 1 / 1; }",
       "replace": ".option-desc { position: absolute; }",
       "expectFailure": "must document the Grid Stack pattern"
+    },
+    {
+      "name": "a human opponent with AI in their name is taken for the bot again",
+      "why": "2026-10-21: a real player is named Player_ + the last four characters of their id, so about one opponent in 1,200 has AI or bot in the name. Guessed from the name, their rematch started an AI battle and closing the result went to the AI screen.",
+      "file": "src/firebase/aiBattleSession.js",
+      "find": "  return Boolean(room?.isAiMatch);",
+      "replace": "  return Boolean(room?.isAiMatch || room?.opponentName?.includes('AI'));",
+      "expectFailure": "[FAIL] a human opponent named Player_kAIz is not taken for the bot"
+    },
+    {
+      "name": "the AI test reads the isAIBattle field nothing sets",
+      "why": "The field the six places read first. Nothing ever set it, so AI rooms were found only by the bot’s English name — read alone, every AI battle is a 1v1 on screen.",
+      "file": "src/firebase/aiBattleSession.js",
+      "find": "  return Boolean(room?.isAiMatch);",
+      "replace": "  return Boolean(room?.isAIBattle);",
+      "expectFailure": "[FAIL] an AI room (classic) is taken for an AI battle"
+    },
+    {
+      "name": "the battle header guesses from the name again",
+      "why": "The header’s AI tag and icon came from the bot’s English name. Translating the names (D28) would have shown PVP on every AI battle.",
+      "file": "src/components/BattleHeader.jsx",
+      "find": "  const isAIBattle = isAIRoom(room);",
+      "replace": "  const isAIBattle = room?.isAIBattle || room?.opponentName?.includes('AI');",
+      "expectFailure": "[FAIL] src/components/BattleHeader.jsx decides an AI battle with isAIRoom"
+    },
+    {
+      "name": "the back button reads the never-set field",
+      "why": "Leaving an AI battle with the back button sent the player to the 1v1 lobby whenever the name did not say AI.",
+      "file": "src/hooks/useBackStack.js",
+      "find": "          const isAIBattle = isAIRoom(activeBattleRoom);",
+      "replace": "          const isAIBattle = activeBattleRoom?.isAIBattle;",
+      "expectFailure": "[FAIL] src/hooks/useBackStack.js does not decide an AI battle"
+    },
+    {
+      "name": "a new name guess appears somewhere else in src",
+      "why": "The six were copies of one expression. A seventh written the old way anywhere in the app brings the misfire back.",
+      "file": "src/firebase/battleService.js",
+      "find": "if (!this.currentRoom.isAiMatch) {",
+      "replace": "if (!this.currentRoom.isAiMatch && !this.currentRoom.opponentName?.includes('AI')) {",
+      "expectFailure": "[FAIL] nothing in src guesses the bot from the opponent"
+    },
+    {
+      "name": "the AI room carries an English name again",
+      "why": "D28 (2026-10-22): AI Grandmaster and the rest were English in all thirteen languages.",
+      "file": "src/firebase/aiBattleSession.js",
+      "find": "    botId: BOT_IDS[Math.floor(Math.random() * BOT_IDS.length)],",
+      "replace": "    botId: BOT_IDS[Math.floor(Math.random() * BOT_IDS.length)],\n    opponentName: 'AI Solver',",
+      "expectFailure": "[FAIL] no English bot name"
+    },
+    {
+      "name": "an AI room is no longer named by its bot",
+      "why": "Without the id the name falls back to one title for every bot.",
+      "file": "src/firebase/aiBattleSession.js",
+      "find": "t(`battleHeader.botNames.${room.botId}`)",
+      "replace": "t('home.modes.aiBattle.title')",
+      "expectFailure": "[FAIL] an AI room is named by its bot id"
+    },
+    {
+      "name": "the battle header names the opponent its own way again",
+      "why": "Two screens naming the opponent two ways is how the header and the result card come to disagree.",
+      "file": "src/components/BattleHeader.jsx",
+      "find": "  const actualOpponentName = opponentDisplayName(room, t);",
+      "replace": "  const actualOpponentName = room?.opponentName || opponentDisplayName(room, t);",
+      "expectFailure": "[FAIL] src/components/BattleHeader.jsx names the opponent"
+    },
+    {
+      "name": "a German bot name says AI instead of KI",
+      "why": "The German review settled on KI (DE29-12); a bot named AI beside the KI tag reads as untranslated.",
+      "file": "src/i18n/locales/de/screens.js",
+      "find": "grandmaster: 'KI-Großmeister'",
+      "replace": "grandmaster: 'AI-Großmeister'",
+      "expectFailure": "[FAIL] de bot names"
+    },
+    {
+      "name": "a duel win that unlocked something does not hold the rematch banner",
+      "why": "D32 restored: Play Games draws its achievement popup over the top of the screen for about five seconds, and a rematch asked for then puts its banner underneath — who is asking and how long is left cannot be read.",
+      "file": "src/hooks/useBattleMultiplayer.js",
+      "find": "            if (unlocked && unlocked.length) popupUntilRef.current = Date.now() + ACHIEVEMENT_POPUP_MS;",
+      "replace": "",
+      "expectFailure": "[FAIL] a duel win that unlocked something starts the hold"
+    },
+    {
+      "name": "the hold is dropped every render",
+      "why": "The first D32, restored: the held request was cleared in the subscription effect's cleanup, which App re-runs on every render (a new startNewGame each time) — so no held banner ever showed. Only the two-phone test caught it.",
+      "file": "src/hooks/useBattleMultiplayer.js",
+      "find": "      unsubOpponentLeft();\n    };\n  }, [showToast, startNewGame, t]);",
+      "replace": "      unsubOpponentLeft();\n      clearTimeout(heldRematchRef.current);\n    };\n  }, [showToast, startNewGame, t]);",
+      "expectFailure": "[FAIL] the subscription effect's cleanup does not drop a held request"
+    },
+    {
+      "name": "the asker's countdown is stopped every render",
+      "why": "D33 restored: the subscription effect's cleanup cleared the asker's interval, and App re-runs that effect on every render — the button showed 「신청 중... (15s)」 and never counted (Velvet, 2026-10-22). It came back only when the other side's banner timed out and declined.",
+      "file": "src/hooks/useBattleMultiplayer.js",
+      "find": "      unsubOpponentLeft();\n    };\n  }, [showToast, startNewGame, t]);",
+      "replace": "      unsubOpponentLeft();\n      if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);\n    };\n  }, [showToast, startNewGame, t]);",
+      "expectFailure": "[FAIL] the subscription effect's cleanup does not stop the asker's countdown"
+    },
+    {
+      "name": "a held banner starts from a fresh 15 seconds",
+      "why": "The asker's own countdown kept running while the banner was held; a banner that starts again from 15 can accept after the asker's button came back, into a match they had given up waiting for.",
+      "file": "src/components/battle/rematchBannerTiming.js",
+      "find": "  return { waitMs, seconds: Math.max(1, REMATCH_SECONDS - Math.ceil(waitMs / 1000)) };",
+      "replace": "  return { waitMs, seconds: REMATCH_SECONDS };",
+      "expectFailure": "[FAIL] under the popup"
+    },
+    {
+      "name": "the hold is shorter than the popup",
+      "why": "Measured on the Flip5: 5.1 s from the unlock to the popup leaving. A three-second hold puts the banner up while the popup still covers it — the bug, two seconds later.",
+      "file": "src/components/battle/rematchBannerTiming.js",
+      "find": "export const ACHIEVEMENT_POPUP_MS = 5500;",
+      "replace": "export const ACHIEVEMENT_POPUP_MS = 3000;",
+      "expectFailure": "[FAIL] the hold covers the popup as measured"
+    },
+    {
+      "name": "the banner ignores the seconds it was given",
+      "why": "The timing is worked out in the hook and handed down; a banner that always starts from 15 undoes it where the player can see it.",
+      "file": "src/components/battle/RematchToastBanner.jsx",
+      "find": "  const [secondsLeft, setSecondsLeft] = useState(initialSeconds);",
+      "replace": "  const [secondsLeft, setSecondsLeft] = useState(REMATCH_SECONDS);",
+      "expectFailure": "[FAIL] and the banner counts down from them"
+    },
+    {
+      "name": "a forfeit win reads as finishing first",
+      "why": "BT-3: without its own sentence the result card tells a player who won because the other side left that they completed the puzzle first.",
+      "file": "src/components/BattleResultModal.jsx",
+      "find": "      if (winnerReason === 'opponent_left') {",
+      "replace": "      if (false) {",
+      "expectFailure": "[FAIL] the result card explains a win by forfeit"
     }
   ]
 }

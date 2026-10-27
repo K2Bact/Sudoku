@@ -124,10 +124,10 @@ export const screens = {
     privacyModalTitle: 'Privacy Policy',
     privacy: {
       subtitle: 'Sudoku needs no account. Here is what the app actually stores and sends.',
-      sec1Title: '1. Storage and Backup', sec1Desc: "Your records, hints and settings are stored on your device. Without a Play Games sign-in they stay only on this device. We never collect your name, email, phone number, contacts or location.",
+      sec1Title: '1. Storage and Backup', sec1Desc: "Your records, hints and settings are stored on your device. Without a Play Games sign-in they stay only on this device. We never collect your name, email, phone number, contacts or precise location.",
       sec2Title: '2. Google Play Games', sec2Desc: 'While you are signed in to Play Games, every win automatically backs up your progress (stats, achievements, hints, settings) to Play Games saved data and submits your Logic Score to a Play Games leaderboard. The app also records achievements in Play Games as you earn them, including ones earned before you signed in. This data is kept in your own Google account.',
       sec3Title: '3. 1v1 Battles', sec3Desc: 'Real-time 1v1 battles use Google Firebase to send your opponent a randomly generated player ID, an automatic nickname (Player_xxxx) and your puzzle progress. The ID is stored on your device and reused; it is not linked to your name or any account. If both players have Share match moves on, the app also sends your opponent, after the match, the moves and their timing in that match, for the replay (on by default; you can turn it off in Settings).',
-      sec4Title: '4. Ads and Purchases', sec4Desc: 'The app shows ads through Google AdMob: a banner, a full-screen ad after a win, and optional rewarded videos. AdMob may process your advertising ID. The Remove Ads purchase is handled by Google Play; we never receive your payment details.'
+      sec4Title: '4. Ads, Purchases and Statistics', sec4Desc: 'The app shows ads through Google AdMob: a banner, a full-screen ad after a win, and optional rewarded videos. AdMob may process your advertising ID. The Remove Ads purchase is handled by Google Play; we never receive your payment details. Usage statistics (app launches, sessions, the app version, the device model and an approximate region from your IP address) go to Google Analytics for Firebase with a random app instance ID. Your advertising ID is never sent, and they are not used for ads. In the EEA, the UK and Switzerland no identifier is used.'
     }
   },
   stats: {
@@ -194,6 +194,7 @@ export const screens = {
     aiDefeatTitle: 'AI Battle Defeat',
     victoryDesc: 'You completed the puzzle first and defeated {opponent}!',
     victoryMistakeDesc: '{opponent} was eliminated due to 3 mistakes. You win!',
+    victoryForfeitDesc: '{opponent} left the match. You win by forfeit!',
     defeatDesc: '{opponent} completed the puzzle first.',
     defeatMistakeDesc: 'You were eliminated due to 3 mistakes.',
     disqualified: '💀 Eliminated',
@@ -222,6 +223,7 @@ export const screens = {
   },
   battleHeader: {
     aiTag: 'AI',
+    botNames: { grandmaster: 'AI Grandmaster', solver: 'AI Solver', logic: 'AI Logic', swift: 'AI Swift' },
     confirmLeave: 'Do you want to forfeit and return home?',
     emptyCellsLeft: 'left'
   },

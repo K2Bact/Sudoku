@@ -100,13 +100,19 @@ export function saveWallet(wallet) {
 }
 
 /**
- * Attempt to consume 1 hint.
- * Returns true if successful, false if insufficient balance.
+ * Attempt to spend 1 hint, and say what happened:
+ *   'spent'      the balance went down and was stored;
+ *   'none'       there was no hint to spend;
+ *   'not_saved'  there was one, but the phone would not store the spend (storage full),
+ *                so nothing was spent.
+ * The last two used to be one `false`, and the hint button answered both by offering an
+ * ad for a hint — to a player who had hints, for a reward that could not be stored
+ * either (D30, seen on the Flip5 2026-10-22).
  */
-export function consumeHint() {
+export function spendHint() {
   const wallet = loadWallet();
   if (wallet.hints <= 0) {
-    return false;
+    return 'none';
   }
   const before = wallet.hints;
   wallet.hints -= 1;
@@ -120,9 +126,17 @@ export function consumeHint() {
     // screen is showing back where the stored one really is and say no —
     // otherwise the hint is given away and the balance returns on the next load.
     announceBalance(before);
-    return false;
+    return 'not_saved';
   }
-  return true;
+  return 'spent';
+}
+
+/**
+ * Attempt to consume 1 hint. Returns true only if it was spent and stored — see spendHint
+ * for why it was not.
+ */
+export function consumeHint() {
+  return spendHint() === 'spent';
 }
 
 /**

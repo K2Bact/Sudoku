@@ -141,17 +141,17 @@
       <span class="badge">Privacy Policy</span>
       <div data-lang-only="ko">
         <h1>Sudoku 개인정보처리방침</h1>
-        <p class="updated-date">시행 일자: 2026년 10월 10일</p>
+        <p class="updated-date">시행 일자: 2026년 10월 22일</p>
         <p class="app-line">앱: Sudoku (패키지: com.powerneja.suidoku)</p>
       </div>
       <div data-lang-only="en">
         <h1>Sudoku Privacy Policy</h1>
-        <p class="updated-date">Effective date: October 10, 2026</p>
+        <p class="updated-date">Effective date: October 22, 2026</p>
         <p class="app-line">App: Sudoku (package: com.powerneja.suidoku)</p>
       </div>
       <div data-lang-only="ja">
         <h1>ナンプレ<br>プライバシーポリシー</h1>
-        <p class="updated-date">施行日：2026年10月10日</p>
+        <p class="updated-date">施行日：2026年10月22日</p>
         <p class="app-line">アプリ：ナンプレ（パッケージ：com.powerneja.suidoku）</p>
       </div>
       <nav class="lang-nav" aria-label="Language">
@@ -169,8 +169,8 @@
       <h2>🛡️ 1. 개요</h2>
       <p><strong>Sudoku</strong>(이하 '본 앱')는 회원가입 없이 이용할 수 있습니다. 이 문서는 본 앱이 실제로 저장하고 보내는 정보를 모두 적습니다.</p>
       <ul>
-        <li>이름, 이메일, 전화번호, 연락처 목록, 사진, 파일, 마이크, 카메라, 위치 정보는 수집하지 않습니다.</li>
-        <li>개발자가 운영하는 별도 서버는 없습니다. 아래에 적힌 Google 서비스(Google Play 게임즈, Firebase, AdMob, Google Play 결제)로만 데이터가 전송됩니다.</li>
+        <li>이름, 이메일, 전화번호, 연락처 목록, 사진, 파일, 마이크, 카메라는 수집하지 않으며, 기기의 위치(GPS) 정보도 쓰지 않습니다. 아래 Google 서비스가 IP 주소로 대략적인 지역을 추정할 수는 있습니다(5·6절).</li>
+        <li>개발자가 운영하는 별도 서버는 없습니다. 아래에 적힌 Google 서비스(Google Play 게임즈, Firebase, Google Analytics for Firebase, AdMob, Google Play 결제)로만 데이터가 전송됩니다.</li>
       </ul>
     </div>
 
@@ -219,29 +219,42 @@
     </div>
 
     <div class="card">
-      <h2>💳 6. 인앱 구매 (Google Play 결제)</h2>
+      <h2>📊 6. 사용 통계 (Google Analytics for Firebase)</h2>
+      <p>앱이 어떻게 쓰이는지 알고 고치기 위해 <strong>Google Analytics for Firebase</strong>로 사용 통계를 보냅니다. 게임 기록, 이름, 이메일은 보내지 않습니다.</p>
+      <ul>
+        <li>자동으로 보내지는 것: 첫 실행, 앱 실행, 세션, 사용 시간, 앱 업데이트, 앱 삭제 같은 이벤트와 앱 버전, 기기 모델과 OS 버전, 언어, IP 주소로 추정한 대략적인 지역(국가·도시 수준). 이 이벤트들은 무작위로 만든 앱 인스턴스 ID로 묶입니다.</li>
+        <li><strong>광고 식별자(Advertising ID)는 Google Analytics로 보내지 않습니다.</strong> 이 통계는 광고나 광고 개인화에 쓰지 않습니다.</li>
+        <li>법적으로 동의가 필요한 지역(유럽 경제 지역, 영국, 스위스)에서는 앱 인스턴스 ID를 저장하거나 쓰지 않습니다. 그 지역에서는 식별자 없는 신호만 Google에 갈 수 있습니다.</li>
+        <li>보관: 개별 이벤트 데이터는 Google Analytics의 보관 기간(기본값 2개월)이 지나면 지워집니다. 앱을 삭제하거나 기기 설정에서 앱 데이터를 지우면 새 앱 인스턴스 ID가 만들어집니다.</li>
+        <li>Google의 데이터 처리: <a href="https://policies.google.com/technologies/partner-sites" target="_blank">Google 서비스를 사용하는 사이트·앱의 정보를 Google이 사용하는 방식</a></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>💳 7. 인앱 구매 (Google Play 결제)</h2>
       <p>광고 제거 구매는 Google Play 결제 시스템이 처리합니다. 개발자는 카드 번호 등 결제 정보를 받지 않으며, Google Play가 제공하는 구매 확인 정보만으로 광고 제거 여부를 판단합니다.</p>
     </div>
 
     <div id="delete" class="card">
-      <h2>🗑️ 7. 데이터 삭제와 보관 기간</h2>
+      <h2>🗑️ 8. 데이터 삭제와 보관 기간</h2>
       <p>Sudoku(개발자: K2Bact)의 데이터는 아래 방법으로 삭제할 수 있습니다.</p>
       <ul>
         <li><strong>기기에 저장된 데이터</strong>: 앱의 [설정] &gt; [개인정보 보호] &gt; [모든 로컬 데이터 초기화]를 누르거나 앱을 삭제하면 즉시 삭제됩니다.</li>
         <li><strong>Google Play 게임즈 데이터</strong>(클라우드 백업, Logic Score 순위표 기록, 업적): 이용자가 삭제할 때까지 보관됩니다. 앱 안의 초기화로는 지워지지 않습니다. Google Play 스토어 앱의 [프로필 아이콘] &gt; [설정] &gt; [일반] &gt; [Play 게임즈 프로필] &gt; [개인 정보 보호 및 설정] &gt; [내 데이터]의 [프로필 및 게임 데이터 삭제]에서, 또는 웹의 <a href="https://play.google.com/games/profile" target="_blank">play.google.com/games/profile</a> &gt; [내 데이터] &gt; [Play 게임즈 계정 및 데이터 삭제]에서 이 게임의 데이터를 삭제할 수 있습니다.</li>
         <li><strong>이전 버전(1.2.6 이하)이 만든 안드로이드 자동 백업 사본</strong>: 1.2.7부터는 복원되지 않으며, Google의 백업 정책에 따라 만료될 때까지 이용자의 Google 드라이브에 남아 있습니다. Google 드라이브의 백업 관리에서 바로 삭제할 수도 있습니다.</li>
         <li><strong>1v1 대전 데이터</strong>: 따로 삭제할 필요가 없습니다. 매칭 대기 기록은 연결이 끊기면, 대전 메시지는 약 1분 뒤 또는 연결이 끊길 때 서버에서 자동으로 삭제됩니다. Firebase 익명 인증 식별자는 다른 정보와 연결되지 않습니다.</li>
+        <li><strong>사용 통계(Google Analytics)</strong>: 개별 이벤트 데이터는 보관 기간(기본값 2개월)이 지나면 지워집니다. 앱을 삭제하거나 기기 설정에서 앱 데이터를 지우면 그 뒤의 통계는 새 앱 인스턴스 ID로 따로 묶입니다.</li>
       </ul>
       <p>그 밖의 삭제 요청은 아래 문의처로 보내 주세요.</p>
     </div>
 
     <div class="card">
-      <h2>👶 8. 아동 보호</h2>
+      <h2>👶 9. 아동 보호</h2>
       <p>본 앱은 만 13세 미만 아동을 대상으로 하지 않으며, 아동의 개인정보를 의도적으로 수집하지 않습니다.</p>
     </div>
 
     <div class="card">
-      <h2>📬 9. 문의처</h2>
+      <h2>📬 10. 문의처</h2>
       <p>개인정보 보호 및 앱 이용에 관한 문의는 아래로 연락해 주시기 바랍니다.</p>
       <p>• 개발자: K2Bact<br>• 문의: <span class="highlight">k2bact.dev@gmail.com</span></p>
       <p>이 방침이 바뀌면 이 페이지를 갱신하고 시행 일자를 고칩니다.</p>
@@ -256,8 +269,8 @@
       <h2>🛡️ 1. Overview</h2>
       <p><strong>Sudoku</strong> ("the app") needs no account. This page lists everything the app actually stores and sends.</p>
       <ul>
-        <li>We do not collect your name, email, phone number, contacts, photos, files, microphone, camera or location.</li>
-        <li>The developer runs no server of its own. Data goes only to the Google services named below (Google Play Games, Firebase, AdMob and Google Play billing).</li>
+        <li>We do not collect your name, email, phone number, contacts, photos, files, microphone or camera, and the app does not use your device's location (GPS). The Google services below may estimate an approximate region from your IP address (sections 5 and 6).</li>
+        <li>The developer runs no server of its own. Data goes only to the Google services named below (Google Play Games, Firebase, Google Analytics for Firebase, AdMob and Google Play billing).</li>
       </ul>
     </div>
 
@@ -306,29 +319,42 @@
     </div>
 
     <div class="card">
-      <h2>💳 6. In-App Purchase (Google Play Billing)</h2>
+      <h2>📊 6. Usage Statistics (Google Analytics for Firebase)</h2>
+      <p>To learn how the app is used and improve it, the app sends usage statistics to <strong>Google Analytics for Firebase</strong>. It does not send your game records, name or email.</p>
+      <ul>
+        <li>Sent automatically: events such as first open, app launches, sessions, engagement time, app updates and uninstalls; the app version, device model and OS version, language, and an approximate region estimated from your IP address (country or city level). These events are tied together by a randomly generated app instance ID.</li>
+        <li><strong>Your Advertising ID is not sent to Google Analytics.</strong> These statistics are not used for ads or ad personalization.</li>
+        <li>Where the law requires consent (the EEA, the UK and Switzerland), the app instance ID is not stored or used; only signals without an identifier may reach Google there.</li>
+        <li>Retention: event-level data is deleted after the Google Analytics retention period (2 months by default). Uninstalling the app or clearing its data in your device settings creates a new app instance ID.</li>
+        <li>How Google uses this data: <a href="https://policies.google.com/technologies/partner-sites" target="_blank">How Google uses information from sites or apps that use its services</a></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>💳 7. In-App Purchase (Google Play Billing)</h2>
       <p>The Remove Ads purchase is processed by Google Play Billing. The developer never receives your card number or other payment details; the app only reads the purchase confirmation Google Play provides to decide whether ads are removed.</p>
     </div>
 
     <div id="delete-en" class="card">
-      <h2>🗑️ 7. Deleting Your Data and Retention</h2>
+      <h2>🗑️ 8. Deleting Your Data and Retention</h2>
       <p>Data from Sudoku (developer: K2Bact) can be deleted as follows.</p>
       <ul>
         <li><strong>Data on your device</strong>: deleted immediately when you tap Settings &gt; Privacy &amp; Security &gt; Reset All Local Data in the app, or when you uninstall the app.</li>
         <li><strong>Google Play Games data</strong> (cloud backup, Logic Score leaderboard entry, achievements): kept until you delete it. The in-app reset does not remove it. Delete this game's data in the Google Play Store app under your profile icon &gt; Settings &gt; General &gt; Play Games Profile &gt; Privacy &amp; Settings &gt; Your Data &gt; Delete profile &amp; game data, or on the web at <a href="https://play.google.com/games/profile" target="_blank">play.google.com/games/profile</a> &gt; Your Data &gt; Delete Play Games Account &amp; Data.</li>
         <li><strong>Android Auto Backup copy made by earlier versions (1.2.6 and below)</strong>: no longer restored from 1.2.7; it stays in your Google Drive until it expires under Google's backup policy. You can also delete it now from the backups section of your Google Drive.</li>
         <li><strong>1v1 battle data</strong>: nothing to delete. Matchmaking tickets are removed from the server when you disconnect, and battle messages about one minute after they are sent or when you disconnect. The Firebase Anonymous Authentication identifier is not linked to any other information.</li>
+        <li><strong>Usage statistics (Google Analytics)</strong>: event-level data is deleted after the retention period (2 months by default). Uninstalling the app or clearing its data in your device settings starts a new app instance ID for later statistics.</li>
       </ul>
       <p>For any other deletion request, contact us at the address below.</p>
     </div>
 
     <div class="card">
-      <h2>👶 8. Children's Privacy</h2>
+      <h2>👶 9. Children's Privacy</h2>
       <p>The app is not directed at children under 13 and does not knowingly collect personal information from children.</p>
     </div>
 
     <div class="card">
-      <h2>📬 9. Contact</h2>
+      <h2>📬 10. Contact</h2>
       <p>For questions about this policy or the app, please get in touch.</p>
       <p>• Developer: K2Bact<br>• Email: <span class="highlight">k2bact.dev@gmail.com</span></p>
       <p>If this policy changes, we will update this page and its effective date.</p>
@@ -343,8 +369,8 @@
       <h2>🛡️ 1. 概要</h2>
       <p><strong>ナンプレ</strong>（以下「本アプリ」）はアカウント登録なしで利用できます。本ポリシーには、本アプリが実際に保存・送信する情報をすべて記載しています。</p>
       <ul>
-        <li>氏名、メールアドレス、電話番号、連絡先、写真、ファイル、マイク、カメラ、位置情報は収集しません。</li>
-        <li>開発者が運営する独自のサーバーはありません。データは以下に記載する Google のサービス（Google Play ゲーム、Firebase、AdMob、Google Play の決済）にのみ送信されます。</li>
+        <li>氏名、メールアドレス、電話番号、連絡先、写真、ファイル、マイク、カメラは収集せず、端末の位置情報（GPS）も使いません。以下の Google のサービスが IP アドレスからおおよその地域を推定する場合があります（5・6）。</li>
+        <li>開発者が運営する独自のサーバーはありません。データは以下に記載する Google のサービス（Google Play ゲーム、Firebase、Google Analytics for Firebase、AdMob、Google Play の決済）にのみ送信されます。</li>
       </ul>
     </div>
 
@@ -393,29 +419,42 @@
     </div>
 
     <div class="card">
-      <h2>💳 6. アプリ内購入（Google Play の決済）</h2>
+      <h2>📊 6. 利用統計（Google Analytics for Firebase）</h2>
+      <p>アプリの使われ方を把握して改善するため、<strong>Google Analytics for Firebase</strong> に利用統計を送信します。ゲームの記録、氏名、メールアドレスは送信しません。</p>
+      <ul>
+        <li>自動で送信されるもの：初回起動、アプリの起動、セッション、利用時間、アプリの更新、アンインストールなどのイベント、アプリのバージョン、端末の機種と OS のバージョン、言語、IP アドレスから推定したおおよその地域（国・都市レベル）。これらのイベントはランダムに生成されたアプリインスタンス ID で結び付けられます。</li>
+        <li><strong>広告IDは Google Analytics に送信しません。</strong>この統計を広告や広告のパーソナライズに使うことはありません。</li>
+        <li>法律で同意が必要な地域（欧州経済領域、英国、スイス）では、アプリインスタンス ID を保存・使用しません。これらの地域では識別子のない信号のみが Google に送られる場合があります。</li>
+        <li>保存期間：イベント単位のデータは Google Analytics の保存期間（初期設定は2か月）が過ぎると削除されます。アプリをアンインストールするか、端末の設定でアプリのデータを消去すると、新しいアプリインスタンス ID が作成されます。</li>
+        <li>Google によるデータの取り扱い：<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank">Google のサービスを使用するサイトやアプリから収集した情報の Google による使用</a></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>💳 7. アプリ内購入（Google Play の決済）</h2>
       <p>広告削除の購入は Google Play の決済システムで処理されます。開発者がカード番号などの決済情報を受け取ることはなく、Google Play から提供される購入確認情報のみで広告削除の有無を判断します。</p>
     </div>
 
     <div id="delete-ja" class="card">
-      <h2>🗑️ 7. データの削除と保存期間</h2>
+      <h2>🗑️ 8. データの削除と保存期間</h2>
       <p>ナンプレ（開発者：K2Bact）のデータは、次の方法で削除できます。</p>
       <ul>
         <li><strong>端末に保存されたデータ</strong>：アプリの［設定］＞［プライバシー保護］＞［すべてのローカルデータを初期化］を押すか、アプリをアンインストールすると、すぐに削除されます。</li>
         <li><strong>Google Play ゲームのデータ</strong>（クラウドバックアップ、ロジックスコアのリーダーボード記録、実績）：ご自身で削除するまで保存されます。アプリ内の初期化では削除されません。Google Play ストアアプリの［プロフィールアイコン］＞［設定］＞［全般］＞［Play Games プロフィール］＞［プライバシーと設定］＞［データ］の［プロフィールとゲームデータを削除］、またはウェブの <a href="https://play.google.com/games/profile" target="_blank">play.google.com/games/profile</a> ＞［データ］＞［Play Games のアカウントとデータを削除］から、このゲームのデータを削除できます。</li>
         <li><strong>以前のバージョン（1.2.6 以前）が作成した Android の自動バックアップのコピー</strong>：1.2.7 以降は復元されず、Google のバックアップポリシーにより期限切れになるまで Google ドライブに残ります。Google ドライブのバックアップ管理から今すぐ削除することもできます。</li>
         <li><strong>1v1対戦のデータ</strong>：削除の操作は必要ありません。マッチング待ちの記録は接続が切れたとき、対戦メッセージは送信から約1分後または接続が切れたときに、サーバーから自動で削除されます。Firebase 匿名認証の識別子は、ほかの情報とは結び付きません。</li>
+        <li><strong>利用統計（Google Analytics）</strong>：イベント単位のデータは保存期間（初期設定は2か月）が過ぎると削除されます。アプリをアンインストールするか端末の設定でアプリのデータを消去すると、以後の統計は新しいアプリインスタンス ID で結び付けられます。</li>
       </ul>
       <p>その他の削除のご依頼は、下記のお問い合わせ先までご連絡ください。</p>
     </div>
 
     <div class="card">
-      <h2>👶 8. 子どものプライバシー</h2>
+      <h2>👶 9. 子どものプライバシー</h2>
       <p>本アプリは13歳未満の子どもを対象としておらず、子どもの個人情報を意図的に収集することはありません。</p>
     </div>
 
     <div class="card">
-      <h2>📬 9. お問い合わせ</h2>
+      <h2>📬 10. お問い合わせ</h2>
       <p>本ポリシーおよびアプリに関するお問い合わせは、下記までご連絡ください。</p>
       <p>• 開発者：K2Bact<br>• メール：<span class="highlight">k2bact.dev@gmail.com</span></p>
       <p>本ポリシーを変更した場合は、このページと施行日を更新します。</p>

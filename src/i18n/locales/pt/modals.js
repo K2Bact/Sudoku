@@ -16,6 +16,7 @@ export const modals = {
       shareBtn: 'Compartilhar',
       copiedToast: '🎉 Resultado copiado para a área de transferência!',
       shareText: '🧩 Resolvi o Sudoku {mode} Lv.{level} {name} em [{time}]! Classificação: {rank} (erros: {mistakes}). Consegue fazer melhor?',
+      shareModes: { classic: '[Clássico]', timeAttack: '[⚡Contra o Tempo]', timeLimit: '[⏳Sobrevivência]' },
       ranks: {
         'S+': '👑 S+ (Divino)',
         'S': '⭐️ S (Mestre)',
@@ -59,6 +60,7 @@ export const modals = {
       adPlaceholder: '📺 Espaço de anúncio (sem anúncio)',
       chancesLeft: 'Recargas restantes neste jogo: {remaining}/{max}',
       maxReached: 'Recargas por anúncio limitadas a 2 por partida.',
+      notSaved: 'O armazenamento está cheio, então as dicas não podem ser salvas agora. Libere espaço e tente novamente.',
       later: 'Mais tarde'
     }
   }

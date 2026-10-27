@@ -16,6 +16,7 @@ export const modals = {
       shareBtn: '기록 공유',
       copiedToast: '🎉 클리어 기록이 클립보드에 복사되었습니다!',
       shareText: '🧩 Sudoku {mode} Lv.{level} {name}를 [{time}]만에 클리어! 등급: {rank} (실수 {mistakes}회). 당신도 도전해 보세요!',
+      shareModes: { classic: '[클래식]', timeAttack: '[⚡스피드런]', timeLimit: '[⏳서바이벌]' },
       ranks: {
         'S+': '👑 S+ (신속의 경지)',
         'S': '⭐️ S (마스터)',
@@ -59,6 +60,7 @@ export const modals = {
       adPlaceholder: '📺 광고 자리 (실제 광고 없음)',
       chancesLeft: '이번 게임 남은 충전: {remaining}/{max}회',
       maxReached: '게임당 광고 힌트 충전은 최대 2회까지만 가능합니다.',
+      notSaved: '저장공간이 가득 차서 지금은 힌트를 저장할 수 없어요. 공간을 비운 뒤 다시 시도해 주세요.',
       later: '다음에'
     }
   }

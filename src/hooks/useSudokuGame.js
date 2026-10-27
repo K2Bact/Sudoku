@@ -293,7 +293,7 @@ export function useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey
 
   // The hint a rewarded video pays, spent at once (useRewardHint.js).
   const handleRewardHint = useRewardHint({
-    adHintsUsedThisGame, setAdHintsUsedThisGame, setHintsRemaining, setShowHintRewardModal, handleGetHint
+    adHintsUsedThisGame, setAdHintsUsedThisGame, setHintsRemaining, setShowHintRewardModal, handleGetHint, showToast, t
   });
 
   const { remainingCounts, userFilledCount, totalEmptyCount } = boardProgress(board, initialBoard);

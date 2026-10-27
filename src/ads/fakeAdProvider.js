@@ -77,6 +77,11 @@ export class FakeAdProvider {
     return Promise.resolve(false);
   }
 
+  /** No SDK, no consent state — Analytics stays at its denied defaults. */
+  consentInfo() {
+    return Promise.resolve(null);
+  }
+
   showPrivacyOptions() {
     return Promise.resolve(false);
   }

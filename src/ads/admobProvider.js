@@ -20,6 +20,7 @@
  */
 
 import { watchRewarded, withTimeout } from './rewardedWatch.js';
+import { applyAnalyticsConsent } from '../services/analyticsConsent.js';
 import { InterstitialSlot } from './interstitialWatch.js';
 import {
   bannerWidth,
@@ -276,6 +277,9 @@ export class AdMobProvider {
           info = await admob.showConsentForm();
         }
 
+        // The same answer decides Google Analytics (services/analyticsConsent.js) — after the
+        // form, so a choice made in it is the one read. Not awaited: ads do not wait on it.
+        applyAnalyticsConsent(info);
         this.canRequestAds = Boolean(info?.canRequestAds);
         if (!this.canRequestAds) {
           console.info('[ads] consent not given; no ads will be requested');
@@ -316,14 +320,18 @@ export class AdMobProvider {
    * else would be a menu that does nothing.
    */
   async hasPrivacyOptions() {
+    return (await this.consentInfo())?.privacyOptionsRequirementStatus === 'REQUIRED';
+  }
+
+  /** The SDK's consent state for this user, read without showing a form; null if unreadable. */
+  async consentInfo() {
     const admob = plugin();
-    if (!admob) return false;
+    if (!admob) return null;
     try {
-      const info = await admob.requestConsentInfo();
-      return info?.privacyOptionsRequirementStatus === 'REQUIRED';
+      return await admob.requestConsentInfo();
     } catch (e) {
       console.warn('[ads] could not read consent state:', e?.message || e);
-      return false;
+      return null;
     }
   }
 

@@ -1,6 +1,6 @@
 import { cloneGrid, calculateRemainingCounts, getSmartHint } from '../engine/SudokuEngine.js';
 import { soundHaptic } from '../utils/soundHaptic.js';
-import { loadWallet, consumeHint } from '../utils/wallet.js';
+import { loadWallet, spendHint } from '../utils/wallet.js';
 
 export function useKeypadActions({
   board,
@@ -113,8 +113,17 @@ export function useKeypadActions({
     const hint = getSmartHint(board, solutionBoard, selectedCell);
     if (!hint) return;
 
-    const success = consumeHint();
-    if (!success) {
+    const spent = spendHint();
+    if (spent === 'not_saved') {
+      // The player has hints; the phone would not store the spend (D30). An ad offer
+      // here would ask them to watch one for a hint they already have.
+      soundHaptic.playSelectSound();
+      if (typeof showToast === 'function' && typeof t === 'function') {
+        showToast(t('modals.hintReward.notSaved'), 3500);
+      }
+      return;
+    }
+    if (spent !== 'spent') {
       soundHaptic.playSelectSound();
       if (adHintsUsedThisGame >= 2) {
         if (typeof showToast === 'function' && typeof t === 'function') {

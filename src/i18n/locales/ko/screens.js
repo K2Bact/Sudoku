@@ -124,10 +124,10 @@ export const screens = {
     privacyModalTitle: '개인정보처리방침',
     privacy: {
       subtitle: 'Sudoku는 계정 없이 이용할 수 있습니다. 앱이 실제로 저장하고 보내는 정보는 아래와 같습니다.',
-      sec1Title: '1. 기기 저장과 백업', sec1Desc: "기록·힌트·설정은 기기에 저장됩니다. Play 게임즈에 로그인하지 않으면 이 기기에만 남습니다. 이름·이메일·전화번호·연락처·위치는 수집하지 않습니다.",
+      sec1Title: '1. 기기 저장과 백업', sec1Desc: "기록·힌트·설정은 기기에 저장됩니다. Play 게임즈에 로그인하지 않으면 이 기기에만 남습니다. 이름·이메일·전화번호·연락처·정확한 위치는 수집하지 않습니다.",
       sec2Title: '2. Google Play 게임즈', sec2Desc: 'Play 게임즈에 로그인되어 있으면 게임에서 이길 때마다 진행 기록(통계·업적·힌트·설정)이 Play 게임즈 저장 데이터로 자동 백업되고, Logic Score가 Play 게임즈 순위표에 제출됩니다. Play 게임즈에는 딴 업적이 기록됩니다(로그인 전에 딴 업적은 다음 로그인 때). 이 데이터는 본인의 Google 계정에 보관됩니다.',
       sec3Title: '3. 1v1 대전', sec3Desc: '실시간 1v1 대전은 Google Firebase를 통해 무작위로 만든 플레이어 ID, 자동 닉네임(Player_xxxx), 퍼즐 진행률을 상대에게 보냅니다. ID는 기기에 저장되어 재사용되며 이름이나 계정과 연결되지 않습니다. 두 사람 모두 [대전 기록 공유]를 켜 두었다면, 경기가 끝난 뒤 복기를 위해 그 판에서 둔 수와 시각도 상대에게 보냅니다(기본 켜짐, 설정에서 끌 수 있음).',
-      sec4Title: '4. 광고와 결제', sec4Desc: '이 앱은 Google AdMob을 통해 배너 광고, 게임 승리 후 전면 광고, 원할 때 보는 보상형 광고를 표시하며, AdMob은 광고 식별자를 처리할 수 있습니다. 광고 제거 구매는 Google Play가 처리하며 개발자는 결제 정보를 받지 않습니다.'
+      sec4Title: '4. 광고·결제·사용 통계', sec4Desc: '이 앱은 Google AdMob을 통해 배너 광고, 게임 승리 후 전면 광고, 원할 때 보는 보상형 광고를 표시하며, AdMob은 광고 식별자를 처리할 수 있습니다. 광고 제거 구매는 Google Play가 처리하며 개발자는 결제 정보를 받지 않습니다. 앱 실행·세션·앱 버전·기기 모델과 IP 주소로 추정한 대략적인 지역 같은 사용 통계는 무작위 앱 인스턴스 ID와 함께 Google Analytics for Firebase로 보내집니다. 광고 식별자는 보내지 않으며 광고에 쓰지 않습니다. 유럽 경제 지역·영국·스위스에서는 식별자를 쓰지 않습니다.'
     }
   },
   stats: {
@@ -194,6 +194,7 @@ export const screens = {
     aiDefeatTitle: 'AI 봇대전 패배',
     victoryDesc: '{opponent} 님과의 대전에서 퍼즐을 먼저 완성하여 승리하셨습니다!',
     victoryMistakeDesc: '{opponent} 님이 실수 3회(하트 소진)로 탈락하여 승리하셨습니다!',
+    victoryForfeitDesc: '{opponent} 님이 대전을 포기하고 나가 기권승을 거두셨습니다!',
     defeatDesc: '{opponent} 님이 퍼즐을 먼저 완성했습니다.',
     defeatMistakeDesc: '실수 3회(하트 소진)로 실격되어 패배하셨습니다.',
     disqualified: '💀 실격',
@@ -222,6 +223,7 @@ export const screens = {
   },
   battleHeader: {
     aiTag: 'AI',
+    botNames: { grandmaster: 'AI 그랜드마스터', solver: 'AI 해결사', logic: 'AI 논리왕', swift: 'AI 번개' },
     confirmLeave: '배틀을 포기하고 홈으로 나가시겠습니까?',
     emptyCellsLeft: '남음'
   },

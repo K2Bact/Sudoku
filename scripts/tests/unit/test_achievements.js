@@ -265,7 +265,8 @@ const CASES = {
 {
   const strip = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
   const battle = strip(read('src/hooks/useBattleMultiplayer.js'));
-  assert(/if \(room\.winner === 'me'\) checkAndUnlockAchievements\(\{ isBattleWin: true \}\)/.test(battle),
+  // A block since D32: what it unlocked decides whether a rematch banner waits for Play Games' popup.
+  assert(/if \(room\.winner === 'me'\) \{\s*const unlocked = checkAndUnlockAchievements\(\{ isBattleWin: true \}\)/.test(battle),
     'a duel won must check the achievements with isBattleWin — nothing else passes it');
 
   const practice = strip(read('src/hooks/useInteractivePractice.js'));

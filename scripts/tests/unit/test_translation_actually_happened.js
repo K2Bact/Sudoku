@@ -125,6 +125,17 @@ const COINCIDENTAL = new Set([
   'pt|variants.killer',                // Killer
   'pt|killer.badge',                   // KILLER
   'pt|killer.stats.title',             // Killer
+  // The words over the clock (D22, 2026-10-21), English in every language until they became
+  // keys. "s" is the symbol for seconds in these languages, written the way the header beside
+  // it already writes it — Fehler {count} (+10s), Errore {count} (+10s).
+  'de|header.floatPenalty',            // +{seconds}s
+  'es-ES|header.floatPenalty',         // idem
+  'fr|header.floatPenalty',            // idem
+  'it|header.floatPenalty',            // idem
+  'pt|header.floatPenalty',            // idem
+  'de|header.floatBonus',              // Bonus ist deutsch
+  'it|header.floatCombo',              // COMBO, as header.combo beside it says
+  'pt|header.floatCombo',              // idem
 ]);
 
 function flatten(obj, prefix = '', out = {}) {

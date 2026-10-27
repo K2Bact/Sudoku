@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { battleService } from '../firebase/battleService';
-import { aiRoomGame } from '../firebase/aiBattleSession';
+import { aiRoomGame, isAIRoom } from '../firebase/aiBattleSession';
 import { variantOf } from '../engine/variants';
 import { soundHaptic } from '../utils/soundHaptic';
 import { applyBattleResult } from '../utils/battleRating';
 import { checkAndUnlockAchievements } from '../utils/achievementManager';
+import { ACHIEVEMENT_POPUP_MS, rematchBannerTiming } from '../components/battle/rematchBannerTiming';
 
 export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen, t }) {
   const [activeBattleRoom, setActiveBattleRoom] = useState(null);
@@ -22,6 +23,10 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
   // 'accepted', while this subscription runs on every notifyListeners(). Acting
   // on the value instead of the transition re-ran startNewGame on every update.
   const handledRematchRef = useRef('idle');
+  // Until when Play Games' achievement popup covers the top of the screen, and the
+  // rematch request held until then (D32 — see rematchBannerTiming).
+  const popupUntilRef = useRef(0);
+  const heldRematchRef = useRef(null);
   const searchTimeoutRef = useRef(null);
   const [matchTimedOut, setMatchTimedOut] = useState(false);
   // The search could not start: no signed-in account, so the rules refuse it (BT-2).
@@ -43,7 +48,10 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
           // The duel badge. Nothing passed isBattleWin until 2026-10-08, so it
           // could not be earned. Here, not on a finished board: a duel is also
           // won when the other side leaves, and lost to a faster board.
-          if (room.winner === 'me') checkAndUnlockAchievements({ isBattleWin: true });
+          if (room.winner === 'me') {
+            const unlocked = checkAndUnlockAchievements({ isBattleWin: true });
+            if (unlocked && unlocked.length) popupUntilRef.current = Date.now() + ACHIEVEMENT_POPUP_MS;
+          }
         }
       }
 
@@ -62,6 +70,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
 
         if (rematchStatus === 'accepted') {
           setShowBattleResultModal(false);
+          clearTimeout(heldRematchRef.current);
           setIncomingRematchRequest(null);
           setIsRematchWaiting(false);
           setIsOpponentLeft(false);
@@ -80,11 +89,16 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
 
     // 2. Subscribe to Incoming Rematch Requests (Top Notification Toast)
     const unsubRematch = battleService.subscribeRematch((data) => {
-      setIncomingRematchRequest(data);
+      const { waitMs, seconds } = rematchBannerTiming(popupUntilRef.current);
+      const show = () => setIncomingRematchRequest({ ...data, secondsLeft: seconds });
+      clearTimeout(heldRematchRef.current);
+      if (waitMs > 0) heldRematchRef.current = setTimeout(show, waitMs);
+      else show();
     });
 
     // 3. Subscribe to Opponent Left Event
     const unsubOpponentLeft = battleService.subscribeOpponentLeft(() => {
+      clearTimeout(heldRematchRef.current);
       setIsOpponentLeft(true);
       setIsRematchWaiting(false);
       if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
@@ -95,9 +109,19 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
       unsubRoom();
       unsubRematch();
       unsubOpponentLeft();
-      if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
     };
   }, [showToast, startNewGame, t]);
+
+  // The asker's countdown and a held rematch request stop only when the hook really
+  // goes. Not in the cleanup above: App hands this hook a new startNewGame every
+  // render, so that effect is torn down and rebuilt on every render. Clearing there
+  // froze the asker's button at 「(15s)」 from the first render after the tap (D33 —
+  // there since the countdown was written) and lost every held request before it
+  // could show (D32's first version). Both seen on two phones, 2026-10-22.
+  useEffect(() => () => {
+    clearTimeout(heldRematchRef.current);
+    if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
+  }, []);
 
   // How long to look before admitting nobody is coming. The search used to run
   // forever: on the local transport no peer can ever appear, so the player sat on
@@ -183,7 +207,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
   };
 
   const handleRequestRematch = () => {
-    const isAIBattle = Boolean(activeBattleRoom?.isAiMatch || activeBattleRoom?.isAIBattle || activeBattleRoom?.opponentName?.includes('AI') || activeBattleRoom?.opponentName?.toLowerCase().includes('bot'));
+    const isAIBattle = isAIRoom(activeBattleRoom);
     if (isAIBattle) {
       soundHaptic.playCompleteChime();
       setShowBattleResultModal(false);
@@ -234,6 +258,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
   const cleanupBattleSession = () => {
     if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    clearTimeout(heldRematchRef.current);
     setMatchTimedOut(false);
     setMatchUnavailable(false);
     setIsRematchWaiting(false);
@@ -248,7 +273,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
   };
 
   const handleCloseBattleResult = () => {
-    const isAIBattle = Boolean(activeBattleRoom?.isAiMatch || activeBattleRoom?.isAIBattle || activeBattleRoom?.opponentName?.includes('AI') || activeBattleRoom?.opponentName?.toLowerCase().includes('bot'));
+    const isAIBattle = isAIRoom(activeBattleRoom);
     cleanupBattleSession();
     setActiveScreen(isAIBattle ? 'aiBattle' : 'battleLobby');
   };

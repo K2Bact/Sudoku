@@ -16,6 +16,7 @@ export const modals = {
       shareBtn: 'Teilen',
       copiedToast: '🎉 Ergebnis in die Zwischenablage kopiert!',
       shareText: '🧩 Sudoku {mode} Lv.{level} {name} in [{time}] gelöst! Rang: {rank} ({mistakes} Fehler). Schaffst du es schneller?',
+      shareModes: { classic: '[Klassisch]', timeAttack: '[⚡Zeitrennen]', timeLimit: '[⏳Überleben]' },
       ranks: {
         'S+': '👑 S+ (Göttlich)',
         'S': '⭐️ S (Meister)',
@@ -59,6 +60,7 @@ export const modals = {
       adPlaceholder: '📺 Werbeplatzhalter (keine Werbung)',
       chancesLeft: 'Verbleibende Aufladungen: {remaining}/{max}',
       maxReached: 'Tipp-Aufladungen per Werbung sind auf 2 pro Spiel begrenzt.',
+      notSaved: 'Der Speicher ist voll, deshalb können Tipps gerade nicht gespeichert werden. Gib etwas Speicher frei und versuche es erneut.',
       later: 'Später'
     }
   }

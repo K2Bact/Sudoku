@@ -9,6 +9,7 @@ import { addHints } from '../utils/wallet';
 
 import { ratingDeltaFor } from '../utils/battleRating';
 import { ReplayEntry } from './replay/ReplayEntry';
+import { isAIRoom, opponentDisplayName } from '../firebase/aiBattleSession';
 
 export function BattleResultModal({
   lastRatingChange,
@@ -25,9 +26,9 @@ export function BattleResultModal({
   onReturnHome
 }) {
   const { t } = useTranslation();
-  const isAIBattle = Boolean(room?.isAiMatch || room?.isAIBattle || room?.opponentName?.includes('AI') || room?.opponentName?.toLowerCase().includes('bot'));
+  const isAIBattle = isAIRoom(room);
   const actualWinner = room?.winner ?? winner ?? 'opponent';
-  const actualOpponentName = room?.opponentName ?? opponentName ?? (isAIBattle ? t('home.modes.aiBattle.title') : t('battleResult.opponent'));
+  const actualOpponentName = opponentDisplayName(room, t, opponentName);
   const actualMyProgress = room?.myProgress ?? myProgress ?? 0;
   const actualOpponentProgress = room?.opponentProgress ?? opponentProgress ?? 0;
   const actualMyMistakes = room?.myMistakes ?? 0;
@@ -38,6 +39,10 @@ export function BattleResultModal({
 
   const getResultSubtitle = () => {
     if (isIWon) {
+      // Won because they gave up (BT-3) — not because this side finished first.
+      if (winnerReason === 'opponent_left') {
+        return t('battleResult.victoryForfeitDesc', { opponent: actualOpponentName });
+      }
       if (winnerReason === 'opponent_mistakes' || actualOpponentMistakes >= 3) {
         return t('battleResult.victoryMistakeDesc', { opponent: actualOpponentName });
       }

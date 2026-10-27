@@ -107,6 +107,38 @@
       "find": "  const { t } = useTranslation();",
       "replace": "  const { t } = useTranslation(); const probe = 'x//y'; const label = '안녕';",
       "expectFailure": "안녕"
+    },
+    {
+      "name": "the Survival bonus over the clock is built in English again",
+      "why": "BACKLOG D22 (2026-10-21): the hook built `+${n}s Bonus!` and handed the header finished text, so all thirteen locales showed English. The scanner read only JSX children and passed it for as long as it was there.",
+      "file": "src/hooks/useGameTimer.js",
+      "find": "showFloatingIndicator('bonus', 'header.floatBonus', { seconds: bonusSeconds });",
+      "replace": "showFloatingIndicator('bonus', `+${bonusSeconds}s Bonus!`);",
+      "expectFailure": "+{}s Bonus!"
+    },
+    {
+      "name": "the Speedrun combo over the clock is built in English again",
+      "why": "BACKLOG D22: the other half — `-1s (2 COMBO!)` in every language, though header.combo had been translated beside it all along.",
+      "file": "src/hooks/useGameTimer.js",
+      "find": "showFloatingIndicator('bonus', 'header.floatCombo', { seconds: bonusReduction, count: nextCombo });",
+      "replace": "showFloatingIndicator('bonus', `-${bonusReduction}s (${nextCombo} COMBO!)`);",
+      "expectFailure": "COMBO!)"
+    },
+    {
+      "name": "the share text's mode is an English template handed to t() again",
+      "why": "D27 (2026-10-21): the victory share said [⚡Time Attack] in every language, built outside JSX and passed to t() as a value. The original was a plain quoted string through a variable, which no gate reads (see the gate's note); this holds the template form the new pass does read.",
+      "file": "src/components/VictoryModal.jsx",
+      "find": "const shared = { mode: t(`modals.victory.shareModes.${shareMode}`), level,",
+      "replace": "const shared = { mode: `[${shareMode === 'timeAttack' ? '⚡' : ''}Time Attack]`, level,",
+      "expectFailure": "Time Attack]"
+    },
+    {
+      "name": "a class name built in a template outside JSX stays quiet",
+      "why": "The control for the new pass: a className attribute template has words and spaces and is never read by a player. If this fails, the pass is reporting class names and will be muted.",
+      "file": "src/components/Header.jsx",
+      "find": "<div className={`time-floating-indicator ${timeFloatingText.type}`}>",
+      "replace": "<div className={`time-floating-indicator floating ${timeFloatingText.type} shown`}>",
+      "expectSurvival": true
     }
   ],
   "note": "The scanner used to skip only whole-line comments, so a Korean trailing comment on a code line was reported as a hardcoded string. That is noise rather than a miss, but a noisy gate gets muted — or worse, gets quietened by rewriting Korean comments into English, and the comments explaining why each fix was made are the most valuable thing in this repository. Trailing comments are now stripped before scanning. The two mutations below hold both ends: a Korean comment must NOT fail, and a Korean string sitting after code on the same line must still fail."

@@ -29,19 +29,18 @@ export class AIBotService {
     this.intervalId = null;
     this.onUpdateCallback = null;
     this.onFinishCallback = null;
-    this.botState = { name: 'AI Grandmaster', progress: 0, mistakes: 0, status: 'idle' };
+    // No name here: the bot's name belongs to the room, which shows it in the player's
+    // language (aiBattleSession.js, D28). This drew its own English one that nothing read.
+    this.botState = { progress: 0, mistakes: 0, status: 'idle' };
   }
 
   startMatch(level = 3, onUpdate, onFinish, variant = 'classic') {
     this.onUpdateCallback = onUpdate;
     this.onFinishCallback = onFinish;
 
-    const botNames = ['AI Grandmaster', 'AI Solver', 'AI Logic', 'AI Swift'];
-    const randomName = botNames[Math.floor(Math.random() * botNames.length)];
     const profile = botProfile(level, variant);
 
     this.botState = {
-      name: randomName,
       progress: 0,
       mistakes: 0,
       status: 'playing'

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppScreenRouter } from './components/screens/AppScreenRouter';
 import { GameModalsContainer } from './components/modals/GameModalsContainer';
 import { RematchToastBanner } from './components/battle/RematchToastBanner';
@@ -16,6 +16,8 @@ import { useGameProps } from './hooks/useGameProps';
 import { useCloudAutoSync } from './hooks/useCloudAutoSync';
 import { useGameStarters } from './hooks/useGameStarters';
 import { useTranslation } from './i18n/i18nContext';
+import { adsService } from './services/adsService';
+import { syncAnalyticsConsent } from './services/analyticsConsent';
 import './App.css';
 
 export function App() {
@@ -63,6 +65,9 @@ export function App() {
   } = useBattleMultiplayer({ showToast, startNewGame: (...args) => game.startNewGame(...args), setActiveScreen, t });
 
   useCloudAutoSync();
+  // Google Analytics may identify this install only where the ad consent check says no
+  // consent is asked (services/analyticsConsent.js). Read once at launch, no form shown.
+  useEffect(() => { syncAnalyticsConsent(() => adsService.consentInfo()); }, []);
   const game = useSudokuGame(activeScreen, activeBattleRoom, activeDailyDateKey, showToast);
   const {
     level, gameMode, variant, mistakes, setMistakes, hintsUsedCount,
@@ -143,6 +148,7 @@ export function App() {
       {incomingRematchRequest && (
         <RematchToastBanner
           requesterName={incomingRematchRequest.requesterName}
+          initialSeconds={incomingRematchRequest.secondsLeft}
           onAccept={handleAcceptRematch}
           onDecline={handleDeclineRematch}
         />

@@ -15,6 +15,7 @@ import {
   startQuickMatch, claimBothTickets, handleMatchTicket, handleMatchCreated
 } from './battleMatchmaking.js';
 import { observeValues } from '../utils/replay/matchRecorder.js';
+import { applyBattleResult } from '../utils/battleRating.js';
 import {
   noteOpponentProgress, finishReplay, handleReplayShare, handleMatchLog, refreshReplayResult, abandonReplay
 } from './replayExchange.js';
@@ -148,8 +149,34 @@ class BattleService {
       room.rematchSeq = (room.rematchSeq || 0) + 1;
       this.notifyListeners();
     } else if (data.type === 'player_left') {
-      this.opponentLeftListeners.forEach(cb => cb());
+      this.handleOpponentLeft();
     }
+  }
+
+  /**
+   * The opponent gave the match up (BT-3, user 2026-10-22: "상대가 나갔으면 기권승으로 하자").
+   *
+   * Until then the player who stayed got a toast and a board to finish alone, and the
+   * one who left lost nothing — after answering yes to 「배틀을 포기하고…」. A match
+   * still being played is now won here, through the finish every other ending takes:
+   * the result card, the rating, the duel badge and the replay all follow from the
+   * room. A match already over keeps its result — leaving the result screen gives
+   * nothing up.
+   */
+  handleOpponentLeft() {
+    const room = this.currentRoom;
+    if (room && room.status === 'playing') {
+      room.status = 'finished';
+      room.winner = 'me';
+      room.winnerReason = 'opponent_left';
+      finishReplay(this);
+      this.notifyListeners();
+    }
+    // Nothing more for this match will come from them. A replay still waiting for
+    // their moves said 「상대의 수를 기다리는 중이에요…」 under a forfeit win
+    // (two phones, 2026-10-22) — the same 'missed' as when this side leaves.
+    abandonReplay(this);
+    this.opponentLeftListeners.forEach(cb => cb());
   }
 
   /**
@@ -382,6 +409,11 @@ class BattleService {
     if (this.currentRoom) {
       abandonReplay(this); // the replay's last answer or moves will not reach a player who has left
       if (!this.currentRoom.isAiMatch) {
+        // Leaving a match still being played is giving it up (BT-3): the goodbye below
+        // wins it for the other side, so here it is the loss it is. Only the two
+        // leave buttons reach this mid-match, and both ask 「배틀을 포기하고…」 first;
+        // after the result, leaving costs nothing.
+        if (this.currentRoom.status === 'playing') applyBattleResult(false, this.currentRoom.level || 3);
         // Leave the room only once the goodbye is out: the rules let only members
         // write there, so releasing first would refuse the last message.
         const roomId = this.currentRoom.roomId;

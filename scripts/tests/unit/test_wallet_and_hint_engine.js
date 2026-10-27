@@ -1,5 +1,5 @@
 import { generatePuzzle, getSmartHint } from '../../../src/engine/SudokuEngine.js';
-import { loadWallet, consumeHint, addHints, claimDailyAttendance, subscribeToWallet } from '../../../src/utils/wallet.js';
+import { loadWallet, consumeHint, spendHint, addHints, claimDailyAttendance, subscribeToWallet } from '../../../src/utils/wallet.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -200,6 +200,50 @@ runTest('Wiring: useSudokuGame subscribes to the wallet rather than only copying
     throw new Error(
       'useSudokuGame imports subscribeToWallet but does not register it in a useEffect that returns the unsubscribe function.'
     );
+  }
+});
+
+// 9. A full storage is not an empty wallet (D30, Flip5 2026-10-22). Both used to be one
+//    `false`, and the hint button answered both with an ad offer — to a player holding hints,
+//    for a reward the phone could not store either.
+runTest('D30: spendHint tells "none" from "not_saved"', () => {
+  localStorage.clear();
+  const start = loadWallet().hints;
+  const realSet = globalThis.localStorage.setItem;
+  globalThis.localStorage.setItem = (k, v) => {
+    if (k === 'suidoku_user_wallet_v1') throw new Error('QuotaExceededError');
+    return realSet(k, v);
+  };
+  try {
+    const r = spendHint();
+    if (r !== 'not_saved') throw new Error(`with ${start} hints and a storage that refuses the write, spendHint said "${r}" — the button would offer an ad`);
+    if (consumeHint() !== false) throw new Error('consumeHint reported a spend the storage refused');
+  } finally {
+    globalThis.localStorage.setItem = realSet;
+  }
+  if (loadWallet().hints !== start) throw new Error(`a refused spend changed the stored balance ${start} -> ${loadWallet().hints}`);
+  if (spendHint() !== 'spent') throw new Error('with storage working again, a hint was not spent');
+  while (loadWallet().hints > 0) spendHint();
+  const empty = spendHint();
+  if (empty !== 'none') throw new Error(`with 0 hints spendHint said "${empty}", not "none"`);
+});
+
+runTest('D30 wiring: the hint button and the ad reward say storage is full instead of offering an ad', () => {
+  const strip = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/.*$/gm, '$1');
+  const keypad = strip(fs.readFileSync(path.join(SRC, 'hooks', 'useKeypadActions.js'), 'utf8'));
+  const body = keypad.slice(keypad.indexOf('const handleGetHint'));
+  const branch = body.indexOf("=== 'not_saved'");
+  const toast = body.indexOf("t('modals.hintReward.notSaved')");
+  const offer = body.indexOf('setShowHintRewardModal(true)');
+  if (branch < 0 || toast < branch || offer < 0 || toast > offer || !/return;/.test(body.slice(toast, offer))) {
+    throw new Error('useKeypadActions.handleGetHint does not answer a refused spend with the notSaved toast and return before the ad offer');
+  }
+  const reward = strip(fs.readFileSync(path.join(SRC, 'hooks', 'useRewardHint.js'), 'utf8'));
+  const guard = reward.search(/if \(newCount <= before\)/);
+  const handOn = reward.indexOf('handleGetHint()');
+  const counted = reward.indexOf('setAdHintsUsedThisGame(');
+  if (guard < 0 || handOn < guard || counted < guard || !reward.slice(guard, handOn).includes("t('modals.hintReward.notSaved')")) {
+    throw new Error('useRewardHint hands a reward the storage refused on to the hint button (or counts it toward the two a game)');
   }
 });
 

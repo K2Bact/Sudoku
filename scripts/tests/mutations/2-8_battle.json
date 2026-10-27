@@ -35,6 +35,54 @@
       "find": "          if (sawTicket) {",
       "replace": "          if (true) {",
       "expectFailure": "empty local cache, not a lost race"
+    },
+    {
+      "name": "an opponent leaving mid-match ends nothing",
+      "why": "The behaviour before BT-3, restored: the player who stayed gets a toast and a board to finish alone, while the one who left was told they were giving the match up (user 2026-10-22: \"상대가 나갔으면 기권승으로 하자\").",
+      "file": "src/firebase/battleService.js",
+      "find": "    if (room && room.status === 'playing') {",
+      "replace": "    if (false) {",
+      "expectFailure": "the opponent left mid-match and the match kept running"
+    },
+    {
+      "name": "an opponent leaving the result screen turns a loss into a win",
+      "why": "Leaving after the result is not giving anything up. Without the status check the loser of a finished match wins it the moment the winner goes back to the lobby — and every rematch declined by walking away would rewrite a result.",
+      "file": "src/firebase/battleService.js",
+      "find": "    if (room && room.status === 'playing') {",
+      "replace": "    if (room) {",
+      "expectFailure": "leaving the result screen turned a lost match into a win"
+    },
+    {
+      "name": "a forfeit win's replay keeps waiting for moves",
+      "why": "Seen on two phones: under the forfeit card the replay said 「상대의 수를 기다리는 중이에요…」 for a player who had already left, and would later have blamed their app for not supporting replays.",
+      "file": "src/firebase/battleService.js",
+      "find": "    abandonReplay(this);\n    this.opponentLeftListeners.forEach(cb => cb());",
+      "replace": "    this.opponentLeftListeners.forEach(cb => cb());",
+      "expectFailure": "still said it was waiting for moves from a player who had left"
+    },
+    {
+      "name": "a forfeit win does not say why",
+      "why": "The result card reads winnerReason; with another reason a player who won because the other side left is told they finished the puzzle first.",
+      "file": "src/firebase/battleService.js",
+      "find": "      room.winnerReason = 'opponent_left';",
+      "replace": "      room.winnerReason = 'opponent_completion';",
+      "expectFailure": "with the reason the result card reads"
+    },
+    {
+      "name": "leaving a match being played costs nothing",
+      "why": "The other side is handed the win, so leaving without a loss makes quitting a losing match free — the rating then rewards whoever walks out early.",
+      "file": "src/firebase/battleService.js",
+      "find": "        if (this.currentRoom.status === 'playing') applyBattleResult(false, this.currentRoom.level || 3);",
+      "replace": "",
+      "expectFailure": "leaving a match still being played must count as the loss it is"
+    },
+    {
+      "name": "leaving the result screen counts as a loss",
+      "why": "Every finished match ends with somebody going back to the lobby. Charging that as a loss would cost the winner points for the act of closing their own victory screen.",
+      "file": "src/firebase/battleService.js",
+      "find": "        if (this.currentRoom.status === 'playing') applyBattleResult(false, this.currentRoom.level || 3);",
+      "replace": "        applyBattleResult(false, this.currentRoom.level || 3);",
+      "expectFailure": "leaving the result screen was counted as a loss"
     }
   ]
 }

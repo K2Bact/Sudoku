@@ -11,7 +11,10 @@
 import { createPuzzle, variantOf } from '../engine/variants.js';
 import { aiBotService } from '../engine/aiBotService.js';
 
-const BOT_NAMES = ['AI Grandmaster', 'AI Solver', 'AI Logic', 'AI Swift'];
+// Which bot a room faces. The room keeps the id and the screen names it in the player's
+// language (battleHeader.botNames) — the names were English in every language, and
+// German says KI, the Romance languages IA, Russian ИИ (D28, 2026-10-22).
+export const BOT_IDS = ['grandmaster', 'solver', 'logic', 'swift'];
 
 /**
  * A new match against the bot, on a puzzle of the kind asked for — classic or
@@ -35,11 +38,39 @@ export function createAIRoom(level = 3, variant = 'classic') {
     opponentProgress: 0,
     opponentMistakes: 0,
     opponentId: 'ai_bot',
-    opponentName: BOT_NAMES[Math.floor(Math.random() * BOT_NAMES.length)],
+    botId: BOT_IDS[Math.floor(Math.random() * BOT_IDS.length)],
     winner: null,
     rematchStatus: 'idle',
     isAiMatch: true
   };
+}
+
+/**
+ * Whether `room` is a match against the bot — the room's own flag and nothing else.
+ *
+ * Six places used to decide it as `room.isAIBattle || opponentName.includes('AI') ||
+ * opponentName includes 'bot'` (2026-10-21). Nothing ever set `isAIBattle`, so the header,
+ * the back button and the leave button found an AI room only through the bot's English
+ * name — translating the names (BACKLOG D28) would have shown every AI battle as a 1v1.
+ * And a real player is named Player_ + the last four characters of their id, so about one
+ * opponent in 1,200 had AI or bot in their name: the rematch started an AI battle and
+ * closing the result went to the AI screen.
+ */
+export function isAIRoom(room) {
+  return Boolean(room?.isAiMatch);
+}
+
+/**
+ * The name the opponent is shown by. A bot is named from its id in the player's language;
+ * a person by the name their device sent. `t` is the caller's translator; `fallback` is a
+ * name handed in separately (the result card takes one). Both screens that name the
+ * opponent ask here, so the header and the result card cannot disagree.
+ */
+export function opponentDisplayName(room, t, fallback = null) {
+  if (isAIRoom(room)) {
+    return BOT_IDS.includes(room.botId) ? t(`battleHeader.botNames.${room.botId}`) : t('home.modes.aiBattle.title');
+  }
+  return room?.opponentName ?? fallback ?? t('battleResult.opponent');
 }
 
 /**

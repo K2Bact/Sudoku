@@ -16,6 +16,7 @@ export const modals = {
       shareBtn: 'مشاركة',
       copiedToast: '🎉 تم نسخ سجل الفوز إلى الحافظة بنجاح!',
       shareText: '🧩 سودوكو {mode} Lv.{level} {name} أكملته في [{time}]! التقييم: \u2066{rank}\u2069 (عدد الأخطاء: {mistakes}). هل يمكنك التفوق علي؟',
+      shareModes: { classic: '[كلاسيكي]', timeAttack: '[⚡سباق الزمن]', timeLimit: '[⏳النجاة]' },
       ranks: {
         'S+': '👑 \u2066S+\u2069 (السرعة الإلهية)',
         'S': '⭐️ S (أستاذ)',
@@ -59,6 +60,7 @@ export const modals = {
       adPlaceholder: '📺 مساحة إعلانية (بدون إعلان)',
       chancesLeft: 'عمليات الشحن المتبقية: {remaining}/{max}',
       maxReached: 'شحن التلميحات عبر الإعلانات محدود بمرتين فقط في كل لعبة.',
+      notSaved: 'مساحة التخزين ممتلئة، لذلك لا يمكن حفظ التلميحات الآن. أفرغ بعض المساحة ثم حاول مرة أخرى.',
       later: 'لاحقاً'
     }
   }

@@ -2,7 +2,7 @@
 Sudoku: Classic Puzzle Academy
 
 [Short Description (max 80 chars)]
-Classic & Killer Sudoku, 40 techniques to learn, daily puzzles, 1v1 & AI duels.
+Classic & Killer Sudoku, 40 techniques to learn, daily puzzles, 1v1 & AI duels
 
 [Full Description]
 Sudoku for everyone, from first-timers to seasoned solvers.

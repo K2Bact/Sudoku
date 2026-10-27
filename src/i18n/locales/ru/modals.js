@@ -16,6 +16,7 @@ export const modals = {
       shareBtn: 'Поделиться',
       copiedToast: '🎉 Результат скопирован в буфер обмена!',
       shareText: '🧩 Решил Судоку {mode} Lv.{level} {name} за [{time}]! Ранг: {rank} (ошибок: {mistakes}). Сможешь быстрее?',
+      shareModes: { classic: '[Классика]', timeAttack: '[⚡Спидран]', timeLimit: '[⏳Выживание]' },
       ranks: {
         'S+': '👑 S+ (Божественно)',
         'S': '⭐️ S (Мастер)',
@@ -59,6 +60,7 @@ export const modals = {
       adPlaceholder: '📺 Рекламное место (без рекламы)',
       chancesLeft: 'Осталось пополнений в этой игре: {remaining}/{max}',
       maxReached: 'Максимум 2 пополнения подсказок за игру.',
+      notSaved: 'Память заполнена, поэтому подсказки сейчас нельзя сохранить. Освободите место и попробуйте снова.',
       later: 'Позже'
     }
   }

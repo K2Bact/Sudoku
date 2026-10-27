@@ -493,6 +493,13 @@ const FLOWS = [
     inCode: () => /type:\s*'match_log'/.test(readSrc('src/firebase/replayExchange.js')),
     hosted: ['둔 수와 시각', 'moves and their timing', '手と時刻'],
     inApp: { ko: '둔 수와 시각', en: 'moves and their timing', ja: '手と時刻' } },
+  // 2026-10-22: usage statistics through Google Analytics for Firebase. The in-app marker is the
+  // product name, the hosted ones say the advertising ID is not sent — case 4d ties that sentence
+  // to the manifest line that makes it true.
+  { what: 'usage statistics go to Google Analytics for Firebase',
+    inCode: () => deps.includes('@capacitor-firebase/analytics'),
+    hosted: ['광고 식별자(Advertising ID)는 Google Analytics로 보내지 않', 'Your Advertising ID is not sent to Google Analytics', '広告IDは Google Analytics に送信しません'],
+    inApp: { ko: 'Google Analytics', en: 'Google Analytics', ja: 'Google Analytics' } },
   { what: 'the Remove Ads purchase goes through Google Play Billing',
     inCode: () => /store\.purchase\(/.test(readSrc('src/billing/playBillingProvider.js')),
     hosted: ['Google Play 결제', 'Google Play Billing', 'Google Play の決済'],
@@ -550,6 +557,40 @@ assert.deepStrictEqual(undescribed, [],
   '\n\nEach line is a call present in src/. Describe it in the hosted policy (ko, en, ja) and ' +
   'in the in-app text, or remove the call. Naming the service is not enough — say what goes to it.');
 console.log(`  ✅ ${liveFlows} live flows described in the hosted policy and in-app (ko, en, ja)`);
+
+// ── Case 4d: Google Analytics does what the policy says (2026-10-22) ───────
+//
+// The policy says Analytics never gets the advertising ID and uses no identifier where consent
+// is required. Both are true only because of five manifest lines and one rule in
+// services/analyticsConsent.js. Turn Analytics' ID collection back on, start a consent type
+// granted, or grant analytics_storage where Google asks for consent, and the policy becomes
+// under-disclosure — the direction Play enforces — while every text check above stays green.
+console.log('▶ 4d. Google Analytics: the manifest defaults and the consent rule match the policy');
+if (deps.includes('@capacitor-firebase/analytics')) {
+  const meta = (name) => (liveManifest.match(new RegExp(`android:name="${name}"\\s+android:value="([^"]*)"`)) || [])[1];
+  const wrong = [];
+  if (meta('google_analytics_adid_collection_enabled') !== 'false') {
+    wrong.push('google_analytics_adid_collection_enabled is not "false" — the policy says the Advertising ID is not sent to Google Analytics');
+  }
+  for (const c of ['analytics_storage', 'ad_storage', 'ad_user_data', 'ad_personalization_signals']) {
+    if (meta(`google_analytics_default_allow_${c}`) !== 'false') wrong.push(`google_analytics_default_allow_${c} is not "false" — every consent type starts denied`);
+  }
+  const { analyticsStorageAllowed } = await import(pathToFileURL(path.join(ROOT, 'src/services/analyticsConsent.js')).href);
+  for (const [status, want] of [['NOT_REQUIRED', true], ['REQUIRED', false], ['UNKNOWN', false], [null, false]]) {
+    const got = analyticsStorageAllowed(status ? { privacyOptionsRequirementStatus: status } : null);
+    if (got !== want) wrong.push(`analyticsStorageAllowed(${status}) is ${got} — analytics_storage may be granted only where no consent is asked (NOT_REQUIRED)`);
+  }
+  const consentSrc = readSrc('src/services/analyticsConsent.js');
+  if (/ConsentType\.(AdStorage|AdUserData|AdPersonalization)/.test(consentSrc)) wrong.push('analyticsConsent.js grants an ad consent type — the policy says the statistics are not used for ads');
+  if (!/applyAnalyticsConsent\(info\)/.test(readSrc('src/ads/admobProvider.js'))) wrong.push('admobProvider.init no longer hands the consent answer to applyAnalyticsConsent');
+  assert.deepStrictEqual(wrong, [],
+    'Google Analytics no longer does what the privacy policy says:\n  ' + wrong.join('\n  ') +
+    '\n\nEither restore the line, or change the policy (ko, en, ja), the in-app text and the Data ' +
+    'safety form together — they describe this build.');
+  console.log('  ✅ no advertising ID, every consent starts denied, analytics_storage only where no consent is asked');
+} else {
+  console.log('  ⏭  no Analytics SDK in the build');
+}
 
 // ── Case 5: a number on screen matches the number in the code ─────────────
 //

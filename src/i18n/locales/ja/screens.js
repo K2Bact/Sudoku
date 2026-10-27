@@ -124,10 +124,10 @@ export const screens = {
     privacyModalTitle: 'プライバシーポリシー',
     privacy: {
       subtitle: 'ナンプレはアカウントなしで遊べます。アプリが実際に保存・送信する情報は以下のとおりです。',
-      sec1Title: '1. 端末への保存とバックアップ', sec1Desc: "記録・ヒント・設定はお使いの端末に保存されます。Play ゲームにログインしていない場合、この端末にのみ残ります。氏名・メールアドレス・電話番号・連絡先・位置情報は収集しません。",
+      sec1Title: '1. 端末への保存とバックアップ', sec1Desc: "記録・ヒント・設定はお使いの端末に保存されます。Play ゲームにログインしていない場合、この端末にのみ残ります。氏名・メールアドレス・電話番号・連絡先・正確な位置情報は収集しません。",
       sec2Title: '2. Google Play ゲーム', sec2Desc: 'Play ゲームにログインしている場合、勝利するたびに進行状況（成績・実績・ヒント・設定）がPlay ゲームのセーブデータに自動でバックアップされ、ロジックスコアがPlay ゲームのリーダーボードに送信されます。Play ゲームには獲得した実績が記録されます（ログイン前に獲得した実績は次回ログイン時）。これらのデータはご自身のGoogleアカウントに保管されます。',
       sec3Title: '3. 1v1対戦', sec3Desc: 'リアルタイムの1v1対戦では、Google Firebaseを通じて、ランダムに生成したプレイヤーID、自動で付くニックネーム（Player_xxxx）、パズルの進行状況を対戦相手に送信します。IDは端末に保存されて再利用されますが、氏名やアカウントとは結び付きません。 双方が［対戦記録の共有］をオンにしている場合は、試合の終了後、振り返りのためにその試合の手と時刻も相手に送信します（初期設定はオン、設定でオフにできます）。',
-      sec4Title: '4. 広告と購入', sec4Desc: '本アプリはGoogle AdMobを通じて、バナー広告、勝利後の全画面広告、任意で視聴するリワード広告を表示します。AdMobは広告IDを処理する場合があります。広告削除の購入はGoogle Playが処理し、開発者が決済情報を受け取ることはありません。'
+      sec4Title: '4. 広告・購入・利用統計', sec4Desc: '本アプリはGoogle AdMobを通じて、バナー広告、勝利後の全画面広告、任意で視聴するリワード広告を表示します。AdMobは広告IDを処理する場合があります。広告削除の購入はGoogle Playが処理し、開発者が決済情報を受け取ることはありません。アプリの起動・セッション・アプリのバージョン・端末の機種、IP アドレスから推定したおおよその地域などの利用統計は、ランダムなアプリインスタンス ID とともに Google Analytics for Firebase に送られます。広告 ID は送らず、広告には使いません。欧州経済領域・英国・スイスでは識別子を使いません。'
     }
   },
   stats: {
@@ -194,6 +194,7 @@ export const screens = {
     aiDefeatTitle: 'AIボット戦 敗北',
     victoryDesc: '{opponent} さんとの対戦でパズルを先に完成させ勝利しました！',
     victoryMistakeDesc: '{opponent} さんがミス3回で脱落し、勝利しました！',
+    victoryForfeitDesc: '{opponent} さんが対戦を棄権したため、勝利しました！',
     defeatDesc: '{opponent} さんが先にパズルを完成させました。',
     defeatMistakeDesc: 'ミス3回により失格となりました。',
     disqualified: '💀 失格',
@@ -222,6 +223,7 @@ export const screens = {
   },
   battleHeader: {
     aiTag: 'AI',
+    botNames: { grandmaster: 'AI グランドマスター', solver: 'AI ソルバー', logic: 'AI ロジック', swift: 'AI スウィフト' },
     confirmLeave: '対戦を諦めてホームに戻りますか？',
     emptyCellsLeft: '残り'
   },

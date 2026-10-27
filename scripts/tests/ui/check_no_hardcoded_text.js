@@ -133,6 +133,52 @@ function wordsInExpression(node, out) {
 }
 
 /**
+ * English a template builds anywhere, not only in a JSX child (2026-10-21, BACKLOG D22).
+ * The words over the Speedrun and Survival clock — `+${n}s Bonus!`, `-${n}s (${c} COMBO!)` —
+ * were built in a hook and handed to the header as finished text, so the reading of JSX
+ * children never met them and every locale showed them in English. The share text's mode
+ * was a variable handed to t() as a value, the same way (D27).
+ *
+ * A template whose fixed parts read as prose — letters, and a space, ! or ? — is reported,
+ * except where nothing it says reaches a player: a className, style, key or id attribute,
+ * the key inside t() (its values are read), a console call, an Error, and the stand-in
+ * translator a function keeps for callers that pass no t
+ * (`typeof t === 'function' ? t : …`, conflictDetector.js — the app's caller passes t).
+ *
+ * Not read: plain quoted strings outside JSX. Most of them are CSS, URLs and keys, and a
+ * prose rule over them reports noise; the AI bot names ('AI Solver', BACKLOG D28) are the
+ * known English among them.
+ */
+const QUIET_ATTRIBUTES = /^(className|style|key|id)$/;
+const isProse = (s) => /[A-Za-z]{2,}/.test(s) && /[\s!?]/.test(s.trim());
+const isStandInTranslator = (n) => n.type === 'ConditionalExpression'
+  && n.test.type === 'BinaryExpression' && n.test.left.type === 'UnaryExpression'
+  && n.test.left.operator === 'typeof' && n.test.left.argument?.name === 't'
+  && n.consequent.type === 'Identifier' && n.consequent.name === 't';
+
+function templateProse(program, code, out) {
+  const walkNode = (node) => {
+    if (!node || typeof node.type !== 'string') return;
+    if (node.type === 'JSXAttribute' && QUIET_ATTRIBUTES.test(node.name?.name ?? '')) return;
+    if (node.type === 'NewExpression' || node.type === 'ThrowStatement') return;
+    if (node.type === 'CallExpression') {
+      if (/^console\./.test(code.slice(node.callee.start, node.callee.end))) return;
+      if (isTCall(node)) { node.arguments.slice(1).forEach(walkNode); return; }
+    }
+    if (isStandInTranslator(node)) { walkNode(node.test); walkNode(node.consequent); return; }
+    if (node.type === 'TemplateLiteral') {
+      const text = node.quasis.map((q) => q.value.cooked ?? q.value.raw).join('{}');
+      if (!koreanRegex.test(text) && isProse(text.replace(/\{\}/g, ''))) {
+        out.push({ start: node.start, end: node.end, text: `(English) ${text.replace(/\s+/g, ' ').trim()}` });
+      }
+    }
+    for (const c of children(node)) walkNode(c);
+  };
+  walkNode(program);
+  return out;
+}
+
+/**
  * Everything one file would show that did not come from t():
  *   - Korean in any string, template or JSX text in the code (comments are not
  *     strings, so they never get here);
@@ -171,6 +217,10 @@ function scan(code, filename, stats) {
     for (const c of children(node)) visit(c);
   };
   visit(parsed.program);
+  // A template in a JSX child is already reported word by word above; report the rest.
+  for (const hit of templateProse(parsed.program, code, [])) {
+    if (!found.some((f) => f.start >= hit.start && f.start < hit.end)) found.push({ start: hit.start, text: hit.text });
+  }
   return found.sort((a, b) => a.start - b.start);
 }
 
@@ -194,7 +244,17 @@ const lineOf = (code, offset) => code.slice(0, offset).split('\n').length;
     "self-test: a class name built in a callback, or an id handed to a helper, was reported");
   assert.deepStrictEqual(texts("const v = <p>{items.map((i) => 'Hello there')}</p>;"), ['(English) Hello there'],
     'self-test: words a callback returns for the screen were not found');
+  // D22 and D27: a template outside JSX — in a hook, or as a value handed to t().
+  assert.deepStrictEqual(texts("const bonus = (n) => show('bonus', `+${n}s Bonus!`);"), ['(English) +{}s Bonus!'],
+    'self-test: an English template built in a hook was not found (the D22 hole)');
+  assert.deepStrictEqual(texts("const s = t('x.share', { mode: `[${a} Attack]` });"), ['(English) [{} Attack]'],
+    'self-test: an English template handed to t() as a value was not found (D27)');
+  assert.deepStrictEqual(texts("const v = <b className={`cell ${x} hot`} key={`k ${i}`}>{t(`levels.${l}`)}</b>; console.log(`saved ${n} games`); throw new Error(`timed out after ${ms}ms`); const tr = typeof t === 'function' ? t : (k, p) => `Mistakes ${p.count}`;"), [],
+    'self-test: a class name, key, t() key, log, Error or stand-in translator template was reported');
+  assert.deepStrictEqual(texts("const v = <p>{`${n} pts`}</p>;"), ['(English) pts'],
+    'self-test: a template in a JSX child was reported twice, or not at all');
   console.log('  ✓ self-test: both old holes are caught; comments, t() keys, fallbacks, comparisons, class names and ids stay quiet');
+  console.log('  ✓ self-test: English templates outside JSX are caught (D22, D27); class/key/log/Error/stand-in templates stay quiet');
 }
 
 // Files allowed to contain internal localized data dictionaries

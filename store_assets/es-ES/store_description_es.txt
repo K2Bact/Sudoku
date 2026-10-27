@@ -2,7 +2,7 @@
 Sudoku: Academia de lógica
 
 [간단한 설명 (Short description - 최대 80자)]
-Sudoku clásico y Killer, 32 técnicas, retos diarios y duelos 1v1 y contra la IA.
+Sudoku clásico y Killer, 32 técnicas, retos diarios y duelos 1v1 y contra la IA
 
 [자세한 설명 (Full description - 최대 4000자)]
 Sudoku para todos, desde quien empieza hasta quien lleva años resolviendo.

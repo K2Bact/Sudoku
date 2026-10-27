@@ -183,6 +183,16 @@ function readBattleHeader() {
 }
 
 /** An AI battle of this kind, started from the lobby's switch; returns the switch's word. */
+// Each language's bot names, read from the app's own dictionary.
+async function botNames(lang) {
+  const mod = await import(`../../../src/i18n/locales/${lang}/screens.js`);
+  return Object.values(mod)[0].battleHeader.botNames;
+}
+async function longestBotId(lang) {
+  const names = await botNames(lang);
+  return Object.keys(names).reduce((a, b) => ([...names[b]].length > [...names[a]].length ? b : a));
+}
+
 async function openBattle(page, lang, kind) {
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto(URL);
@@ -204,11 +214,17 @@ async function openBattle(page, lang, kind) {
   const word = (await option.innerText()).trim();
   await page.click('.btn-battle-action', { timeout: 5000 });
   await page.waitForSelector('.battle-header-card', { timeout: 8000 });
-  // The longest bot name: the opponent's side is the one that runs short of room.
-  await page.evaluate(() => {
-    window.suidokuBattle.currentRoom.opponentName = 'AI Grandmaster';
+  // The longest bot name in this language: the opponent's side is the one that runs short
+  // of room. The room holds the bot's id and the header names it in the player's language
+  // (D28) — setting an English opponentName, as this did, no longer reaches the screen.
+  const longest = await longestBotId(lang);
+  await page.evaluate((id) => {
+    window.suidokuBattle.currentRoom.botId = id;
     window.suidokuBattle.notifyListeners();
-  });
+  }, longest);
+  const shown = await page.locator('.battle-header-card').innerText();
+  const want = (await botNames(lang))[longest];
+  if (!shown.includes(want)) throw new Error(`${lang}: the AI header does not show its longest bot name "${want}" — the measurement would not reach it`);
   await page.waitForTimeout(150);
   return word;
 }

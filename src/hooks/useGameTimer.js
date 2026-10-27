@@ -73,9 +73,11 @@ export function useGameTimer({
     }, 3500);
   };
 
-  // Show floating text indicator (+15s, -3s combo, etc.)
-  const showFloatingIndicator = (type, text) => {
-    setTimeFloatingText({ type, text });
+  // Show floating text indicator (+15s, -3s combo, etc.). It holds a translation key
+  // and its values, and the header says it in the player's language: the text used to
+  // be built here in English, and every locale saw "+7s Bonus!" (BACKLOG D22).
+  const showFloatingIndicator = (type, key, params) => {
+    setTimeFloatingText({ type, key, params });
     if (floatTimeoutRef.current) clearTimeout(floatTimeoutRef.current);
     floatTimeoutRef.current = setTimeout(() => setTimeFloatingText(null), 1500);
   };
@@ -100,7 +102,7 @@ export function useGameTimer({
       // time — best times, ghosts, the merge — reads 0 as "no time", so a 0-second
       // clear was kept as no record and the next slower win took its place.
       setTimerSeconds(prev => (prev > 1 ? Math.max(1, prev - bonusReduction) : prev));
-      showFloatingIndicator('bonus', `-${bonusReduction}s (${nextCombo} COMBO!)`);
+      showFloatingIndicator('bonus', 'header.floatCombo', { seconds: bonusReduction, count: nextCombo });
     } else {
       setComboCount(1);
     }
@@ -116,14 +118,14 @@ export function useGameTimer({
     if (comboTimeoutRef.current) clearTimeout(comboTimeoutRef.current);
 
     setTimerSeconds(prev => prev + penaltySeconds);
-    showFloatingIndicator('penalty', `+${penaltySeconds}s`);
+    showFloatingIndicator('penalty', 'header.floatPenalty', { seconds: penaltySeconds });
   };
 
   // Add bonus time in Survival mode — the kind's bonus for a correct cell
   // (useGameInput, from survivalClock.js; 7 s on classic).
   const addSurvivalBonusTime = (bonusSeconds) => {
     setTimerSeconds(prev => prev + bonusSeconds);
-    showFloatingIndicator('bonus', `+${bonusSeconds}s Bonus!`);
+    showFloatingIndicator('bonus', 'header.floatBonus', { seconds: bonusSeconds });
   };
 
   // Reset both clocks for a new game — Survival's limit or zero, nothing played.

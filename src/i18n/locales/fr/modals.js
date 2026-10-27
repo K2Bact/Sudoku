@@ -16,6 +16,7 @@ export const modals = {
       shareBtn: 'Partager',
       copiedToast: '🎉 Record copié dans le presse-papiers !',
       shareText: '🧩 Sudoku {mode} Lv.{level} {name} résolu en [{time}] ! Rang : {rank} (erreurs : {mistakes}). Saurez-vous faire mieux ?',
+      shareModes: { classic: '[Classique]', timeAttack: '[⚡Contre-la-montre]', timeLimit: '[⏳Survie]' },
       ranks: {
         'S+': '👑 S+ (Divin)',
         'S': '⭐️ S (Maître)',
@@ -59,6 +60,7 @@ export const modals = {
       adPlaceholder: '📺 Emplacement pub (aucune pub)',
       chancesLeft: 'Recharges restantes : {remaining}/{max}',
       maxReached: 'La recharge d’indices via pub est limitée à 2 par partie.',
+      notSaved: 'Le stockage est plein, les indices ne peuvent pas être enregistrés pour l’instant. Libérez de l’espace et réessayez.',
       later: 'Plus tard'
     }
   }

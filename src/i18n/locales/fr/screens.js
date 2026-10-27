@@ -124,10 +124,10 @@ export const screens = {
     privacyModalTitle: 'Politique de confidentialité',
     privacy: {
       subtitle: 'Sudoku ne nécessite aucun compte. Voici ce que l’application stocke et envoie réellement.',
-      sec1Title: '1. Stockage et sauvegarde', sec1Desc: "Vos records, indices et réglages sont stockés sur votre appareil. Sans connexion à Play Jeux, ils restent uniquement sur cet appareil. Nous ne collectons jamais votre nom, votre adresse e-mail, votre numéro de téléphone, vos contacts ni votre localisation.",
+      sec1Title: '1. Stockage et sauvegarde', sec1Desc: "Vos records, indices et réglages sont stockés sur votre appareil. Sans connexion à Play Jeux, ils restent uniquement sur cet appareil. Nous ne collectons jamais votre nom, votre adresse e-mail, votre numéro de téléphone, vos contacts ni votre localisation précise.",
       sec2Title: '2. Google Play Jeux', sec2Desc: 'Tant que vous êtes connecté à Play Jeux, chaque victoire sauvegarde automatiquement votre progression (statistiques, succès, indices, réglages) dans les données de jeu de Play Jeux et envoie votre Logic Score à un classement Play Jeux. Les succès que vous obtenez sont aussi enregistrés dans Play Jeux, y compris ceux obtenus avant la connexion. Ces données restent dans votre propre compte Google.',
       sec3Title: '3. Duels 1v1', sec3Desc: 'Les duels 1v1 en temps réel utilisent Google Firebase pour envoyer à votre adversaire un identifiant de joueur généré aléatoirement, un pseudo automatique (Player_xxxx) et votre progression. L’identifiant est stocké sur votre appareil et réutilisé ; il n’est lié ni à votre nom ni à aucun compte. Si les deux joueurs ont activé le partage des coups, les coups de la partie et l’instant où chacun a été joué sont aussi envoyés à l’adversaire après la partie, pour la revoir (activé par défaut ; désactivable dans les Paramètres).',
-      sec4Title: '4. Publicités et achats', sec4Desc: 'L’application affiche des publicités via Google AdMob : une bannière, une publicité plein écran après une victoire et des vidéos récompensées facultatives. AdMob peut traiter votre identifiant publicitaire. L’achat « Supprimer les pubs » est géré par Google Play ; nous ne recevons jamais vos données de paiement.'
+      sec4Title: '4. Publicités, achats et statistiques', sec4Desc: 'L’application affiche des publicités via Google AdMob : une bannière, une publicité plein écran après une victoire et des vidéos récompensées facultatives. AdMob peut traiter votre identifiant publicitaire. L’achat « Supprimer les pubs » est géré par Google Play ; nous ne recevons jamais vos données de paiement. Des statistiques d’utilisation (lancements de l’application, sessions, version de l’application, modèle de l’appareil et région approximative déduite de l’adresse IP) sont envoyées à Google Analytics for Firebase avec un identifiant d’instance aléatoire. Votre identifiant publicitaire n’est jamais envoyé, et elles ne servent pas à la publicité. Dans l’EEE, au Royaume-Uni et en Suisse, aucun identifiant n’est utilisé.'
     }
   },
   stats: {
@@ -194,6 +194,7 @@ export const screens = {
     aiDefeatTitle: 'Défaite contre l’IA',
     victoryDesc: 'Vous avez complété la grille en premier et battu {opponent} !',
     victoryMistakeDesc: '{opponent} est hors course après 3 erreurs. Vous gagnez !',
+    victoryForfeitDesc: '{opponent} a quitté la partie. Vous gagnez par forfait !',
     defeatDesc: '{opponent} a complété la grille en premier.',
     defeatMistakeDesc: 'Vous êtes hors course après 3 erreurs.',
     disqualified: '💀 Hors course',
@@ -222,6 +223,7 @@ export const screens = {
   },
   battleHeader: {
     aiTag: 'IA',
+    botNames: { grandmaster: 'IA Grand Maître', solver: 'IA Solveur', logic: 'IA Logique', swift: 'IA Éclair' },
     confirmLeave: 'Voulez-vous déclarer forfait et retourner à l’accueil ?',
     emptyCellsLeft: 'restantes'
   },

@@ -1,5 +1,6 @@
 import { battleService } from '../firebase/battleService';
 import { aiBotService } from '../engine/aiBotService';
+import { isAIRoom } from '../firebase/aiBattleSession';
 
 /**
  * useGameProps
@@ -69,7 +70,7 @@ export function useGameProps(game, ui) {
     activeBattleRoom,
     timerSeconds,
     onLeaveBattle: () => {
-      const isAIBattle = activeBattleRoom?.isAIBattle || activeBattleRoom?.opponentName?.includes('AI') || activeBattleRoom?.opponentName?.toLowerCase().includes('bot');
+      const isAIBattle = isAIRoom(activeBattleRoom);
       battleService.leaveRoom();
       aiBotService.stopMatch();
       if (setActiveBattleRoom) setActiveBattleRoom(null);

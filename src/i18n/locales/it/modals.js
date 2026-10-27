@@ -16,6 +16,7 @@ export const modals = {
       shareBtn: 'Condividi',
       copiedToast: '🎉 Record copiato negli appunti!',
       shareText: '🧩 Ho risolto Sudoku {mode} Lv.{level} {name} in [{time}]! Valutazione: {rank} (errori: {mistakes}). Riesci a fare meglio?',
+      shareModes: { classic: '[Classico]', timeAttack: '[⚡Cronometro]', timeLimit: '[⏳Sopravvivenza]' },
       ranks: {
         'S+': '👑 S+ (Divino)',
         'S': '⭐️ S (Maestro)',
@@ -59,6 +60,7 @@ export const modals = {
       adPlaceholder: '📺 Spazio annuncio (nessun annuncio)',
       chancesLeft: 'Ricariche rimaste in questa partita: {remaining}/{max}',
       maxReached: 'Le ricariche tramite annunci sono limitate a 2 per partita.',
+      notSaved: 'La memoria è piena, quindi ora i suggerimenti non possono essere salvati. Libera un po’ di spazio e riprova.',
       later: 'Più tardi'
     }
   }

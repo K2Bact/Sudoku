@@ -23,6 +23,19 @@
             android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/game_services_project_id" />
 
+        <!-- Google Analytics for Firebase (2026-10-22). It never reads the advertising ID —
+             AdMob uses that, Analytics does not need it, and the policy says so. Every consent
+             type starts denied: nothing identifies the install until the ad consent check has
+             answered. Outside the regions where Google asks for consent the app grants
+             analytics_storage alone (src/services/analyticsConsent.js); inside them it stays
+             denied. Ad storage and personalization stay denied — Analytics is not used for ads.
+             Gate 2-14 ties these lines to the privacy policy. -->
+        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
+        <meta-data android:name="google_analytics_default_allow_analytics_storage" android:value="false" />
+        <meta-data android:name="google_analytics_default_allow_ad_storage" android:value="false" />
+        <meta-data android:name="google_analytics_default_allow_ad_user_data" android:value="false" />
+        <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="false" />
+
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
             android:name=".MainActivity"

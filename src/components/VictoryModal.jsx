@@ -53,9 +53,11 @@ export function VictoryModal({
 
   const handleShare = async () => {
     soundHaptic.playSelectSound();
-    const modeLabel = gameMode === 'timeAttack' ? '[⚡Time Attack]' : gameMode === 'timeLimit' ? '[⏳Survival]' : '[Classic]';
+    // The mode in the player's language. It was '[⚡Time Attack]' in every language — the
+    // English name Speedrun had before it was renamed — sent out in each share (D27).
+    const shareMode = gameMode === 'timeAttack' || gameMode === 'timeLimit' ? gameMode : 'classic';
     // "cleared in [time]": the time taken, which in Survival is not the clock.
-    const shared = { mode: modeLabel, level, name: t(`levels.${level}`), time: formatTime(rankInfo.timeTaken), rank: rankInfo.rank, mistakes };
+    const shared = { mode: t(`modals.victory.shareModes.${shareMode}`), level, name: t(`levels.${level}`), time: formatTime(rankInfo.timeTaken), rank: rankInfo.rank, mistakes };
     // The killer line names the kind in place of the mode, and carries the killer grade.
     const shareText = variant === 'killer' ? t('killer.shareText', shared) : t('modals.victory.shareText', shared);
     const res = await shareContent({

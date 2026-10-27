@@ -124,10 +124,10 @@ export const screens = {
     privacyModalTitle: 'Informativa sulla privacy',
     privacy: {
       subtitle: 'Sudoku non richiede un account. Ecco cosa l’app salva e invia davvero.',
-      sec1Title: '1. Archiviazione e backup', sec1Desc: "Record, suggerimenti e impostazioni sono salvati sul tuo dispositivo. Senza accesso a Play Giochi restano solo su questo dispositivo. Non raccogliamo mai nome, email, numero di telefono, contatti o posizione.",
+      sec1Title: '1. Archiviazione e backup', sec1Desc: "Record, suggerimenti e impostazioni sono salvati sul tuo dispositivo. Senza accesso a Play Giochi restano solo su questo dispositivo. Non raccogliamo mai nome, email, numero di telefono, contatti o posizione precisa.",
       sec2Title: '2. Google Play Giochi', sec2Desc: 'Finché hai eseguito l’accesso a Play Giochi, ogni vittoria salva automaticamente i tuoi progressi (statistiche, obiettivi, suggerimenti, impostazioni) nei dati salvati di Play Giochi e invia il tuo Logic Score a una classifica di Play Giochi. Anche gli obiettivi che sblocchi vengono registrati in Play Giochi, compresi quelli ottenuti prima di accedere. Questi dati restano nel tuo account Google.',
       sec3Title: '3. Duelli 1v1', sec3Desc: 'I duelli 1v1 in tempo reale usano Google Firebase per inviare all’avversario un ID giocatore generato casualmente, un soprannome automatico (Player_xxxx) e i tuoi progressi nel sudoku. L’ID è salvato sul dispositivo e riutilizzato; non è collegato al tuo nome né ad alcun account. Se entrambi i giocatori hanno attivato la condivisione delle mosse, a fine partita vengono inviate all’avversario anche le mosse della partita e i loro tempi, per rivederla (attiva per impostazione predefinita; disattivabile nelle Impostazioni).',
-      sec4Title: '4. Pubblicità e acquisti', sec4Desc: 'L’app mostra annunci tramite Google AdMob: un banner, un annuncio a schermo intero dopo una vittoria e video con premio facoltativi. AdMob può trattare il tuo ID pubblicità. L’acquisto Rimuovi pubblicità è gestito da Google Play; non riceviamo mai i tuoi dati di pagamento.'
+      sec4Title: '4. Pubblicità, acquisti e statistiche', sec4Desc: 'L’app mostra annunci tramite Google AdMob: un banner, un annuncio a schermo intero dopo una vittoria e video con premio facoltativi. AdMob può trattare il tuo ID pubblicità. L’acquisto Rimuovi pubblicità è gestito da Google Play; non riceviamo mai i tuoi dati di pagamento. Le statistiche d’uso (aperture dell’app, sessioni, versione dell’app, modello del dispositivo e una zona approssimativa ricavata dall’indirizzo IP) vanno a Google Analytics for Firebase con un ID istanza casuale. Il tuo ID pubblicità non viene mai inviato e i dati non sono usati per la pubblicità. Nel SEE, nel Regno Unito e in Svizzera non si usa alcun identificatore.'
     }
   },
   stats: {
@@ -194,6 +194,7 @@ export const screens = {
     aiDefeatTitle: 'Sconfitta contro l’IA',
     victoryDesc: 'Hai completato lo schema per primo e battuto {opponent}!',
     victoryMistakeDesc: '{opponent} è fuori gara dopo 3 errori. Hai vinto!',
+    victoryForfeitDesc: '{opponent} ha abbandonato la sfida. Hai vinto per forfait!',
     defeatDesc: '{opponent} ha completato lo schema per primo.',
     defeatMistakeDesc: 'Sei fuori gara dopo aver commesso 3 errori.',
     disqualified: '💀 Fuori',
@@ -222,6 +223,7 @@ export const screens = {
   },
   battleHeader: {
     aiTag: 'IA',
+    botNames: { grandmaster: 'IA Gran Maestra', solver: 'IA Risolutrice', logic: 'IA Logica', swift: 'IA Rapida' },
     confirmLeave: 'Vuoi dichiarare forfait e tornare alla home?',
     emptyCellsLeft: 'rimaste'
   },

@@ -155,7 +155,7 @@ export function Header({
           <div className={`timer-badge ${isDangerTime ? 'danger-pulse' : ''}`}>
             {timeFloatingText && (
               <div className={`time-floating-indicator ${timeFloatingText.type}`}>
-                {timeFloatingText.text}
+                {t(timeFloatingText.key, timeFloatingText.params)}
               </div>
             )}
             <span className="time-display">{formatTime(timerSeconds)}</span>

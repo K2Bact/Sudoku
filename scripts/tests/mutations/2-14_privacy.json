@@ -124,6 +124,46 @@
       "find": "  copyright: '© 2026 K2Bact. All rights reserved.',",
       "replace": "  copyright: '© 2026 K2Bact. Your data never leaves your phone. All rights reserved.',",
       "expectFailure": "appInfo.copyright must be exactly"
+    },
+    {
+      "name": "Analytics reads the advertising ID again",
+      "why": "2026-10-22: the policy says the Advertising ID is not sent to Google Analytics; that is true only while this manifest line says false.",
+      "file": "android/app/src/main/AndroidManifest.xml",
+      "find": "<meta-data android:name=\"google_analytics_adid_collection_enabled\" android:value=\"false\" />",
+      "replace": "<meta-data android:name=\"google_analytics_adid_collection_enabled\" android:value=\"true\" />",
+      "expectFailure": "google_analytics_adid_collection_enabled is not \"false\""
+    },
+    {
+      "name": "analytics_storage starts granted",
+      "why": "An install would be identified before the consent check answers — in the EEA too, where the policy says no identifier is used.",
+      "file": "android/app/src/main/AndroidManifest.xml",
+      "find": "<meta-data android:name=\"google_analytics_default_allow_analytics_storage\" android:value=\"false\" />",
+      "replace": "<meta-data android:name=\"google_analytics_default_allow_analytics_storage\" android:value=\"true\" />",
+      "expectFailure": "google_analytics_default_allow_analytics_storage is not \"false\""
+    },
+    {
+      "name": "analytics is granted unless consent is required",
+      "why": "UNKNOWN (the check could not tell) would grant it — the policy promises no identifier where consent is asked, and an unknown answer is not a no.",
+      "file": "src/services/analyticsConsent.js",
+      "find": "  return info?.privacyOptionsRequirementStatus === 'NOT_REQUIRED';",
+      "replace": "  return info?.privacyOptionsRequirementStatus !== 'REQUIRED';",
+      "expectFailure": "analyticsStorageAllowed(UNKNOWN) is true"
+    },
+    {
+      "name": "the consent call grants ad storage",
+      "why": "The policy says the statistics are not used for ads.",
+      "file": "src/services/analyticsConsent.js",
+      "find": "type: ConsentType.AnalyticsStorage",
+      "replace": "type: ConsentType.AdStorage",
+      "expectFailure": "grants an ad consent type"
+    },
+    {
+      "name": "the English policy stops saying Analytics gets no advertising ID",
+      "why": "The flow row holds each language half of the hosted policy to the sentence.",
+      "file": "docs/privacy.html",
+      "find": "<strong>Your Advertising ID is not sent to Google Analytics.</strong>",
+      "replace": "<strong>Your Advertising ID may be used by Google Analytics.</strong>",
+      "expectFailure": "lacks \"Your Advertising ID is not sent to Google Analytics\""
     }
   ]
 }

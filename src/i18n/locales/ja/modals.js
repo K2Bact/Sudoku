@@ -16,6 +16,7 @@ export const modals = {
       shareBtn: '記録を共有',
       copiedToast: '🎉 クリア記録がクリップボードにコピーされました！',
       shareText: '🧩 ナンプレ {mode} Lv.{level} {name}を[{time}]でクリア！ ランク: {rank} (ミス {mistakes}回)。あなたも挑戦してみよう！',
+      shareModes: { classic: '[クラシック]', timeAttack: '[⚡タイムアタック]', timeLimit: '[⏳サバイバル]' },
       ranks: {
         'S+': '👑 S+ (神速の境地)',
         'S': '⭐️ S (マスター)',
@@ -59,6 +60,7 @@ export const modals = {
       adPlaceholder: '📺 広告スペース（配信なし）',
       chancesLeft: 'このゲームの残り補充: {remaining}/{max}回',
       maxReached: '広告によるヒント補充は1ゲームあたり最大2回までです。',
+      notSaved: 'ストレージがいっぱいのため、今はヒントを保存できません。空き容量を作ってからもう一度お試しください。',
       later: '後で'
     }
   }

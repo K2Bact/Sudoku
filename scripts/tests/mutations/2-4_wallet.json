@@ -52,6 +52,30 @@
       "find": "  hints: 3,                 // Initial welcome bonus",
       "replace": "  hints: 5,                 // Initial welcome bonus",
       "expectFailure": "Expected initial hints to be 3"
+    },
+    {
+      "name": "a refused spend is reported as an empty wallet again",
+      "why": "D30 (Flip5 2026-10-22): with storage full the hint button offered an ad to a player holding hints, because the wallet said \"no hint\" for both.",
+      "file": "src/utils/wallet.js",
+      "find": "    return 'not_saved';",
+      "replace": "    return 'none';",
+      "expectFailure": "spendHint said \"none\""
+    },
+    {
+      "name": "the hint button sends a refused spend to the ad offer",
+      "why": "The branch that tells the player storage is full is the whole fix on the screen side.",
+      "file": "src/hooks/useKeypadActions.js",
+      "find": "    if (spent === 'not_saved') {",
+      "replace": "    if (spent === 'never') {",
+      "expectFailure": "does not answer a refused spend"
+    },
+    {
+      "name": "a reward the storage refused is handed on to the hint button",
+      "why": "Handing it on spends nothing and opens the ad offer again — an ad loop for a reward that cannot be kept.",
+      "file": "src/hooks/useRewardHint.js",
+      "find": "    if (newCount <= before) {",
+      "replace": "    if (false) {",
+      "expectFailure": "useRewardHint hands a reward"
     }
   ]
 }

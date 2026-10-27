@@ -16,6 +16,7 @@ export const modals = {
       shareBtn: 'शेयर करें',
       copiedToast: '🎉 परिणाम क्लिपबोर्ड पर कॉपी हो गया!',
       shareText: '🧩 मैंने सुडोकू {mode} Lv.{level} {name} को [{time}] में हल किया! रैंक: {rank} (गलतियां: {mistakes})। क्या आप इससे तेज़ कर सकते हैं?',
+      shareModes: { classic: '[क्लासिक]', timeAttack: '[⚡स्पीडरन]', timeLimit: '[⏳सर्वाइवल]' },
       ranks: {
         'S+': '👑 S+ (दिव्य गति)',
         'S': '⭐️ S (मास्टर)',
@@ -59,6 +60,7 @@ export const modals = {
       adPlaceholder: '📺 विज्ञापन स्थान (कोई विज्ञापन नहीं)',
       chancesLeft: 'इस खेल में शेष रिचार्ज: {remaining}/{max}',
       maxReached: 'प्रति खेल अधिकतम 2 बार विज्ञापन संकेत उपलब्ध हैं।',
+      notSaved: 'स्टोरेज भरा हुआ है, इसलिए अभी संकेत सेव नहीं हो सकते। थोड़ी जगह खाली करके फिर से कोशिश करें।',
       later: 'बाद में'
     }
   }

@@ -16,6 +16,7 @@ export const modals = {
       shareBtn: 'Share',
       copiedToast: '🎉 Clear record copied to clipboard!',
       shareText: '🧩 Sudoku {mode} Lv.{level} {name} cleared in [{time}]! Rank: {rank} (mistakes: {mistakes}). Can you beat it?',
+      shareModes: { classic: '[Classic]', timeAttack: '[⚡Speedrun]', timeLimit: '[⏳Survival]' },
       ranks: {
         'S+': '👑 S+ (Godspeed)',
         'S': '⭐️ S (Master)',
@@ -59,6 +60,7 @@ export const modals = {
       adPlaceholder: '📺 Ad placeholder (no ad served)',
       chancesLeft: 'Refills left this game: {remaining}/{max}',
       maxReached: 'You can get up to 2 hints from ads per game.',
+      notSaved: 'Your storage is full, so hints can\'t be saved right now. Free up some space and try again.',
       later: 'Later'
     }
   }

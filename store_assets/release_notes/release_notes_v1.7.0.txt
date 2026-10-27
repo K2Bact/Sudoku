@@ -1,0 +1,78 @@
+<en-US>
+• Daily Challenge now has Killer: pick Standard or Killer with the switch. Each day counts once, whichever you solve.
+• Sudoku Academy: a new Killer tab with 8 cage techniques, each with a lesson and practice boards.
+• Time bonuses over the clock and shared results now appear in your language. Italian texts revised.
+• Fixed: the Ghost banner in landscape, very fast Speedrun records, the daily mission reward and dark theme colors in duels.
+</en-US>
+<ar>
+• أصبح «التحدي اليومي» يشمل كيلر: اختر «قياسي» أو «كيلر» من المفتاح. يُحتسب كل يوم مرة واحدة أيًّا كان ما تحله.
+• أكاديمية السودوكو: تبويب كيلر جديد فيه 8 تقنيات للأقفاص، لكل منها شرح وتمارين.
+• مكافآت الوقت فوق الساعة والنتائج المشتركة تظهر الآن بلغتك. تحسين النصوص الإيطالية.
+• إصلاح: شريط الشبح في الوضع الأفقي، والأرقام القياسية السريعة جدًا في «سباق الزمن»، ومكافأة مهمة اليوم، وألوان المبارزة في السمة الداكنة.
+</ar>
+<de-DE>
+• Tages-Challenge jetzt auch mit Killer: Wähle Standard oder Killer mit dem Schalter. Jeder Tag zählt einmal, egal womit du ihn löst.
+• Sudoku-Akademie: neuer Killer-Tab mit 8 Käfig-Techniken, jeweils mit Erklärung und Übungen.
+• Zeitboni über der Uhr und geteilte Ergebnisse jetzt in deiner Sprache. Italienische Texte überarbeitet.
+• Behoben: Geist-Banner im Querformat, sehr schnelle Zeitrennen-Rekorde, die Belohnung der Tagesmission und Duell-Farben im dunklen Design.
+</de-DE>
+<es-ES>
+• El Desafío diario ya tiene Killer: elige Estándar o Killer con el interruptor. Cada día cuenta una vez, resuelvas el que resuelvas.
+• Academia Sudoku: nueva pestaña Killer con 8 técnicas de jaulas, cada una con explicación y ejercicios.
+• Las bonificaciones de tiempo y los resultados compartidos ya salen en tu idioma. Textos en italiano revisados.
+• Corregido: banner Fantasma en horizontal, récords muy rápidos de Contrarreloj, recompensa de la misión de hoy y colores del duelo en tema oscuro.
+</es-ES>
+<fr-FR>
+• Le Défi quotidien passe au Killer : choisissez Standard ou Killer avec l’interrupteur. Chaque jour compte une fois, quelle que soit la grille.
+• Académie Sudoku : nouvel onglet Killer avec 8 techniques de cages, chacune avec explication et exercices.
+• Bonus de temps et résultats partagés désormais dans votre langue. Textes italiens revus.
+• Corrigé : bannière Fantôme en paysage, records Contre-la-montre très rapides, récompense de la mission du jour et couleurs des duels en thème sombre.
+</fr-FR>
+<hi-IN>
+• दैनिक चुनौती में अब किलर भी है: स्विच से मानक या किलर चुनें। कोई भी पहेली हल करें, दिन एक बार गिना जाता है।
+• सुडोकू अकादमी: नया किलर टैब — समूह की 8 तकनीकें, हर एक की व्याख्या और अभ्यास के साथ।
+• घड़ी के ऊपर का समय बोनस और साझा परिणाम अब आपकी भाषा में। इतालवी पाठ सुधारे गए।
+• सुधार: लैंडस्केप में घोस्ट बैनर, बहुत तेज़ स्पीडरन रिकॉर्ड, आज के मिशन का इनाम और डार्क थीम में मुकाबले के रंग।
+</hi-IN>
+<it-IT>
+• La Sfida giornaliera ora ha anche il Killer: scegli Standard o Killer con l’interruttore. Ogni giorno vale una volta, qualunque dei due tu risolva.
+• Accademia Sudoku: nuova scheda Killer con 8 tecniche delle gabbie, ognuna con spiegazione ed esercizi.
+• Bonus di tempo e risultati condivisi ora sono nella tua lingua. Testi italiani rivisti.
+• Corretto: banner Fantasma in orizzontale, record velocissimi in Cronometro, ricompensa della missione di oggi e colori dei duelli nel tema scuro.
+</it-IT>
+<ja-JP>
+• 本日のデイリーにキラーが登場。スイッチでスタンダードかキラーを選べます。どちらで解いても、その日は 1 回です。
+• ナンプレアカデミーに「キラー」タブを追加。ケージのテクニック 8 種を解説と練習問題つきで学べます。
+• 時計の上に出るタイムボーナスと結果シェアが、言語設定どおりに表示されます。イタリア語の表現も改善しました。
+• 横画面のゴースト表示、ごく速いタイムアタック記録、本日のミッションの報酬、ダークテーマの対戦画面の色を修正しました。
+</ja-JP>
+<ko-KR>
+• 오늘의 챌린지에도 킬러가 생겼어요. 스위치로 표준·킬러를 골라요. 어느 쪽으로 풀어도 그날은 한 번이에요.
+• 스도쿠 아카데미에 「킬러」 탭이 생겼어요. 묶음 테크닉 8가지를 설명과 연습 문제로 배워요.
+• 시계 위에 뜨는 시간 보너스와 결과 공유가 내 언어로 나와요. 이탈리아어 문구도 다듬었어요.
+• 가로 화면의 고스트 배너, 아주 빠른 스피드런 기록, 오늘의 미션 보상, 어두운 테마의 대전 색을 고쳤어요.
+</ko-KR>
+<pt-BR>
+• O Desafio Diário agora tem Killer: escolha Padrão ou Killer no seletor. Cada dia conta uma vez, seja qual for o tipo resolvido.
+• Academia Sudoku: nova aba Killer com 8 técnicas de gaiolas, cada uma com explicação e exercícios.
+• Bônus de tempo e resultados compartilhados agora aparecem no seu idioma. Textos em italiano revisados.
+• Corrigido: banner Fantasma na horizontal, recordes muito rápidos no Contra o Tempo, recompensa da missão de hoje e cores do duelo no tema escuro.
+</pt-BR>
+<ru-RU>
+• В «Ежедневном испытании» теперь есть Киллер: выберите Стандарт или Киллер переключателем. День засчитывается один раз, что бы вы ни решили.
+• Академия судоку: новая вкладка «Киллер» — 8 техник областей с объяснениями и упражнениями.
+• Бонусы времени и результаты, которыми вы делитесь, теперь на вашем языке. Улучшены итальянские тексты.
+• Исправлено: баннер Призрака в альбомной ориентации, очень быстрые рекорды Спидрана, награда за миссию дня и цвета дуэли в тёмной теме.
+</ru-RU>
+<zh-CN>
+• 每日挑战也能玩杀手数独：用开关选择标准或杀手。无论解哪种，每天只算一次。
+• 数独学院新增「杀手」分页：8 种笼子技巧，每种都有讲解和练习。
+• 计时器上方的时间奖励和分享结果，现在以你的语言显示。改进了意大利语文本。
+• 修复：横屏时的幽灵横幅、极快的计时竞速记录、今日任务奖励，以及深色主题下的对战颜色。
+</zh-CN>
+<zh-TW>
+• 每日挑戰也能玩殺手數獨：用開關選擇標準或殺手。無論解哪種，每天只算一次。
+• 數獨學院新增「殺手」分頁：8 種籠子技巧，每種都有講解和練習。
+• 計時器上方的時間獎勵和分享結果，現在會以你的語言顯示。改進了義大利語文字。
+• 修正：橫向畫面的幽靈橫幅、極快的計時競速紀錄、今日任務獎勵，以及深色主題下的對戰顏色。
+</zh-TW>

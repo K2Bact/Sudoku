@@ -40,6 +40,7 @@ import { chromium } from 'playwright';
 import { spawn, execSync } from 'child_process';
 import http from 'http';
 import { createPuzzle } from '../../../src/engine/variants.js';
+import { getDailyMission } from '../../../src/utils/dailyChallenge.js';
 
 const PORT = 5221;
 const URL = `http://localhost:${PORT}`;
@@ -171,6 +172,13 @@ async function run() {
     console.log('======================================================');
 
     // 1. The first hint on the last cell — and the same cell typed, as the control.
+    // A Lv.3 plain win also pays the day's mission when it is a level clear at Lv.3 or
+    // below (+1 hint, D25) — read before the win, from the empty stats prime leaves, the
+    // way the win path reads it. This said "want 4" and failed on 2026-10-22, whose mission
+    // is "clear Lv.1 or higher" (3-18 learned the same on another day).
+    const mission = getDailyMission(todayKey(), {});
+    const missionPays = mission.type === 'level_clear' && 3 >= mission.minLevel;
+    const wantAfterHint = 4 + (missionPays ? 1 : 0);
     for (const variant of ['classic', 'killer']) {
       for (const how of ['typed', 'hint']) {
         const { state, left } = nearlyDone(variant, 1);
@@ -189,9 +197,9 @@ async function run() {
           if (!rec.bestTimes?.[3] || rec.clearedLevels?.[3] !== true || !ghost?.bestSeconds || notice) {
             fail(`${tag}: control should record — best ${rec.bestTimes?.[3]}, cleared ${rec.clearedLevels?.[3]}, ghost ${ghost?.bestSeconds}, card "${notice}"`);
           } else pass(`${tag}: best time, hint-free clear and ghost saved (the control)`);
-        } else if (left5 !== 4 || notice !== 'hint_used' || rec.bestTimes?.[3] || rec.clearedLevels?.[3] || ghost?.bestSeconds) {
-          fail(`${tag}: hints ${left5} (want 4), card "${notice}" (want hint_used), best ${rec.bestTimes?.[3]}, cleared ${rec.clearedLevels?.[3]}, ghost ${ghost?.bestSeconds} — a hint game saved as a record`);
-        } else pass(`${tag}: one hint spent, the card and the save agree — no best, no hint-free clear, no ghost`);
+        } else if (left5 !== wantAfterHint || notice !== 'hint_used' || rec.bestTimes?.[3] || rec.clearedLevels?.[3] || ghost?.bestSeconds) {
+          fail(`${tag}: hints ${left5} (want ${wantAfterHint}${missionPays ? ' — 5, one spent, +1 for today\'s Lv.3 mission' : ''}), card "${notice}" (want hint_used), best ${rec.bestTimes?.[3]}, cleared ${rec.clearedLevels?.[3]}, ghost ${ghost?.bestSeconds} — a hint game saved as a record`);
+        } else pass(`${tag}: one hint spent${missionPays ? ' (and today\'s mission paid one)' : ''}, the card and the save agree — no best, no hint-free clear, no ghost`);
       }
     }
 

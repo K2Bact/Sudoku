@@ -3,6 +3,7 @@ import { App as CapacitorApp } from '@capacitor/app';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useConfirm } from '../components/common/ConfirmProvider';
 import { openReplayId, closeReplay } from '../components/replay/replayViewer';
+import { isAIRoom } from '../firebase/aiBattleSession';
 
 /**
  * 4-Tier Hardware Back Button & Popstate Navigation Stack
@@ -134,7 +135,7 @@ export function useBackStack(props) {
         // modal cannot, and pretending otherwise would let the event fall
         // through to Android and close the app behind the question.
         if (activeBattleRoom) {
-          const isAIBattle = activeBattleRoom?.isAIBattle || activeBattleRoom?.opponentName?.includes('AI') || activeBattleRoom?.opponentName?.toLowerCase().includes('bot');
+          const isAIBattle = isAIRoom(activeBattleRoom);
           confirmRef.current(t('battleHeader.confirmLeave')).then((ok) => {
             if (!ok) return;
             battleService.leaveRoom();

@@ -19,6 +19,7 @@ export const modals = {
       shareBtn: '分享戰績',
       copiedToast: '🎉 通關紀錄已複製至剪貼簿！',
       shareText: '🧩 我以 [{time}] 破解了 Sudoku {mode} Lv.{level} {name}！評級：{rank}（失誤 {mistakes} 次）。你也來挑戰吧！',
+      shareModes: { classic: '[經典模式]', timeAttack: '[⚡計時競速]', timeLimit: '[⏳極限生存]' },
       ranks: {
         'S+': '👑 S+ (神速之境)',
         'S': '⭐️ S (宗師級)',
@@ -62,6 +63,7 @@ export const modals = {
       adPlaceholder: '📺 廣告版位（未投放）',
       chancesLeft: '本局剩餘補充次數: {remaining}/{max}',
       maxReached: '每局透過廣告補充提示最多 2 次。',
+      notSaved: '儲存空間已滿，暫時無法儲存提示。請釋放空間後再試。',
       later: '稍後'
     }
   }

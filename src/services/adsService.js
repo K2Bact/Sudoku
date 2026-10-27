@@ -230,6 +230,11 @@ class AdsService {
     return getAdProvider().hasPrivacyOptions();
   }
 
+  /** The ad SDK's consent state, read without a form (null if none) — Analytics follows it. */
+  async consentInfo() {
+    return getAdProvider().consentInfo?.() ?? null;
+  }
+
   async showPrivacyOptions() {
     return getAdProvider().showPrivacyOptions();
   }

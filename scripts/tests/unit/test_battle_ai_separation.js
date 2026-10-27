@@ -327,6 +327,152 @@ console.log('\n▶ Testing the no-opponent fallback...');
     'the lobby must not hand the fallback a level number — the player picks it');
 }
 
+// ── 어느 방이 AI 대전인가 — 방의 표시로만, 이름으로는 절대 (2026-10-21) ──────────
+//
+// 여섯 곳이 `room.isAIBattle || 상대 이름에 'AI' || 'bot'` 으로 정했다. isAIBattle 은
+// 아무도 붙이지 않는 칸이라, 대전 머리·뒤로가기·나가기는 AI 방을 봇의 영어 이름으로만
+// 알아봤다 — 이름을 번역하면(D28) AI 대전이 전부 1v1 로 보였을 것이다. 그리고 사람
+// 상대의 이름은 Player_ + 아이디 끝 네 글자라, 1,200명에 한 명꼴로 이름에 AI·bot 이
+// 끼어 재대결이 AI 대전을 시작하고 결과를 닫으면 AI 화면으로 갔다. 이제 isAIRoom 하나.
+console.log('\n▶ Testing which room is an AI battle (the room flag, never the name)...');
+{
+  const { createAIRoom, isAIRoom } = await import('../../../src/firebase/aiBattleSession.js');
+  for (const variant of ['classic', 'killer']) {
+    const ai = createAIRoom(2, variant);
+    assert(isAIRoom(ai), `an AI room (${variant}) is taken for an AI battle`);
+    assert(isAIRoom({ ...ai, opponentName: 'KI-Löser' }),
+      `an AI room (${variant}) stays an AI battle whatever the bot is called — its name is to be translated (D28)`);
+  }
+  for (const name of ['Player_kAIz', 'Player_xbot', 'Player_BoT1', 'AI Solver']) {
+    assert(!isAIRoom({ code: 'R1', opponentId: 'uid_x', opponentName: name, status: 'playing' }),
+      `a human opponent named ${name} is not taken for the bot`);
+  }
+
+  const strip = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*/g, '');
+  for (const f of ['src/components/BattleHeader.jsx', 'src/components/BattleResultModal.jsx',
+    'src/hooks/useGameProps.js', 'src/hooks/useBattleMultiplayer.js', 'src/hooks/useBackStack.js']) {
+    const code = strip(readFileSync(f, 'utf8'));
+    assert(/const isAIBattle = isAIRoom\(/.test(code), `${f} decides an AI battle with isAIRoom`);
+    assert(!/isAIBattle\s*=[^;\n]*(opponentName|\.isAIBattle\b)/.test(code),
+      `${f} does not decide an AI battle from the opponent's name or the isAIBattle field nothing sets`);
+  }
+  const walk = (d) => readdirSync(d, { withFileTypes: true })
+    .flatMap((e) => (e.isDirectory() ? walk(join(d, e.name)) : /\.jsx?$/.test(e.name) ? [join(d, e.name)] : []));
+  const guessers = walk('src').filter((f) =>
+    /opponentName\??\.(includes|toLowerCase|toUpperCase|startsWith|endsWith|match|indexOf)\b/.test(strip(readFileSync(f, 'utf8'))));
+  assert(guessers.length === 0, `nothing in src guesses the bot from the opponent's name${guessers.length ? ` — ${guessers.join(', ')}` : ''}`);
+}
+
+// ── 봇 이름은 플레이어의 언어로 (D28, 2026-10-22) ────────────────────────────
+//
+// 방이 「AI Grandmaster」 같은 영어 이름을 들고 다녔고 13개 언어 모두 그대로 보였다 — 독일어는
+// AI 를 KI 로, 로망스어는 IA, 러시아어는 ИИ 로 쓴다. 이제 방은 봇 번호(botId)만, 이름은 화면에서
+// battleHeader.botNames 로. 대전 머리와 결과 카드가 같은 함수(opponentDisplayName)로 짓는다.
+console.log('\n▶ Testing the bot is named in the player\'s language...');
+{
+  const { createAIRoom, BOT_IDS, opponentDisplayName } = await import('../../../src/firebase/aiBattleSession.js');
+  const key = (k) => k;   // a translator that hands back the key, so the call is what is checked
+  const seen = new Set();
+  for (let i = 0; i < 40; i++) {
+    const room = createAIRoom(1, i % 2 ? 'killer' : 'classic');
+    seen.add(room.botId);
+    if (i === 0) {
+      assert(BOT_IDS.includes(room.botId) && room.opponentName === undefined,
+        `an AI room carries a bot id (${room.botId}) and no name of its own (opponentName ${JSON.stringify(room.opponentName)})`);
+      assert(opponentDisplayName(room, key) === `battleHeader.botNames.${room.botId}`,
+        `an AI room is named by its bot id through t() — got "${opponentDisplayName(room, key)}"`);
+    }
+  }
+  assert(BOT_IDS.every((id) => seen.has(id)), `all ${BOT_IDS.length} bots turn up in 40 rooms (saw ${[...seen].join(', ')})`);
+  assert(opponentDisplayName({ isAiMatch: true, botId: 'nobody' }, key) === 'home.modes.aiBattle.title', 'an AI room with an unknown bot id falls back to the AI battle title, not a key');
+  assert(opponentDisplayName({ opponentName: 'Player_RBP2' }, key) === 'Player_RBP2', 'a person is named by the name their device sent');
+  assert(opponentDisplayName({}, key, 'Fallback') === 'Fallback' && opponentDisplayName({}, key) === 'battleResult.opponent',
+    'a room without a name takes the name handed in, then the word for opponent');
+
+  for (const f of ['src/components/BattleHeader.jsx', 'src/components/BattleResultModal.jsx']) {
+    const code = readFileSync(f, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*/g, '');
+    assert(/const actualOpponentName = opponentDisplayName\([^;\n]*\);/.test(code), `${f} names the opponent through opponentDisplayName and nothing else`);
+  }
+
+  // Every language has every bot, and each name carries that language's own word for the bot —
+  // the battle tag beside it (AI / KI / IA / ИИ / بوت). An English name left in a German file fails here.
+  for (const loc of LOCALES) {
+    const mod = await import(`../../../src/i18n/locales/${loc}/screens.js`);
+    const header = Object.values(mod)[0].battleHeader || {};
+    const names = header.botNames || {};
+    const bad = BOT_IDS.filter((id) => !(typeof names[id] === 'string' && names[id].includes(header.aiTag)));
+    assert(bad.length === 0, `${loc} bot names exist and each says "${header.aiTag}"${bad.length ? ` — not: ${bad.join(', ')}` : ''}`);
+  }
+
+  const walkSrc = (d) => readdirSync(d, { withFileTypes: true })
+    .flatMap((e) => (e.isDirectory() ? walkSrc(join(d, e.name)) : /\.jsx?$/.test(e.name) ? [join(d, e.name)] : []));
+  const english = walkSrc('src').filter((f) => !f.replace(/\\/g, '/').includes('src/i18n/')
+    && /AI (Grandmaster|Solver|Logic|Swift)/.test(readFileSync(f, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*/g, '')));
+  assert(english.length === 0, `no English bot name is written in the app's code${english.length ? ` — ${english.join(', ')}` : ''}`);
+}
+
+// ── 재대결 배너는 Play 게임즈 업적 팝업 밑에 깔리지 않는다 (D32, 2026-10-22) ─────────
+//
+// 1v1 을 이겨 업적이 풀리면 Play 게임즈가 화면 위에 자기 팝업을 띄운다(플립5 실측: 1080×270,
+// 해제 요청부터 5.1초 뒤 사라짐). 그 사이 온 재대결 배너는 그 밑에 깔려 누가·몇 초 남았는지가
+// 안 보였다. 그래서 업적이 풀린 승리 뒤에만 팝업이 갈 때까지 배너를 잡아 두고, 요청한 쪽의
+// 15초에서 남은 만큼으로 센다.
+console.log('\n▶ Testing a rematch banner waits out the Play Games achievement popup (D32)...');
+{
+  const { rematchBannerTiming, ACHIEVEMENT_POPUP_MS, REMATCH_SECONDS } = await import('../../../src/components/battle/rematchBannerTiming.js');
+  const now = 1_000_000;
+  let r = rematchBannerTiming(0, now);
+  assert(r.waitMs === 0 && r.seconds === REMATCH_SECONDS, `no popup: shown at once, from ${REMATCH_SECONDS} s (got wait ${r.waitMs}, ${r.seconds} s)`);
+  r = rematchBannerTiming(now - 1, now);
+  assert(r.waitMs === 0 && r.seconds === REMATCH_SECONDS, 'a popup already gone holds nothing');
+  r = rematchBannerTiming(now + ACHIEVEMENT_POPUP_MS, now);
+  assert(r.waitMs === ACHIEVEMENT_POPUP_MS && r.seconds === REMATCH_SECONDS - Math.ceil(ACHIEVEMENT_POPUP_MS / 1000),
+    `under the popup: held ${ACHIEVEMENT_POPUP_MS} ms, then counts from what is left of the asker's ${REMATCH_SECONDS} s (got wait ${r.waitMs}, ${r.seconds} s)`);
+  assert(ACHIEVEMENT_POPUP_MS >= 5100, `the hold covers the popup as measured — 5.1 s from the unlock to the popup leaving (is ${ACHIEVEMENT_POPUP_MS} ms)`);
+
+  const strip = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*/g, '');
+  const hook = strip(readFileSync('src/hooks/useBattleMultiplayer.js', 'utf8'));
+  assert(/if \(unlocked && unlocked\.length\) popupUntilRef\.current = Date\.now\(\) \+ ACHIEVEMENT_POPUP_MS/.test(hook),
+    'a duel win that unlocked something starts the hold — and only such a win');
+  assert(/subscribeRematch\(\(data\) => \{[\s\S]{0,200}rematchBannerTiming\(popupUntilRef\.current\)[\s\S]{0,300}setTimeout\(show, waitMs\)/.test(hook),
+    'an arriving rematch request goes through the hold');
+  assert(/secondsLeft: seconds/.test(hook), 'the request carries the seconds left to the banner');
+  // App passes a fresh startNewGame every render, so the subscription effect is torn down and rebuilt on
+  // every render. A hold cleared in its cleanup never shows — the first version did exactly that, and only
+  // the two-phone test saw it (2026-10-22): counting clearTimeout calls, as this gate first did, could not.
+  assert(/startNewGame: \(\.\.\.args\) => game\.startNewGame\(\.\.\.args\)/.test(readFileSync('src/App.jsx', 'utf8')),
+    'App still hands the hook a new startNewGame each render — if that changed, the reasoning below needs another look');
+  const subscriptionCleanup = (hook.match(/return \(\) => \{\s*unsubRoom\(\);[\s\S]*?\};/) || [''])[0];
+  assert(subscriptionCleanup && !/heldRematchRef/.test(subscriptionCleanup),
+    'the subscription effect\'s cleanup does not drop a held request — it runs on every render');
+  // D33: the same cleanup stopped the asker's countdown, so the button sat at 「(15s)」 (two phones, 2026-10-22).
+  assert(subscriptionCleanup && !/rematchTimerRef/.test(subscriptionCleanup),
+    'the subscription effect\'s cleanup does not stop the asker\'s countdown — it runs on every render (D33)');
+  const unmountOnly = (hook.match(/useEffect\(\(\) => \(\) => \{[\s\S]*?\}, \[\]\);/) || [''])[0];
+  assert(/clearTimeout\(heldRematchRef\.current\)/.test(unmountOnly) && /clearInterval\(rematchTimerRef\.current\)/.test(unmountOnly),
+    'the held request and the countdown stop when the hook really goes (an effect of its own, no dependencies)');
+  for (const where of [/subscribeOpponentLeft\(\(\) => \{\s*clearTimeout\(heldRematchRef\.current\)/,
+    /if \(rematchStatus === 'accepted'\) \{[\s\S]{0,120}clearTimeout\(heldRematchRef\.current\)/,
+    /const cleanupBattleSession = \(\) => \{[\s\S]{0,200}clearTimeout\(heldRematchRef\.current\)/]) {
+    assert(where.test(hook), `a held request is dropped when ${where.source.slice(0, 40)}…`);
+  }
+  assert(/initialSeconds=\{incomingRematchRequest\.secondsLeft\}/.test(readFileSync('src/App.jsx', 'utf8')), 'App hands the banner those seconds');
+  assert(/useState\(initialSeconds\)/.test(readFileSync('src/components/battle/RematchToastBanner.jsx', 'utf8')), 'and the banner counts down from them');
+}
+
+// ── 상대가 나가면 기권승 — 결과 카드가 그렇게 말한다 (BT-3, 2026-10-22) ─────────────
+console.log('\n▶ Testing a forfeit win says so on the result card (BT-3)...');
+{
+  const modal = readFileSync('src/components/BattleResultModal.jsx', 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*/g, '');
+  assert(/winnerReason === 'opponent_left'\) \{\s*return t\('battleResult\.victoryForfeitDesc', \{ opponent: actualOpponentName \}\)/.test(modal),
+    'the result card explains a win by forfeit with its own sentence, not "you finished first"');
+  for (const loc of LOCALES) {
+    const mod = await import(`../../../src/i18n/locales/${loc}/screens.js`);
+    const line = (Object.values(mod)[0].battleResult || {}).victoryForfeitDesc;
+    assert(typeof line === 'string' && line.includes('{opponent}'), `${loc} has battleResult.victoryForfeitDesc naming the opponent`);
+  }
+}
+
 console.log('\n======================================================');
 if (failed > 0) {
   console.error(`❌ [AUDIT FAILED] ${failed} check(s) failed.`);

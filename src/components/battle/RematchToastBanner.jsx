@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Swords, Check, X, Clock } from 'lucide-react';
 import { soundHaptic } from '../../utils/soundHaptic';
 import { useTranslation } from '../../i18n/i18nContext';
+import { REMATCH_SECONDS } from './rematchBannerTiming';
 
 export function RematchToastBanner({
   requesterName,
+  initialSeconds = REMATCH_SECONDS,
   onAccept,
   onDecline
 }) {
   const { t } = useTranslation();
-  const [secondsLeft, setSecondsLeft] = useState(15);
+  // Less than 15 when the banner was held behind the Play Games popup (D32).
+  const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
 
   useEffect(() => {
     soundHaptic.playWinSound?.();
@@ -37,7 +40,7 @@ export function RematchToastBanner({
     if (onDecline) onDecline();
   };
 
-  const progressPercent = (secondsLeft / 15) * 100;
+  const progressPercent = (secondsLeft / REMATCH_SECONDS) * 100;
 
   return (
     <div className="rematch-toast-wrapper">

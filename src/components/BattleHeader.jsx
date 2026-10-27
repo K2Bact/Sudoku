@@ -4,6 +4,7 @@ import { soundHaptic } from '../utils/soundHaptic';
 import { useConfirm } from './common/ConfirmProvider';
 import { useTranslation } from '../i18n/i18nContext';
 import { variantOf } from '../engine/variants';
+import { isAIRoom, opponentDisplayName } from '../firebase/aiBattleSession';
 
 // The kind of puzzle, in the AI lobby switch's own words, written out so every
 // key is findable (gate 2-15).
@@ -20,8 +21,8 @@ export function BattleHeader({
   const { t } = useTranslation();
   const confirm = useConfirm();
 
-  const isAIBattle = room?.isAIBattle || room?.opponentName?.includes('AI') || room?.opponentName?.toLowerCase().includes('bot');
-  const actualOpponentName = room?.opponentName || (isAIBattle ? t('home.modes.aiBattle.title') : t('battleResult.opponent'));
+  const isAIBattle = isAIRoom(room);
+  const actualOpponentName = opponentDisplayName(room, t);
   const actualOpponentProgress = room?.opponentProgress ?? 0;
   const actualMyMistakes = room?.myMistakes ?? mistakes ?? 0;
 

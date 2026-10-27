@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { copyFileSync, statSync, mkdirSync } from 'fs';
+import { copyFileSync, statSync, mkdirSync, existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { APP_INFO } from '../../src/config/appInfo.js';
 
@@ -12,6 +12,19 @@ if (!isAuthorized) {
   console.error('AI 에이전트의 임의 빌드 실행을 원천 차단합니다.');
   console.error('실행 필요 시: --force-user-authorized 플래그 필수');
   console.error('======================================================\n');
+  process.exit(1);
+}
+
+// Google Analytics for Firebase (2026-10-22) needs android/app/google-services.json, which is
+// git-ignored (gate 0-4: it holds an API key) and copied in by hand. Without it the gradle
+// plugin is simply not applied (app/build.gradle) and the release ships without Analytics —
+// silently, while the privacy policy describes it. Stop instead.
+const SERVICES_JSON = 'android/app/google-services.json';
+if (!existsSync(SERVICES_JSON) ||
+    !readFileSync(SERVICES_JSON, 'utf8').includes(`"package_name": "${APP_INFO.packageName}"`)) {
+  console.error(`\n⛔ ${SERVICES_JSON} is missing or is not for ${APP_INFO.packageName}.`);
+  console.error('   Download it from the Firebase console (Project settings → Your apps → Android) and copy it there.');
+  console.error('   It is git-ignored on purpose; the release would otherwise ship without Google Analytics.\n');
   process.exit(1);
 }
 

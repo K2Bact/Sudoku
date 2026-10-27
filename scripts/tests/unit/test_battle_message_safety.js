@@ -402,4 +402,110 @@ console.log('  ✅ Ids on the wire are tied to the signed-in account: rules chec
   }
 }
 
+// ── Leaving a match gives it up (BT-3, user 2026-10-22: "상대가 나갔으면 기권승으로 하자") ──
+//
+// Until then the player who stayed got a toast and a board to finish alone, and the
+// one who left lost nothing — after answering yes to 「배틀을 포기하고…」. Driven
+// through the real service with a stub transport, and a stand-in localStorage so the
+// leaver's loss lands somewhere it can be read back.
+{
+  const { battleService } = await import('../../../src/firebase/battleService.js');
+  const { loadBattleProfile, ratingDeltaFor, BATTLE_PROFILE_KEY } = await import('../../../src/utils/battleRating.js');
+  const store = new Map();
+  const hadStorage = 'localStorage' in globalThis;
+  const realStorage = globalThis.localStorage;
+  globalThis.localStorage = {
+    getItem: (k) => (store.has(k) ? store.get(k) : null),
+    setItem: (k, v) => { store.set(k, String(v)); },
+    removeItem: (k) => { store.delete(k); }
+  };
+  const sent = [];
+  const realChannel = battleService.channel;
+  battleService.channel = {
+    isCrossDevice: false,
+    send: (m) => sent.push(m),
+    listQueue: async () => [],
+    enqueue: async () => {},
+    dequeue: async () => {},
+    claimTicket: async () => null,
+    whoAmI: async () => 'me',
+    close: () => {}
+  };
+  const p = generatePuzzle(3);
+  const openRoom = () => {
+    battleService.myPlayerId = 'me';
+    battleService.setupRoom({
+      code: 'ROOM2', level: 3, puzzle: p.puzzle, solution: p.solution,
+      initialEmptyCount: p.puzzle.flat().filter((v) => v === 0).length,
+      opponentId: 'them', opponentName: 'Them'
+    });
+    return battleService.currentRoom;
+  };
+  let heardLeft = 0;
+  const off = battleService.subscribeOpponentLeft(() => { heardLeft++; });
+  try {
+    // They leave mid-match: this side wins, and says why.
+    let room = openRoom();
+    room.myProgress = 30;
+    battleService.handleMessage({ type: 'player_left', roomId: 'ROOM2', senderId: 'them', seq: 0 });
+    assert.strictEqual(room.status, 'finished', 'the opponent left mid-match and the match kept running (BT-3)');
+    assert.strictEqual(room.winner, 'me', 'the player who stayed must win by forfeit');
+    assert.strictEqual(room.winnerReason, 'opponent_left', 'with the reason the result card reads');
+    assert.strictEqual(heardLeft, 1, 'and the opponent-left listeners must still hear it (toast, rematch button)');
+    // Their moves will never come: the replay under the forfeit card must not keep waiting for them.
+    const { getReplay } = await import('../../../src/utils/replay/replayStore.js');
+    const { replayKeyFor } = await import('../../../src/utils/replay/matchRecorder.js');
+    const saved = getReplay(replayKeyFor(room));
+    assert(saved, 'a forfeit win keeps a replay like any other finish');
+    assert.strictEqual(saved.reason, 'opponent_left', 'and the replay knows how it was won');
+    assert.strictEqual(saved.opp.shareState, 'missed',
+      'the replay under a forfeit win still said it was waiting for moves from a player who had left');
+
+    // They leave after the result: the result stands.
+    room = openRoom();
+    Object.assign(room, { status: 'finished', winner: 'opponent', winnerReason: 'opponent_completion' });
+    battleService.handleMessage({ type: 'player_left', roomId: 'ROOM2', senderId: 'them', seq: 0 });
+    assert.strictEqual(room.winner, 'opponent', 'leaving the result screen turned a lost match into a win');
+    assert.strictEqual(room.winnerReason, 'opponent_completion', 'and rewrote why it was lost');
+
+    // A goodbye from someone who is not the opponent, or from the match before, ends nothing.
+    room = openRoom();
+    battleService.handleMessage({ type: 'player_left', roomId: 'ROOM2', senderId: 'stranger', seq: 0 });
+    assert.strictEqual(room.status, 'playing', 'a player_left from a third party handed this side a win');
+    room.matchSeq = 1;
+    battleService.handleMessage({ type: 'player_left', roomId: 'ROOM2', senderId: 'them', seq: 0 });
+    assert.strictEqual(room.status, 'playing', 'the goodbye from the match before ended this one');
+
+    // This side leaves mid-match: a loss here, and the goodbye goes out.
+    store.clear();
+    sent.length = 0;
+    openRoom();
+    battleService.leaveRoom();
+    const prof = loadBattleProfile();
+    assert.strictEqual(prof.losses, 1, 'leaving a match still being played must count as the loss it is (BT-3)');
+    assert.strictEqual(prof.mmr, 1200 + ratingDeltaFor(false, 3), 'and cost what a loss at this level costs');
+    assert(sent.some((m) => m.type === 'player_left'), 'the opponent must be told, or nobody wins it');
+
+    // Leaving after the result costs nothing.
+    store.clear();
+    room = openRoom();
+    Object.assign(room, { status: 'finished', winner: 'me', winnerReason: 'my_completion' });
+    battleService.leaveRoom();
+    assert.strictEqual(store.has(BATTLE_PROFILE_KEY), false, 'leaving the result screen was counted as a loss');
+
+    // An AI match is no duel: leaving it records nothing here.
+    store.clear();
+    openRoom().isAiMatch = true;
+    battleService.leaveRoom();
+    assert.strictEqual(store.has(BATTLE_PROFILE_KEY), false, 'leaving an AI match was counted as a 1v1 loss');
+    console.log('  ✅ Leaving gives the match up: the other side wins, the leaver loses — but only while it is being played');
+  } finally {
+    off();
+    battleService.channel = realChannel;
+    battleService.currentRoom = null;
+    if (hadStorage) globalThis.localStorage = realStorage;
+    else delete globalThis.localStorage;
+  }
+}
+
 console.log('\n🎉 [PASS] Battle Message Validation & Transport Contract Verified!\n');
