@@ -10598,3 +10598,41 @@ D31 *"그럼 업데이트 하자. 할 수 있으면 해. 무리하게 오래된�
     플립5 헤더 뒤로 나감 → 반대로 같음.
   · 시험 중 플립5 기기의 1v1 승리 배지 기록을 일부러 지웠다(Play 게임즈엔 그대로 — 다음 승리 때 다시 적힘). 두 폰의 1v1 기록은 시험 대전으로 늘어남(지금 플립5 9승 7패 1355 · 벨벳 7승 9패 1285).
 - 32 에 실린다 — 앱 안만 바뀜. 커밋 안 함.
+
+## 161 작업공간 이전(Suidoku → Sudoku) — 그대로 온 것, 깨진 것, 고친 것 · 2026-10-27
+
+**① 발단.** 사용자 *"중간에 멈췄는데, 그 동안에 프로젝트명도 바뀌었고 작업경로도 바뀌었어. … Suidoku 는 이제 안 쓸거야. 근데...폴더명 바꿨다고 구글에 이제 못 올리는건 아닌가?"* —
+현황과 계획을 본 뒤 *"계획대로 1번부터 진행해. 커밋·푸시도 계획대로 해."* (10-22 의 *"커밋 푸시 다 해"* 가 이전 때문에 멈춰 있었다.)
+
+**② 확인한 것.**
+- 옮겨진 자리: `D:\PowerNeJa\PythonWorkspace\Project_Dev\Suidoku` → `D:\PowerNeJa\Workspace\Dev\Sudoku`, `app_common` → `Workspace\app_common`, 상태표 → `Dev\App_Status.xlsx`. 옛 `PythonWorkspace` 는 통째로 없다(사본 둘이 아님).
+  깊이가 같아 앱 폴더에서 보는 상대경로(`../../app_common`, `../App_Status.xlsx`)는 그대로 맞다.
+- git: 미커밋 102개(10-22 작업 전부) · origin 보다 13커밋 앞 · 원격 main 은 로컬이 아는 `3d9104a` 그대로(`ls-remote`). 원격 이름 `K2Bact/Sudoku`.
+- **Play 에 올리는 데 폴더 이름은 상관없다.** Play 가 보는 앱 ID `com.powerneja.suidoku`·업로드 키 `android/app/suidoku-release-key.jks`(09-01 그 파일, `keystore.properties` 의 상대경로)·
+  `google-services.json`(패키지 일치)이 제자리. AAB 스크립트도 상대경로만 쓴다.
+- **깨진 것:**
+  · `android/local.properties`(git 밖)의 `sdk.dir` 이 옛 `PythonWorkspace\app_common\tools\android-sdk` — Gradle 「SDK location not found」. 디버그 빌드에서 처음 드러났고 AAB 도 같은 이유로 멈췄을 것이다.
+    SDK(build-tools 34·35, platforms 34·36)는 `Workspace\app_common\tools\android-sdk` 로 같이 와 있었다. 자바는 시스템 JDK 21(`org.gradle.java.home`)이라 그대로.
+  · `scripts/store/generate_all_feature_graphics.mjs` 의 옛 절대경로 — 돌리면 없는 폴더에 쓴다.
+  · 다국어 검증기(`app_common/l10n_engine/validator.mjs`)의 기본 탐색 `Suidoku/…` — `Dev` 에서 돌리면 번역 폴더를 못 찾고, **게이트 9 는 그림 폴더를 못 찾으면 아무것도 안 읽고 통과**한다.
+    QA 는 앱 폴더에서 돌아 `src/…`·`store_assets` 를 찾으므로 영향 없었다.
+  · 문서의 경로: BACKLOG 2곳 · RELEASE_STATE 1곳 · TECHNICAL_SPECIFICATION 의 `file:///D:/…PythonWorkspace…` 링크 2개 · 앱 AGENTS §0(「폴더 `Suidoku/` 는 그대로」) · 공통 AGENTS(제목·§4.3·§5 지도·§5.1·백업 경로).
+  · Claude 메모리는 작업 경로마다 따로 저장된다 — 새 경로의 메모리 폴더가 비어 있었다(옛 28개는 옛 폴더에).
+  · 상태표 백업 폴더 `_status_backup`(30개)이 따라오지 않았다 — D: 전체(6단계 깊이)에 없다. 사용자에게 물음.
+
+**③ 정한 것, 버린 것.**
+- `suidoku` 는 바꾸면 깨지는 것만 남긴다: 앱 ID · 저장 키 `suidoku_*` · Play 게임즈 저장 이름 · 안드로이드 설정 이름 · l10n 프로필 `--app suidoku` · `window.suidokuBattle` · 로그 태그 · 업로드 키 파일 이름. 앱 AGENTS §0 표를 그렇게 고침.
+  버린 안 ①: 키 파일·별칭 이름 바꾸기 — 얻는 것 없이 서명 설정만 흔든다. ②: 프로필 이름 `suidoku` → `sudoku` — 공통 저장소의 프로필 파일·QA 명령·지난 기록이 같이 바뀌어야 한다.
+- `local.properties` 는 새 SDK 자리로(git 밖이라 커밋 없음). 그림 스크립트는 자기 위치에서 `../../store_assets` 를 찾는다(`import.meta.url`). 검증기는 `Sudoku/…` 를 찾는다(프로필 이름은 그대로).
+- `scripts/archive/` 의 옛 절대경로 40여 개는 그대로 — 더 안 쓰는 기록.
+- 공통 저장소(`app_common`)에는 다른 세션이 커밋하지 않은 수정이 있다(AGENTS §3.1·§4.3 의 3번·§4.4, l10n 문서들) — 내 줄(경로)만 고치고, 그쪽 커밋은 사용자에게 묻는다.
+  백업 규칙은 「오래된 것부터 지운다」 → 「휴지통으로 보낸다」(10-22 에 실제로 그렇게 했다 — 영구 삭제는 되살릴 수 없다).
+
+**④ 확인.**
+- 메모리 28개를 새 폴더로 — 경로 언급 6곳 고침, 목록 27줄과 파일이 서로 맞음. 모델 추천(Opus 5.5 xhigh 유지, Fable 5.1·max 아님)과 벨벳 와이파이 adb 를 더함.
+- 새 경로 전체 QA: **62단계 중 61** — 2-14 의 6번(호스팅 방침 ≠ 로컬)만, 13검사 통과(단독으로 다시 확인).
+- 디버그 빌드: `local.properties` 고친 뒤 성공. **APK 10.56MB — 10-22 빌드는 14.46MB.** 옛 APK 가 남아 있지 않아 원인을 비교하지 못했다(이전 뒤 첫 전체 빌드라 쌓인 증분 산출물이 빠졌을 수 있다 — 추정).
+  안을 열어 확인: dex 14 · Firebase Analytics 클래스 · 앱 JS 13 · 기권승 문구. 다음 AAB 는 31 의 AAB 와 크기·구성을 대조한다.
+- 두 폰 실기(160 의 `duel2`): **30/30, 크래시 0** — 벨벳은 와이파이 adb(`192.168.50.210:5555`). 첫 시도는 벨벳 화면이 꺼져(WebView `visible:false`) 연결이 끊김 → 기기 설정은 안 바꾸고 10초마다 깨우며 다시.
+- 검증기: 앱 폴더·`Dev` 둘 다 번역 13개와 그림 폴더(로케일 13)를 찾음 — 옛 탐색은 `Dev` 에서 그림 폴더를 못 찾았다(`false`).
+- 커밋: `c36c2f3`(코드, 99개 — 10-22 작업) · `b9b68de`(Diary 154~160 · BACKLOG · RELEASE_STATE · SESSIONS) · 이 정리. 그리고 main 푸시.

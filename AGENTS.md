@@ -23,8 +23,12 @@ com.powerneja.suidoku    ·    React 19 · Vite 8 · Capacitor 8 · Firebase RTD
 |---|---|
 | 패키지 `com.powerneja.suidoku` | Play 에 등록된 앱 ID — 바꾸면 다른 앱이 된다 |
 | 저장 키 `suidoku_*`(localStorage) · Play 게임즈 저장 이름 `suidoku_progress_v1` · 안드로이드 설정 `suidoku_pgs` | 바꾸면 이미 깔린 폰의 기록·클라우드 백업을 못 읽는다 |
-| 저장소 폴더 `Suidoku/` · l10n 프로필 `--app suidoku` · 테스트 훅 `window.suidokuBattle` · 로그 태그 `SuidokuPlayGames` | 사용자에게 안 보인다. 바꾸면 경로·명령·세션·과거 기록이 같이 깨진다(폴더는 사용자 결정으로 그대로 — 2026-10-13 *"i 하나 없애겠다고 할 짓이 너무 많다. 그냥 가자."*) |
+| l10n 프로필 `--app suidoku` · 테스트 훅 `window.suidokuBattle` · 로그 태그 `SuidokuPlayGames` · 업로드 키 파일 `suidoku-release-key.jks` | 사용자에게 안 보인다. 바꾸면 명령·게이트·과거 기록이 같이 깨진다 |
 | 지난 Diary·SudokuAITalk·커밋의 `Suidoku` | 기록이다. 고쳐 쓰지 않는다 |
+
+**폴더는 이제 `Sudoku/`** — 2026-10-13 엔 *"i 하나 없애겠다고 할 짓이 너무 많다. 그냥 가자."* 로 `Suidoku/` 를 뒀는데, 2026-10-27 사용자가
+작업공간을 옮기며 바꿨다(`D:\PowerNeJa\Workspace\Dev\Sudoku`, 전엔 `PythonWorkspace\Project_Dev\Suidoku` — *"Suidoku 는 이제 안 쓸거야"*).
+Play 는 폴더 이름을 보지 않는다 — 앱 ID·업로드 키·versionCode 만 본다(Diary 161).
 
 앱 화면에 `Suidoku` 가 나오면 버그다 — l10n 프로필이 번역 문구에서 막고, 코드의 문자열은 2026-10-13 에 다 바꿨다(설정 버전 줄 · 클라우드 저장 설명 · 공유 창 제목 · 웹 매니페스트).
 **단, 일본어 화면에는 「Sudoku」 도 나오면 안 된다** — 「数独 / Sudoku」 는 니콜리 상표라 일본어는 「ナンプレ」. 그래서 화면의 앱 이름은 언제나 번역 키 `home.title` 에서 온다(설정 버전 줄 포함).

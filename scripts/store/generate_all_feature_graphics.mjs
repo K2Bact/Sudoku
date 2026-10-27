@@ -1,8 +1,12 @@
 import { chromium } from 'playwright';
 import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { fileURLToPath } from 'url';
 
-const outBaseDir = 'D:/PowerNeJa/PythonWorkspace/Project_Dev/Suidoku/store_assets';
+// The app's own store_assets, found from this file rather than written as a drive path:
+// the workspace moved on 2026-10-27 (PythonWorkspace/Project_Dev/Suidoku → Workspace/Dev/Sudoku)
+// and the old absolute path pointed at a folder that no longer exists.
+const outBaseDir = fileURLToPath(new URL('../../store_assets', import.meta.url));
 
 const GRAPHICS_CONFIG = {
   'fr-FR': {

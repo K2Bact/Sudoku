@@ -1,7 +1,7 @@
 # [SUIDOKU_TECHNICAL_SPEC] 스도쿠(Suidoku) 애플리케이션 상세 기술 명세서
 
 > **문서 버전**: 2.1.0 (2026-09-30, 1.3.2 코드와 대조 — §2·§4·§5 정정)  
-> **상위 공통 명세서**: [`COMMON_APP_TECHNICAL_SPEC.md`](file:///D:/PowerNeJa/PythonWorkspace/app_common/docs/COMMON_APP_TECHNICAL_SPEC.md) (전역 공통 표준 상속)  
+> **상위 공통 명세서**: [`COMMON_APP_TECHNICAL_SPEC.md`](../../../app_common/docs/COMMON_APP_TECHNICAL_SPEC.md) (전역 공통 표준 상속)  
 > **타깃 런타임**: Android SDK 35 (Android 15), React 19, Vite 8, Capacitor 8  
 > **⚠️ 빠진 것 (2026-10-16 확인)**: 킬러 스도쿠(2026-10-01~)는 이 명세에 없다 — 생성·풀이·묶음 그리기·난이도·기록·모드·대전 전부.
 > 코드는 `src/engine/killer/`(`killerGenerator.js`·`killerSolver.js`·`cageLayout.js`·`killerTimes.js`)·`src/engine/variants.js`, 경위는 Diary 91 이후. 아래 §3 의 아카데미 숫자만 2026-10-16 에 맞췄다.  
@@ -10,9 +10,9 @@
 
 ## 🔗 1. 공통 아키텍처 상속 관계도 (Inheritance Matrix)
 
-본 애플리케이션은 `Project_Dev` 공통 코어 아키텍처를 기반으로 구축되었으며, 아래와 같이 공통 기능을 상속받고 스도쿠 특화 서브시스템을 확장하여 운영합니다.
+본 애플리케이션은 `app_common` 공통 코어 아키텍처를 기반으로 구축되었으며, 아래와 같이 공통 기능을 상속받고 스도쿠 특화 서브시스템을 확장하여 운영합니다.
 
-| 아키텍처 영역 | 공통 기술 명세 ([`COMMON_APP_TECHNICAL_SPEC.md`](file:///D:/PowerNeJa/PythonWorkspace/app_common/docs/COMMON_APP_TECHNICAL_SPEC.md)) | 스도쿠 특화 구현 (Suidoku Customization) |
+| 아키텍처 영역 | 공통 기술 명세 ([`COMMON_APP_TECHNICAL_SPEC.md`](../../../app_common/docs/COMMON_APP_TECHNICAL_SPEC.md)) | 스도쿠 특화 구현 (Suidoku Customization) |
 | :--- | :--- | :--- |
 | **다국어 QA** | 1단계: Universal Core 8-Gate 검증 엔진 상속 | 2단계: `app_common/l10n_engine/profiles/suidoku.mjs` (아카데미 5단계, 3분할 탭 제약, 브랜드명 Sudoku 검증) |
 | **보안 / 데이터** | 개인정보 최소 처리 — 이름·이메일을 직접 받지 않는다. 광고 ID(AdMob)·Firebase 익명 ID·Play Games 계정은 처리하며 `docs/privacy.html` 에 적혀 있다 ("Zero-PII" 표현은 2026-09-30 감사 D03 으로 뺐다). 저장은 평문 JSON localStorage, 앱 수준 암호화 없음. 무손실 클라우드 병합 (`progressMerge.js`) | 스도쿠 판 상태(9x9 그리드, 메모 배열, 히스토리 스택), 365일 캘린더 출석 데이터 |
