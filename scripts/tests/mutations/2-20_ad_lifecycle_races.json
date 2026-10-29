@@ -220,6 +220,22 @@
       "find": "        if (!this.bannerWanted) return false; // Recheck after waiting for native work.",
       "replace": "",
       "expectFailure": "대기 중 낡아진 배너가 홈에서 다시 표시됐다"
+    },
+    {
+      "name": "a reloaded page trusts that no native banner exists",
+      "why": "The shipped defect (D39). A reload keeps the plugin's AdView; the new page's first show lands on it and the SDK never answers, so the hide queued behind it never runs. A reload with a game on screen — the cloud-restore offer does that — left the banner over Home's bottom nav until the app was restarted, and a reload from Settings left a hidden view that kept every later banner away.",
+      "file": "src/ads/admobProvider.js",
+      "find": "    this.bannerQueue = this.removeLeftoverBanner();",
+      "replace": "    this.bannerQueue = Promise.resolve();",
+      "expectFailure": "새 페이지가 지난 페이지의 배너를 그대로 뒀다"
+    },
+    {
+      "name": "the app no longer reaches the ad provider at launch",
+      "why": "The leftover banner is removed when the provider is built. If nothing builds it at launch, it is first built by the next game, and a reloaded Home keeps the old banner over the bottom nav until then. Today the launch consent read is what builds it; this proves the gate notices that line going.",
+      "file": "src/App.jsx",
+      "find": "  useEffect(() => { syncAnalyticsConsent(() => adsService.consentInfo()); }, []);",
+      "replace": "",
+      "expectFailure": "App 이 켜질 때 광고 제공자에 닿지 않는다"
     }
   ]
 }

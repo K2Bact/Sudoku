@@ -27,6 +27,7 @@
  */
 
 import assert from 'assert';
+import fs from 'fs';
 
 console.log('======================================================');
 console.log('🧪 광고 수명주기 경합 — init 캐시와 배너 표시/숨김');
@@ -751,8 +752,11 @@ function nativeBannerStub() {
       hideBanner: () => finish('hide', () => { ctl.visible = false; }),
       // 네이티브에는 이것도 있다. hideBanner 는 뷰를 GONE 으로 둘 뿐이고,
       // 뷰를 없애는 것은 이쪽이다 — 새 폭으로 다시 만들려면 반드시 거쳐야 한다.
+      // 뷰가 없으면 네이티브는 아무것도 하지 않고 답만 한다. 제공자는 만들어질 때 한 번 부르므로
+      // (D39), 실제로 없앤 것만 센다.
       removeBanner: () => finish('remove', () => {
-        ctl.exists = false; ctl.visible = false; ctl.removes++;
+        if (ctl.exists) ctl.removes++;
+        ctl.exists = false; ctl.visible = false;
       }),
       resumeBanner() {
         ctl.resumes++;
@@ -832,6 +836,39 @@ for (const kind of ['show', 'resume']) {
     '진행 중인 네이티브 표시 뒤에 홈으로 나갔는데 배너가 남았다');
 }
 console.log('  ✅ 표시·숨김이 엇갈려도 마지막 화면의 의도를 따른다');
+
+// ── 다시 로드된 페이지: 지난 페이지가 남긴 배너부터 치운다 (D39) ──────────
+//
+// 실기에서만 드러난 결함이다(2026-10-29 태블릿 에뮬레이터). 페이지가 다시 로드돼도 플러그인과 그 AdView 는
+// 살아 있는데, 새 JS 는 배너가 없다고 알고 시작한다. 다음 게임의 showBanner 는 이미 있는 뷰에 떨어지고 —
+// 위 스텁처럼 네이티브는 답하지 않는다 — 그 뒤에 줄 선 hideBanner 도 돌지 못한다. 게임 중에 다시 로드되면
+// (클라우드 복원 「예」) 배너가 홈 아래 메뉴를 덮은 채 앱을 다시 켤 때까지 남았다. 설정 화면에서 로드되면
+// 숨겨진 뷰가 남아, 그 세션 내내 배너가 다시 뜨지 않는다.
+console.log('▶ 배너: 다시 로드된 페이지는 지난 페이지의 배너를 치우고 시작한다');
+for (const leftVisible of [true, false]) {
+  const b = nativeBannerStub();
+  b.ctl.exists = true;
+  b.ctl.visible = leftVisible;
+  const p = await newProvider(b.stub);
+  // 홈에는 배너를 부르는 화면이 없다. 아무 호출 없이 치워져야 한다.
+  for (let i = 0; i < 5; i++) await tick();
+  assert(!b.ctl.exists && !b.ctl.visible,
+    '새 페이지가 지난 페이지의 배너를 그대로 뒀다. 홈에는 배너를 부르는 화면이 없어 아무도 치우지 않는다 — ' +
+    '게임 중에 다시 로드됐으면 아래 메뉴(통계·분석·아카데미)를 덮은 채 앱을 다시 켤 때까지 남는다.');
+  const shown = await within(p.showBanner(), SETTLE_MS);
+  assert(shown.settled && shown.value && b.ctl.visible, '다시 로드된 뒤 첫 게임의 배너가 끝나지 않거나 보이지 않는다');
+  const hidden = await within(p.hideBanner(), SETTLE_MS);
+  assert(hidden.settled && !b.ctl.visible, '다시 로드된 뒤 게임을 나갔는데 배너가 남았다');
+}
+{
+  // 위 절은 제공자가 앱을 켤 때 만들어진다는 것에 기댄다. 그 일을 하는 것은 App 의 동의 상태 읽기다 —
+  // 그 줄이 사라지면 제공자는 첫 게임에서야 만들어지고, 다시 로드된 홈의 배너는 그때까지 남는다.
+  const app =fs.readFileSync(new URL('../../../src/App.jsx', import.meta.url), 'utf8');
+  assert(/useEffect\(\s*\(\)\s*=>\s*\{[^{}]*\badsService\.\w+\([^{}]*\}\s*,\s*\[\]\s*\)/.test(app),
+    'App 이 켜질 때 광고 제공자에 닿지 않는다. 제공자가 첫 게임에서야 만들어지면, 다시 로드된 홈에 남은 배너는 ' +
+    '그때까지 아래 메뉴를 덮는다.');
+}
+console.log('  ✅ 보이게 남았든 숨겨져 남았든 치우고 시작하고, 다음 게임의 배너는 뜨고 사라진다 · 제공자는 켤 때 만들어진다');
 
 // ── 배너 폭: 회전하면 새 폭으로 다시 만든다 ──────────────────────────────
 //

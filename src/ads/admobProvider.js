@@ -193,7 +193,22 @@ export class AdMobProvider {
     this.widthWatcher = null;
     this.lastBannerRebuildAt = 0;
     this.rebuildDeferred = null;
-    this.bannerQueue = Promise.resolve();
+    /**
+     * The queue starts by removing whatever banner the previous page left.
+     *
+     * `bannerCreated = false` is a claim about the native side, and a reload
+     * makes it untrue: the WebView reloads, the plugin and its AdView do not.
+     * The next showBanner lands on that view, which the SDK reloads without
+     * ever answering, so every banner call queued behind it waits forever —
+     * the hide when the game is left included. A reload with a game on screen
+     * (the cloud-restore offer can do that) left the banner over Home's bottom
+     * nav until the app was restarted (BACKLOG D39, tablet emulator 2026-10-29).
+     *
+     * With no banner there the native remove does nothing and requests no ad.
+     * The provider is built at launch — App reads the consent state through it —
+     * so this runs on Home, before any screen asks for a banner.
+     */
+    this.bannerQueue = this.removeLeftoverBanner();
     /** The rewarded flow in progress, so a second tap joins it instead of loading another ad. */
     this.rewardedInFlight = null;
     /**
@@ -484,6 +499,17 @@ export class AdMobProvider {
       await this.queueBanner(() => admob.hideBanner());
     } catch (e) {
       console.warn('[ads] hideBanner failed:', e?.message || e);
+    }
+  }
+
+  /** Heads the banner queue, so it never rejects. */
+  async removeLeftoverBanner() {
+    const admob = plugin();
+    if (!admob || typeof admob.removeBanner !== 'function') return;
+    try {
+      await admob.removeBanner();
+    } catch (e) {
+      console.warn('[ads] could not remove the banner the last page left:', e?.message || e);
     }
   }
 
