@@ -140,7 +140,9 @@ npm run qa         # 문구·화면·CSS·게이트를 바꿨을 때, 그리고 
 
 ```
 할 일·상태
-  ../App_Status.xlsx         할 일 상태의 정본 + 사용자의 콘솔 기록 — 쓰는 규칙은 app_common/AGENTS.md §5.1
+  ../Dev_Status.xlsx         할 일 상태의 정본 + 사용자의 콘솔 기록 — 쓰는 규칙은 app_common/AGENTS.md §5.1
+                             (2026-10-27 App_Status.xlsx 에서 이름을 바꿈 — 사용자 "app 이라고 하지 말고 dev 라고 하자")
+  ../Dev_Status_backup/      그 백업 — 모든 앱·모든 AI 가 쓰기 직전에 여기로, 30개까지
   docs/BACKLOG.md            할 일의 자세한 설명(같은 ID). 「현재 상태」 블록이 지금 어디까지 왔는지
   docs/RELEASE_STATE.md      출시·콘솔 신고 이력 · 실기 검증 · 출시 전 전환 목록
 
