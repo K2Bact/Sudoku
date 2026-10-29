@@ -1,0 +1,78 @@
+<en-US>
+• 1v1 Online Battle: leaving a match in progress now gives it up, and your opponent wins by forfeit. AI opponents have names in your language.
+• Sudoku Academy: choose Standard or Killer with the switch at the top.
+• Fixed: the rematch countdown stopping at 15 s, the rematch request hiding behind achievement pop-ups, and the banner left over the bottom menu after restoring your record.
+• Usage statistics now go to Google Analytics, without your advertising ID. Details in the privacy policy.
+</en-US>
+<ar>
+• مبارزة 1 ضد 1 عبر الإنترنت: مغادرة مباراة جارية تُعدّ انسحابًا، ويفوز خصمك. لخصوم الذكاء الاصطناعي الآن أسماء بلغتك.
+• أكاديمية السودوكو: اختر «قياسي» أو «كيلر» من المفتاح في الأعلى.
+• إصلاح: توقّف العدّ التنازلي لإعادة المباراة عند 15 ثانية، واختفاء طلب إعادة المباراة خلف إشعارات الإنجازات، وبقاء الشريط فوق القائمة السفلية بعد استعادة سجلّك.
+• تُرسَل إحصاءات الاستخدام إلى Google Analytics دون معرّف الإعلانات. التفاصيل في سياسة الخصوصية.
+</ar>
+<de-DE>
+• 1v1 Online-Duell: Verlässt du ein laufendes Duell, gibst du auf und dein Gegner gewinnt durch Aufgabe. KI-Gegner tragen Namen in deiner Sprache.
+• Sudoku-Akademie: Wähle oben mit dem Schalter Standard oder Killer.
+• Behoben: Der Revanche-Countdown blieb bei 15 s stehen, die Revanche-Anfrage lag hinter Erfolgsmeldungen, und nach dem Wiederherstellen verdeckte das Banner das untere Menü.
+• Nutzungsstatistiken gehen an Google Analytics, ohne deine Werbe-ID. Details in der Datenschutzerklärung.
+</de-DE>
+<es-ES>
+• Duelo 1v1 online: si abandonas un duelo en curso, te rindes y tu rival gana por abandono. Los rivales de IA tienen nombre en tu idioma.
+• Academia Sudoku: elige Estándar o Killer con el interruptor de arriba.
+• Corregido: la cuenta atrás de la revancha parada en 15 s, la petición de revancha tapada por los logros y el banner que tapaba el menú inferior tras recuperar tu progreso.
+• Las estadísticas de uso van a Google Analytics, sin tu ID de publicidad. Detalles en la política de privacidad.
+</es-ES>
+<fr-FR>
+• Duel 1v1 en ligne : quitter un duel en cours donne la victoire par forfait à votre adversaire. Les adversaires IA ont un nom dans votre langue.
+• Académie Sudoku : choisissez Standard ou Killer avec l’interrupteur en haut.
+• Corrigé : compte à rebours de revanche bloqué à 15 s, demande de revanche cachée par les succès, bannière restée sur le menu après restauration.
+• Statistiques d’utilisation envoyées à Google Analytics, sans identifiant publicitaire. Voir la politique de confidentialité.
+</fr-FR>
+<hi-IN>
+• 1v1 ऑनलाइन मुकाबला: चलते मुकाबले को छोड़ने पर हार मानी जाती है और विरोधी जीत जाता है। एआई विरोधियों के नाम अब आपकी भाषा में हैं।
+• सुडोकू अकादमी: ऊपर के स्विच से मानक या किलर चुनें।
+• सुधार: पुनः मुकाबले की उलटी गिनती का 15 सेकंड पर रुकना, पुनः मुकाबले के अनुरोध का उपलब्धि सूचनाओं के पीछे छिपना, और रिकॉर्ड वापस लाने के बाद बैनर का नीचे के मेनू को ढकना।
+• उपयोग के आँकड़े Google Analytics को भेजे जाते हैं, आपकी विज्ञापन आईडी के बिना। विवरण गोपनीयता नीति में है।
+</hi-IN>
+<it-IT>
+• Duello 1v1 online: lasciare una sfida in corso vale come ritiro e l’avversario vince per forfait. Gli avversari IA hanno un nome nella tua lingua.
+• Accademia Sudoku: scegli Standard o Killer con l’interruttore in alto.
+• Corretto: il conto alla rovescia della rivincita fermo a 15 s, la richiesta di rivincita coperta dagli obiettivi e il banner sul menu in basso dopo il ripristino.
+• Statistiche d’uso inviate a Google Analytics, senza ID pubblicitario. Dettagli nell’informativa privacy.
+</it-IT>
+<ja-JP>
+• 1v1 オンライン対戦：対戦中に退出すると棄権となり、相手の勝利になります。AI の対戦相手の名前が言語設定どおりに表示されます。
+• ナンプレアカデミー：上のスイッチでスタンダードかキラーを選べます。
+• 再戦のカウントダウンが 15 秒で止まる問題、再戦の申請が実績の通知に隠れる問題、記録の復元後にバナーが下のメニューに残る問題を修正しました。
+• 利用統計を Google Analytics に送信します（広告 ID は送信しません）。詳しくはプライバシーポリシーをご覧ください。
+</ja-JP>
+<ko-KR>
+• 1v1 온라인 배틀: 진행 중인 대전을 나가면 기권이 되고 상대가 기권승을 거둬요. AI 상대의 이름이 내 언어로 나와요.
+• 스도쿠 아카데미: 맨 위 스위치로 표준·킬러를 골라요.
+• 재대결 카운트다운이 15초에서 멈추던 것, 재대결 신청이 업적 알림 뒤에 가려지던 것, 기록을 불러온 뒤 배너가 아래 메뉴에 남던 것을 고쳤어요.
+• 사용 통계를 Google Analytics로 보내요. 광고 ID는 보내지 않아요. 자세한 내용은 개인정보처리방침에 있어요.
+</ko-KR>
+<pt-BR>
+• Duelo 1v1 Online: sair de uma partida em andamento conta como desistência, e o adversário vence. Os adversários de IA têm nome no seu idioma.
+• Academia Sudoku: escolha Padrão ou Killer no seletor do topo.
+• Corrigido: a contagem da revanche parada em 15 s, o pedido de revanche escondido atrás das conquistas e o banner sobre o menu inferior após restaurar seu progresso.
+• As estatísticas de uso vão para o Google Analytics, sem seu ID de publicidade. Detalhes na política de privacidade.
+</pt-BR>
+<ru-RU>
+• Дуэль 1v1 Онлайн: выход из идущей дуэли засчитывается как сдача, и соперник побеждает. У ИИ-соперников теперь имена на вашем языке.
+• Академия судоку: выберите Стандарт или Киллер переключателем вверху.
+• Исправлено: отсчёт реванша останавливался на 15 с, запрос реванша прятался за уведомлениями о достижениях, баннер оставался над нижним меню после восстановления.
+• Статистика использования уходит в Google Analytics без рекламного идентификатора. Подробнее — в политике конфиденциальности.
+</ru-RU>
+<zh-CN>
+• 1v1 在线对决：对决进行中离开即视为认输，对手获胜。AI 对手的名字会以你的语言显示。
+• 数独学院：用顶部的开关选择标准或杀手。
+• 修复：再战倒计时停在 15 秒、再战申请被成就提示挡住、恢复记录后横幅留在底部菜单上。
+• 使用统计会发送到 Google Analytics，不包含广告 ID。详情请见隐私政策。
+</zh-CN>
+<zh-TW>
+• 1v1 在線對決：對決進行中離開即視為認輸，對手獲勝。AI 對手的名字會以你的語言顯示。
+• 數獨學院：用頂部的開關選擇標準或殺手。
+• 修正：再戰倒數停在 15 秒、再戰申請被成就提示擋住、恢復紀錄後橫幅留在底部選單上。
+• 使用統計會傳送到 Google Analytics，不包含廣告 ID。詳情請見隱私權政策。
+</zh-TW>
