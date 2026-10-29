@@ -5,10 +5,24 @@
 @import './academyKiller.css';
 @import './interactivePractice.css';
 
-/* Six tabs (five stages and the killer stage) fit a 360px phone in every language —
-   the widest, Arabic, needs 359px. With the old 64px minimum and wider padding the
-   killer tab sat wholly off screen and could only be found by swiping the bar.
-   On wider screens the tabs still stretch to fill the bar. */
+/* The kind first (정통 | 킬러, D34), on the same strip as the stage tabs under it.
+   The screen container has no side padding — the switch needs this strip's 8px or
+   it touches both edges (on Home it sits inside a padded card). With no tab bar
+   under it (killer) the strip closes itself with the tab bar's bottom line. */
+.academy-kind-bar {
+  background: var(--bg-surface);
+  padding: 8px 8px 0;
+}
+
+.academy-kind-bar.alone {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--board-grid-line);
+}
+
+/* Five stage tabs since the killer stage moved behind the switch (D34). Six fitted a
+   360px phone in every language — the widest, Arabic, needed 359px; with the old
+   64px minimum and wider padding the killer tab had sat wholly off screen and could
+   only be found by swiping the bar. On wider screens the tabs still stretch. */
 .academy-tab-bar {
   display: flex;
   overflow-x: auto;

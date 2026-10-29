@@ -41,6 +41,7 @@ import { chromium } from 'playwright';
 import { spawn, execSync } from 'child_process';
 import http from 'http';
 import { LOCALES } from '../../lib/locales.js';
+import { openAcademyStage } from '../../lib/academyNav.js';
 import { ACADEMY_STAGES } from '../../../src/data/academyStrategies.js';
 import { getPracticeMissions } from '../../../src/data/academy/practice/index.js';
 import DICTIONARIES from '../../../src/i18n/dictionaries.js';
@@ -110,7 +111,8 @@ async function pass(browser, { lang, theme, viewport, only = null, wrongDigits =
 
   for (const stage of PLAN) {
     if (only && !stage.strategies.some((s) => s.missions.some((m) => only.has(m.id)))) continue;
-    await page.locator('.academy-tab-bar .seg-tab-btn').nth(stage.si).click();
+    // Its kind on the 표준 | 킬러 switch, then its tab (D34 — killer is no longer a sixth tab).
+    await openAcademyStage(page, ACADEMY_STAGES[stage.si]);
     await page.waitForTimeout(150);
     const cards = page.locator('.strategy-item-card');
     if ((await cards.count()) !== stage.strategies.length) { errors.push(`[${label}] stage ${stage.si + 1}: card count differs from data`); continue; }

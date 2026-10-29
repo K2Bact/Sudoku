@@ -3,8 +3,11 @@ import { BookOpen } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
 import { TutorialMiniGrid } from './TutorialMiniGrid';
 import { InteractivePracticeSection } from './academy/practice/InteractivePracticeSection';
+import { VariantSwitch } from './home/VariantSwitch';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
+import { usePuzzleKind } from '../hooks/usePuzzleKind';
+import { variantOf } from '../engine/variants';
 import { ACADEMY_STAGES } from '../data/academyStrategies';
 import { pickLocale } from './academy/langHelper';
 import { splitTrailingId } from '../utils/bidi';
@@ -31,14 +34,30 @@ export function AcademyScreen({ onBack }) {
   // served Simplified, and nothing could report that because both codes resolved
   // to a key that existed. The data now uses the app's own codes.
   const lang = activeLanguage || 'ko';
-  const [activeTab, setActiveTab] = useState('stage1'); // 'stage1' | 'stage2' | 'stage3' | 'stage4' | 'stage5'
+
+  /*
+   * Which kind of puzzle is being studied, then which stage (D34, user 2026-10-27:
+   * "킬러랑 클래식 나열이 바보 같이 되어 있어"). The tab bar used to read 「1단계 … 5단계 ·
+   * 킬러」: a difficulty and a kind of puzzle in one row, so killer looked like a sixth
+   * stage after grandmaster — while its first technique is a beginner's.
+   *
+   * The kind is the one remembered choice Home, the AI lobby and the daily share
+   * (usePuzzleKind): a killer player opens a killer academy, and a kind picked here
+   * is the kind Home shows on the way back. The classic stage tab is kept while the
+   * other kind is looked at.
+   */
+  const [variant, setVariant] = usePuzzleKind();
+  const stages = ACADEMY_STAGES.filter((s) => variantOf(s) === variant);
+  const [activeTab, setActiveTab] = useState('stage1');
 
   const handleTabChange = (tabKey) => {
     soundHaptic.playSelectSound();
     setActiveTab(tabKey);
   };
 
-  const currentStage = ACADEMY_STAGES.find((s) => s.id === activeTab) || ACADEMY_STAGES[0];
+  const currentStage = stages.find((s) => s.id === activeTab) || stages[0];
+  // A kind with one stage (killer) shows its techniques straight away, with no tab bar.
+  const showTabs = stages.length > 1;
 
   return (
     <div className="academy-screen-container">
@@ -50,19 +69,26 @@ export function AcademyScreen({ onBack }) {
         onBack={onBack}
       />
 
-      {/* Segmented Tab Navigation Bar (Stages 1 ~ 5) */}
-      <div className="academy-tab-bar">
-        {ACADEMY_STAGES.map((s) => (
-          <button
-            key={s.id}
-            type="button"
-            className={`seg-tab-btn ${activeTab === s.id ? 'active' : ''}`}
-            onClick={() => handleTabChange(s.id)}
-          >
-            {t(s.tabKey)}
-          </button>
-        ))}
+      {/* Kind first: 정통 | 킬러, the same switch (and ⓘ rules) as Home */}
+      <div className={`academy-kind-bar ${showTabs ? '' : 'alone'}`}>
+        <VariantSwitch variant={variant} onChange={setVariant} />
       </div>
+
+      {/* Then the stage, when the kind has more than one (classic: 1 ~ 5) */}
+      {showTabs && (
+        <div className="academy-tab-bar">
+          {stages.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              className={`seg-tab-btn ${currentStage.id === s.id ? 'active' : ''}`}
+              onClick={() => handleTabChange(s.id)}
+            >
+              {t(s.tabKey)}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Main Full-Screen Scrollable Content Area */}
       <div className="academy-scroll-content">

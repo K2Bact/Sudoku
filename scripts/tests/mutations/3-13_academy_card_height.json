@@ -1,0 +1,50 @@
+{
+  "gate": "3-13",
+  "name": "Each Academy Card Is As Tall As Its Tallest Tab",
+  "command": "node scripts/tests/ui/test_academy_card_height.js",
+  "greenMarker": "every card is as tall as its tallest tab",
+  "rebuild": true,
+  "note": "The gate serves the built bundle, so every mutation here rebuilds. These cover how the Academy is laid out since D34 (2026-10-27): the 표준 | 킬러 switch first, the classic stages as tabs under it, killer as one list.",
+  "mutations": [
+    {
+      "name": "the killer stage goes back into the tab bar",
+      "why": "The bug D34 fixed, restored: 「1단계 … 5단계 · 킬러」 in one row, a difficulty and a kind of puzzle side by side, killer reading as a sixth stage after grandmaster (user: \"킬러랑 클래식 나열이 바보 같이 되어 있어\").",
+      "file": "src/components/AcademyScreen.jsx",
+      "find": "  const stages = ACADEMY_STAGES.filter((s) => variantOf(s) === variant);",
+      "replace": "  const stages = ACADEMY_STAGES;",
+      "expectFailure": "classic shows its stages as tabs and only those"
+    },
+    {
+      "name": "the Academy forgets the kind Home remembers",
+      "why": "A killer player opening the Academy would land on classic stage 1 every time — and a kind picked here would never reach Home, the AI lobby or the daily, which share one remembered choice (KP-11).",
+      "file": "src/components/AcademyScreen.jsx",
+      "find": "  const [variant, setVariant] = usePuzzleKind();",
+      "replace": "  const [variant, setVariant] = useState('classic');",
+      "expectFailure": "the Academy opens on the remembered kind"
+    },
+    {
+      "name": "a kind picked here is not remembered",
+      "why": "Read on opening but never written: the Academy shows killer, the player goes back, and Home still offers classic — two answers to \"which kind am I playing\", which is what the one setting exists to prevent.",
+      "file": "src/components/AcademyScreen.jsx",
+      "find": "  const [variant, setVariant] = usePuzzleKind();",
+      "replace": "  const [variant, setVariant] = useState(usePuzzleKind()[0]);",
+      "expectFailure": "the kind picked here is the one Home remembers"
+    },
+    {
+      "name": "killer draws a tab bar of one",
+      "why": "A single tab that can only ever be selected is a control that does nothing, and it pushes the eight techniques down for no reason.",
+      "file": "src/components/AcademyScreen.jsx",
+      "find": "  const showTabs = stages.length > 1;",
+      "replace": "  const showTabs = stages.length > 0;",
+      "expectFailure": "killer shows its techniques with no tab bar"
+    },
+    {
+      "name": "switching the kind sends classic back to stage 1",
+      "why": "A player on stage 3 who glances at killer and comes back should find stage 3, not have to find their place again.",
+      "file": "src/components/AcademyScreen.jsx",
+      "find": "        <VariantSwitch variant={variant} onChange={setVariant} />",
+      "replace": "        <VariantSwitch variant={variant} onChange={(v) => { setVariant(v); setActiveTab('stage1'); }} />",
+      "expectFailure": "the classic stage is kept across a kind switch"
+    }
+  ]
+}

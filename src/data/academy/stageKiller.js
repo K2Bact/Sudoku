@@ -11,6 +11,9 @@
  */
 export const stageKiller = {
   id: 'killer',
+  // Which side of the Academy's 정통 | 킬러 switch it sits on (D34). The classic
+  // stages carry no variant and read as classic (engine/variants.js variantOf).
+  variant: 'killer',
   tabKey: 'variants.killer',
   titleKey: 'academy.stageTitles.killer',
   badgeClass: 'killer',

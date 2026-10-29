@@ -8,15 +8,24 @@
  * tabs moved the page by up to 273px. The rule now (user): the card's height is the
  * tallest of ITS three tabs.
  *
- * For every card of all five stages, on three phone widths:
+ * For every card of every stage (five classic, one killer), on three phone widths:
  *   - the card is the same height on the theory tab, practice 1 and practice 2
  *   - the frame is no taller than the tallest tab's content (slack <= 2px)
  *   - the invisible measuring copies are gone once the page settles (no duplicate boards)
+ *
+ * And, once, how the Academy is laid out (D34, user 2026-10-27: "킬러랑 클래식 나열이 바보
+ * 같이 되어 있어"). The tab bar read 「1단계 … 5단계 · 킬러」, a difficulty and a kind of puzzle
+ * in one row. Now the kind comes first, on the switch Home uses, and the stages under it:
+ *   - classic shows its five stages as tabs and only those
+ *   - killer shows its eight techniques with no tab bar, the strip closing itself
+ *   - the kind picked here is the one Home remembers, and the Academy opens on it
+ *   - the classic stage tab is kept while the other kind is looked at
  */
 import assert from 'assert';
 import { chromium } from 'playwright';
 import { spawn, execSync } from 'child_process';
 import { ACADEMY_STAGES } from '../../../src/data/academyStrategies.js';
+import { openAcademyStage, stagesOfKind } from '../../lib/academyNav.js';
 
 const PORT = 5213;
 const URL = `http://localhost:${PORT}`;
@@ -57,12 +66,63 @@ try {
     await page.waitForSelector('.academy-tab-bar .seg-tab-btn');
     await page.evaluate(() => document.fonts && document.fonts.ready);
 
+    if (viewport === VIEWPORTS[0]) {
+      // How the Academy is laid out (D34) — see the header. Run once; the card loop below opens
+      // every stage through the same switch and tabs on every width.
+      const classic = stagesOfKind('classic');
+      const killer = stagesOfKind('killer');
+      const read = () => page.evaluate(() => ({
+        kind: document.querySelector('.academy-kind-bar .variant-option.active')?.dataset.variant || null,
+        tabs: [...document.querySelectorAll('.academy-tab-bar .seg-tab-btn')].map((b) => b.innerText.trim()),
+        active: document.querySelector('.academy-tab-bar .seg-tab-btn.active')?.innerText.trim() || null,
+        alone: document.querySelector('.academy-kind-bar')?.classList.contains('alone') ?? null,
+        cards: document.querySelectorAll('.strategy-item-card').length,
+        killerBadges: document.querySelectorAll('.strategy-badge.killer').length,
+        saved: JSON.parse(localStorage.getItem('suidoku_settings_v1') || '{}').homeVariant ?? null,
+      }));
+      let v = await read();
+      if (v.kind !== 'classic' || v.tabs.length !== classic.length) {
+        errors.push(`classic shows its stages as tabs and only those — opened on ${v.kind}, ${v.tabs.length} tabs [${v.tabs.join(', ')}], want ${classic.length}`);
+      }
+      const leftOn = v.tabs[2];
+      await page.locator('.academy-tab-bar .seg-tab-btn').nth(2).click();
+      await page.locator('.academy-kind-bar .variant-option[data-variant="killer"]').click();
+      await page.waitForTimeout(200);
+      v = await read();
+      const want = killer[0].strategies.length;
+      if (v.tabs.length || !v.alone || v.cards !== want || v.killerBadges !== want) {
+        errors.push(`killer shows its techniques with no tab bar — ${v.tabs.length} tabs, strip closed ${v.alone}, ${v.cards} cards, ${v.killerBadges} killer badges, want ${want}`);
+      }
+      if (v.saved !== 'killer') errors.push(`the kind picked here is the one Home remembers — homeVariant is ${v.saved}`);
+      await page.locator('.academy-kind-bar .variant-option[data-variant="classic"]').click();
+      await page.waitForTimeout(200);
+      v = await read();
+      if (v.active !== leftOn) errors.push(`the classic stage is kept across a kind switch — left on "${leftOn}", came back on "${v.active}"`);
+
+      await page.evaluate(() => {
+        const s = JSON.parse(localStorage.getItem('suidoku_settings_v1') || '{}');
+        localStorage.setItem('suidoku_settings_v1', JSON.stringify({ ...s, homeVariant: 'killer' }));
+      });
+      await page.reload();
+      await page.waitForSelector('.home-bottom-nav');
+      await page.click('.home-bottom-nav button:nth-child(3)');
+      await page.waitForSelector('.academy-kind-bar');
+      v = await read();
+      if (v.kind !== 'killer' || v.tabs.length) errors.push(`the Academy opens on the remembered kind — opened on ${v.kind} with ${v.tabs.length} tabs`);
+      await page.evaluate(() => document.fonts && document.fonts.ready);
+    }
+
     for (let si = 0; si < ACADEMY_STAGES.length; si++) {
-      await page.locator('.academy-tab-bar .seg-tab-btn').nth(si).click();
+      await openAcademyStage(page, ACADEMY_STAGES[si]);
       await page.waitForTimeout(200);
       const cards = page.locator('.strategy-item-card');
       const n = await cards.count();
-      assert.strictEqual(n, ACADEMY_STAGES[si].strategies.length, `stage ${si + 1}: card count differs from data`);
+      // Collected, not thrown: a throw here ended the run before the errors above were printed,
+      // and hid a layout check that had already failed (D34 mutation audit, WRONG_REASON).
+      if (n !== ACADEMY_STAGES[si].strategies.length) {
+        errors.push(`stage ${si + 1}: card count differs from data (${n}, want ${ACADEMY_STAGES[si].strategies.length})`);
+        continue;
+      }
       for (let k = 0; k < n; k++) {
         const card = cards.nth(k);
         const id = ACADEMY_STAGES[si].strategies[k].id;
