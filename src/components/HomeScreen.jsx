@@ -15,6 +15,7 @@ import { HomeBottomBanners } from './home/HomeBottomBanners';
 import { VariantSwitch } from './home/VariantSwitch';
 import { RulesModal } from './home/RulesModal';
 import { usePuzzleKind } from '../hooks/usePuzzleKind';
+import { useBottomNavRoom } from '../hooks/useBottomNavRoom';
 
 // The start button in each mode, the same on either kind of puzzle.
 const START_LOOK = {
@@ -68,6 +69,8 @@ export function HomeScreen({
   const modes = modesOf(variant);
   const mode = modes.includes(currentSelectedMode) ? currentSelectedMode : modes[0];
   const [showKillerRules, setShowKillerRules] = useState(false);
+  // The nav floats over the page; this leaves its height free under the last card (D50).
+  const navRef = useBottomNavRoom();
   const pickMode = (m) => {
     soundHaptic.playSelectSound();
     if (modes.includes(m)) setMode(m);
@@ -208,7 +211,7 @@ export function HomeScreen({
       </div>
 
       {/* Bottom Navigation Bar */}
-      <div className="home-bottom-nav">
+      <div className="home-bottom-nav" ref={navRef}>
         <button type="button" className="nav-item" onClick={onOpenStats}>
           <BarChart3 size={18} className="text-yellow" />
           <span>{t('home.nav.stats')}</span>

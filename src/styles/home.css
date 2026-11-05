@@ -7,7 +7,11 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: max(24px, env(safe-area-inset-top, 24px)) 6px max(14px, env(safe-area-inset-bottom, 0px)) 6px;
+  /* The bottom padding is the fixed nav's measured height plus 14px (D50,
+     useBottomNavRoom). Only 14px left the daily card under the nav on small
+     phones and larger fonts — a page that would not scroll it into view. The
+     nav already carries the safe area in its own padding. 72px until measured. */
+  padding: max(24px, env(safe-area-inset-top, 24px)) 6px calc(var(--bottom-nav-h, 72px) + 14px) 6px;
   flex: 1;
   box-sizing: border-box;
 }

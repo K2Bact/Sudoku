@@ -14,6 +14,7 @@ const SHOT_DIR = 'test_output/home_layout';
 fs.mkdirSync(SHOT_DIR, { recursive: true });
 import { spawn, execSync } from 'child_process';
 import http from 'http';
+import { LOCALES } from '../../lib/locales.js';
 
 const PORT = 5195;
 const PREVIEW_URL = 'http://localhost:' + PORT;
@@ -57,6 +58,8 @@ function shutdownPreview(viteProcess) {
  *   - the home screen's blocks do not overlap one another
  *   - the three mode tabs share one row; the five level chips share one row at one width
  *   - the ghost chip shows the recorded time when there is one, and --:-- when not
+ *   - scrolled to the end, the last card clears the fixed bottom nav, at five phone
+ *     sizes × two font scales × every language (D50, 2026-11-06)
  * The pictures are still saved, for a person to look at; they are not the verdict.
  */
 async function checkLayout(page, state, expectGhostTime) {
@@ -211,6 +214,64 @@ async function run() {
     await page.screenshot({ path: path.join(SHOT_DIR, 'home_killer_survival_verified.png') });
     console.log('Saved home_killer_survival_verified.png');
 
+    // 9. The last card clears the bottom nav (D50, 2026-11-06). The nav is fixed, and
+    //    the screen kept only 14px under its last card: on a small phone or a larger
+    //    font the daily card sat under the nav — where the page fitted the screen it
+    //    did not scroll at all, elsewhere it stopped with ~50px covered. A friend
+    //    reported "the home screen does not scroll". This gate measured one size
+    //    (360x800, where Korean was already 8px under) and never looked at the nav.
+    //    Scrolled to the end, at phone sizes × both font scales × every language. The
+    //    sizes are where the overlap showed: 360x740 in English fitted the screen, so
+    //    the page did not move at all while the card was 43px under the nav.
+    const NAV_SIZES = [[360, 640], [360, 740], [360, 800], [384, 854], [412, 891]];
+    const NAV_LANGS = LOCALES;
+    let navCases = 0;
+    for (const [w, h] of NAV_SIZES) for (const S of [1, 1.3]) {
+      const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: true, hasTouch: true });
+      const p = await ctx.newPage();
+      for (const lang of NAV_LANGS) {
+        await p.goto(PREVIEW_URL);
+        await p.evaluate((l) => {
+          localStorage.setItem('suidoku_review_prompted', 'done');
+          localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: l, theme: 'clay' }));
+        }, lang);
+        await p.reload();
+        await p.waitForSelector('.home-bottom-nav');
+        await p.waitForTimeout(300);
+        // 1.3x the way gate 3-12 emulates the WebView text zoom: every font size times 1.3.
+        if (S !== 1) {
+          await p.evaluate((s) => {
+            const els = [...document.querySelectorAll('body *')];
+            const sizes = els.map((e) => parseFloat(getComputedStyle(e).fontSize));
+            els.forEach((e, i) => { e.style.fontSize = `${sizes[i] * s}px`; });
+          }, S);
+        }
+        await p.waitForTimeout(250);
+        const r = await p.evaluate(() => {
+          document.scrollingElement.scrollTop = 1e6;
+          const nav = document.querySelector('.home-bottom-nav').getBoundingClientRect();
+          const last = document.querySelector('.home-menu-group').lastElementChild;
+          const box = last.getBoundingClientRect();
+          return {
+            gap: nav.top - box.bottom, navH: nav.height, last: String(last.className).split(' ').pop(),
+            room: parseFloat(getComputedStyle(document.querySelector('.home-screen-container')).getPropertyValue('--bottom-nav-h')),
+          };
+        });
+        navCases++;
+        const where = `${lang} ${w}x${h} font×${S}`;
+        if (r.gap < 8) {
+          layoutProblems.push(`${where}: scrolled to the end, the bottom nav covers the last card (${r.last}) by ${Math.round(-r.gap)}px — it cannot be scrolled into view (D50)`);
+        }
+        if (!(Math.abs(r.room - r.navH) <= 1)) {
+          layoutProblems.push(`${where}: the room left for the nav is ${Number.isNaN(r.room) ? 'not set' : `${r.room}px`}, the nav is ${Math.round(r.navH)}px — useBottomNavRoom did not measure it (D50)`);
+        }
+      }
+      await ctx.close();
+    }
+    const navExpected = NAV_SIZES.length * 2 * NAV_LANGS.length;
+    if (navCases !== navExpected) layoutProblems.push(`the bottom nav was measured in ${navCases} of ${navExpected} cases`);
+    console.log(`  ▶ last card clear of the bottom nav: ${navCases} of ${navExpected} cases measured`);
+
     await browser.close();
     if (layoutProblems.length) {
       console.error(`❌ [3-5] ${layoutProblems.length} layout problem(s) on the home screen:`);
@@ -219,6 +280,7 @@ async function run() {
       process.exit(1);
     }
     console.log('  ✅ 8 home states (3 on the killer switch): no sideways scroll, no overlapping blocks, tabs and chips in their rows, the ghost time of the kind shown');
+    console.log(`  ✅ the last card clears the bottom nav at ${navExpected} sizes, font scales and languages (D50)`);
     console.log('All screenshots captured successfully!');
   } finally {
     shutdownPreview(viteProcess);

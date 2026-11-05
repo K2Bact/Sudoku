@@ -44,6 +44,30 @@
       "find": "  { id: 'killer', modes: ['classic', 'timeAttack', 'timeLimit'] },",
       "replace": "  { id: 'killer', modes: ['classic', 'timeAttack'] },",
       "expectFailure": "the Survival tab on the killer switch did not switch to Survival"
+    },
+    {
+      "name": "the home screen keeps only 14px under its last card",
+      "why": "D50 (2026-11-06), the rule as it shipped through 32: the fixed bottom nav takes no room in the page, so on a small phone or a larger font the daily card sat under it and could not be scrolled into view — a friend's \"the home screen does not scroll\".",
+      "file": "src/styles/home.css",
+      "find": "calc(var(--bottom-nav-h, 72px) + 14px) 6px;",
+      "replace": "max(14px, env(safe-area-inset-bottom, 0px)) 6px;",
+      "expectFailure": "the bottom nav covers the last card"
+    },
+    {
+      "name": "the nav is never measured",
+      "why": "D50. Without the ref the screen falls back to a guessed 72px — enough at these font scales, so the overlap check alone would pass; the room must be the nav's own height, which grows with the font and the safe area.",
+      "file": "src/components/HomeScreen.jsx",
+      "find": "      <div className=\"home-bottom-nav\" ref={navRef}>",
+      "replace": "      <div className=\"home-bottom-nav\">",
+      "expectFailure": "useBottomNavRoom did not measure it"
+    },
+    {
+      "name": "the nav is measured once and never again",
+      "why": "D50. Measured only on mount, the room stays at the nav's first height when the font grows afterwards (the 1.3x cases here change the font after the screen is up).",
+      "file": "src/hooks/useBottomNavRoom.js",
+      "find": "    ro.observe(nav);\n",
+      "replace": "",
+      "expectFailure": "useBottomNavRoom did not measure it"
     }
   ],
   "note": "Until 2026-09-30 this gate saved screenshots and asserted nothing (external audit V05). It now measures the home screen in five states; the mutations below break the layout while it still renders."
