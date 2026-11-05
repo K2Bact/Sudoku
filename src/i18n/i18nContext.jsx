@@ -28,6 +28,9 @@ export function I18nProvider({ children }) {
       const isRTL = (activeLanguage || '').startsWith('ar');
       document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
       document.documentElement.lang = activeLanguage;
+      // The page's own name, which a screen reader gives first. index.html's
+      // Korean line stood in every language (D47, 2026-10-29).
+      document.title = DICTIONARIES[activeLanguage]?.home?.title || document.title;
       if (document.body) {
         if (isRTL) document.body.classList.add('rtl-layout');
         else document.body.classList.remove('rtl-layout');

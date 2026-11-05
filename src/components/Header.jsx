@@ -151,23 +151,27 @@ export function Header({
             )}
           </div>
 
-          {/* Timer Badge with Floating Bonus/Penalty/Combo and Danger Pulse */}
-          <div className={`timer-badge ${isDangerTime ? 'danger-pulse' : ''}`}>
+          {/* Timer Badge with Floating Bonus/Penalty/Combo and Danger Pulse.
+              The whole badge is the pause button: the icon alone was 13×13, the
+              badge around it did nothing (D47, 2026-10-29). Its height stays the
+              badge's — 48dp would change the header (a decision left to the user). */}
+          <button
+            type="button"
+            className={`timer-badge pause-btn ${isDangerTime ? 'danger-pulse' : ''}`}
+            onClick={onTogglePause}
+            aria-label={isPaused ? t('common.resume') : t('common.pause')}
+            title={isPaused ? t('common.resume') : t('common.pause')}
+          >
             {timeFloatingText && (
-              <div className={`time-floating-indicator ${timeFloatingText.type}`}>
+              <span className={`time-floating-indicator ${timeFloatingText.type}`}>
                 {t(timeFloatingText.key, timeFloatingText.params)}
-              </div>
+              </span>
             )}
             <span className="time-display">{formatTime(timerSeconds)}</span>
-            <button
-              type="button"
-              className="pause-btn"
-              onClick={onTogglePause}
-              title={isPaused ? t('common.resume') : t('common.pause')}
-            >
+            <span className="timer-pause-icon" aria-hidden="true">
               {isPaused ? <Play size={13} /> : <Pause size={13} />}
-            </button>
-          </div>
+            </span>
+          </button>
         </div>
 
         {/* Row 2: 2 Action Buttons (Restart, New Game) */}

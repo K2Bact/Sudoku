@@ -7,6 +7,22 @@
   "note": "Added 2026-09-30 after a sweep found 54 of 156 header cases broken: buttons pushed off screen, badge text cut mid-word. The mutations put each of the three causes back.",
   "mutations": [
     {
+      "name": "the timer badge stops being the pause button (D47)",
+      "why": "The pause target goes back to the 13×13 icon in a badge that does nothing (D47, 2026-10-29). Made by switching the badge off for touch, the closest thing to the old markup that keeps the layout.",
+      "file": "src/styles/gameHeader.css",
+      "find": "button.timer-badge {\n  font-family: inherit;",
+      "replace": "button.timer-badge {\n  pointer-events: none;\n  font-family: inherit;",
+      "expectFailure": "the pause button does not cover the timer badge"
+    },
+    {
+      "name": "the page title stays the Korean line in index.html (D47)",
+      "why": "A screen reader gives the page's name first; it was Korean in all 13 languages.",
+      "file": "src/i18n/i18nContext.jsx",
+      "find": "      document.title = DICTIONARIES[activeLanguage]?.home?.title || document.title;\n",
+      "replace": "",
+      "expectFailure": "the page title is"
+    },
+    {
       "name": "the mode badge sizes itself to its longest word again",
       "why": "The original cause. As a plain flex item the badge could not get narrower than its longest word (「SOBREVIVÊNCIA」, 「CONTRE-LA-MONTRE」 grown 1.3x), and the title group could not shrink past it, so the theme, sound and settings buttons were what moved — off the right edge. First written as removing min-width from the title group, which SURVIVED: with the badge fixed, that alone was never the cause. Then it SURVIVED a second time, for a different reason: the title group can now shrink, so the old badge spilled over the buttons instead of pushing them — covered, not off screen. The gate gained an overlap check for that.",
       "file": "src/styles/gameHeader.css",

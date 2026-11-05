@@ -48,6 +48,7 @@ import { spawn, execSync } from 'child_process';
 import http from 'http';
 import { LOCALES } from '../../lib/locales.js';
 import { VARIANTS } from '../../../src/engine/variants.js';
+import { DICTIONARIES } from '../../../src/i18n/dictionaries.js';
 
 const PORT = 5213;
 const URL = `http://localhost:${PORT}`;
@@ -64,6 +65,24 @@ function waitForServer(timeout = 20000) {
       .on('error', () => (Date.now() - start > timeout ? reject(new Error('preview server did not start')) : setTimeout(check, 200)));
     check();
   });
+}
+
+/**
+ * D47 (2026-10-29): the pause button was its 13×13 icon, and the page's title was
+ * the Korean line in index.html in every language. Now the whole timer badge is
+ * the button: a point just inside each corner of the badge must reach it. And the
+ * title is the language's own home.title.
+ */
+function readPause() {
+  const b = document.querySelector('.game-header .timer-badge');
+  if (!b) return null;
+  const r = b.getBoundingClientRect();
+  const corners = [[r.left + 3, r.top + 3], [r.right - 3, r.top + 3], [r.left + 3, r.bottom - 3], [r.right - 3, r.bottom - 3]];
+  const reached = corners.filter(([x, y]) => {
+    const e = document.elementFromPoint(x, y);
+    return b.tagName === 'BUTTON' && e && e.closest('button') === b;
+  }).length;
+  return { reached, width: Math.round(r.width), height: Math.round(r.height), title: document.title };
 }
 
 /** Everything the assertions need, read from the live header. */
@@ -243,6 +262,7 @@ async function run() {
   let battleMeasured = 0;
   let battleSqueezed = 0;
   let battleExpected = 0;
+  let pauseChecked = 0;
   try {
     await waitForServer();
     const page = await browser.newPage({ viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true });
@@ -278,6 +298,12 @@ async function run() {
           for (const o of r.overlaps) failures.push(`${where}: covers a button — ${o}`);
           for (const c of r.cut) failures.push(`${where}: text cut without "…" — ${c}`);
           if (width === 360 && scale === 1) for (const s of r.shortened) failures.push(`${where}: shortened on an ordinary phone — ${s}`);
+          const p = await page.evaluate(readPause);
+          pauseChecked++;
+          if (!p) failures.push(`${where}: no timer badge — the pause button was not measured`);
+          else if (p.reached !== 4) failures.push(`${where}: the pause button does not cover the timer badge (${p.reached} of 4 corners reach it, badge ${p.width}×${p.height})`);
+          const title = DICTIONARIES[lang]?.home?.title;
+          if (p && p.title !== title) failures.push(`${where}: the page title is "${p.title}", not this language's "${title}"`);
         }
       }
     }
@@ -323,6 +349,8 @@ async function run() {
   console.log(`▶ measured ${measured} of ${expected} cases; wraps and "…" in the narrow cases: ${squeezed}`);
   if (measured !== expected) failures.push(`only ${measured} of ${expected} cases were measured`);
   if (squeezed === 0) failures.push('no case wrapped or shortened anything — the sweep never reached the squeeze it exists to test');
+  console.log(`▶ pause button over the whole timer badge and the page title: ${pauseChecked} of ${expected} cases`);
+  if (pauseChecked !== expected) failures.push(`the pause button and title were checked in ${pauseChecked} of ${expected} cases`);
   console.log(`▶ AI battle header: measured ${battleMeasured} of ${battleExpected} cases; "…" in the narrow cases: ${battleSqueezed}`);
   if (battleMeasured !== battleExpected) failures.push(`only ${battleMeasured} of ${battleExpected} AI battle cases were measured`);
   if (battleSqueezed === 0) failures.push('no AI battle case shortened anything — the battle sweep never reached the squeeze it exists to test');

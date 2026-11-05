@@ -283,7 +283,7 @@
   animation: dangerHeartbeat 0.6s infinite alternate ease-in-out;
 }
 
-.timer-badge.danger-pulse .pause-btn {
+.timer-badge.danger-pulse .timer-pause-icon {
   color: #b91c1c !important;
 }
 
@@ -335,12 +335,17 @@
   100% { opacity: 0; transform: translate(-50%, -24px) scale(0.95); }
 }
 
-.pause-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-main);
+/* The timer badge is the pause button (D47): it keeps the badge's look, and a
+   button does not inherit the page's font on its own. The icon's class is not
+   .pause-icon — that is the paused board's big ⏸ (board.css). */
+button.timer-badge {
+  font-family: inherit;
+  margin: 0;
   cursor: pointer;
+}
+
+.timer-pause-icon {
+  color: var(--text-main);
   display: flex;
   align-items: center;
-  padding: 0;
 }
