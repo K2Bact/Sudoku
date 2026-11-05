@@ -1,11 +1,12 @@
 # SudokuAITalk — 다른 AI의 검토와 그에 대한 판단
 
-**정리: 2026-10-21.** 여러 AI(ChatGPT·Gemini·Claude)가 이 앱을 검토한 결과와, 그것을 받아들였는지·왜 그랬는지를 둔다.
+**정리: 2026-10-30.** 여러 AI(ChatGPT·Gemini·Claude)가 이 앱을 검토한 결과와, 그것을 받아들였는지·왜 그랬는지를 둔다.
 **진행 중인 검토만 이 파일에 남긴다.** 결론이 나고 반영까지 끝난 회차는 보관본으로 옮긴다. **지금 진행 중인 검토는 없다.**
 
 | 어디에 | 무엇 |
 |---|---|
 | 이 파일 | 새 검토가 들어오면 여기에 절로 — 지금은 목차뿐 |
+| [보관본 10-30](docs/archive/SudokuAITalk_2026-10-30.md) | 제미나이 계획 검토 — D43·D45·D46 수정 계획 5차 · 「할 수 있는 것 전부」 실행 계획 3차(Sudoku ↔ Antigravity 연결로) |
 | [보관본 10-21](docs/archive/SudokuAITalk_2026-10-21.md) | 챗지피티 현행 기능·저장 검수(결함 2개 — D25 미션 보상 · D26 0초 기록) · 수정 재검수(D26 남은 길 — 0초 저장 이어하기) |
 | [보관본 10-18](docs/archive/SudokuAITalk_2026-10-18.md) | 제미나이 1.6.0 (29) 9개 각도 검수 · 챗지피티 기능·저장 검수(결함 4개) · 재검토(콤보 유실 1개) · 콤보 수정 확인(61/61) |
 | [보관본 10-15](docs/archive/SudokuAITalk_2026-10-15.md) | 제미나이 플립5 실기 확인 · 23개 · 21개 점검 · 킬러 아카데미 33개 점검 · 기법 이름 11개 언어 · 이탈리아어 전수 검수 |
@@ -58,3 +59,18 @@
 | [챗지피티 bb29bd7 콤보 수정 확인](docs/archive/SudokuAITalk_2026-10-18.md#chatgpt-bb29bd7-20261018) | 10-18 ChatGPT · Claude 판단 | 콤보 유실 수정 확인(여섯 경로 최고 5·업적). **전체 QA 61/61 한 번에 통과**(13:07–13:25, Claude 가 기록 TSV 확인 — 코드 `bb29bd7`). 3-10 시간 초과 원인은 미확인 그대로. 보관본 증거 링크 경로 보정(내용 변경 없음 확인) |
 | [챗지피티 현행 기능·저장 검수](docs/archive/SudokuAITalk_2026-10-21.md#chatgpt-review-20261021) | 10-21 ChatGPT · Claude 판단·반영 | **결함 2개 모두 진짜**(30 에도 있던 것) — 15번째 승리에서 미션 보상 누락(D25) · 스피드런 0초 기록 유실(D26). 고침: 미션을 승리 전에 정함 · 시계 하한 1초(Diary 151). 새 게이트 2-31 · 3-20 경우 7, 변이 10/10. 전체 QA 61/61 은 챗지피티 실행(`13b2226`) |
 | [챗지피티 D25·D26 수정 재검수](docs/archive/SudokuAITalk_2026-10-21.md#chatgpt-fix-rereview-20261021) | 10-21 ChatGPT · Claude 판단·반영 | D25 수정 확인. **D26 의 남은 길은 진짜** — 0초로 저장된 스피드런을 이어하면 시계가 0 으로 돌아오고, 보상받은 칸으로 끝내면 하한을 안 지나 0초 승리. 고침: 이어하기 복원에서 1초(Diary 152), 3-20 경우 8 · 변이 10/10. 전체 QA 62/62 는 챗지피티 실행 |
+| [제미나이 D43·D45·D46 수정 계획 5차](docs/archive/SudokuAITalk_2026-10-30.md#fix-plan-d43-d45-d46-20261030) | 10-30 Gemini(RN 회신) · Claude 판단 | 지적 15개 — 받아들임 11 · 일부 1 · 안 받아들임 3, 틀린 근거 1(G3-3). 크게 바뀐 것: 승리·게임 오버 창 · 광고 대기 중 뒤로 · D46 7일 상한 · 동기화를 단위로 · 2-30 같이 고침(G5-1). 계획 v7 → 고침(Diary 169) |
+| [제미나이 「할 수 있는 것 전부」 실행 계획 3차](docs/archive/SudokuAITalk_2026-10-30.md#do-all-plan-20261030) | 10-30 Gemini(RN 회신) · Claude 판단·재검토 | 지적 8개 — 받아들임 7 · 일부 1(M1-2 신호 비용). 결론 「진행 가능」. 시계 상자 단추 · heartbeat 로만 감시 · 신호 멈춤 · 새 단언. 실행(Diary 169~172), 전체 QA 65/65 · 새 결함 D48·D49 |
+
+
+## 2026-10-31 ChatGPT — Dev/Sudoku ↔ Antigravity 개발검수/Sudoku 직접 연결 추가
+
+사용자의 직접 연결 확인/구성 지시로 기존 Claude 연결과 별도인 Codex Sudoku → Antigravity Sudoku → Codex 회신 경로를 추가했다. 기존 OTTSub5와 Claude 경로를 교체하지 않았다.
+
+- 실제 Codex Dev/Sudoku ID 01a08c91-8256-7841-89a8-3e8980eeba4a와 native RN 자기 주소 master/reasonnetwork-codex-2@crazybuylg를 확인했다. source 메타데이터 확인용 깨우기 1회/native list_team 1회만 수행했다.
+- Antigravity 개발검수 프로젝트 9d9d6f01-03ae-4541-aa4c-d5224628bc2c의 정확한 Sudoku 대화 6c87c8b0-49fe-4489-8096-d5fe9638db47를 로컬 메타데이터로 대조했다. 공유 RN 주소와 실제 대화 선택을 구분한다.
+- 중앙 고정 profile sudoku, 별도 sudoku.binding.json, task CLI/worker의 명시적 --route sudoku 선택 및 source별 귀환 경로를 추가했다. source/target/route/hash/기한/중복 검증을 유지했다.
+- 신규 Sudoku와 기존 OTTSub5 실제 송신 전 검사 모두 통과했다. 보호 대상 설정/코드 16개 해시가 그대로였고 새 Antigravity 송신·깨우기·Sidecar 등록·실제 queue 호출은 0회다.
+- 오프라인 검사 54개 통과. 가짜 환경의 Sudoku 수명주기·교차 route 거부·OTT 보존 검사이며 제품 QA나 실제 왕복 성공을 뜻하지 않는다. 사용자 직접 시험 방침을 유지한다.
+- 현재 사용법/원본 검사 로그: D:/PowerNeJa/Network_AI/ReasonNetwork/ChatGPT/docs/route-connections/sudoku/USAGE.md, offline-tests.*, preflight-verification-20261031.json.
+- 제품 코드·앱 프로젝트 DB·Claude 런타임 설정·원격 refuse·모델/메모리 설정을 변경하지 않았다. 전역 지침과 프로젝트 정본 지침에 사용 경로만 추가했다.

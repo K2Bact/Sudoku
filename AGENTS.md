@@ -159,12 +159,13 @@ npm run qa         # 문구·화면·CSS·게이트를 바꿨을 때, 그리고 
   docs/archive/SudokuAITalk_2026-10-15.md            끝난 검토 — 제미나이 플립5 실기 확인·23개·21개 점검·킬러 아카데미 33개 점검·기법 이름 11개 언어·이탈리아어 전수 검수
   docs/archive/SudokuAITalk_2026-10-18.md            끝난 검토 — 제미나이 1.6.0 (29) 9개 각도 검수·챗지피티 기능·저장 검수와 재검토
   docs/archive/SudokuAITalk_2026-10-21.md            끝난 검토 — 챗지피티 현행 기능·저장 검수(D25 미션 보상 · D26 0초 기록, 둘 다 고침) · 수정 재검수(D26 남은 길, 고침)
+  docs/archive/SudokuAITalk_2026-10-30.md            끝난 검토 — 제미나이 계획 검토(D43·D45·D46 수정 계획 5차 · 「할 수 있는 것 전부」 실행 계획 3차, Sudoku ↔ Antigravity 연결)
                              (끝난 검토는 Claude 가 판단을 달아 보관본으로 옮긴다. 지난 검토를 찾을 때만 읽는다)
 
 기준·자료
   ../../app_common/AGENTS.md                     모든 앱 공통 규칙
   ../../app_common/l10n_engine/rules/<언어>/      언어별 기준 — 검수에서 정한 용어·조판(fr·ja·ar·es …)
-  docs/research/             조사 — ASO(aso_2026-10-07.md), 경쟁 앱 리뷰(reviews/), 퍼즐 변형(sudoku_variants.md), 킬러 기법(killer_strategies_2026-10-15.md)
+  docs/research/             조사 — ASO(aso_2026-10-07.md · 재측정 aso_2026-10-30.md), 경쟁 앱 리뷰(reviews/), 퍼즐 변형(sudoku_variants.md), 킬러 기법(killer_strategies_2026-10-15.md)
   docs/reference/google_policy/   구글 공식 정책 모음(INDEX.md 부터)
   docs/TECHNICAL_SPECIFICATION.md · docs/POST_MORTEM_MISTAKES_REGISTRY.md(2026-08-15 스냅샷, 이후는 Diary)
 
@@ -179,3 +180,13 @@ npm run qa         # 문구·화면·CSS·게이트를 바꿨을 때, 그리고 
 통합한 이유가 규칙 그 자체입니다 — 그 두 문서의 "출시 전 필수 게이트" 4개 중 3개가
 이미 끝났는데도 "대기 중" 으로 적혀 있었습니다. **끝난 일이 대기 중으로 남아 있으면
 다음 사람이 없는 일을 하려 듭니다.**
+
+
+## 6. ChatGPT Dev/Sudoku ↔ Antigravity 개발검수/Sudoku 연결 (2026-10-31)
+
+- 사용자가 상대와 작업을 명시한 경우의 직접 연결은 D:/PowerNeJa/Network_AI/ReasonNetwork/ChatGPT/docs/route-connections/sudoku/USAGE.md를 먼저 읽는다.
+- 일반 작업은 중앙 scripts/task-bridge/task_cli.py **--route sudoku**를 하위 명령 앞에 지정한다. 옵션 생략 시 기본 OTT 경로이므로 생략하지 않는다. 계획 검토 전용은 review_route.py --route sudoku다.
+- 고정 Codex Sudoku ID는 01a08c91-8256-7841-89a8-3e8980eeba4a, Antigravity 개발검수/Sudoku ID는 6c87c8b0-49fe-4489-8096-d5fe9638db47, 프로젝트 ID는 9d9d6f01-03ae-4541-aa4c-d5224628bc2c다. RN 주소만으로 채팅을 선택하지 않는다.
+- 실제 작업 폴더는 현재 Sudoku 폴더다. Codex 앱의 옛 Project_Dev cwd를 작업 원본으로 쓰거나 source ID를 가장하지 않는다. 결과는 SudokuAITalk.md 맨 아래에 추가한다.
+- Claude ↔ Antigravity Sudoku 연결은 Claude 전용 경로를 유지하고, 기존 OTTSub5 연결도 유지한다. ChatGPT/scripts/sudoku-link의 옛 Codex→Claude 템플릿은 이 직접 연결에 사용하지 않는다.
+- 설정과 읽기 전용 사전 검사는 확인했고 실제 새 Antigravity 왕복은 미실행이다. 이 지침을 읽는 것만으로 새 작업·시험·Sidecar·반복 감시를 시작하지 않는다. 원래 인간 요청의 범위·앱 권한·기한·송신/깨우기/회신 상한을 따른다.
