@@ -1,0 +1,78 @@
+<en-US>
+• 1v1 Online Battle: "No response" when your opponent goes quiet, "Offline" when your connection drops. After a dropout your phone still gets the opponent's progress and the result.
+• Back closes the window on top first, and goes Home from a finished game.
+• The Daily Check-in Reward also comes when you return to Home. Moving the clock back no longer pays.
+• Fixed: the paused board shrinking on some phones, and the last Home card hidden under the bottom menu. Tap anywhere on the timer to pause.
+</en-US>
+<ar>
+• مبارزة 1 ضد 1 عبر الإنترنت: «لا استجابة» عندما يتوقف خصمك عن الرد، و«غير متصل» عندما ينقطع اتصالك. وبعد عودة الاتصال يصلك تقدّم الخصم والنتيجة.
+• زر الرجوع يغلق النافذة العليا أولًا، ومن مباراة منتهية يعيدك إلى الشاشة الرئيسية.
+• مكافأة الحضور اليومي تصل أيضًا عند العودة إلى الشاشة الرئيسية، وإرجاع الساعة لم يعد يمنحها.
+• إصلاح: تصغُّر اللوحة عند الإيقاف المؤقت في بعض الهواتف، واختفاء آخر بطاقة تحت القائمة السفلية. انقر في أي مكان على المؤقت للإيقاف.
+</ar>
+<de-DE>
+• 1v1 Online-Duell: „Keine Antwort“, wenn dein Gegner schweigt, „Getrennt“, wenn deine Verbindung abbricht. Nach einem Abbruch kommen Fortschritt und Ergebnis wieder an.
+• Zurück schließt zuerst das oberste Fenster, nach Spielende geht es zum Start.
+• Die tägliche Belohnung gibt es auch bei der Rückkehr zum Start. Die Uhr zurückzustellen lohnt sich nicht mehr.
+• Behoben: geschrumpftes Spielfeld in der Pause, letzte Karte am Start unter dem Menü. Zum Pausieren irgendwo auf die Uhr tippen.
+</de-DE>
+<es-ES>
+• Duelo 1v1 online: «Sin respuesta» si tu rival deja de responder y «Sin conexión» si se corta la tuya. Tras un corte, sigues recibiendo el progreso del rival y el resultado.
+• Atrás cierra primero la ventana de arriba y, en una partida terminada, te lleva al inicio.
+• La recompensa diaria también llega al volver al inicio. Atrasar el reloj ya no la da.
+• Corregido: tablero encogido en pausa y última tarjeta del inicio bajo el menú. Toca el reloj donde quieras para pausar.
+</es-ES>
+<fr-FR>
+• Duel 1v1 en ligne : « Ne répond pas » quand l’adversaire se tait, « Hors ligne » quand votre connexion tombe. Après une coupure, progression et résultat de l’adversaire arrivent toujours.
+• Retour ferme d’abord la fenêtre du dessus et, en fin de partie, ramène à l’accueil.
+• La récompense quotidienne arrive aussi au retour à l’accueil. Reculer l’horloge ne la donne plus.
+• Corrigé : plateau rétréci en pause, dernière carte de l’accueil sous le menu. Pause : touchez le chrono n’importe où.
+</fr-FR>
+<hi-IN>
+• 1v1 ऑनलाइन मुकाबला: विरोधी जवाब देना बंद करे तो “कोई जवाब नहीं” और आपका कनेक्शन टूटे तो “ऑफ़लाइन” दिखता है। कनेक्शन टूटकर लौटने पर भी विरोधी की प्रगति और नतीजा मिलता रहता है।
+• बैक बटन पहले सबसे ऊपर की विंडो बंद करता है, और खत्म हुए खेल से होम पर ले जाता है।
+• दैनिक पुरस्कार अब होम पर लौटने पर भी मिलता है। घड़ी पीछे करने से पुरस्कार नहीं मिलता।
+• सुधार: कुछ फ़ोन पर रुका हुआ बोर्ड छोटा हो जाता था, और होम का आखिरी कार्ड नीचे के मेनू के नीचे छिप जाता था। रोकने के लिए टाइमर पर कहीं भी टैप करें।
+</hi-IN>
+<it-IT>
+• Duello 1v1 online: «Non risponde» se l’avversario tace, «Senza rete» se cade la tua connessione. Dopo un’interruzione ricevi ancora i progressi dell’avversario e il risultato.
+• Indietro chiude prima la finestra in alto e, a partita finita, riporta alla Home.
+• La ricompensa giornaliera arriva anche tornando alla Home. Spostare indietro l’orologio non la dà più.
+• Corretto: griglia rimpicciolita in pausa, ultima scheda della Home sotto il menu. Per la pausa tocca il timer in qualsiasi punto.
+</it-IT>
+<ja-JP>
+• 1v1 オンライン対戦：相手から応答がないと「応答なし」、自分の接続が切れると「オフライン」と表示されます。接続が切れて戻っても、相手の進行と結果を受け取れます。
+• 戻るボタンは一番上の画面から閉じ、終わった対局ではホームに戻ります。
+• デイリーログインボーナスはホームに戻ったときにも受け取れます。時計を戻してもボーナスは出ません。
+• 一部の端末で一時停止中の盤面が小さくなる問題と、ホームの一番下のカードが下のメニューに隠れる問題を修正しました。タイマーのどこをタップしても一時停止できます。
+</ja-JP>
+<ko-KR>
+• 1v1 온라인 배틀: 상대가 응답하지 않으면 「응답 없음」, 내 연결이 끊기면 「연결 끊김」이 떠요. 연결이 끊겼다가 돌아와도 상대의 진행과 결과를 그대로 받아요.
+• 뒤로 버튼은 맨 위에 열린 창부터 닫고, 끝난 판에서는 홈으로 가요.
+• 일일 출석 보상을 홈으로 돌아올 때도 받아요. 시계를 되돌려도 보상은 나오지 않아요.
+• 일부 폰에서 일시정지한 판이 작아지던 것, 홈 맨 아래 카드가 아래 메뉴에 가리던 것을 고쳤어요. 시계 아무 곳이나 눌러도 일시정지돼요.
+</ko-KR>
+<pt-BR>
+• Duelo 1v1 Online: "Sem resposta" quando o adversário para de responder, "Sem conexão" quando a sua cai. Depois de uma queda, o progresso do adversário e o resultado continuam chegando.
+• Voltar fecha primeiro a janela de cima e, numa partida terminada, leva ao início.
+• A Recompensa Diária também chega ao voltar ao início. Atrasar o relógio não a dá mais.
+• Corrigido: tabuleiro encolhido na pausa e último cartão do início sob o menu. Para pausar, toque em qualquer parte do cronômetro.
+</pt-BR>
+<ru-RU>
+• Дуэль 1v1 Онлайн: «Нет ответа», если соперник молчит, «Нет связи», если пропала ваша связь. После обрыва прогресс соперника и результат снова приходят.
+• «Назад» сначала закрывает верхнее окно, а после законченной партии ведёт на главный экран.
+• Ежедневная награда приходит и при возвращении на главный экран. Перевод часов назад её больше не даёт.
+• Исправлено: поле на паузе уменьшалось, последняя карточка главного экрана пряталась под меню. Пауза — нажатием в любом месте таймера.
+</ru-RU>
+<zh-CN>
+• 1v1 在线对决：对手没有回应时显示“无响应”，自己的连接中断时显示“已断开”。断线后重新连上，仍能收到对手的进度和结果。
+• 返回键会先关闭最上层的窗口，对局结束后则回到首页。
+• 回到首页时也能领取每日签到奖励。把时钟调回去不会再发放奖励。
+• 修复：部分手机暂停时棋盘缩小，以及首页最下方的卡片被底部菜单挡住。点击计时器任意位置即可暂停。
+</zh-CN>
+<zh-TW>
+• 1v1 線上對決：對手沒有回應時顯示「無回應」，自己的連線中斷時顯示「已斷線」。斷線後重新連上，仍能收到對手的進度與結果。
+• 返回鍵會先關閉最上層的視窗，對局結束後則回到首頁。
+• 回到首頁時也能領取每日簽到獎勵。把時鐘調回去不會再發放獎勵。
+• 修正：部分手機暫停時棋盤縮小，以及首頁最下方的卡片被底部選單遮住。點擊計時器任何位置即可暫停。
+</zh-TW>

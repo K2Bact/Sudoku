@@ -38,7 +38,7 @@ export const replay = {
     sumNotes: '筆記',
     sumUndos: '復原',
     listTitle: '對戰復盤',
-    listEmpty: '還沒有復盤。完成一場 1v1 對決後會保存在這裡。',
+    listEmpty: '還沒有復盤。完成一場 1v1 對決後會儲存在這裡。',
     open: '查看復盤',
     settingTitle: '對戰紀錄分享',
     settingDesc: '1v1 結束後，與對手互換本局的步驟和時間，彼此復盤對方的盤面。關閉後不傳送您的步驟，也不接收對手的步驟。',

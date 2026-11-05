@@ -17,7 +17,7 @@ export const common = {
     home: '主畫面',
     pause: '暫停',
     resume: '繼續',
-    exitAppPrompt: '再次點擊返回鍵即可退出應用程式。',
+    exitAppPrompt: '再按一次返回鍵即可離開應用程式。',
     confirmLeaveGame: '確定要中斷遊戲並返回主畫面嗎？',
     shareUnavailable: '此裝置無法使用分享功能。'
   },

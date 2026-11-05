@@ -27,10 +27,10 @@ export const screens = {
     },
     modes: {
       classic: { badge: '經典模式', title: '經典單人', desc: '沉浸於邏輯思考的純粹數獨體驗', startBtn: '開始新遊戲' },
-      timeAttack: { badge: '計時競速', title: '⚡ 計時競速', desc: '分秒必争！挑戰你的極速通關紀錄', startBtn: '開始競速' },
+      timeAttack: { badge: '計時競速', title: '⚡ 計時競速', desc: '分秒必爭！挑戰你的極速通關紀錄', startBtn: '開始競速' },
       timeLimit: { badge: '極限生存', title: '⏳ 極限生存', desc: 'Lv.{level} 限時 {minutes} 分鐘！在倒計時結束前生存下來', startBtn: '開始生存挑戰' },
       daily: { title: '每日挑戰', desc: '每日專屬謎題與月度大師徽章', badge: '每日' },
-      battle: { title: '1v1 在線對決', desc: '全球玩家即時對戰' },
+      battle: { title: '1v1 線上對決', desc: '全球玩家即時對戰' },
       aiBattle: { badge: '人機對戰', title: 'AI 機器人對戰', desc: '1:1 AI 速度對決' },
       academy: { title: '數獨學院', desc: '學習 32 種實戰解題策略' },
       practice: { title: '自由練習模式', desc: '無失誤限制，輕鬆暢玩' }
@@ -56,11 +56,11 @@ export const screens = {
     tiers: { beginner: '初學·新秀', intermediate: '中級', advanced: '大師' },
     missions: {
       beginnerLv1Title: '【Lv.1 入門】通關 1 局數獨', beginnerLv1Desc: '完成 Lv.1 入門難度，建立基礎邏輯思維。',
-      beginnerLv2Title: '【Lv.2 初級】通關 1 局數獨', beginnerLv2Desc: '完成 Lv.2 初級謎題，巩固數獨基本功。',
+      beginnerLv2Title: '【Lv.2 初級】通關 1 局數獨', beginnerLv2Desc: '完成 Lv.2 初級謎題，鞏固數獨基本功。',
       medLv3Title: '【Lv.3 中級以上】通關 1 局數獨', medLv3Desc: '完成 Lv.3 中級以上謎題，檢驗進階推理力。',
       advLv4Title: '【Lv.4 高級以上】通關 1 局數獨', advLv4Desc: '擊破 Lv.4 以上高難度謎題，證明大師實力。',
       advLv5Title: '【Lv.5 大師】通關 1 局數獨', advLv5Desc: '挑戰 Lv.5 大師極限難度，衝擊最高段位。',
-      battleTitle: '參加 1 場 1v1 在線或 AI 對決', battleDesc: '參與 1 場即時對戰或 AI 練習賽。',
+      battleTitle: '參加 1 場 1v1 線上或 AI 對決', battleDesc: '參與 1 場即時對戰或 AI 練習賽。',
       speedrunTitle: '⚡ 完成 1 局計時競速', speedrunDesc: '在計時競速模式中完成一局。'
     }
   },
@@ -70,7 +70,7 @@ export const screens = {
     heroDesc: '永久移除底部橫幅廣告與遊戲結束後的插頁廣告。',
     benefitsTitle: '👑 頂級會員特權',
     benefit1: '完全移除所有橫幅與全屏廣告',
-    benefit2: '極致專註體驗並節省設備电量',
+    benefit2: '極致專注體驗並節省裝置電量',
     benefit3: '支持獨立開發團隊與持續更新',
     buyBtn: '永久去除廣告 ({price})',
     restoreBtn: '恢復購買記錄',
@@ -83,7 +83,7 @@ export const screens = {
     buyFail: '無法完成購買，請稍後再試。'
   },
   tutorialOverlay: {
-    exitTooltip: '退出教學',
+    exitTooltip: '離開教學',
     step1Title: '🎯 第 1 步：選擇格子並輸入數字',
     step1Desc: '點擊高亮的 [第 1 行第 3 格] 空格，並在鍵盤上輸入 [9]！',
     step2Title: '✏️ 第 2 步：鉛筆筆記（填寫候選數）',
@@ -109,15 +109,15 @@ export const screens = {
     autoCheckDesc: '輸入錯誤數字時立即以紅色警示',
     soundSection: '🔊 聲音與震動',
     soundFx: '音效',
-    soundFxDesc: '數字輸入與按钮點擊音效',
-    hapticFx: '觸覺震動反馈',
+    soundFxDesc: '數字輸入與按鈕點擊音效',
+    hapticFx: '觸覺震動回饋',
     hapticFxDesc: '填入正確或錯誤時的手指震動',
     adPrivacyBtn: '廣告隱私設定',
     adPrivacyDesc: '重新選擇個人化廣告同意',
-    resetData: '重置所有本地數據',
-    resetDataDesc: '重置所有本地遊戲統計與記錄',
-    resetConfirm: '⚠️ 警告：所有遊玩記錄、持有提示、遊戲分析記錄將被永久刪除。是否確定重置？',
-    resetSuccess: '數據已成功重置。',
+    resetData: '重設所有本機資料',
+    resetDataDesc: '重設所有本機遊戲統計與記錄',
+    resetConfirm: '⚠️ 警告：所有遊玩記錄、持有提示、遊戲分析記錄將被永久刪除。是否確定重設？',
+    resetSuccess: '資料已成功重設。',
     privacySection: '🛡️ 隱私保護',
     privacyPolicyBtn: '查看完整隱私政策',
     privacySubtitle: '隱私保護',
@@ -184,7 +184,7 @@ export const screens = {
     findOpponentBtn: '尋找對手',
     noOpponentFound: '找不到對手。',
     searchAgain: '再次尋找',
-    connectFailed: "無法連接在線對戰。請稍後再試。要改與 AI 對戰嗎?",
+    connectFailed: "無法連線至線上對戰。請稍後再試。要改與 AI 對戰嗎?",
     playAiInstead: '與 AI 對戰'
   },
   battleResult: {

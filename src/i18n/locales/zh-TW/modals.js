@@ -41,7 +41,7 @@ export const modals = {
     },
     storeReview: {
       title: '喜歡 Sudoku 嗎？',
-      desc: '留下寶貴的評價與真心評語，\n是支持我們持續優化遊戲的最大動力！💙',
+      desc: '留下寶貴的評價與真心評語，\n是支持我們持續改善遊戲的最大動力！💙',
       submitBtn: '前往商店評價',
       laterBtn: '稍後再說'
     },
