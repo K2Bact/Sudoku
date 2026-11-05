@@ -83,6 +83,38 @@
       "find": "        if (this.currentRoom.status === 'playing') applyBattleResult(false, this.currentRoom.level || 3);",
       "replace": "        applyBattleResult(false, this.currentRoom.level || 3);",
       "expectFailure": "leaving the result screen was counted as a loss"
+    },
+    {
+      "name": "the host is taken out of its room when the server loses it",
+      "why": "D49 (2026-11-05). The onDisconnect that used to stand here: a real drop removed the phone from the room, the rules never let it back, and once online again it could neither read nor write there — its opponent's progress froze and the result never came (two phones, emulator network off 75 s).",
+      "file": "src/firebase/transport/firebaseTransport.js",
+      "find": "          remember(roomId);\n          await withTimeout(",
+      "replace": "          api.onDisconnect(rooms(roomId, 'members', this.identity)).remove();\n          remember(roomId);\n          await withTimeout(",
+      "expectFailure": "the server dropped host-uid from its room"
+    },
+    {
+      "name": "the guest is taken out of its room when the server loses it",
+      "why": "D49, the other side: the emulator in the two-phone run was the host, but the guest registered the same removal when it joined.",
+      "file": "src/firebase/transport/firebaseTransport.js",
+      "find": "    remember(roomId);           // the host named this phone a member (see roomIo, D49)",
+      "replace": "    api.onDisconnect(api.ref(api.db, `${ROOMS_PATH}/${roomId}/members/${this.identity}`)).remove();\n    remember(roomId);",
+      "expectFailure": "the server dropped guest-uid from its room"
+    },
+    {
+      "name": "a dead app's membership is never removed",
+      "why": "D49. Without the onDisconnect, a membership ends only when the player leaves; an app that died mid-match never does, and without this cleanup every such match would stay in the database for good.",
+      "file": "src/firebase/transport/firebaseTransport.js",
+      "find": "      Promise.resolve().then(() => api.remove(api.ref(api.db, `${ROOMS_PATH}/${stale}/members/${this.identity}`))).catch(() => {});",
+      "replace": "",
+      "expectFailure": "died mid-match must be removed at its next room"
+    },
+    {
+      "name": "leaving does not forget the room",
+      "why": "D49. A phone that keeps a room it has left would 'clean up' that room at its next match — harmless to the server, but the memory would no longer mean an app that died mid-match.",
+      "file": "src/firebase/transport/firebaseTransport.js",
+      "find": "        if (remembered() === roomId) remember(null);\n      }),",
+      "replace": "      }),",
+      "expectFailure": "forget the room once it has left it"
     }
   ]
 }

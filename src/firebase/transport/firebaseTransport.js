@@ -34,6 +34,12 @@ const TICKET_TTL_MS = 30000;
 // Messages older than this are ignored on arrival; a listener that reconnects
 // must not replay a finished match.
 const MESSAGE_TTL_MS = 60000;
+// The room this phone is a member of until it leaves (D49): see roomIo.
+const MEMBER_KEY = 'suidoku_room_member_v1';
+const remembered = () => { try { return localStorage.getItem(MEMBER_KEY); } catch { return null; } };
+const remember = (roomId) => {
+  try { if (roomId) localStorage.setItem(MEMBER_KEY, roomId); else localStorage.removeItem(MEMBER_KEY); } catch { /* no storage: the cleanup is skipped */ }
+};
 
 export class FirebaseTransport {
   /** Two devices really can reach each other through this transport. */
@@ -291,13 +297,23 @@ export class FirebaseTransport {
   // ── The match's own channel (RT-2) ───────────────────────────────────────
   // What roomLink.js needs from this database. Every call fails soft: a refused
   // or silent write returns false, and the match carries on over /bus.
+  //
+  // No onDisconnect on the membership (D49, 2026-11-05). It used to remove this
+  // phone from the room when the server lost it, and the rules let a member be
+  // removed but never added back — so a phone that really dropped and came back
+  // could no longer read the room. Its opponent, still a member, kept writing
+  // there: progress frozen at what it was, no result (two phones, real drop on the
+  // emulator — a CDP "offline" never reaches the server, so it never showed).
+  // A membership now ends only when the player leaves (release). One left by an
+  // app that died mid-match is remembered on the phone and removed at its next
+  // room, so at most one is ever left behind per phone.
   roomIo(api) {
     const rooms = (roomId, ...rest) => api.ref(api.db, [ROOMS_PATH, roomId, ...rest].join('/'));
     return {
       claim: async (roomId, peerId) => {
         try {
-          // Registered first, so a host that drops mid-write does not leave itself behind.
-          api.onDisconnect(rooms(roomId, 'members', this.identity)).remove();
+          // Remembered first, so a host whose app dies mid-write is still cleaned up.
+          remember(roomId);
           await withTimeout(api.set(rooms(roomId, 'members'), { [this.identity]: true, [peerId]: true }), ROOM_CLAIM_TIMEOUT_MS);
           return true;
         } catch (e) {
@@ -312,19 +328,29 @@ export class FirebaseTransport {
           const entryRef = api.push(rooms(roomId, 'msgs'));
           await withTimeout(api.set(entryRef, payload), ROOM_CLAIM_TIMEOUT_MS);
           api.onDisconnect(entryRef).remove();
-          setTimeout(() => { api.remove(entryRef).catch(() => {}); }, MESSAGE_TTL_MS);
+          // unref: a timer must not hold a Node test open for a minute (a number in a browser).
+          setTimeout(() => { api.remove(entryRef).catch(() => {}); }, MESSAGE_TTL_MS)?.unref?.();
           return true;
         } catch (e) {
           console.warn('[FirebaseTransport] room write failed:', e?.message || e);
           return false;
         }
       },
-      release: (roomId) => api.remove(rooms(roomId, 'members', this.identity)),
+      // Forgotten only once the server has it: a leave sent offline stays remembered.
+      release: (roomId) => api.remove(rooms(roomId, 'members', this.identity)).then(() => {
+        if (remembered() === roomId) remember(null);
+      }),
     };
   }
 
   newRoomLink(api) {
     this.leaveRoom();
+    // Whatever is still remembered now was left by an app that never got to leave.
+    const stale = remembered();
+    if (stale) {
+      remember(null);
+      Promise.resolve().then(() => api.remove(api.ref(api.db, `${ROOMS_PATH}/${stale}/members/${this.identity}`))).catch(() => {});
+    }
     this.room = new RoomLink(this.roomIo(api), () => this.identity, (p) => this.onMessage(p));
     return this.room;
   }
@@ -340,10 +366,9 @@ export class FirebaseTransport {
   async joinRoom(roomId) {
     const api = this.api || (await this.connect());
     if (!api || !api.db || !api.uid) return;
-    try {
-      api.onDisconnect(api.ref(api.db, `${ROOMS_PATH}/${roomId}/members/${this.identity}`)).remove();
-    } catch { /* the handshake will simply not complete */ }
-    await this.newRoomLink(api).guest(roomId);
+    const link = this.newRoomLink(api);
+    remember(roomId);           // the host named this phone a member (see roomIo, D49)
+    await link.guest(roomId);
   }
 
   /** In-match messages: the room once both ends proved it, /bus until then. */

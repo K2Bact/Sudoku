@@ -508,4 +508,89 @@ console.log('  ✅ Ids on the wire are tied to the signed-in account: rules chec
   }
 }
 
+// ── A phone that really dropped is still in its room (D49, 2026-11-05) ─────
+//
+// Two phones, a real drop on the emulator (svc wifi/data off for 75 s): the server ran
+// the onDisconnect that removed the dropped phone from /rooms/{id}/members, and the
+// rules let a member be removed but never added back. Back online it could neither
+// read the room (Permission denied) nor write there; its opponent, still a member,
+// kept writing into the room — progress frozen, no result. A CDP "offline" never
+// reaches the server, which is why two earlier runs did not show it.
+//
+// The real transport against a small model of the server: what is stored, and what
+// each phone asked the server to do when it loses that phone.
+console.log('\n▶ A phone that really dropped is still in its room (D49)');
+{
+  const { FirebaseTransport } = await import('../../../src/firebase/transport/firebaseTransport.js');
+  const data = new Map();                 // path → value, one entry per leaf
+  const onDrop = new Map();               // phone → paths the server removes when it loses it
+  const under = (p) => [...data.keys()].filter((k) => k === p || k.startsWith(`${p}/`));
+  const apiFor = (uid) => ({
+    db: {}, uid,
+    ref: (_db, p) => ({ path: p }),
+    set: async (ref, v) => {
+      if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) data.set(`${ref.path}/${k}`, x);
+      else data.set(ref.path, v);
+    },
+    remove: async (ref) => { for (const k of under(ref.path)) data.delete(k); },
+    push: (ref) => ({ path: `${ref.path}/m${Math.random().toString(36).slice(2, 9)}` }),
+    onDisconnect: (ref) => ({ remove: () => { onDrop.set(uid, [...(onDrop.get(uid) || []), ref.path]); } }),
+    onChildAdded: () => () => {},
+  });
+  const phone = (uid) => {
+    const t = Object.create(FirebaseTransport.prototype);
+    Object.assign(t, { identity: uid, playerId: uid, onMessage: () => {}, api: apiFor(uid) });
+    return t;
+  };
+  const drop = (uid) => { for (const p of onDrop.get(uid) || []) for (const k of under(p)) data.delete(k); onDrop.delete(uid); };
+  // Each phone has its own storage; `on` runs one phone's step with its storage in place.
+  const stores = new Map();
+  const storeOf = (uid) => { if (!stores.has(uid)) stores.set(uid, new Map()); return stores.get(uid); };
+  const hadStorage = 'localStorage' in globalThis;
+  const realStorage = globalThis.localStorage;
+  const on = async (uid, step) => {
+    const s = storeOf(uid);
+    globalThis.localStorage = { getItem: (k) => (s.has(k) ? s.get(k) : null), setItem: (k, v) => { s.set(k, String(v)); }, removeItem: (k) => { s.delete(k); } };
+    const out = await step();
+    await new Promise((r) => setTimeout(r, 0));
+    return out;
+  };
+  const KEY = 'suidoku_room_member_v1';
+  try {
+    const host = phone('host-uid');
+    const guest = phone('guest-uid');
+    assert.strictEqual(await on('host-uid', () => host.openRoom('room_d49', 'guest-uid')), true, 'setup: the model server must accept the room');
+    await on('guest-uid', () => guest.joinRoom('room_d49'));
+    assert(under('rooms/room_d49/msgs').length > 0, 'setup: the guest\'s hello must be in the room, or nothing was written through the model');
+    assert(data.has('rooms/room_d49/members/guest-uid') && data.has('rooms/room_d49/members/host-uid'), 'setup: both must be members before anyone drops');
+    drop('guest-uid');
+    drop('host-uid');
+    for (const uid of ['guest-uid', 'host-uid']) {
+      assert(data.has(`rooms/room_d49/members/${uid}`),
+        `the server dropped ${uid} from its room when it lost the connection. The rules never let a member back in, so once the phone ` +
+        `is online again it can neither read nor write the room, and its opponent's progress and result never reach it (D49)`);
+    }
+    assert.strictEqual(under('rooms/room_d49/msgs').length, 0, 'a dropped phone\'s own messages must still be cleaned up by the server');
+
+    // Leaving still ends the membership — the only way it ends now.
+    assert.strictEqual(storeOf('guest-uid').get(KEY), 'room_d49', 'the guest must remember the room it is in');
+    await on('guest-uid', () => guest.leaveRoom());
+    assert(!data.has('rooms/room_d49/members/guest-uid'), 'leaving the match must still take the player out of its room');
+    assert.strictEqual(storeOf('guest-uid').get(KEY), undefined, 'and the phone must forget the room once it has left it');
+
+    // An app that died mid-match never left: its membership is removed at its next room.
+    const again = phone('host-uid');      // the host's app, started again; storage survives
+    assert.strictEqual(storeOf('host-uid').get(KEY), 'room_d49', 'setup: the host never left, so it still remembers the room');
+    await on('host-uid', () => again.openRoom('room_d49b', 'guest-uid'));
+    assert(!data.has('rooms/room_d49/members/host-uid'),
+      'a membership left by an app that died mid-match must be removed at its next room, or every such match stays in the database for good');
+    assert(data.has('rooms/room_d49b/members/host-uid'), 'and the new room must be the one it is in now');
+    assert.strictEqual(storeOf('host-uid').get(KEY), 'room_d49b', 'the phone now remembers the room it is in');
+    console.log('  ✅ Dropped and back: both still members, messages cleaned; leaving ends it; a dead app\'s membership goes at its next room');
+  } finally {
+    if (hadStorage) globalThis.localStorage = realStorage;
+    else delete globalThis.localStorage;
+  }
+}
+
 console.log('\n🎉 [PASS] Battle Message Validation & Transport Contract Verified!\n');
