@@ -19,6 +19,7 @@ import { applyBattleResult } from '../utils/battleRating.js';
 import {
   noteOpponentProgress, finishReplay, handleReplayShare, handleMatchLog, refreshReplayResult, abandonReplay
 } from './replayExchange.js';
+import { noteHeard, startPresence, stopPresence } from './peerPresence.js';
 
 class BattleService {
   constructor() {
@@ -129,6 +130,11 @@ class BattleService {
     if (!isForRoom(data, room) || !isFromOpponent(data, room)) return;
     if (!isForThisMatch(data, room)) return;
 
+    // Anything from the opponent says they are still there; a heartbeat has no
+    // other use, and older versions pass over it like any type they do not know
+    // (D37, peerPresence.js).
+    noteHeard(room, data, Date.now());
+
     if (data.type === 'player_progress') this.handlePlayerProgress(data);
     // After a match: the move exchange for replays (replayExchange.js, I-1).
     else if (data.type === 'replay_share') handleReplayShare(this, data);
@@ -164,6 +170,7 @@ class BattleService {
    * nothing up.
    */
   handleOpponentLeft() {
+    this.stopPresence();
     const room = this.currentRoom;
     if (room && room.status === 'playing') {
       room.status = 'finished';
@@ -219,8 +226,15 @@ class BattleService {
       // 벽시계를 맞출 필요가 없다 — 비교하는 것은 두 소요 시간이지 두 시각이 아니다.
       startedAt: Date.now(), myElapsedMs: null, opponentElapsedMs: null
     };
+    this.startPresence();
     this.notifyListeners();
   }
+
+  // The heartbeat and the watches on the opponent and on this phone's connection
+  // (D37) live in peerPresence.js, like the replay exchange in replayExchange.js.
+  startPresence() { startPresence(this); }
+
+  stopPresence() { stopPresence(this); }
 
   sendProgress(remainingCounts, mistakes, board = null) {
     if (!this.currentRoom || this.currentRoom.status !== 'playing') return;
@@ -234,6 +248,8 @@ class BattleService {
 
     this.currentRoom.myProgress = progressPct;
     this.currentRoom.myMistakes = mistakes;
+    // Progress tells the opponent this side is here: the heartbeat due next is skipped (D37).
+    this.currentRoom.sentAt = Date.now();
 
     if (progressPct >= 100) {
       this.currentRoom.status = 'finished';
@@ -375,6 +391,7 @@ class BattleService {
       // The replay of the match before is saved; this one starts empty (I-1).
       replay: null, earlyShare: undefined, oppProgress: []
     });
+    this.startPresence();
     this.notifyListeners();
   }
 
@@ -399,6 +416,7 @@ class BattleService {
   }
 
   leaveRoom() {
+    this.stopPresence();
     aiBotService.stopMatch();
     // Anything still on its way to starting a match is now answering a search that is over.
     this.searchEpoch = (this.searchEpoch || 0) + 1;

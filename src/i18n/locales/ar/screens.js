@@ -225,7 +225,10 @@ export const screens = {
     aiTag: 'بوت',
     botNames: { grandmaster: 'بوت الأستاذ الكبير', solver: 'بوت الحلّال', logic: 'بوت المنطق', swift: 'بوت البرق' },
     confirmLeave: 'هل ترغب في الانسحاب والعودة إلى الرئيسية؟',
-    emptyCellsLeft: 'متبقية'
+    emptyCellsLeft: 'متبقية',
+    // D37: in place of the count when nothing is heard from the opponent / this phone is offline
+    opponentNoResponse: 'لا استجابة',
+    connectionLost: 'غير متصل'
   },
   aiBattleScreen: {
     selectLevelTitle: 'اختر مستوى صعوبة الذكاء الاصطناعي',

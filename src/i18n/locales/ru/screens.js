@@ -225,7 +225,10 @@ export const screens = {
     aiTag: 'ИИ',
     botNames: { grandmaster: 'ИИ Гроссмейстер', solver: 'ИИ Решатель', logic: 'ИИ Логик', swift: 'ИИ Молния' },
     confirmLeave: 'Сдаться и вернуться на главную?',
-    emptyCellsLeft: 'осталось'
+    emptyCellsLeft: 'осталось',
+    // D37: in place of the count when nothing is heard from the opponent / this phone is offline
+    opponentNoResponse: 'Нет ответа',
+    connectionLost: 'Нет связи'
   },
   aiBattleScreen: {
     selectLevelTitle: 'Выберите сложность ИИ',

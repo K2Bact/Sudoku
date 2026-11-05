@@ -232,7 +232,10 @@ export const screens = {
     aiTag: 'IA',
     botNames: { grandmaster: 'IA Gran Maestra', solver: 'IA Resolutora', logic: 'IA Lógica', swift: 'IA Veloz' },
     confirmLeave: '¿Deseas abandonar el duelo y volver al inicio?',
-    emptyCellsLeft: 'restantes'
+    emptyCellsLeft: 'restantes',
+    // D37: in place of the count when nothing is heard from the opponent / this phone is offline
+    opponentNoResponse: 'Sin respuesta',
+    connectionLost: 'Sin conexión'
   },
   aiBattleScreen: {
     selectLevelTitle: 'Seleccionar dificultad de la IA',

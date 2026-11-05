@@ -225,7 +225,10 @@ export const screens = {
     aiTag: 'AI',
     botNames: { grandmaster: 'AI ग्रैंडमास्टर', solver: 'AI सॉल्वर', logic: 'AI लॉजिक', swift: 'AI स्विफ्ट' },
     confirmLeave: 'क्या आप हार मानकर होम स्क्रीन पर जाना चाहते हैं?',
-    emptyCellsLeft: 'शेष'
+    emptyCellsLeft: 'शेष',
+    // D37: in place of the count when nothing is heard from the opponent / this phone is offline
+    opponentNoResponse: 'कोई जवाब नहीं',
+    connectionLost: 'ऑफ़लाइन'
   },
   aiBattleScreen: {
     selectLevelTitle: 'एआई कठिनाई चुनें',

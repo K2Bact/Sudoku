@@ -225,7 +225,10 @@ export const screens = {
     aiTag: 'KI',
     botNames: { grandmaster: 'KI-Großmeister', solver: 'KI-Löser', logic: 'KI-Logiker', swift: 'KI-Blitz' },
     confirmLeave: 'Möchtest du aufgeben und zum Hauptmenü zurückkehren?',
-    emptyCellsLeft: 'übrig'
+    emptyCellsLeft: 'übrig',
+    // D37: in place of the count when nothing is heard from the opponent / this phone is offline
+    opponentNoResponse: 'Keine Antwort',
+    connectionLost: 'Getrennt'
   },
   aiBattleScreen: {
     selectLevelTitle: 'KI-Schwierigkeit wählen',

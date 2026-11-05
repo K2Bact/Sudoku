@@ -195,6 +195,11 @@ export class LocalTransport {
     this.send(message);
   }
 
+  /** Heartbeats go on the room or not at all, as over Firebase (D37). */
+  async sendRoomOnly(message) {
+    return Boolean(this.room && (await this.room.send(message)));
+  }
+
   leaveRoom(roomId) {
     if (!this.room || (roomId && this.room.roomId !== roomId)) return;
     this.room.close();

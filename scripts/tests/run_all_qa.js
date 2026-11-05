@@ -127,6 +127,7 @@ runStep('2-29. Signed Latin Tokens In RTL Text Are Isolated (+10, S+, Lv.4+ draw
 runStep('2-30. Every Achievement Can Be Earned, And Only By Doing What It Says', 'node scripts/tests/unit/test_achievements.js');
 runStep('2-31. A Win Pays The Mission On Its Card (the 15th win, both kinds, level and Speedrun missions)', 'node scripts/tests/unit/test_daily_mission_win.js');
 runStep('2-32. The Back Key Closes The Newest Open Window (the list, out-of-order removal, a rewarded ad holding back)', 'node scripts/tests/unit/test_back_layers.js');
+runStep('2-33. A 1v1 Says When The Opponent Stops Answering (heartbeat on the room, 12 s, never for 31/32 or the AI, stops on every way out)', 'node scripts/tests/unit/test_peer_presence.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests

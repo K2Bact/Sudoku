@@ -90,7 +90,10 @@ export function BattleHeader({
         {/* Left: Player (Me) */}
         <div className="player-countdown-box my-box">
           <span className="player-name-label">{t('battleResult.you')}</span>
-          <span className="countdown-number-val">{currentMyEmpty} {t('battleHeader.emptyCellsLeft')}</span>
+          {/* This phone lost its connection (D37): said in place of the count, so the header keeps its height. */}
+          {room?.selfOffline
+            ? <span className="countdown-number-val battle-link-warning" role="status">{t('battleHeader.connectionLost')}</span>
+            : <span className="countdown-number-val">{currentMyEmpty} {t('battleHeader.emptyCellsLeft')}</span>}
           <div className="countdown-gauge-bar">
             <div className="countdown-gauge-fill my-gauge-fill" style={{ width: `${myProgressPct}%` }} />
           </div>
@@ -108,7 +111,10 @@ export function BattleHeader({
         {/* Right: Opponent / AI Bot */}
         <div className="player-countdown-box opp-box">
           <span className="player-name-label">{actualOpponentName}</span>
-          <span className="countdown-number-val">{currentOppEmpty} {t('battleHeader.emptyCellsLeft')}</span>
+          {/* Nothing heard from the opponent for 12 s (D37, firebase/peerPresence.js). */}
+          {room?.opponentSilent
+            ? <span className="countdown-number-val battle-link-warning" role="status">{t('battleHeader.opponentNoResponse')}</span>
+            : <span className="countdown-number-val">{currentOppEmpty} {t('battleHeader.emptyCellsLeft')}</span>}
           <div className="countdown-gauge-bar">
             <div className="countdown-gauge-fill opp-gauge-fill" style={{ width: `${oppProgressPct}%` }} />
           </div>

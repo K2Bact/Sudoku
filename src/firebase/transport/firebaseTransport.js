@@ -352,6 +352,25 @@ export class FirebaseTransport {
     return this.send(message);
   }
 
+  /**
+   * A heartbeat (D37, peerPresence.js) goes on the match's room or not at all —
+   * /bus is read by every player online. False until both ends proved the room.
+   */
+  async sendRoomOnly(message) {
+    return Boolean(this.room && (await this.room.send(message)));
+  }
+
+  /**
+   * This phone's own link to the database, as Firebase sees it (`.info/connected`):
+   * calls back with true or false, resolves to the unsubscribe (D37). The side that
+   * lost its connection had no sign of it (two phones, 2026-10-30).
+   */
+  async watchConnection(onChange) {
+    const api = this.api || (await this.connect());
+    if (!api || !api.db) return () => {};
+    return api.onValue(api.ref(api.db, '.info/connected'), (snap) => onChange(snap.val() === true));
+  }
+
   /** Leave the room — only the one named, so a late call cannot close the next match's. */
   leaveRoom(roomId) {
     if (!this.room || (roomId && this.room.roomId !== roomId)) return;

@@ -225,7 +225,10 @@ export const screens = {
     aiTag: 'AI',
     botNames: { grandmaster: 'AI Grandmaster', solver: 'AI Solver', logic: 'AI Logic', swift: 'AI Swift' },
     confirmLeave: 'Do you want to forfeit and return home?',
-    emptyCellsLeft: 'left'
+    emptyCellsLeft: 'left',
+    // D37: in place of the count when nothing is heard from the opponent / this phone is offline
+    opponentNoResponse: 'No response',
+    connectionLost: 'Offline'
   },
   aiBattleScreen: {
     selectLevelTitle: 'Select AI Difficulty',

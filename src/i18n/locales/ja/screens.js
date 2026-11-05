@@ -225,7 +225,10 @@ export const screens = {
     aiTag: 'AI',
     botNames: { grandmaster: 'AI グランドマスター', solver: 'AI ソルバー', logic: 'AI ロジック', swift: 'AI スウィフト' },
     confirmLeave: '対戦を諦めてホームに戻りますか？',
-    emptyCellsLeft: '残り'
+    emptyCellsLeft: '残り',
+    // D37: in place of the count when nothing is heard from the opponent / this phone is offline
+    opponentNoResponse: '応答なし',
+    connectionLost: 'オフライン'
   },
   aiBattleScreen: {
     selectLevelTitle: 'AI 難易度選択',

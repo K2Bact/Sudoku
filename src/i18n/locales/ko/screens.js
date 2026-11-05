@@ -225,7 +225,10 @@ export const screens = {
     aiTag: 'AI',
     botNames: { grandmaster: 'AI 그랜드마스터', solver: 'AI 해결사', logic: 'AI 논리왕', swift: 'AI 번개' },
     confirmLeave: '배틀을 포기하고 홈으로 나가시겠습니까?',
-    emptyCellsLeft: '남음'
+    emptyCellsLeft: '남음',
+    // D37: in place of the count when nothing is heard from the opponent / this phone is offline
+    opponentNoResponse: '응답 없음',
+    connectionLost: '연결 끊김'
   },
   aiBattleScreen: {
     selectLevelTitle: 'AI 대전 난이도 선택',

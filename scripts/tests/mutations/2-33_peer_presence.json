@@ -1,0 +1,81 @@
+{
+  "gate": "2-33",
+  "name": "A 1v1 Says When The Opponent Stops Answering",
+  "command": "node scripts/tests/unit/test_peer_presence.js",
+  "greenMarker": "[2-33] PASSED",
+  "note": "D37 (two phones, 2026-10-27 and 2026-10-30): an opponent off the network for 90 s changed nothing on either screen. The gate drives the real battleService on a fake clock with a stub channel; Gemini G2-2 (arming) and M3-2 (stopping) are the two places it was easy to get wrong.",
+  "mutations": [
+    {
+      "name": "progress arms the watch",
+      "why": "Opponents on 31/32 send progress and no heartbeat: thinking over a move for 12 s they would read as gone (Gemini G2-2).",
+      "file": "src/firebase/peerPresence.js",
+      "find": "  if (data?.type === 'heartbeat') room.peerBeats = true;",
+      "replace": "  room.peerBeats = true;",
+      "expectFailure": "progress alone armed the watch"
+    },
+    {
+      "name": "the first beat waits a tick",
+      "why": "Until the first beat arrives the other side does not watch at all.",
+      "file": "src/firebase/peerPresence.js",
+      "find": "  tick(); // the first beat at once",
+      "replace": "  // tick(); // the first beat at once",
+      "expectFailure": "the first beat must go out at once"
+    },
+    {
+      "name": "progress does not stand in for a beat",
+      "why": "Twice the writes for the same news.",
+      "file": "src/firebase/battleService.js",
+      "find": "    this.currentRoom.sentAt = Date.now();\n",
+      "replace": "",
+      "expectFailure": "a beat went out a second after progress"
+    },
+    {
+      "name": "the tick does not stop itself when the match ends",
+      "why": "A finished board stops nothing of its own: the timer would run in the result screen and the lobby (Gemini M3-2).",
+      "file": "src/firebase/peerPresence.js",
+      "find": "    if (service.presenceToken !== token || service.currentRoom !== room || room.status !== 'playing') {",
+      "replace": "    if (service.presenceToken !== token) {",
+      "expectFailure": "the board finished: the timer was left running"
+    },
+    {
+      "name": "stopping leaves the connection watch on",
+      "why": "A watch per match, never let go.",
+      "file": "src/firebase/peerPresence.js",
+      "find": "    try { service.unwatchConnection(); } catch { /* already detached */ }",
+      "replace": "    // let go of nothing",
+      "expectFailure": "kept the old connection watch"
+    },
+    {
+      "name": "a rematch does not start the heartbeat again",
+      "why": "The second match would have no heartbeat and no watch.",
+      "file": "src/firebase/battleService.js",
+      "find": "      replay: null, earlyShare: undefined, oppProgress: []\n    });\n    this.startPresence();\n",
+      "replace": "      replay: null, earlyShare: undefined, oppProgress: []\n    });\n",
+      "expectFailure": "a rematch"
+    },
+    {
+      "name": "a lost connection is not shown",
+      "why": "The side that dropped off did not know it (2026-10-30).",
+      "file": "src/firebase/peerPresence.js",
+      "find": "      room.selfOffline = !up;",
+      "replace": "      room.selfOffline = false;",
+      "expectFailure": "did not say so"
+    },
+    {
+      "name": "the opponent is shown as gone later than 12 s",
+      "why": "The number the user saw in the 10-29 plan (Diary 167).",
+      "file": "src/firebase/peerPresence.js",
+      "find": "export const SILENT_MS = 12000;",
+      "replace": "export const SILENT_MS = 13000;",
+      "expectFailure": "not shown as gone after 12 s"
+    },
+    {
+      "name": "nothing the opponent sends counts as heard",
+      "why": "Without it no heartbeat ever arms the watch.",
+      "file": "src/firebase/battleService.js",
+      "find": "    noteHeard(room, data, Date.now());\n",
+      "replace": "",
+      "expectFailure": "an opponent silent for 13 s is not shown as not answering"
+    }
+  ]
+}

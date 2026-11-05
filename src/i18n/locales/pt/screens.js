@@ -225,7 +225,10 @@ export const screens = {
     aiTag: 'IA',
     botNames: { grandmaster: 'IA Grã-Mestra', solver: 'IA Solucionadora', logic: 'IA Lógica', swift: 'IA Veloz' },
     confirmLeave: 'Deseja desistir e retornar ao início?',
-    emptyCellsLeft: 'restantes'
+    emptyCellsLeft: 'restantes',
+    // D37: in place of the count when nothing is heard from the opponent / this phone is offline
+    opponentNoResponse: 'Sem resposta',
+    connectionLost: 'Sem conexão'
   },
   aiBattleScreen: {
     selectLevelTitle: 'Escolha o Nível da IA',

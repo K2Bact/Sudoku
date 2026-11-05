@@ -89,6 +89,9 @@
    counts stayed the light theme's #2563eb / #9333ea and read under 3:1 (D24). Gate 3-4. */
 body.theme-matte-dark .my-box .countdown-number-val { color: #60a5fa; }
 body.theme-matte-dark .opp-box .countdown-number-val { color: #c084fc; }
+/* "No response" / "Offline" in place of the count (D37): red on either theme. */
+.player-countdown-box .countdown-number-val.battle-link-warning { color: #dc2626; }
+body.theme-matte-dark .player-countdown-box .countdown-number-val.battle-link-warning { color: #f87171; }
 
 .countdown-gauge-bar {
   width: 100%;

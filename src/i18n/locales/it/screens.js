@@ -225,7 +225,10 @@ export const screens = {
     aiTag: 'IA',
     botNames: { grandmaster: 'IA Gran Maestra', solver: 'IA Risolutrice', logic: 'IA Logica', swift: 'IA Rapida' },
     confirmLeave: 'Vuoi dichiarare forfait e tornare alla home?',
-    emptyCellsLeft: 'rimaste'
+    emptyCellsLeft: 'rimaste',
+    // D37: in place of the count when nothing is heard from the opponent / this phone is offline
+    opponentNoResponse: 'Non risponde',
+    connectionLost: 'Senza rete'
   },
   aiBattleScreen: {
     selectLevelTitle: 'Difficoltà IA',

@@ -225,7 +225,10 @@ export const screens = {
     aiTag: 'AI',
     botNames: { grandmaster: 'AI 宗师', solver: 'AI 解题手', logic: 'AI 逻辑', swift: 'AI 疾速' },
     confirmLeave: '确定要认输并返回主页吗？',
-    emptyCellsLeft: '剩余'
+    emptyCellsLeft: '剩余',
+    // D37: in place of the count when nothing is heard from the opponent / this phone is offline
+    opponentNoResponse: '无响应',
+    connectionLost: '已断开'
   },
   aiBattleScreen: {
     selectLevelTitle: '选择 AI 对决难度',
