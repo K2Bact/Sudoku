@@ -2,38 +2,42 @@
 Sudoku: Logikrätsel-Akademie
 
 [간단한 설명 (Short description - 최대 80자)]
-Klassik- & Killer-Sudoku, 32 Techniken, tägliche Rätsel, 1v1- & KI-Duelle
+Klassik- & Killer-Sudoku, 40 Techniken, tägliche Rätsel, 1v1- & KI-Duelle
 
 [자세한 설명 (Full description - 최대 4000자)]
 Sudoku für alle – vom Anfänger bis zum erfahrenen Profi.
 
-Spiele auf 5 Schwierigkeitsstufen, lerne 32 Lösungstechniken mit Abbildungen und Übungsrätseln und miss dich in Online-1v1-Duellen mit anderen Spielern oder mit der KI.
+Spiele klassisches und Killer-Sudoku auf 5 Schwierigkeitsstufen, lerne 40 Lösungstechniken mit Abbildungen und Übungsrätseln und miss dich in Online-1v1-Duellen mit anderen Spielern oder mit der KI.
 
 ━━━━━━━━━━━━━━━━━━━━━
 🌟 HIGHLIGHTS
 ━━━━━━━━━━━━━━━━━━━━━
 
-🧩 1. 5 Schwierigkeitsstufen
+🧩 1. Klassik und Killer, 5 Schwierigkeitsstufen
 - Einführung, Einfach, Mittel, Schwer und Experte.
 - Jedes Rätsel wird so erzeugt, dass es genau eine Lösung hat.
-- Die Modi Klassik, Zeitrennen und Überleben.
+- Killer-Sudoku: Die Ziffern in jedem gestrichelten Käfig ergeben zusammen die kleine Zahl in seiner Ecke.
+- Die Modi Klassik, Zeitrennen und Überleben – für Standard und Killer gleichermaßen.
+- Geist und Zeitdifferenz: Spiele dein Rekordrätsel gegen deinen eigenen Lauf oder sieh, wie weit du deinem besten Tempo voraus bist.
 - 4 augenschonende Designs.
 
-🎓 2. Akademie: 32 Lösungstechniken
+🎓 2. Akademie: 40 Lösungstechniken
 - Zu jeder Technik gibt es eine bebilderte Erklärung und 2 Übungsrätsel auf echten Spielfeldern.
 - Anfänger: Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
 - Mittel: Pointing, Claiming, Naked/Hidden Pairs, Triples und Quads
 - Fortgeschritten: X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
 - Meister: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
 - Großmeister: Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
+- Killer: Letztes Feld im Käfig, Eindeutige Kombination, Summen aus zwei Feldern, 45er-Regel, Pflichtziffer, Versteckter Käfig, Innen-Außen-Differenz, Käfig teilen
 
 ⚔️ 3. 1v1- und KI-Duelle
 - Online-Duelle in Echtzeit: Löse dasselbe Spielfeld schneller als dein Gegner.
 - Verfolge beim Spielen den Fortschritt deines Gegners.
-- KI-Duelle in 5 Schwierigkeitsstufen.
+- Nach dem Duell kannst du es Zug für Zug im Rückblick ansehen.
+- KI-Duelle in 5 Schwierigkeitsstufen, mit Standard- oder Killer-Rätseln.
 
 🏆 4. Erfolge und Spielanalyse
-- 30 Erfolge zum Freischalten.
+- 40 Erfolge zum Freischalten, auch in Google Play Games.
 - Dein Spiel, aufgeschlüsselt in 5 Kennzahlen – etwa Tempo und fehlerfreie Lösungen.
 - Tritt in der Logic-Score-Bestenliste von Google Play Games an.
 

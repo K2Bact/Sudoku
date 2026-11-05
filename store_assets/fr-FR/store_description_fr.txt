@@ -2,37 +2,39 @@
 Sudoku : Académie de logique
 
 [간단한 설명 (Short description - 최대 80자)]
-Sudoku classique et Killer, 32 techniques, défis quotidiens, duels 1v1 et IA
+Sudoku classique et Killer, 40 techniques, défis quotidiens, duels 1v1 et IA
 
 [자세한 설명 (Full description - 최대 4000자)]
 Un sudoku accessible à chacun, du grand débutant au joueur chevronné.
 
-Jouez sur 5 niveaux de difficulté, apprenez 32 techniques de résolution avec schémas et exercices, et affrontez d’autres joueurs en duel 1v1 en ligne ou l’IA.
+Jouez au sudoku classique et Killer sur 5 niveaux de difficulté, apprenez 40 techniques de résolution avec schémas et exercices, et affrontez d’autres joueurs en duel 1v1 en ligne ou l’IA.
 
 ━━━━━━━━━━━━━━━━━━━━━
 🌟 POINTS FORTS
 ━━━━━━━━━━━━━━━━━━━━━
 
-🧩 1. 5 niveaux de difficulté
+🧩 1. Classique et Killer, 5 niveaux de difficulté
 - Initiation, Facile, Moyen, Difficile et Expert.
 - Chaque grille est générée pour n’avoir qu’une seule solution.
-- Modes Classique, Contre-la-montre et Survie.
-- Sudoku Killer : les chiffres de chaque cage en pointillés ont pour somme la valeur indiquée. Modes Classique et Contre-la-montre, avec rang et records comme au sudoku standard.
+- Sudoku Killer : les chiffres de chaque cage en pointillés ont pour somme le petit nombre dans son coin.
+- Modes Classique, Contre-la-montre et Survie, en Standard comme en Killer.
+- Fantôme et Écart : rejouez la grille de votre record contre votre propre partie, ou voyez votre avance sur votre meilleur rythme.
 - 4 thèmes reposants pour les yeux.
 
-🎓 2. Académie : 32 techniques de résolution
+🎓 2. Académie : 40 techniques de résolution
 - Chaque technique s’accompagne d’une explication illustrée et de 2 exercices sur de vraies grilles.
 - Débutant : Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
 - Intermédiaire : Pointing, Claiming, Naked/Hidden Pairs, Triples et Quads
 - Avancé : X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
 - Maître : Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
 - Grand Maître : Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
+- Killer : Dernière case de la cage, Combinaison unique, Sommes de deux cases, Règle des 45, Chiffre obligé, Cage cachée, Différence dedans-dehors, Couper la cage
 
 ⚔️ 3. Duels 1v1 et contre l’IA
 - Duels en ligne en temps réel : affrontez un autre joueur sur la même grille.
 - Suivez la progression de votre adversaire pendant la partie.
 - Après le duel, revoyez les deux grilles coup par coup.
-- Duels contre l’IA sur 5 niveaux de difficulté.
+- Duels contre l’IA sur 5 niveaux de difficulté, en Standard ou en Killer.
 
 🏆 4. Succès et analyse de jeu
 - 40 succès à débloquer, aussi dans Google Play Jeux.
