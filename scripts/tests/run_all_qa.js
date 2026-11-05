@@ -126,6 +126,7 @@ runStep('2-28. A Killer Game Plays And Counts As A Killer (notes, mistakes, reco
 runStep('2-29. Signed Latin Tokens In RTL Text Are Isolated (+10, S+, Lv.4+ drawn as written)', 'node scripts/tests/unit/test_rtl_signed_tokens.js');
 runStep('2-30. Every Achievement Can Be Earned, And Only By Doing What It Says', 'node scripts/tests/unit/test_achievements.js');
 runStep('2-31. A Win Pays The Mission On Its Card (the 15th win, both kinds, level and Speedrun missions)', 'node scripts/tests/unit/test_daily_mission_win.js');
+runStep('2-32. The Back Key Closes The Newest Open Window (the list, out-of-order removal, a rewarded ad holding back)', 'node scripts/tests/unit/test_back_layers.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests
@@ -161,6 +162,7 @@ runStep('3-17. The 1v1 Replay Screen (opens, ends on its moves, says why, fits; 
 runStep('3-18. A Killer Game On The Screen (home switch, cages drawn, killer record only; 13 languages)', 'node scripts/tests/ui/test_killer_screens.js');
 runStep('3-19. A Game Started From Inside A Game Keeps Its Mode And Leaves The Daily (restart, next, level picker)', 'node scripts/tests/ui/test_follow_up_game.js');
 runStep('3-20. The Last Move Writes What The Screen Shows (a hint on the last cell or with the pencil on, a resumed daily, a final Speedrun combo, a clock that stops at 1 s)', 'node scripts/tests/ui/test_hints_and_last_moves.js');
+runStep('3-21. Attendance Is Paid On Home, Not Only At Start (back to the front on Home, not in a game, once a day)', 'node scripts/tests/ui/test_attendance_return.js');
 
 console.log('======================================================');
 summary('pass');

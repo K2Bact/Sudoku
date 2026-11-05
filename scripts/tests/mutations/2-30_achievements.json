@@ -119,11 +119,19 @@
     },
     {
       "name": "app start does not check the achievements",
-      "why": "The day and streak badges would wait for a win; a badge earned before it existed would wait too.",
+      "why": "A badge earned before it existed would wait for a win. Since D45 (2026-10-30) a claim checks them itself (utils/attendanceClaim.js), so app start checks only when there was nothing to claim.",
       "file": "src/hooks/useAppModals.js",
-      "find": "    if (reward) setDailyRewardInfo(reward);\n    checkAndUnlockAchievements();\n",
+      "find": "    if (reward) setDailyRewardInfo(reward);\n    else checkAndUnlockAchievements();\n",
       "replace": "    if (reward) setDailyRewardInfo(reward);\n",
       "expectFailure": "app start must claim the day"
+    },
+    {
+      "name": "a claim does not check the achievements",
+      "why": "The day-count and streak badges would wait for a win — on Home or on the way back to the app as well as at start (D45).",
+      "file": "src/utils/attendanceClaim.js",
+      "find": "    checkAndUnlockAchievements();\n    if (sync)",
+      "replace": "    if (sync)",
+      "expectFailure": "a claim must check the achievements"
     },
     {
       "name": "a practice solved is not recorded",

@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useMemo, useRef, useStat
 import { AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../../i18n/i18nContext';
 import { soundHaptic } from '../../utils/soundHaptic';
+import { useBackLayer } from '../../hooks/useBackLayer';
 
 /**
  * In-app replacement for window.confirm().
@@ -89,6 +90,12 @@ export function ConfirmProvider({ children }) {
       }),
     [t]
   );
+
+  // Back answers the dialog on screen: No for a question, OK for a notice (its
+  // only button). This provider sits outside App, so the dialog outlives screen
+  // changes — back used to change the screen under it, or on Home close the app
+  // with the question still up (D43).
+  useBackLayer(Boolean(request), () => settle(!request?.cancelLabel));
 
   const api = useMemo(() => ({ confirm, notify }), [confirm, notify]);
 

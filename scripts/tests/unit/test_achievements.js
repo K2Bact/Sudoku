@@ -273,12 +273,19 @@ const CASES = {
   assert(/setIsSolved\(true\);[\s\S]{0,80}if \(markPracticeSolved\(strategyId\)\) checkAndUnlockAchievements\(\)/.test(practice),
     'a practice board solved must be recorded and the achievements checked');
 
+  // Since D45 (2026-10-30) a claim goes through utils/attendanceClaim.js, which
+  // checks the achievements itself; app start checks them when there was nothing
+  // to claim. Both after the toast listener, or the unlock is silent.
   const modals = strip(read('src/hooks/useAppModals.js'));
   const listener = modals.indexOf("addEventListener('sudoku_achievement_unlocked'");
-  const claim = modals.indexOf('claimDailyAttendance()');
-  const check = modals.indexOf('checkAndUnlockAchievements()');
+  const claim = modals.indexOf('claimAttendanceNow()');
+  const check = modals.indexOf('else checkAndUnlockAchievements()');
   assert(listener > 0 && claim > listener && check > claim,
     'app start must claim the day, then check the achievements — after the toast listener is attached, or the unlock is silent');
+  const claimer = strip(read('src/utils/attendanceClaim.js'));
+  const claimed = claimer.indexOf('claimDailyAttendance()');
+  assert(claimed > 0 && claimer.indexOf('checkAndUnlockAchievements()') > claimed,
+    'a claim must check the achievements — the day-count and streak badges would wait for a win');
 
   const input = strip(read('src/hooks/useGameInput.js'));
   assert(/notePlaced\(playFactsRef\?\.current\)/.test(input), 'adding a note must be counted');

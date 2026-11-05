@@ -117,6 +117,62 @@ runTest('Daily Attendance: Claiming attendance grants bonus hint and sets streak
   if (res2 !== null) throw new Error('Duplicate claim allowed on same day');
 });
 
+// The clock on the phone, set to noon of a given local day while fn runs.
+// getTodayDateKey() reads `new Date()` at the call, so swapping Date is enough.
+function onDay(key, fn) {
+  const RealDate = Date;
+  const fixed = new RealDate(`${key}T12:00:00`).getTime();
+  globalThis.Date = class extends RealDate {
+    constructor(...args) { if (args.length) super(...args); else super(fixed); }
+    static now() { return fixed; }
+  };
+  try { return fn(); } finally { globalThis.Date = RealDate; }
+}
+
+// D46 (2026-10-29, emulator): with the clock moved back a day the claim read as
+// a missed day — another hint and the streak back to 1, again on every move.
+runTest('D46: moving the clock back pays nothing and keeps the streak', () => {
+  localStorage.clear();
+  onDay('2026-10-30', claimDailyAttendance);
+  onDay('2026-10-31', claimDailyAttendance);
+  const before = loadWallet();
+  if (before.streakDays !== 2 || before.hints !== 5) throw new Error(`setup: streak ${before.streakDays}, hints ${before.hints}`);
+
+  const back = onDay('2026-10-30', claimDailyAttendance);
+  const after = loadWallet();
+  if (back !== null || after.hints !== 5 || after.streakDays !== 2) {
+    throw new Error(`Moving the clock back paid again: returned ${JSON.stringify(back)}, hints ${after.hints}, streak ${after.streakDays}`);
+  }
+  if (after.lastDailyClaimDate !== '2026-10-31') throw new Error(`Moving the clock back rewrote the last claim to ${after.lastDailyClaimDate}`);
+  if (onDay('2026-10-31', claimDailyAttendance) !== null) throw new Error('Moving the clock back and forward paid the same day twice');
+
+  const next = onDay('2026-11-01', claimDailyAttendance);
+  if (!next || next.streakDays !== 3) throw new Error(`The day after should continue the streak to 3, got ${JSON.stringify(next)}`);
+});
+
+runTest('D46: a claim more than a week ahead is a wrong clock put right — moved to today, nothing paid', () => {
+  localStorage.clear();
+  onDay('2026-11-08', claimDailyAttendance);
+  const fixed = onDay('2026-10-31', claimDailyAttendance);
+  const w = loadWallet();
+  if (fixed !== null || w.hints !== 4 || w.streakDays !== 1) {
+    throw new Error(`Putting a wrong clock right paid or reset: returned ${JSON.stringify(fixed)}, hints ${w.hints}, streak ${w.streakDays}`);
+  }
+  if (w.lastDailyClaimDate !== '2026-10-31') {
+    throw new Error(`A wrong clock put right left the claim on ${w.lastDailyClaimDate} — attendance would wait for that day`);
+  }
+  const next = onDay('2026-11-01', claimDailyAttendance);
+  if (!next || next.streakDays !== 2) throw new Error(`The day after a wrong clock was put right should pay, got ${JSON.stringify(next)}`);
+
+  // Exactly a week back is still the strict case: nothing paid, the claim stays.
+  localStorage.clear();
+  onDay('2026-11-07', claimDailyAttendance);
+  onDay('2026-10-31', claimDailyAttendance);
+  if (loadWallet().lastDailyClaimDate !== '2026-11-07') {
+    throw new Error(`Seven days back already counted as a wrong clock (claim moved to ${loadWallet().lastDailyClaimDate})`);
+  }
+});
+
 // 6. The exact sequence a player reported: home said 9, the game said 10.
 //    This runs before the broader broadcast test on purpose. runTest rethrows,
 //    so whichever case fails first is the only one that ever reports; putting
@@ -244,6 +300,46 @@ runTest('D30 wiring: the hint button and the ad reward say storage is full inste
   const counted = reward.indexOf('setAdHintsUsedThisGame(');
   if (guard < 0 || handOn < guard || counted < guard || !reward.slice(guard, handOn).includes("t('modals.hintReward.notSaved')")) {
     throw new Error('useRewardHint hands a reward the storage refused on to the hint button (or counts it toward the two a game)');
+  }
+});
+
+// D45 (2026-10-29, emulator): attendance was claimed only at app start. It is now
+// claimed on Home and on the way back to the app, through one function that also
+// checks the achievements and — on the way back — asks for a backup, because the
+// backup useCloudAutoSync starts on the same event looks before the claim.
+// Imported here, after the localStorage stand-in exists.
+const { claimAttendanceNow } = await import('../../../src/utils/attendanceClaim.js');
+const { cloudSyncService } = await import('../../../src/services/cloudSyncService.js');
+let syncCalls = 0;
+const realSync = cloudSyncService.syncIfNeeded;
+cloudSyncService.syncIfNeeded = async () => { syncCalls += 1; return { skipped: 'test' }; };
+
+runTest('D45: a claim on the way back asks for one backup; the same day claims nothing more', () => {
+  localStorage.clear();
+  syncCalls = 0;
+  const back = onDay('2026-10-30', () => claimAttendanceNow({ sync: true }));
+  if (!back || back.streakDays !== 1 || syncCalls !== 1) {
+    throw new Error(`A claim on the way back should pay and back up once: ${JSON.stringify(back)}, backups asked ${syncCalls}`);
+  }
+  const again = onDay('2026-10-30', () => claimAttendanceNow({ sync: true }));
+  if (again !== null || syncCalls !== 1) throw new Error(`The same day claimed again or backed up again: ${JSON.stringify(again)}, backups asked ${syncCalls}`);
+  const onHome = onDay('2026-10-31', () => claimAttendanceNow());
+  if (!onHome || onHome.streakDays !== 2 || syncCalls !== 1) {
+    throw new Error(`A claim at start or on arriving Home pays without a backup of its own: ${JSON.stringify(onHome)}, backups asked ${syncCalls}`);
+  }
+});
+cloudSyncService.syncIfNeeded = realSync;
+
+runTest('D45 wiring: Home claims on arrival and on the way back, not in a game', () => {
+  const src = fs.readFileSync(path.join(SRC, 'hooks', 'useAppModals.js'), 'utf8');
+  if (!/if \(activeScreen !== 'home'\) return;\s*const reward = claimAttendanceNow\(\);/.test(src)) {
+    throw new Error('useAppModals does not claim when Home is reached');
+  }
+  if (!/visibilityState !== 'visible' \|\| screenRef\.current !== 'home'\) return;\s*const reward = claimAttendanceNow\(\{ sync: true \}\);/.test(src)) {
+    throw new Error('useAppModals does not claim on the way back to the app on Home (with a backup)');
+  }
+  if (!/useAppModals\(isVictory, activeScreen\)/.test(fs.readFileSync(path.join(SRC, 'App.jsx'), 'utf8'))) {
+    throw new Error('App does not hand useAppModals the screen, so Home cannot be told from a game');
   }
 });
 

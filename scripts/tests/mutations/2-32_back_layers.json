@@ -1,0 +1,41 @@
+{
+  "gate": "2-32",
+  "name": "The Back Key Closes The Newest Open Window",
+  "command": "node scripts/tests/unit/test_back_layers.js",
+  "greenMarker": "Back layers gate passed",
+  "note": "D43 (release 32 on the emulator, 2026-10-29): windows a screen opens with its own state were invisible to the back key, and on Home a second press closed the app with the window up. The list in utils/backLayers.js is what useBackStack now closes first; 3-6 checks the screens.",
+  "mutations": [
+    {
+      "name": "a window going takes the newest one off instead of itself",
+      "why": "A screen change unmounts several windows at once and their cleanups need not run newest first. Popping the top would leave a window that is gone on the list and drop one still on screen.",
+      "file": "src/utils/backLayers.js",
+      "find": "    const i = layers.lastIndexOf(entry);\n    if (i >= 0) layers.splice(i, 1);",
+      "replace": "    layers.pop();",
+      "expectFailure": "the middle one was not taken out by itself"
+    },
+    {
+      "name": "asking the top window to close takes it off the list",
+      "why": "A window that does not close when asked (an ad loading closes nothing on purpose) would drop off the list while it is still on screen, and the next back would go past it to the screen — D43 again.",
+      "file": "src/utils/backLayers.js",
+      "find": "  top.close();\n  return true;",
+      "replace": "  layers.pop();\n  top.close();\n  return true;",
+      "expectFailure": "closeTopBackLayer took the window off the list itself"
+    },
+    {
+      "name": "a rewarded ad does not hold the back key while it loads",
+      "why": "Back during the load left the screen: the revive then landed on a game no longer showing (Gemini G2-1, 2026-10-30).",
+      "file": "src/components/common/adRewardMessage.js",
+      "find": "  const release = pushBackLayer(() => {});",
+      "replace": "  const release = () => {};",
+      "expectFailure": "nothing holds the back key while the ad loads"
+    },
+    {
+      "name": "the ad's hold is not let go when it ends",
+      "why": "A hold left behind would make back do nothing for the rest of the session.",
+      "file": "src/components/common/adRewardMessage.js",
+      "find": "  } finally {\n    release();\n  }",
+      "replace": "  }",
+      "expectFailure": "the hold stayed after the ad was paid"
+    }
+  ]
+}

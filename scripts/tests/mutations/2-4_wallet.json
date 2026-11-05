@@ -76,6 +76,46 @@
       "find": "    if (newCount <= before) {",
       "replace": "    if (false) {",
       "expectFailure": "useRewardHint hands a reward"
+    },
+    {
+      "name": "moving the clock back pays the day again (D46)",
+      "why": "An earlier day read as a missed day: a hint on every move of the clock and the streak back to 1 (emulator, 2026-10-29).",
+      "file": "src/utils/wallet.js",
+      "find": "    if (diffDays < 0) {",
+      "replace": "    if (false && diffDays < 0) {",
+      "expectFailure": "Moving the clock back paid again"
+    },
+    {
+      "name": "a clock that was months ahead freezes attendance (D46)",
+      "why": "Without the reset a phone whose clock was once far ahead gets nothing until that date comes round.",
+      "file": "src/utils/wallet.js",
+      "find": "      if (diffDays < -CLOCK_RESET_DAYS) {",
+      "replace": "      if (false) {",
+      "expectFailure": "attendance would wait for that day"
+    },
+    {
+      "name": "a week back already counts as a wrong clock (D46)",
+      "why": "The boundary: the strict rule holds up to seven days, so a back-and-forth inside a week never pays.",
+      "file": "src/utils/wallet.js",
+      "find": "      if (diffDays < -CLOCK_RESET_DAYS) {",
+      "replace": "      if (diffDays <= -CLOCK_RESET_DAYS) {",
+      "expectFailure": "Seven days back already counted as a wrong clock"
+    },
+    {
+      "name": "a claim on the way back asks for no backup (D45)",
+      "why": "The backup started on the same event looked before the claim and skipped; without this one the day's hint and streak wait in this phone alone for the next win.",
+      "file": "src/utils/attendanceClaim.js",
+      "find": "    if (sync) cloudSyncService.syncIfNeeded().catch(() => {});\n",
+      "replace": "",
+      "expectFailure": "should pay and back up once"
+    },
+    {
+      "name": "Home claims nothing on the way back to the app (D45)",
+      "why": "A phone that keeps the app in the background never starts it again — the original bug.",
+      "file": "src/hooks/useAppModals.js",
+      "find": "      const reward = claimAttendanceNow({ sync: true });\n",
+      "replace": "      const reward = null;\n",
+      "expectFailure": "on the way back to the app on Home"
     }
   ]
 }

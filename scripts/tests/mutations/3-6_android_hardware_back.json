@@ -28,6 +28,62 @@
       "find": "        onCloseBattleResult();",
       "replace": "        setActiveScreen(activeBattleRoom?.isAiMatch ? 'aiBattle' : 'battleLobby');",
       "expectFailure": "not stuck on the battle screen"
+    },
+    {
+      "name": "Back ignores the windows a screen opened itself (D43)",
+      "why": "The release-32 bug: on Home, back said press again to exit with the rules card up, and a second press closed the app.",
+      "file": "src/hooks/useBackStack.js",
+      "find": "      if (closeTopBackLayer()) return true;\n",
+      "replace": "",
+      "expectFailure": "Back closes the Home rules card"
+    },
+    {
+      "name": "a closed window stays on the list (D43)",
+      "why": "Without the cleanup every later back on Home goes to a window that is gone, and the app can no longer be left with back.",
+      "file": "src/hooks/useBackLayer.js",
+      "find": "    return pushBackLayer(() => {",
+      "replace": "    pushBackLayer(() => {",
+      "expectFailure": "the window left the list"
+    },
+    {
+      "name": "the rules card is not on the list (D43)",
+      "why": "One registration covers seven places: the info button on four screens and the first killer on three.",
+      "file": "src/components/home/RulesModal.jsx",
+      "find": "  useBackLayer(true, onClose);\n",
+      "replace": "",
+      "expectFailure": "Back closes the Home rules card"
+    },
+    {
+      "name": "the locked Ghost note is not on the list (D43)",
+      "why": "The note stays until dismissed (gate 2-6), so back on Home met it often.",
+      "file": "src/components/home/RivalModeChips.jsx",
+      "find": "  useBackLayer(Boolean(lockedToast), () => setLockedToast(null));\n",
+      "replace": "",
+      "expectFailure": "Back closes the locked Ghost note"
+    },
+    {
+      "name": "the privacy page is not on the list (D43)",
+      "why": "Back then left Settings with the page still drawn over Home.",
+      "file": "src/components/modals/PrivacyPolicyModal.jsx",
+      "find": "  useBackLayer(true, onClose);\n",
+      "replace": "",
+      "expectFailure": "Back closes the privacy page"
+    },
+    {
+      "name": "the confirm dialog is not on the list (D43)",
+      "why": "The dialog lives outside App: back asked the same question again in a game, and in Settings changed the screen under it.",
+      "file": "src/components/common/ConfirmProvider.jsx",
+      "find": "  useBackLayer(Boolean(request), () => settle(!request?.cancelLabel));\n",
+      "replace": "",
+      "expectFailure": "Back answers the leave question"
+    },
+    {
+      "name": "Back on a finished game asks to leave it (D43, Gemini G1-1)",
+      "why": "The old way: a leave question over a game already over, and Home without what its Home button tidies.",
+      "file": "src/hooks/useBackStack.js",
+      "find": "        if (!activeBattleRoom && (isVictory || isGameOver) && onReturnHome) {",
+      "replace": "        if (false) {",
+      "expectFailure": "does not ask to leave a game already over"
     }
   ],
   "rebuild": true

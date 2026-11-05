@@ -2,9 +2,13 @@ import React from 'react';
 import { Gift, Award, CheckCircle2 } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
+import { useBackLayer } from '../hooks/useBackLayer';
 
 export function DailyRewardModal({ rewardInfo, onConfirm }) {
   const { t } = useTranslation();
+  // On the list of open windows, so a reward that opens over a note on Home
+  // (a claim on the way back to the app, D45) is the one back closes first.
+  useBackLayer(Boolean(rewardInfo), () => { if (onConfirm) onConfirm(); });
   if (!rewardInfo) return null;
 
   const handleConfirm = () => {

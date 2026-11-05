@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from '../../i18n/i18nContext';
+import { useBackLayer } from '../../hooks/useBackLayer';
 
 // What each kind of puzzle asks of the player. Keys are written out so every
 // one is findable (gate 2-15).
@@ -27,10 +28,14 @@ const RULES = {
  *
  * onStart: given on that first start, so the button starts the game; without
  * it the button only closes.
+ *
+ * Back closes it like a tap outside — on the first killer too, where that means
+ * no game starts (and on the daily, no ad is spent). D43.
  */
 export function RulesModal({ variant = 'classic', onClose, onStart }) {
   const { t } = useTranslation();
   const rules = RULES[variant] || RULES.classic;
+  useBackLayer(true, onClose);
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-card variant-rules-card" data-variant={variant} role="dialog" aria-label={t(rules.title)}

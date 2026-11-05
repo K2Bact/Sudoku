@@ -166,6 +166,10 @@ export function addHints(amount, reason = 'reward') {
   return wallet.hints;
 }
 
+// A claim dated more than this many days ahead of today is a clock that was
+// wrong and has since been put right. Time zones move the date two days at most.
+export const CLOCK_RESET_DAYS = 7;
+
 /**
  * Check and claim daily attendance reward
  * Returns { claimed: boolean, hintsAdded: number, streakDays: number } or null if already claimed today
@@ -182,6 +186,20 @@ export function claimDailyAttendance() {
   // Calculate streak
   if (wallet.lastDailyClaimDate) {
     const diffDays = daysBetweenKeys(wallet.lastDailyClaimDate, today);
+
+    // Today is earlier than the last claim: the clock was moved back, or a
+    // flight west moved the date back a day. That day was paid already. Read as
+    // a missed day, it paid again on every move of the clock and reset the
+    // streak on top (D46, 2026-10-29). A claim more than a week ahead is moved
+    // to today instead, with no reward and the streak kept — otherwise a phone
+    // whose clock was once months ahead would get nothing until that date.
+    if (diffDays < 0) {
+      if (diffDays < -CLOCK_RESET_DAYS) {
+        wallet.lastDailyClaimDate = today;
+        saveWallet(wallet);
+      }
+      return null;
+    }
 
     if (diffDays === 1) {
       wallet.streakDays += 1;

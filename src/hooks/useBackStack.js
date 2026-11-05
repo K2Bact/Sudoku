@@ -4,6 +4,7 @@ import { soundHaptic } from '../utils/soundHaptic';
 import { useConfirm } from '../components/common/ConfirmProvider';
 import { openReplayId, closeReplay } from '../components/replay/replayViewer';
 import { isAIRoom } from '../firebase/aiBattleSession';
+import { closeTopBackLayer } from '../utils/backLayers';
 
 /**
  * 4-Tier Hardware Back Button & Popstate Navigation Stack
@@ -55,6 +56,9 @@ export function useBackStack(props) {
         setDailyRewardInfo,
         isGuidedTutorial,
         setIsGuidedTutorial,
+        isVictory,
+        isGameOver,
+        onReturnHome,
         isMatchSearching,
         onCancelQuickMatch,
         activeBattleRoom,
@@ -71,6 +75,12 @@ export function useBackStack(props) {
         closeReplay();
         return true;
       }
+
+      // 0b. A window a screen opened with its own state — the rules card, the
+      // privacy page, a locked-mode note, the confirm dialog, a rewarded ad still
+      // loading (utils/backLayers.js). Newest first. Back used to go past them to
+      // the screen, and on Home closed the app with the window still up (D43).
+      if (closeTopBackLayer()) return true;
 
       // 1. Priority 1: Open Modals / Dialogs / Matchmaking Search
       if (isMatchSearching) {
@@ -128,6 +138,15 @@ export function useBackStack(props) {
 
       // 3. Priority 3: Active Gameplay Screen (activeScreen === 'game')
       if (activeScreen === 'game') {
+        // A finished game: back is the result window's own Home button. It used to
+        // ask "leave this game?" of a game already over, then skip what Home
+        // tidies — the mode tab, the daily date (D43, Gemini G1-1, 2026-10-30).
+        // Ahead of the select sound: Home plays it itself. The review prompt
+        // that opens over a win is App's and has been closed above.
+        if (!activeBattleRoom && (isVictory || isGameOver) && onReturnHome) {
+          onReturnHome();
+          return true;
+        }
         soundHaptic.playSelectSound();
         // The back handler has to say NOW whether it consumed the event, so it
         // returns true immediately and finishes the work when the player

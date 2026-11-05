@@ -3,6 +3,7 @@ import { Lock, X, Info } from 'lucide-react';
 import { getGhostForModeLevel } from '../../utils/ghostManager';
 import { soundHaptic } from '../../utils/soundHaptic';
 import { useTranslation } from '../../i18n/i18nContext';
+import { useBackLayer } from '../../hooks/useBackLayer';
 
 /**
  * RivalModeChips — who you are racing on the home screen.
@@ -30,6 +31,10 @@ export function RivalModeChips({ selectedMode, selectedLevel, onChange, variant 
   const [rivalMode, setRivalMode] = useState('standard');
   const [lockedToast, setLockedToast] = useState(null);
   const [showRivalInfo, setShowRivalInfo] = useState(false);
+  // Back closes the open note first; on Home it used to say "press again to
+  // exit" with the note still up (D43).
+  useBackLayer(Boolean(lockedToast), () => setLockedToast(null));
+  useBackLayer(showRivalInfo, () => setShowRivalInfo(false));
 
   // Survival races the clock already; a second pace to chase is one clock too
   // many, so both rivals are off there whatever record exists.

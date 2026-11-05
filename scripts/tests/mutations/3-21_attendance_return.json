@@ -1,0 +1,34 @@
+{
+  "gate": "3-21",
+  "name": "Attendance Is Paid On Home, Not Only At Start",
+  "command": "node scripts/tests/ui/test_attendance_return.js",
+  "greenMarker": "[3-21] PASSED",
+  "note": "D45 (emulator, 2026-10-29): attendance was claimed only when the app started, so a phone that kept the app in the background got nothing until it was killed. The gate moves the page clock past midnight and sends visibilitychange by hand — page.clock does neither hide nor show the page (Gemini G4-3).",
+  "rebuild": true,
+  "mutations": [
+    {
+      "name": "coming back to the app on Home claims nothing",
+      "why": "The original bug: the app in the background is never started again, so the day is never paid.",
+      "file": "src/hooks/useAppModals.js",
+      "find": "      const reward = claimAttendanceNow({ sync: true });\n",
+      "replace": "      const reward = null;\n",
+      "expectFailure": "coming back to the front on Home pays the new day"
+    },
+    {
+      "name": "reaching Home claims nothing",
+      "why": "A day that turned during a game would be paid only on the next start or the next return to the front.",
+      "file": "src/hooks/useAppModals.js",
+      "find": "    if (activeScreen !== 'home') return;\n    const reward = claimAttendanceNow();\n",
+      "replace": "    if (activeScreen !== 'home') return;\n    const reward = null;\n",
+      "expectFailure": "reaching Home pays the day"
+    },
+    {
+      "name": "coming back to the app in a game claims there",
+      "why": "The reward window would open over the board in the middle of a move.",
+      "file": "src/hooks/useAppModals.js",
+      "find": "      if (document.visibilityState !== 'visible' || screenRef.current !== 'home') return;",
+      "replace": "      if (document.visibilityState !== 'visible') return;",
+      "expectFailure": "coming back on a game pays nothing yet"
+    }
+  ]
+}

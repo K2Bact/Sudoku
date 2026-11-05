@@ -81,31 +81,9 @@ export function App() {
     showNewGameModal, setShowNewGameModal,
     showStoreReviewModal, setShowStoreReviewModal,
     achievementToast
-  } = useAppModals(isVictory);
+  } = useAppModals(isVictory, activeScreen);
 
-  useBackStack({
-    activeScreen, previousScreen, setActiveScreen,
-    isMatchSearching, onCancelQuickMatch: handleCancelQuickMatch,
-    showBattleResultModal, onCloseBattleResult: handleCloseBattleResult,
-    showHintRewardModal: game.showHintRewardModal,
-    setShowHintRewardModal: game.setShowHintRewardModal,
-    showNewGameModal, setShowNewGameModal,
-    showStoreReviewModal, setShowStoreReviewModal,
-    dailyRewardInfo, setDailyRewardInfo,
-    isGuidedTutorial, setIsGuidedTutorial,
-    activeBattleRoom, battleService, aiBotService,
-    showExitToast: (msg) => showToast(msg, 2000), t
-  });
-
-  const {
-    confirmAbandon, navigateToScreen, handleStartSingleGame,
-    handleStartDailyPuzzle, handleStartDailyMission, startLiveGuidedTutorial, startFollowUpGame
-  } = useGameStarters({
-    t, activeScreen, setActiveScreen, setPreviousScreen, cleanupBattleSession,
-    setHomeSelectedMode, setActiveDailyDateKey, setIsGuidedTutorial, setGuidedStep,
-    startNewGame, resumeSavedGame, gameMode
-  });
-
+  // Above useBackStack, which hands it to the back key for a finished game (D43).
   const handleReturnHome = () => {
     try {
       soundHaptic.playSelectSound();
@@ -121,6 +99,30 @@ export function App() {
       setActiveScreen('home');
     }
   };
+
+  useBackStack({
+    activeScreen, previousScreen, setActiveScreen,
+    isMatchSearching, onCancelQuickMatch: handleCancelQuickMatch,
+    showBattleResultModal, onCloseBattleResult: handleCloseBattleResult,
+    showHintRewardModal: game.showHintRewardModal,
+    setShowHintRewardModal: game.setShowHintRewardModal,
+    showNewGameModal, setShowNewGameModal,
+    showStoreReviewModal, setShowStoreReviewModal,
+    dailyRewardInfo, setDailyRewardInfo,
+    isGuidedTutorial, setIsGuidedTutorial,
+    isVictory, isGameOver, onReturnHome: handleReturnHome,
+    activeBattleRoom, battleService, aiBotService,
+    showExitToast: (msg) => showToast(msg, 2000), t
+  });
+
+  const {
+    confirmAbandon, navigateToScreen, handleStartSingleGame,
+    handleStartDailyPuzzle, handleStartDailyMission, startLiveGuidedTutorial, startFollowUpGame
+  } = useGameStarters({
+    t, activeScreen, setActiveScreen, setPreviousScreen, cleanupBattleSession,
+    setHomeSelectedMode, setActiveDailyDateKey, setIsGuidedTutorial, setGuidedStep,
+    startNewGame, resumeSavedGame, gameMode
+  });
 
   const gameProps = useGameProps(game, {
     activeBattleRoom,

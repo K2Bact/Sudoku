@@ -1,9 +1,12 @@
 import React from 'react';
 import { Shield } from 'lucide-react';
 import { useTranslation } from '../../i18n/i18nContext';
+import { useBackLayer } from '../../hooks/useBackLayer';
 
 export function PrivacyPolicyModal({ onClose }) {
   const { t } = useTranslation();
+  // Back closes the page, not the settings screen under it (D43).
+  useBackLayer(true, onClose);
 
   return (
     <div className="modal-overlay" onClick={onClose}>

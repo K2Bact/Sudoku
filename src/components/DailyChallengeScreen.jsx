@@ -11,6 +11,7 @@ import { VariantSwitch } from './home/VariantSwitch';
 import { RulesModal } from './home/RulesModal';
 import { usePuzzleKind } from '../hooks/usePuzzleKind';
 import { loadSettings, saveSettings } from '../utils/storage';
+import { useBackLayer } from '../hooks/useBackLayer';
 
 export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyMission }) {
   const { t, activeLanguage } = useTranslation();
@@ -46,6 +47,8 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
 
   const [pendingUnlockDate, setPendingUnlockDate] = useState(null);
   const [watchingAdForDate, setWatchingAdForDate] = useState(null);
+  // Back is the unlock window's Cancel, not the way out of the calendar (D43).
+  useBackLayer(Boolean(pendingUnlockDate), () => setPendingUnlockDate(null));
 
   /**
    * Unlocking a past puzzle costs one rewarded ad. This used to run a ten-second

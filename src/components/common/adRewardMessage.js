@@ -1,3 +1,5 @@
+import { pushBackLayer } from '../../utils/backLayers.js';
+
 /**
  * What a player is told when a rewarded ad gave them nothing.
  *
@@ -32,6 +34,11 @@ export function adRewardMessage(result, t) {
  * placements must never do again is leave their "watching" flag set.
  */
 export async function watchRewardedAd(adsService) {
+  // While the ad loads, back does nothing: it would leave the screen and the
+  // reward would land on a game no longer showing (the revive), or close the
+  // hint window under a running ad. Once the ad is up, back is the ad's own.
+  // A window on the list whose close does nothing (utils/backLayers.js, D43).
+  const release = pushBackLayer(() => {});
   try {
     const result = await adsService.showRewarded();
     return result && typeof result.rewarded === 'boolean'
@@ -40,5 +47,7 @@ export async function watchRewardedAd(adsService) {
   } catch (e) {
     console.warn('[ads] rewarded ad threw:', e?.message || e);
     return { rewarded: false, reason: 'unavailable' };
+  } finally {
+    release();
   }
 }
