@@ -63,8 +63,11 @@ const GRAPHICS_CONFIG = {
     dir: 'ltr',
     badge: '☀ SUDOKU',
     title1: '數獨',
-    title2: '經典邏輯謎題',
-    tagline: '經典 · 32種解法學院 · 大腦IQ報告與1v1對決',
+    // Store title and short description words (store_description_zh-TW.txt), for the Taiwan
+    // launch 2026-11-06. The old tagline sold a "大腦IQ報告" the app renamed to Logic Score,
+    // and counted 32 techniques; the academy has 40 since the killer academy.
+    title2: '邏輯謎題學院',
+    tagline: '經典與殺手 · 40 種解題技巧 · 1v1 與 AI 對戰',
     font: '"PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif'
   },
   'ko-KR': {
