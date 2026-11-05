@@ -125,8 +125,10 @@ const GRAPHICS_CONFIG = {
     dir: 'ltr',
     badge: '☀ SUDOKU',
     title1: 'Sudoku',
-    title2: 'Puzle de lógica clásico',
-    tagline: 'Clásico · 32 técnicas · Informe de IQ y duelo 1v1',
+    // Store title and short description words (store_description_es.txt), 2026-11-06 — the oldest
+    // listing, reviewed whole. The old tagline sold an "Informe de IQ" the app renamed to Logic Score.
+    title2: 'Academia de lógica',
+    tagline: 'Clásico y Killer · 40 técnicas · duelos 1v1 y contra la IA',
     font: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
   },
   'pt-BR': {
