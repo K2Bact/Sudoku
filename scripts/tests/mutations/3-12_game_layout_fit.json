@@ -92,6 +92,30 @@
       "find": "  margin: 0 auto;",
       "replace": "  margin: 0 auto 8px auto;",
       "expectFailure": "unplayable"
+    },
+    {
+      "name": "the game area's basis goes back to auto",
+      "why": "D48 (2026-11-05). With `flex: 1 1 auto` the Android 15 emulator's WebView 124 gave 100cqh = 0 inside .game-main whenever the board had no 100%-tall child — the paused board — and it fell to its 14px padding with 「일시정지 · 눌러서 계속」 cut away. This gate's browser lays it out correctly, so only the source check can see it; the paused measurement passes either way.",
+      "file": "src/styles/gameHeader.css",
+      "find": "  flex: 1 1 0px;",
+      "replace": "  flex: 1 1 auto;",
+      "expectFailure": "its basis must be 0px"
+    },
+    {
+      "name": "the game area becomes flex: 1",
+      "why": "D48. The shorthand looks like the fix but its basis is 0%, and on WebView 124 0% failed exactly like auto (measured live on the emulator).",
+      "file": "src/styles/gameHeader.css",
+      "find": "  flex: 1 1 0px;",
+      "replace": "  flex: 1;",
+      "expectFailure": "its basis must be 0px"
+    },
+    {
+      "name": "the paused board takes its content's width",
+      "why": "D48, the shape a current browser does show: the paused board has no grid, and the board is an inline-size container, so a width taken from its content is its padding — the same 14px the emulator drew.",
+      "file": "src/styles/board.css",
+      "find": ".sudoku-board-container.paused {\n  background: var(--bg-surface);\n}",
+      "replace": ".sudoku-board-container.paused {\n  background: var(--bg-surface);\n  width: auto;\n}",
+      "expectFailure": "D48"
     }
   ],
   "rebuild": true

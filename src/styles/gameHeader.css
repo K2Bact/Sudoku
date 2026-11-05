@@ -24,7 +24,14 @@
   flex-direction: column;
   gap: 14px;
   width: 100%;
-  flex: 1 1 auto;
+  /* Basis 0px, not auto (D48, 2026-11-05). Size containment makes this box's
+     content height 0 either way, so a current engine lays both out alike — but
+     the Android 15 emulator's WebView 124 then gave 100cqh = 0 whenever the board
+     had no 100%-tall child, which is the paused board: min(100cqw, 0 − rest)
+     collapsed it to its 14px padding, and 「일시정지 · 눌러서 계속」 was cut
+     away. 0px, not 0% — `flex: 1` is 0% and failed the same way there. Gate 3-12
+     checks the rule in the source, since its browser never showed the bug. */
+  flex: 1 1 0px;
   min-height: 0;
   /* The board reads this box's size (100cqw × 100cqh) minus what its neighbours
      take (--board-rest, measured by useBoardFit). */

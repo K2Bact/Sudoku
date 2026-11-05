@@ -35,9 +35,19 @@
  * Nothing here was red, because nothing here had a banner. A ghost run that
  * draws no banner is an error of its own — it would be an ordinary game measured
  * twice.
+ *
+ * Every case is also paused (D48, 2026-11-05): the paused board must keep the
+ * playing board's size, with its words inside it. On the Android 15 emulator
+ * (WebView 124) it fell to 14px and 「일시정지 · 눌러서 계속」 was cut away —
+ * .game-main's `flex: 1 1 auto` gave 100cqh = 0 whenever the board had no
+ * 100%-tall child. This gate's browser lays that rule out correctly, so it could
+ * never have seen the bug, and the paused measurement alone would pass with the
+ * old rule put back. The rule is therefore also checked in the source: the
+ * basis must be 0px (`flex: 1`, a 0% basis, failed on the emulator as well).
  */
 import { chromium } from 'playwright';
 import { spawn, execSync } from 'child_process';
+import { readFileSync } from 'fs';
 import http from 'http';
 
 const PORT = 5212;
@@ -93,6 +103,17 @@ console.log('📐 Gate 3-12: The game screen fits the phone');
 console.log('======================================================');
 
 const errors = [];
+// D48 — the rule, read from the source (see the header: this browser cannot show it).
+{
+  const css = readFileSync(new globalThis.URL('../../../src/styles/gameHeader.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const block = css.match(/(?:^|\n)\.game-main \{([^}]*)\}/)?.[1];
+  const flex = block?.match(/(?:^|[;\s])flex:\s*([^;]+);/)?.[1].trim();
+  if (!block) errors.push('gameHeader.css: no .game-main block found — the WebView 124 rule was not checked');
+  else if (!/^\d+ \d+ 0px$/.test(flex || '')) {
+    errors.push(`gameHeader.css: .game-main is \`flex: ${flex}\` — its basis must be 0px, or WebView 124 gives 100cqh = 0 and the paused board falls to 14px (D48)`);
+  }
+}
+let pauseChecked = 0;
 const vite = spawn('npx.cmd', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { shell: true, stdio: 'ignore' });
 try {
   await waitForServer(URL);
@@ -236,7 +257,28 @@ try {
       if (w >= 840 && h > w && r.usedWidth < 0.68) {
         errors.push(`${where}: board and keypad use ${Math.round(r.usedWidth * 100)}% of the width — a tablet showing this much nothing is an app Play reads as not supporting it`);
       }
-      console.log(`  ${where.padEnd(28)} board ${Math.round(r.board)}px · ${r.sideBySide ? 'side-by-side' : 'stacked'} · pad ${r.padColumns}col · width ${Math.round(r.usedWidth * 100)}% · lowest→banner ${Math.round(r.adTop - r.lowest)}px`);
+      // D48: paused, the board keeps its size and its words stay inside it.
+      await page.locator('.timer-badge').click();
+      await page.waitForSelector('.sudoku-board-container.paused', { timeout: 3000 }).catch(() => {});
+      await page.waitForTimeout(150);
+      const pz = await page.evaluate(() => {
+        const c = document.querySelector('.sudoku-board-container.paused');
+        if (!c) return null;
+        const b = c.getBoundingClientRect();
+        const words = [...c.querySelectorAll('.pause-overlay > *')].map((e) => e.getBoundingClientRect());
+        const inside = (x) => x.height > 0 && x.top >= b.top - 1 && x.bottom <= b.bottom + 1 && x.left >= b.left - 1 && x.right <= b.right + 1;
+        return { width: b.width, height: b.height, words: words.length, out: words.filter((x) => !inside(x)).length };
+      });
+      if (!pz) errors.push(`${where}: no paused board after pressing the timer — the pause was not measured`);
+      else {
+        pauseChecked++;
+        if (Math.abs(pz.width - r.board) > 1 || Math.abs(pz.height - r.board) > 1) {
+          errors.push(`${where}: the paused board is ${Math.round(pz.width)}×${Math.round(pz.height)}px, playing it was ${Math.round(r.board)}px — D48`);
+        }
+        if (pz.words < 3) errors.push(`${where}: the paused board shows ${pz.words} of its 3 parts (icon, title, tap to resume)`);
+        else if (pz.out) errors.push(`${where}: ${pz.out} of the paused board's 3 parts lie outside it — D48, the words cut away`);
+      }
+      console.log(`  ${where.padEnd(28)} board ${Math.round(r.board)}px${pz ? ` (paused ${Math.round(pz.width)})` : ''} · ${r.sideBySide ? 'side-by-side' : 'stacked'} · pad ${r.padColumns}col · width ${Math.round(r.usedWidth * 100)}% · lowest→banner ${Math.round(r.adTop - r.lowest)}px`);
       await page.close();
     }
   }
@@ -277,6 +319,10 @@ try {
 } finally {
   shutdown(vite);
 }
+
+const pauseCases = SIZES.length * SCALES.length * 2;
+console.log(`▶ paused board measured in ${pauseChecked} of ${pauseCases} cases`);
+if (pauseChecked !== pauseCases) errors.push(`the paused board was measured in ${pauseChecked} of ${pauseCases} cases`);
 
 if (errors.length) {
   console.error('\n❌ [FAIL] The game screen does not fit:');
