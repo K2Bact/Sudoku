@@ -94,7 +94,7 @@
 }
 
 .sudoku-board-container.killer-board .note-digit {
-  font-size: calc(2.2cqw / var(--text-zoom, 1));
+  font-size: calc(2.2cqw * var(--board-note-step, 1) / var(--text-zoom, 1));
 }
 
 .sudoku-board-container.killer-board .cell-number {

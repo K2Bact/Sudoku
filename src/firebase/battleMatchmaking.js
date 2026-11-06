@@ -15,8 +15,8 @@
  * double rooms) and must not be summarised away.
  */
 
-import { generatePuzzle } from '../engine/SudokuEngine.js';
-import { isValidBoardPayload, isValidTicket } from './battleValidation.js';
+import { dealMatchBoard, kindField, roomBoard, ticketKind } from './battleKind.js';
+import { isValidMatchBoard, isValidTicket } from './battleValidation.js';
 
 /**
  * A room id short enough for the database to accept.
@@ -65,9 +65,12 @@ async function openMatchRoom(service, roomId, peerId) {
  * transport resolves immediately, so both behave the same to callers — which
  * fire-and-forget and wait for the onMatched callback.
  */
-export async function startQuickMatch(service, level = 3, onMatched, onUnavailable) {
+export async function startQuickMatch(service, level = 3, onMatched, onUnavailable, kind = 'classic') {
   service.onMatchSuccess = onMatched;
   service.searchingLevel = level;
+  // A killer search waits in its own queue (KP-10): apps up to 33 read only the standard one.
+  service.searchingKind = kind === 'killer' ? 'killer' : 'classic';
+  if (typeof service.channel.useQueue === 'function') service.channel.useQueue(service.searchingKind);
 
   // A search nobody can answer is not a search. Without a signed-in account the
   // rules refuse every read and write, so this used to run for twelve seconds and
@@ -104,11 +107,10 @@ export async function startQuickMatch(service, level = 3, onMatched, onUnavailab
   if (service.searchingLevel !== level) return;
 
   if (peer) {
-    const puzzle = generatePuzzle(level);
-    const initialEmptyCount = puzzle.puzzle.flat().filter(v => v === 0).length;
+    const board = dealMatchBoard(level, service.searchingKind);
     const roomId = newRoomId();
     const payload = {
-      roomId, level, puzzle: puzzle.puzzle, solution: puzzle.solution, initialEmptyCount,
+      roomId, level, ...board,
       player1: { id: peer.playerId, name: peer.playerName },
       player2: { id: service.myPlayerId, name: service.myPlayerName }
     };
@@ -119,17 +121,24 @@ export async function startQuickMatch(service, level = 3, onMatched, onUnavailab
     if (room) payload.v2 = true;
     service.channel.send({ type: 'match_created', ...payload });
     service.setupRoom({
-      code: roomId.slice(-5), roomId, level, puzzle: puzzle.puzzle, solution: puzzle.solution,
-      initialEmptyCount, opponentId: peer.playerId, opponentName: peer.playerName
+      code: roomId.slice(-5), roomId, level, puzzle: board.puzzle, solution: board.solution, ...roomBoard(board),
+      initialEmptyCount: board.initialEmptyCount, opponentId: peer.playerId, opponentName: peer.playerName
     });
     if (onMatched) onMatched(service.currentRoom);
   } else {
     const timestamp = Date.now();
-    service.channel.enqueue({ playerId: service.myPlayerId, playerName: service.myPlayerName, level, timestamp });
+    const queued = await service.channel.enqueue({ playerId: service.myPlayerId, playerName: service.myPlayerName, level, timestamp });
+    // Refused by the server: say so rather than wait for nobody (KP-10 — a killer search before
+    // the /queue_killer rules are published). A transport that says nothing is taken at its word.
+    if (queued === false) {
+      if (service.searchingLevel === level) { service.searchingLevel = null; if (onUnavailable) onUnavailable(); }
+      return;
+    }
+    if (service.searchingLevel !== level) return;
     // The broadcast must carry the same fields the queue entry does: the
     // receiver runs it through isValidTicket, which rejects a ticket with no
     // timestamp. Omitting it here made every match_ticket unusable.
-    service.channel.send({ type: 'match_ticket', playerId: service.myPlayerId, playerName: service.myPlayerName, level, timestamp });
+    service.channel.send({ type: 'match_ticket', playerId: service.myPlayerId, playerName: service.myPlayerName, level, timestamp, ...kindField(service.searchingKind) });
   }
 }
 
@@ -161,7 +170,7 @@ export async function claimBothTickets(service, peerId) {
   // 상대를 놓쳤다. 내 티켓을 되돌려 놓고 계속 기다린다.
   if (service.searchingLevel && !service.currentRoom) {
     await service.channel.enqueue(mine);
-    service.channel.send({ type: 'match_ticket', ...mine });
+    service.channel.send({ type: 'match_ticket', ...mine, ...kindField(service.searchingKind) });
   }
   return false;
 }
@@ -177,6 +186,7 @@ export async function claimBothTickets(service, peerId) {
 export async function handleMatchTicket(service, data) {
   if (!service.searchingLevel || service.currentRoom) return;
   if (!isValidTicket(data, service.searchingLevel)) return;
+  if (ticketKind(data) !== (service.searchingKind || 'classic')) return;   // a search of the other kind (KP-10)
   if (service.myPlayerId < data.playerId) return;
 
   /*
@@ -207,11 +217,10 @@ export async function handleMatchTicket(service, data) {
 
   service.searchingLevel = null;
 
-  const puzzle = generatePuzzle(data.level);
-  const initialEmptyCount = puzzle.puzzle.flat().filter(v => v === 0).length;
+  const board = dealMatchBoard(data.level, service.searchingKind);
   const roomId = newRoomId();
   const payload = {
-    roomId, level: data.level, puzzle: puzzle.puzzle, solution: puzzle.solution, initialEmptyCount,
+    roomId, level: data.level, ...board,
     player1: { id: service.myPlayerId, name: service.myPlayerName },
     player2: { id: data.playerId, name: data.playerName }
   };
@@ -221,8 +230,8 @@ export async function handleMatchTicket(service, data) {
   if (room) payload.v2 = true;
   service.channel.send({ type: 'match_created', ...payload });
   service.setupRoom({
-    code: roomId.slice(-5), roomId, level: data.level, puzzle: puzzle.puzzle, solution: puzzle.solution,
-    initialEmptyCount, opponentId: data.playerId, opponentName: data.playerName
+    code: roomId.slice(-5), roomId, level: data.level, puzzle: board.puzzle, solution: board.solution, ...roomBoard(board),
+    initialEmptyCount: board.initialEmptyCount, opponentId: data.playerId, opponentName: data.playerName
   });
   if (service.onMatchSuccess) service.onMatchSuccess(service.currentRoom);
 }
@@ -233,15 +242,15 @@ export function handleMatchCreated(service, data) {
   if (!isForMe) return;
 
   // Never adopt a board a peer sent without checking it is a real puzzle whose
-  // givens agree with its solution.
-  if (!isValidBoardPayload(data)) return;
+  // givens agree with its solution — and of the kind this search is for (KP-10).
+  if (!isValidMatchBoard(data, undefined, service.searchingKind || 'classic')) return;
 
   service.searchingLevel = null;
   service.channel.dequeue(service.myPlayerId);
   const opponent = data.player1.id === service.myPlayerId ? data.player2 : data.player1;
 
   service.setupRoom({
-    code: data.roomId.slice(-5), roomId: data.roomId, level: data.level, puzzle: data.puzzle, solution: data.solution,
+    code: data.roomId.slice(-5), roomId: data.roomId, level: data.level, puzzle: data.puzzle, solution: data.solution, ...roomBoard(data),
     initialEmptyCount: data.initialEmptyCount, opponentId: opponent.id, opponentName: opponent.name
   });
   // The host opened a room for this match; answer its handshake. Until that finishes

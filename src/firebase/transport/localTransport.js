@@ -27,8 +27,10 @@ const membersKey = (roomId) => `suidoku_pvp_room_members:${roomId}`;
  * so gate 2-9 can run every case the network can produce:
  *   roomsAllowed    false = the new rules are not published yet
  *   unreadableFor   ids whose reads the server refuses (a rule that is wrong)
+ *   killerQueue     false = the /queue_killer rules are not published yet (KP-10):
+ *                   a killer ticket is refused, as the server would refuse it
  */
-export const localRoomRules = { roomsAllowed: true, unreadableFor: new Set() };
+export const localRoomRules = { roomsAllowed: true, unreadableFor: new Set(), killerQueue: true };
 
 export class LocalTransport {
   /** No peer on another device can ever be reached through this transport. */
@@ -95,29 +97,41 @@ export class LocalTransport {
     }
   }
 
+  /** Which queue the next search uses, as over Firebase (KP-10): a killer search waits apart. */
+  useQueue(kind) {
+    this.queueKind = kind === 'killer' ? 'killer' : 'classic';
+  }
+
+  get queueKey() {
+    return this.queueKind === 'killer' ? `${QUEUE_KEY}_killer` : QUEUE_KEY;
+  }
+
   listQueue() {
     try {
-      const q = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
+      const q = JSON.parse(localStorage.getItem(this.queueKey) || '[]');
       return q.filter((item) => Date.now() - item.timestamp < TICKET_TTL_MS);
     } catch {
       return [];
     }
   }
 
+  /** False when the ticket did not go in — as Firebase answers a refused write. */
   enqueue(ticket) {
+    if (this.queueKind === 'killer' && !localRoomRules.killerQueue) return false;
     const queue = this.listQueue().filter((t) => t.playerId !== ticket.playerId);
     queue.push(ticket);
     try {
-      localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+      localStorage.setItem(this.queueKey, JSON.stringify(queue));
     } catch (_) {
       /* ignore */
     }
+    return true;
   }
 
   dequeue(playerId) {
     const queue = this.listQueue().filter((t) => t.playerId !== playerId);
     try {
-      localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+      localStorage.setItem(this.queueKey, JSON.stringify(queue));
     } catch (_) {
       /* ignore */
     }

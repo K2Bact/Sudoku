@@ -11,6 +11,7 @@
  */
 
 import { DIFFICULTY_CONFIG } from '../engine/SudokuEngine.js';
+import { isValidCageSet } from '../engine/variants.js';
 
 const isGrid = (g) =>
   Array.isArray(g) &&
@@ -95,6 +96,38 @@ export function isValidBoardPayload(payload, expectedLevel) {
   if (config && (clues < config.clues || clues > config.clues + CLUE_SLACK)) return false;
 
   return true;
+}
+
+/**
+ * A killer board from a peer (KP-10, 2026-11-06). The standard checks do not fit it —
+ * a killer may give no digits at all (Lv.5) — so it is checked for what makes it a
+ * killer that can be played: givens that agree with a valid solution, cages that cover
+ * every cell once, each cage's sum its cells' sum in the solution, and no digit twice
+ * in a cage. A peer cannot send a board whose cages contradict its own answer.
+ */
+export function isValidKillerPayload(payload) {
+  if (!payload || !puzzleMatchesSolution(payload.puzzle, payload.solution)) return false;
+  if (!isValidCageSet(payload.cages)) return false;
+  const digit = payload.solution.flat();
+  for (const cage of payload.cages) {
+    const ds = cage.cells.map((i) => digit[i]);
+    if (new Set(ds).size !== ds.length || ds.reduce((s, d) => s + d, 0) !== cage.sum) return false;
+  }
+  const blanks = payload.puzzle.reduce((n, row) => n + row.filter((v) => v === 0).length, 0);
+  if (blanks < MIN_BLANKS) return false;
+  if (payload.initialEmptyCount !== undefined && payload.initialEmptyCount !== null && payload.initialEmptyCount !== blanks) return false;
+  return true;
+}
+
+/**
+ * A board for a match of either kind: killer when it says so, standard otherwise. With a
+ * kind expected (the one being searched for, or the room's), a board of the other kind is
+ * refused — a killer search must not end on a standard board, nor a rematch change kind.
+ */
+export function isValidMatchBoard(payload, expectedLevel, expectedKind) {
+  const kind = payload?.variant === 'killer' ? 'killer' : 'classic';
+  if (expectedKind && kind !== expectedKind) return false;
+  return kind === 'killer' ? isValidKillerPayload(payload) : isValidBoardPayload(payload, expectedLevel);
 }
 
 /** Progress reports must be in range; a peer cannot claim 900% or -5 mistakes. */

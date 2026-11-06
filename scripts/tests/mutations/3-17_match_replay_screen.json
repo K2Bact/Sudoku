@@ -85,6 +85,14 @@
       "find": "  padding-bottom: calc(var(--ad-banner-h, 0px) + env(safe-area-inset-bottom, 0px));",
       "replace": "  padding-bottom: env(safe-area-inset-bottom, 0px);",
       "expectFailure": "stays"
+    },
+    {
+      "name": "a killer replay is drawn without its cages",
+      "why": "KP-14 (2026-11-06): the record keeps the cages (gate 2-36), but the board is drawn as a sparse standard puzzle nobody can follow.",
+      "file": "src/components/replay/ReplayScreen.jsx",
+      "find": " cages={record.cages || null} />",
+      "replace": " />",
+      "expectFailure": "killer replay: 0 of 81 cells draw a cage outline"
     }
   ]
 }

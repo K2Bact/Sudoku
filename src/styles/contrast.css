@@ -1,0 +1,52 @@
+/* =========================================================
+   HIGH CONTRAST (D9, 2026-11-06) — Settings → Display
+   =========================================================
+   One switch, every theme. <html class="high-contrast"> is set by
+   utils/textScale.js. Three things change:
+     - muted text (subtitles, notes, labels) takes the theme's main text colour —
+       the hierarchy goes, the legibility is what the switch is for;
+     - the thin grid lines reach at least 3:1 against the board (WCAG non-text
+       contrast; the light themes drew them at about 1.8:1 on white);
+     - every line gets thicker.
+   Loaded last (App.css) so it wins over the theme blocks in index.css. */
+
+html.high-contrast body.theme-clay {
+  --text-muted: #292524;
+  --board-grid-line: #78716c;
+  --board-thick-line: #0c0a09;
+}
+
+html.high-contrast body.theme-matte-dark,
+html.high-contrast body.theme-dark {
+  --text-muted: #f8fafc;
+  --board-grid-line: #94a3b8;
+  --board-thick-line: #e2e8f0;
+}
+
+html.high-contrast body.theme-pure-ceramic {
+  --text-muted: #0f172a;
+  --board-grid-line: #64748b;
+  --board-thick-line: #020617;
+}
+
+html.high-contrast body.theme-editorial {
+  --text-muted: #1c1917;
+  --board-grid-line: #78716c;
+  --board-thick-line: #0c0a09;
+}
+
+html.high-contrast .sudoku-grid {
+  border-width: 3.5px;
+}
+
+html.high-contrast .sudoku-cell {
+  border-width: 1px;
+}
+
+html.high-contrast .sudoku-cell.border-right-thick {
+  border-right-width: 3.5px;
+}
+
+html.high-contrast .sudoku-cell.border-bottom-thick {
+  border-bottom-width: 3.5px;
+}

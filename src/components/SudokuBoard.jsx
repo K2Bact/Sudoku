@@ -15,11 +15,15 @@ export function SudokuBoard({
   onResume,
   conflictInfo,
   flashCell,
-  cages = null
+  cages = null,
+  // The first-game walkthrough's cell and the cage or house it is about (KP-18).
+  guide = null
 }) {
   const { t } = useTranslation();
   // A killer's cages; null for classic, which then draws exactly as before.
   const killer = useMemo(() => (cages ? cageLayout(cages) : null), [cages]);
+  const guideCell = guide ? guide.r * 9 + guide.c : -1;
+  const guideArea = useMemo(() => new Set((guide?.house || guide?.cage || []).map((p) => p.r * 9 + p.c)), [guide]);
   const selectedRow = selectedCell ? selectedCell[0] : null;
   const selectedCol = selectedCell ? selectedCell[1] : null;
   const selectedValue = (selectedRow !== null && selectedCol !== null && board?.[selectedRow])
@@ -107,6 +111,8 @@ export function SudokuBoard({
                     ${(c + 1) % 3 === 0 && c < 8 ? 'border-right-thick' : ''}
                     ${(r + 1) % 3 === 0 && r < 8 ? 'border-bottom-thick' : ''}
                     ${cageSum !== undefined ? 'has-cage-sum' : ''}
+                    ${cell === guideCell ? 'guide-target' : ''}
+                    ${guideArea.has(cell) && cell !== guideCell ? 'guide-area' : ''}
                   `}
                   onClick={() => onSelectCell(r, c)}
                 >

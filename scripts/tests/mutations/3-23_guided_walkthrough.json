@@ -1,0 +1,66 @@
+{
+  "gate": "3-23",
+  "name": "The First-Game Walkthrough",
+  "command": "node scripts/tests/ui/test_guided_walkthrough.js",
+  "greenMarker": "[3-23] PASSED",
+  "rebuild": true,
+  "note": "KP-18 (2026-11-06): the walkthrough that sat unused named fixed cells on a new puzzle and moved on with a Next button. These break the parts a player meets: when it is offered, when a step counts as done, the killer order, and leaving it.",
+  "mutations": [
+    {
+      "name": "the walkthrough is offered every time",
+      "why": "Asked at every new game until a game is finished, a new player would see the same question again and again.",
+      "file": "src/utils/guidedOffer.js",
+      "find": "  if (offered[kind]) return false;\n",
+      "replace": "",
+      "expectFailure": "the second new game offered the walkthrough again"
+    },
+    {
+      "name": "players who have played are offered it too",
+      "why": "Everyone updating from an older version would be asked about a first game they had long since played.",
+      "file": "src/utils/guidedOffer.js",
+      "find": "  return !(record.gamesPlayed > 0);",
+      "replace": "  return true;",
+      "expectFailure": "a player with games played was offered"
+    },
+    {
+      "name": "any digit in the glowing cell moves on",
+      "why": "The step teaches that only one digit fits; moving on after a wrong one teaches the opposite.",
+      "file": "src/hooks/useGuidedTutorial.js",
+      "find": "    else done = Boolean(target && board?.[target.r]?.[target.c] === target.num);",
+      "replace": "    else done = Boolean(target && board?.[target.r]?.[target.c]);",
+      "expectFailure": "a wrong digit in the glowing cell moved the walkthrough on"
+    },
+    {
+      "name": "a new step sees the last step's cell",
+      "why": "Two guards stop it: the target is kept with the step that picked it, and nothing moves on before the step has picked its own cell. Either alone holds (gate 2-35 checks each line); taken out together, the cage step's cell — already filled — ends the rule of 45 at once, as it did once on screen.",
+      "file": "src/hooks/useGuidedTutorial.js",
+      "find": "  const target = picked.id === id ? picked.target : null;\n\n  useEffect(() => {\n    if (!active || id === 'done' || picked.id !== id) return;",
+      "replace": "  const target = picked.target;\n\n  useEffect(() => {\n    if (!active || id === 'done') return;",
+      "expectFailure": "a step was skipped"
+    },
+    {
+      "name": "the killer rules skip the offer",
+      "why": "The first killer starts from the rules card; started straight from there, the killer walkthrough is never offered.",
+      "file": "src/components/HomeScreen.jsx",
+      "find": "              setShowKillerRules(false);\n              startOrOffer();",
+      "replace": "              setShowKillerRules(false);\n              startGame();",
+      "expectFailure": "the first killer game did not offer the killer walkthrough"
+    },
+    {
+      "name": "closing the walkthrough leaves the game",
+      "why": "The walkthrough is played on a real board; the old one went back Home and the half-played game counted as given up.",
+      "file": "src/hooks/useGameProps.js",
+      "find": "    onExitGuidedTutorial: () => {\n      setIsGuidedTutorial(false);\n    },",
+      "replace": "    onExitGuidedTutorial: () => {\n      setIsGuidedTutorial(false);\n      setActiveScreen('home');\n    },",
+      "expectFailure": "closing the walkthrough left the game"
+    },
+    {
+      "name": "back during the walkthrough leaves the game",
+      "why": "The same as the close button, by the back key.",
+      "file": "src/hooks/useBackStack.js",
+      "find": "      if (isGuidedTutorial) {\n        setIsGuidedTutorial(false);\n        return true;",
+      "replace": "      if (isGuidedTutorial) {\n        setIsGuidedTutorial(false);\n        setActiveScreen('home');\n        return true;",
+      "expectFailure": "back during the walkthrough left the game"
+    }
+  ]
+}

@@ -124,7 +124,7 @@ try {
       page.on('pageerror', (e) => errors.push(`${w}x${h} ×${S}: page error ${e.message}`));
       await page.goto(URL);
       await page.evaluate((stats) => {
-        localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'ko', theme: 'clay' }));
+        localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'ko', theme: 'clay' }));
         if (stats) localStorage.setItem('suidoku_user_stats_v1', JSON.stringify(stats));
       }, ghost ? GHOST_STATS : null);
       await page.reload();
@@ -297,7 +297,7 @@ try {
     const page = await (await browser.newContext({ viewport: { width: w, height: h } })).newPage();
     page.on('pageerror', (e) => errors.push(`${w}x${h} home: page error ${e.message}`));
     await page.goto(URL);
-    await page.evaluate(() => localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'ko', theme: 'clay' })));
+    await page.evaluate(() => localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'ko', theme: 'clay' })));
     await page.reload();
     await page.waitForSelector('.home-bottom-nav');
     const r = await page.evaluate(() => {

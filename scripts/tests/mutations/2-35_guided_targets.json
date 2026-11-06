@@ -1,0 +1,57 @@
+{
+  "gate": "2-35",
+  "name": "The Walkthrough Points At Cells Whose Answer It Knows",
+  "command": "node scripts/tests/unit/test_guided_targets.js",
+  "greenMarker": "[2-35] PASSED",
+  "note": "KP-18 (2026-11-06). The finders check every answer against the solution before returning it, so a wrong deduction usually turns into no target rather than a wrong one — which is why several of these fail on how often a target is found, not on a wrong answer.",
+  "mutations": [
+    {
+      "name": "a wrong entry counts as a fact",
+      "why": "A player's wrong digit left on the board would rule digits out of other cells; the walkthrough could then call a cell a single when it is not.",
+      "file": "src/utils/guidedTargets.js",
+      "find": "  return v && v === solution[r][c] ? v : 0;",
+      "replace": "  return v;",
+      "expectFailure": "a wrong entry was taken as a fact"
+    },
+    {
+      "name": "the cage's last cell is given the whole sum",
+      "why": "The step's whole lesson is the sum minus the cells already there.",
+      "file": "src/utils/guidedTargets.js",
+      "find": "    const num = cage.sum - rest;",
+      "replace": "    const num = cage.sum;",
+      "expectFailure": "a last cell of a cage on every killer Lv.1 board"
+    },
+    {
+      "name": "the rule of 45 forgets the filled cells outside the cages",
+      "why": "45 minus the cages inside is the sum of everything else, not of the one open cell.",
+      "file": "src/utils/guidedTargets.js",
+      "find": "    const num = 45 - insideSum - restSum;",
+      "replace": "    const num = 45 - insideSum;",
+      "expectFailure": "a rule-of-45 cell on at least 80%"
+    },
+    {
+      "name": "the rule of 45 points at a cage's last open cell",
+      "why": "That cell is the step before (cage sum minus the rest); shown again as the rule of 45 it teaches nothing new.",
+      "file": "src/utils/guidedTargets.js",
+      "find": "    if (ownOpen === 1) continue;\n",
+      "replace": "",
+      "expectFailure": "is not just the last open cell of its own cage"
+    },
+    {
+      "name": "a note cell may have one candidate",
+      "why": "A cell with one candidate is the single, not a cell to think over with notes.",
+      "file": "src/utils/guidedTargets.js",
+      "find": "    if (cands.length >= 2 && cands.length <= 4) return { r, c, cands };",
+      "replace": "    if (cands.length >= 1) return { r, c, cands };",
+      "expectFailure": "a note cell has 2 to 4 candidates"
+    },
+    {
+      "name": "a new step sees the last step's cell",
+      "why": "For one render after a step ends the next one still had the last cell, already filled, and moved on at once: the killer walkthrough skipped the rule of 45.",
+      "file": "src/hooks/useGuidedTutorial.js",
+      "find": "  const target = picked.id === id ? picked.target : null;",
+      "replace": "  const target = picked.target;",
+      "expectFailure": "the target belongs to the step that picked it"
+    }
+  ]
+}

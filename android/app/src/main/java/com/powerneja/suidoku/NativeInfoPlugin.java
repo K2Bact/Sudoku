@@ -45,4 +45,32 @@ public class NativeInfoPlugin extends Plugin {
         ret.put("sdkInt", Build.VERSION.SDK_INT);
         call.resolve(ret);
     }
+
+    /**
+     * The player's text size (D9, src/utils/textScale.js): keep the step for the next
+     * start and set the WebView's text zoom now — the phone's font scale times the
+     * step, capped as MainActivity caps it. Resolves with the zoom in percent.
+     */
+    @PluginMethod
+    public void setTextScale(PluginCall call) {
+        Double raw = call.getDouble("step");
+        float step = raw == null ? 1f : raw.floatValue();
+        try {
+            getContext().getSharedPreferences(MainActivity.TEXT_PREFS, android.content.Context.MODE_PRIVATE)
+                .edit().putFloat(MainActivity.TEXT_STEP_KEY, step).apply();
+        } catch (Exception ignored) {
+            // not kept: this start still gets it below
+        }
+        final int zoom = MainActivity.textZoomFor(getContext(), step);
+        getActivity().runOnUiThread(() -> {
+            try {
+                getBridge().getWebView().getSettings().setTextZoom(zoom);
+            } catch (Exception ignored) {
+                // no WebView to set: the next start applies the kept step
+            }
+            JSObject ret = new JSObject();
+            ret.put("zoom", zoom);
+            call.resolve(ret);
+        });
+    }
 }

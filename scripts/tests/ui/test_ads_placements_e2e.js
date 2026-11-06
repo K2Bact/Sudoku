@@ -73,7 +73,7 @@ async function primeStorage(page) {
   await page.goto(PREVIEW_URL);
   await page.evaluate(() => {
     localStorage.clear();
-    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en', theme: 'matte-dark' }));
+    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'en', theme: 'matte-dark' }));
     const d = new Date();
     const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     localStorage.setItem(

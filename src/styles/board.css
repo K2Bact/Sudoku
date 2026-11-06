@@ -174,8 +174,10 @@
   /* A cell is about 11cqw of the board; the digit takes about half of it.
      --text-zoom is the WebView's system-font multiplier (measured at start-up,
      src/utils/textZoom.js). Dividing by it keeps the digit the size of its cell
-     whatever the system font — the cell cannot grow, so the digit must not. */
-  font-size: calc(6.1cqw / var(--text-zoom, 1));
+     whatever the system font — the cell cannot grow, so the digit must not.
+     --board-digit-step is the player's own text size (D9, textScale.js), 0.9..1.2:
+     past 1.2 the digit font's 1.4em text box is taller than its cell. */
+  font-size: calc(6.1cqw * var(--board-digit-step, 1) / var(--text-zoom, 1));
   line-height: 1;
 }
 
@@ -189,7 +191,8 @@
 }
 
 .note-digit {
-  font-size: calc(2.6cqw / var(--text-zoom, 1));
+  /* --board-note-step stops at 1.15 (textScale.js): the notes have the least room. */
+  font-size: calc(2.6cqw * var(--board-note-step, 1) / var(--text-zoom, 1));
   font-weight: 700;
   color: var(--text-muted);
   display: flex;

@@ -18,3 +18,6 @@
 @import './styles/ghostBanner.css';
 @import './styles/replay.css';
 @import './styles/killer.css';
+@import './styles/guided.css';
+/* Last, so its overrides win (D9 high contrast). */
+@import './styles/contrast.css';

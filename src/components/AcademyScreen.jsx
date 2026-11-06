@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, PlayCircle } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
 import { TutorialMiniGrid } from './TutorialMiniGrid';
 import { InteractivePracticeSection } from './academy/practice/InteractivePracticeSection';
@@ -25,7 +25,7 @@ function BadgeText({ text }) {
   );
 }
 
-export function AcademyScreen({ onBack }) {
+export function AcademyScreen({ onBack, onStartGuided }) {
   const { t, activeLanguage } = useTranslation();
   // The locale code goes straight through. It used to be squashed here into a
   // shorter set (zh-CN and zh-TW both became 'zh', es-ES became 'es') because the
@@ -72,6 +72,13 @@ export function AcademyScreen({ onBack }) {
       {/* Kind first: 정통 | 킬러, the same switch (and ⓘ rules) as Home */}
       <div className={`academy-kind-bar ${showTabs ? '' : 'alone'}`}>
         <VariantSwitch variant={variant} onChange={setVariant} />
+        {/* The first-game walkthrough again, for the kind shown (KP-18) */}
+        {onStartGuided && (
+          <button type="button" className="guided-replay-btn" onClick={() => onStartGuided(variant)}>
+            <PlayCircle size={16} />
+            <span>{t('tutorialOverlay.academyBtn')}</span>
+          </button>
+        )}
       </div>
 
       {/* Then the stage, when the kind has more than one (classic: 1 ~ 5) */}

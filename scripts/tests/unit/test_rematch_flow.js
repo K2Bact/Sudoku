@@ -94,15 +94,15 @@ async function run() {
 
     console.log('🎮 1. Player A enters 1v1 Battle Lobby and searches for opponent...');
     await pageA.click('.battle-card-banner');
-    await pageA.waitForSelector('.primary-battle-card button');
-    await pageA.click('.primary-battle-card button');
+    await pageA.waitForSelector('.primary-battle-card .btn-play-new');
+    await pageA.click('.primary-battle-card .btn-play-new');
 
     await pageA.waitForTimeout(300);
 
     console.log('🎮 2. Player B enters 1v1 Battle Lobby and searches for opponent...');
     await pageB.click('.battle-card-banner');
-    await pageB.waitForSelector('.primary-battle-card button');
-    await pageB.click('.primary-battle-card button');
+    await pageB.waitForSelector('.primary-battle-card .btn-play-new');
+    await pageB.click('.primary-battle-card .btn-play-new');
 
     await pageA.waitForSelector('.game-screen-wrapper', { timeout: PAIRING_MS });
     await pageB.waitForSelector('.game-screen-wrapper', { timeout: PAIRING_MS });

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Swords, Users, ShieldCheck, Globe, Bot, RotateCcw } from 'lucide-react';
 import { ScreenHeader } from './common/ScreenHeader';
-import { loadStats } from '../utils/storage';
+import { loadStats, loadSettings, saveSettings } from '../utils/storage';
+import { usePuzzleKind } from '../hooks/usePuzzleKind';
+import { VariantSwitch } from './home/VariantSwitch';
+import { RulesModal } from './home/RulesModal';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
 import { sharesMoves } from '../firebase/replayExchange';
@@ -18,6 +21,9 @@ export function BattleLobbyScreen({
 }) {
   const { t } = useTranslation();
   const [internalSearching, setInternalSearching] = useState(false);
+  // Standard or killer, the one remembered choice Home and the AI lobby share (KP-10).
+  const [variant, setVariant] = usePuzzleKind();
+  const [showKillerRules, setShowKillerRules] = useState(false);
 
   // Opening this screen is the player saying they want 1v1, so this is where the
   // network connection is worth making — not at app start, where it cost every
@@ -41,7 +47,7 @@ export function BattleLobbyScreen({
     }
   };
 
-  const handleQuickMatch = () => {
+  const searchNow = () => {
     soundHaptic.playSelectSound();
     if (isSearchingProp === undefined) {
       setInternalSearching(true);
@@ -51,8 +57,10 @@ export function BattleLobbyScreen({
       if (isSearchingProp === undefined) {
         setInternalSearching(false);
       }
-    });
+    }, variant);
   };
+  // The first killer search shows the rules first, as Home and the AI lobby do.
+  const handleQuickMatch = () => (variant === 'killer' && !loadSettings().killerRulesSeen ? setShowKillerRules(true) : searchNow());
 
   // No level here on purpose. This opens the AI lobby, where the player picks
   // one of the five; passing a number from this screen is what pinned every
@@ -152,6 +160,7 @@ export function BattleLobbyScreen({
           <div className="match-options-mobile-group">
             {/* Quick Match against real users — paired by puzzle level */}
             <div className="battle-mode-card primary-battle-card">
+              <VariantSwitch variant={variant} onChange={setVariant} />
               <div className="card-header">
                 <Users size={26} className="text-blue" />
                 <div>
@@ -182,6 +191,18 @@ export function BattleLobbyScreen({
           </div>
         )}
       </div>
+
+      {showKillerRules && (
+        <RulesModal
+          variant="killer"
+          onClose={() => setShowKillerRules(false)}
+          onStart={() => {
+            saveSettings({ ...loadSettings(), killerRulesSeen: true });
+            setShowKillerRules(false);
+            searchNow();
+          }}
+        />
+      )}
     </div>
   );
 }

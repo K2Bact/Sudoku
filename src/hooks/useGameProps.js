@@ -104,9 +104,9 @@ export function useGameProps(game, ui) {
     isGuidedTutorial,
     guidedStep,
     onNextGuidedStep: () => setGuidedStep(prev => prev + 1),
+    // The walkthrough is played on a real board: leaving it keeps the game (KP-18).
     onExitGuidedTutorial: () => {
       setIsGuidedTutorial(false);
-      setActiveScreen('home');
     },
     board,
     initialBoard,

@@ -90,7 +90,7 @@ async function prime(page, { settings = {}, state = null } = {}) {
   await page.goto(URL);
   await page.evaluate(({ settings: s, state: g }) => {
     localStorage.clear();
-    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en', theme: 'matte-dark', ...s }));
+    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'en', theme: 'matte-dark', ...s }));
     const d = new Date();
     const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     localStorage.setItem('suidoku_user_wallet_v1', JSON.stringify({ hints: 3, lastDailyClaimDate: today, streakDays: 1, totalAdsWatched: 0, history: [] }));

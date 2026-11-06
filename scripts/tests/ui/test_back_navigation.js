@@ -77,7 +77,7 @@ async function run() {
     await page.goto(PREVIEW_URL);
     await page.evaluate(() => {
       localStorage.setItem('suidoku_review_prompted', 'done');
-      localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en' }));
+      localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'en' }));
       localStorage.setItem('suidoku_daily_reward_v1', JSON.stringify({ claimedDate: new Date().toISOString().slice(0, 10) }));
     });
     await page.reload();
@@ -91,7 +91,7 @@ async function run() {
     assert(lobbyHeader !== null, 'Entered 1v1 Battle Lobby successfully');
 
     console.log('\nSTEP 2: Start Quick Match Search (Radar View)...');
-    await page.click('.primary-battle-card button', { force: true });
+    await page.click('.primary-battle-card .btn-play-new', { force: true });
     await page.waitForTimeout(400);
 
     const radarView = await page.waitForSelector('.match-searching-wrapper', { timeout: 2000 });
@@ -157,7 +157,7 @@ async function run() {
     await p2.goto(PREVIEW_URL);
     await p2.evaluate(() => {
       localStorage.clear();
-      localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en' }));
+      localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'en' }));
       const d = new Date();
       const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       localStorage.setItem('suidoku_user_wallet_v1', JSON.stringify({ hints: 3, lastDailyClaimDate: today, streakDays: 1, totalAdsWatched: 0, history: [] }));

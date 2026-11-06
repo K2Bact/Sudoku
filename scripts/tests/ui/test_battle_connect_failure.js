@@ -99,7 +99,7 @@ try {
     ]);
     if (fonts !== 'loaded') console.log(`  ⚠️  ${loc}: web fonts ${fonts} — measured in the fallback font`);
     await page.click('.battle-card-banner');
-    await page.waitForSelector('.primary-battle-card button');
+    await page.waitForSelector('.primary-battle-card .btn-play-new');
     return { ctx, page, state };
   }
   // What the lobby card says once it stops searching, or null while it still is.
@@ -121,7 +121,7 @@ try {
   // 1 + 2 — the whole path, in Korean.
   {
     const { ctx, page, state } = await lobby('ko', 390);
-    await page.click('.primary-battle-card button');
+    await page.click('.primary-battle-card .btn-play-new');
     const { said, ms } = await waitForCard(page, 15000);
     if (said !== text.ko.failed) {
       errors.push(`blocked sign-in: the lobby said ${JSON.stringify(said)} after ${ms}ms instead of could-not-connect (${JSON.stringify(text.ko.failed)})`);
@@ -138,8 +138,8 @@ try {
     // Close is the card's last button. Since Search again (2026-10-07) the no-opponent card
     // has two secondary buttons, and a bare '.btn-secondary' stopped this step there.
     await page.locator('.match-radar-card .btn-secondary').last().click();
-    await page.waitForSelector('.primary-battle-card button');
-    await page.click('.primary-battle-card button');
+    await page.waitForSelector('.primary-battle-card .btn-play-new');
+    await page.click('.primary-battle-card .btn-play-new');
     let searching = false;
     for (let i = 0; i < 40 && !searching; i++) {
       if (await page.locator('.radar-visual-arena').count()) searching = true;
@@ -167,7 +167,7 @@ try {
   // Korean only: each run signs one more anonymous account in.
   {
     const { ctx, page, state } = await lobby('ko', 360, { blockDb: true });
-    await page.click('.primary-battle-card button');
+    await page.click('.primary-battle-card .btn-play-new');
     const { said, ms } = await waitForCard(page, 16000);
     if (state.dbBlocked === 0) errors.push('nobody came: the database block never fired — the search may have reached the real queue, and the timeout proves nothing');
     if (said !== text.ko.none) {
@@ -199,7 +199,7 @@ try {
   // 3 — the failure card in every locale at 360px.
   for (const loc of LOCALES) {
     const { ctx, page } = await lobby(loc, 360);
-    await page.click('.primary-battle-card button');
+    await page.click('.primary-battle-card .btn-play-new');
     const { said } = await waitForCard(page, 15000);
     if (said !== text[loc].failed) {
       errors.push(`${loc}: expected could-not-connect, the lobby said ${JSON.stringify(said)}`);

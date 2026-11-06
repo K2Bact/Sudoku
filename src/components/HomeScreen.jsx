@@ -15,6 +15,8 @@ import { HomeBottomBanners } from './home/HomeBottomBanners';
 import { VariantSwitch } from './home/VariantSwitch';
 import { RulesModal } from './home/RulesModal';
 import { usePuzzleKind } from '../hooks/usePuzzleKind';
+import { useConfirm } from './common/ConfirmProvider';
+import { shouldOfferWalkthrough, markWalkthroughOffered } from '../utils/guidedOffer';
 import { useBottomNavRoom } from '../hooks/useBottomNavRoom';
 
 // The start button in each mode, the same on either kind of puzzle.
@@ -25,6 +27,7 @@ const START_LOOK = {
 };
 
 export function HomeScreen({
+  onStartGuided,
   onStartSingleGame,
   onStartGame,
   onOpenDailyChallenge,
@@ -42,6 +45,7 @@ export function HomeScreen({
   onSelectMode
 }) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const wallet = loadWallet();
   const hintsRemaining = typeof propHints === 'number' ? propHints : (wallet.hints || 0);
   const handleStart = onStartSingleGame || onStartGame;
@@ -78,7 +82,17 @@ export function HomeScreen({
   // One start button for every kind and mode: the kinds differ in the puzzle only
   // (user, 2026-10-07). The first killer starts after its rules.
   const startGame = () => handleStart && handleStart(selectedLevel, false, mode, effectiveRivalMode, variant);
-  const onPlayNew = () => (variant === 'killer' && !loadSettings().killerRulesSeen ? setShowKillerRules(true) : startGame());
+  // The first game of a kind offers the walkthrough once (KP-18, utils/guidedOffer.js).
+  const startOrOffer = async () => {
+    if (onStartGuided && shouldOfferWalkthrough(variant, mode)) {
+      markWalkthroughOffered(variant);
+      const yes = await confirm(t(variant === 'killer' ? 'tutorialOverlay.offerKiller' : 'tutorialOverlay.offerClassic'),
+        { confirmLabel: t('tutorialOverlay.offerYes'), cancelLabel: t('tutorialOverlay.offerNo') });
+      if (yes) { onStartGuided(variant); return; }
+    }
+    startGame();
+  };
+  const onPlayNew = () => (variant === 'killer' && !loadSettings().killerRulesSeen ? setShowKillerRules(true) : startOrOffer());
   const StartIcon = START_LOOK[mode].Icon;
 
   const savedGame = loadGameState();
@@ -197,7 +211,7 @@ export function HomeScreen({
             onStart={() => {
               saveSettings({ ...loadSettings(), killerRulesSeen: true });
               setShowKillerRules(false);
-              startGame();
+              startOrOffer();
             }}
           />
         )}

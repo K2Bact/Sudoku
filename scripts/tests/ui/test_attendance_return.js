@@ -63,7 +63,7 @@ async function run() {
     await page.goto(URL);
     await page.evaluate(() => {
       localStorage.clear();
-      localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en' }));
+      localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'en' }));
       localStorage.setItem('suidoku_review_prompted', '1');
     });
     await page.reload();

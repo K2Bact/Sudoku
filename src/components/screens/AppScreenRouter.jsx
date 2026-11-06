@@ -56,6 +56,7 @@ export function AppScreenRouter({
     <>
       {activeScreen === 'home' && (
         <HomeScreen
+          onStartGuided={startLiveGuidedTutorial}
           onStartSingleGame={handleStartSingleGame}
           onStartGame={handleStartSingleGame}
           onOpenDailyChallenge={() => navigateToScreen('dailyChallenge')}
@@ -76,6 +77,7 @@ export function AppScreenRouter({
 
       {activeScreen === 'academy' && (
         <AcademyScreen
+          onStartGuided={startLiveGuidedTutorial}
           onBack={() => returnToParent(false)}
         />
       )}
@@ -110,13 +112,13 @@ export function AppScreenRouter({
           matchUnavailable={matchUnavailable}
           onPlayAiInstead={onPlayAiInstead}
           onCancelSearch={onCancelQuickMatch}
-          onStartQuickMatch={onStartQuickMatch || ((lvl, cb) => {
+          onStartQuickMatch={onStartQuickMatch || ((lvl, cb, kind) => {
             battleService.startQuickMatch(lvl, (room) => {
               setActiveBattleRoom(room);
-              startNewGame(room.level, 'battle', { board: room.puzzle, solution: room.solution });
+              startNewGame(room.level, 'battle', aiRoomGame(room));
               setActiveScreen('game');
               if (cb) cb();
-            });
+            }, undefined, kind);
           })}
         />
       )}

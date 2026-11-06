@@ -234,7 +234,7 @@ async function runVisualContrastTest() {
     for (const themeId of themesToTest) {
       await page.goto(PREVIEW_URL);
       await page.evaluate((th) => {
-        localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en', theme: th }));
+        localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'en', theme: th }));
         localStorage.setItem('suidoku_theme_id', th);
         localStorage.setItem('suidoku_tutorial_completed', 'true');
       }, themeId);
@@ -350,7 +350,7 @@ async function runVisualContrastTest() {
       await page.goto(PREVIEW_URL);
       await page.evaluate((th) => {
         localStorage.clear();
-        localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en', theme: th, killerRulesSeen: true }));
+        localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'en', theme: th, killerRulesSeen: true }));
         localStorage.setItem('suidoku_review_prompted', '1');
       }, themeId);
       await page.reload();

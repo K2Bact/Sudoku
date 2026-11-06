@@ -78,7 +78,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
           setLastRatingChange(null);
           if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
           showToast(t('battleResult.rematchAcceptedToast'), 2500);
-          startNewGame(room.level || 3, 'battle', { board: room.puzzle, solution: room.solution });
+          startNewGame(room.level || 3, 'battle', aiRoomGame(room));   // kind and cages with the board (KP-10)
         } else if (rematchStatus === 'declined') {
           setIsRematchWaiting(false);
           if (rematchTimerRef.current) clearInterval(rematchTimerRef.current);
@@ -148,7 +148,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
     setActiveScreen('aiBattle');
   };
 
-  const handleStartQuickMatch = (lvl, onComplete) => {
+  const handleStartQuickMatch = (lvl, onComplete, kind = 'classic') => {
     setIsOpponentLeft(false);
     setIsRematchWaiting(false);
     setIncomingRematchRequest(null);
@@ -183,7 +183,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
       setMatchTimedOut(false);
       if (onComplete) onComplete();
       setActiveBattleRoom({ ...room });
-      startNewGame(lvl, 'battle', { board: room.puzzle, solution: room.solution });
+      startNewGame(lvl, 'battle', aiRoomGame(room));
       setActiveScreen('game');
     }, () => {
       // This phone could not reach the server — not the same as nobody coming, so
@@ -192,7 +192,7 @@ export function useBattleMultiplayer({ showToast, startNewGame, setActiveScreen,
       setIsMatchSearching(false);
       setMatchUnavailable(true);
       if (onComplete) onComplete();
-    });
+    }, kind);
   };
 
   const handleCancelQuickMatch = () => {

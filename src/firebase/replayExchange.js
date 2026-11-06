@@ -91,6 +91,7 @@ export function createReplayExchange({ snapshot, saveReplay, updateReplay, share
       saveReplay({
         v: 1, id, savedAt: Date.now(), pinned: false, level: room.level,
         puzzle: gridToString(room.puzzle), solution: gridToString(room.solution),
+        ...(room.variant === 'killer' && room.cages ? { variant: 'killer', cages: room.cages } : {}),   // KP-14
         winner: room.winner, reason: room.winnerReason || '',
         me: { name: service.myPlayerName, elapsedMs: endedAt, mistakes: room.myMistakes, events, truncated: snap?.truncated === true },
         opp: {

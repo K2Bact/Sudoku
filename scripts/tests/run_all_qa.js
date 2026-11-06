@@ -128,6 +128,9 @@ runStep('2-30. Every Achievement Can Be Earned, And Only By Doing What It Says',
 runStep('2-31. A Win Pays The Mission On Its Card (the 15th win, both kinds, level and Speedrun missions)', 'node scripts/tests/unit/test_daily_mission_win.js');
 runStep('2-32. The Back Key Closes The Newest Open Window (the list, out-of-order removal, a rewarded ad holding back)', 'node scripts/tests/unit/test_back_layers.js');
 runStep('2-33. A 1v1 Says When The Opponent Stops Answering (heartbeat on the room, 12 s, never for 31/32 or the AI, stops on every way out)', 'node scripts/tests/unit/test_peer_presence.js');
+runStep('2-34. Text Size And High Contrast Reach The Board And The WebView (four steps, digit ≤ 1.2, notes ≤ 1.15, native zoom capped at 1.3)', 'node scripts/tests/unit/test_text_scale.js');
+runStep('2-35. The Walkthrough Points At Cells Whose Answer It Knows (single, note, cage last cell, rule of 45 — checked against the solution)', 'node scripts/tests/unit/test_guided_targets.js');
+runStep('2-36. Killer 1v1 — Killer Meets Killer, Never An Old App (own queue, kind on tickets and boards, refused = could not connect, rematch and replay keep the cages)', 'node scripts/tests/unit/test_battle_killer.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests
@@ -164,6 +167,8 @@ runStep('3-18. A Killer Game On The Screen (home switch, cages drawn, killer rec
 runStep('3-19. A Game Started From Inside A Game Keeps Its Mode And Leaves The Daily (restart, next, level picker)', 'node scripts/tests/ui/test_follow_up_game.js');
 runStep('3-20. The Last Move Writes What The Screen Shows (a hint on the last cell or with the pencil on, a resumed daily, a final Speedrun combo, a clock that stops at 1 s)', 'node scripts/tests/ui/test_hints_and_last_moves.js');
 runStep('3-21. Attendance Is Paid On Home, Not Only At Start (back to the front on Home, not in a game, once a day)', 'node scripts/tests/ui/test_attendance_return.js');
+runStep('3-22. The Largest Text Step Fits The Board; High Contrast Is High (phone, tablet, standard and killer with notes; four themes; the preview)', 'node scripts/tests/ui/test_text_size_board.js');
+runStep('3-23. The First-Game Walkthrough (offered once, steps move on only when done, killer after its rules, Academy, back keeps the game)', 'node scripts/tests/ui/test_guided_walkthrough.js');
 
 console.log('======================================================');
 summary('pass');

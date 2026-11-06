@@ -19,6 +19,8 @@
  *   5. Nothing in the replay leaves the screen or is cut without "…", at 360px
  *      with the normal font and with the 1.3x text zoom (as gate 3-16 emulates it).
  *   6. Back closes the replay and leaves the records screen where it was.
+ *   Once, in English: a killer match's replay draws every cage and its sum,
+ *   and ends on the solution (KP-14, 2026-11-06).
  *   Once, in Korean: pressing play moves the clock.
  */
 
@@ -27,6 +29,7 @@ import { spawn, execSync } from 'child_process';
 import http from 'http';
 import { LOCALES } from '../../lib/locales.js';
 import { generatePuzzle } from '../../../src/engine/SudokuEngine.js';
+import { createPuzzle } from '../../../src/engine/variants.js';
 import { gridToString, stateAt } from '../../../src/utils/replay/replayRecord.js';
 
 const PORT = 5217;
@@ -77,6 +80,19 @@ const DECLINED = {
 const EXPECT = {
   mine: stateAt(PUZ, myEvents).values.join(''),
   theirs: stateAt(PUZ, theirEvents).values.join(''),
+};
+
+// A killer 1v1's replay (KP-14): its cages are drawn, or the board is a sparse
+// standard puzzle nobody could follow. Newest, so it is the first row.
+const kp = createPuzzle('killer', 3, 'replay-screen-killer');
+const KPUZ = gridToString(kp.puzzle);
+const KSOL = gridToString(kp.solution);
+const kEvents = [...KPUZ].map((d, i) => (d === '0' ? i : -1)).filter((i) => i >= 0)
+  .map((cell, i) => [2000 + i * 1200, 'v', cell, Number(KSOL[cell])]);
+const KILLER = {
+  ...SHARED, id: 'GATEK-0', savedAt: now + 60000, puzzle: KPUZ, solution: KSOL, variant: 'killer', cages: kp.cages,
+  me: { ...SHARED.me, elapsedMs: kEvents.at(-1)[0], mistakes: 0, events: kEvents },
+  opp: { ...SHARED.opp, events: null, shareState: 'declined' },
 };
 
 /** Overflow in the replay layer. The board is left to gate 3-12. */
@@ -219,6 +235,27 @@ async function run() {
       } catch (e) {
         failures.push(`${lang}: the flow stopped — ${e.message.split('\n')[0]}`);
       }
+    }
+
+    // A killer match's replay draws its cages and their sums, and ends on its moves.
+    try {
+      await openRecords(page, 'en', [KILLER, SHARED]);
+      await page.locator('.replay-list-open').first().click();
+      await page.waitForSelector('.replay-layer .replay-board .sudoku-cell', { timeout: 5000 });
+      const drawn = await page.evaluate(() => ({
+        outlines: document.querySelectorAll('.replay-board .cage-outline').length,
+        sums: [...document.querySelectorAll('.replay-board .cage-sum')].map((e) => Number(e.textContent.trim())).sort((a, b) => a - b),
+      }));
+      const want = kp.cages.map((c) => c.sum).sort((a, b) => a - b);
+      if (drawn.outlines !== 81) failures.push(`killer replay: ${drawn.outlines} of 81 cells draw a cage outline`);
+      if (JSON.stringify(drawn.sums) !== JSON.stringify(want)) failures.push(`killer replay: the cage sums drawn (${drawn.sums.length}) are not the record's ${want.length}`);
+      await scrubToEnd(page);
+      if ((await page.evaluate(drawnBoard)) !== KSOL) failures.push('killer replay: the board at the end is not the solution its moves make');
+      await checkFit(page, 'en killer', failures);
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(700);
+    } catch (e) {
+      failures.push(`killer replay: the flow stopped — ${e.message.split('\n')[0]}`);
     }
 
     // A question asked over the replay is seen: starring past the limit says so on top of it.

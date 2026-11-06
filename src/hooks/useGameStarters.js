@@ -115,15 +115,16 @@ export function useGameStarters({
     startNewGame(level, isDuelMode(gameMode) ? 'classic' : gameMode);
   };
 
-  const startLiveGuidedTutorial = async () => {
+  // KP-18: the first-game walkthrough on a Lv.1 board of the kind asked for.
+  const startLiveGuidedTutorial = async (kind = 'classic') => {
     if (!(await confirmAbandon())) return;
     soundHaptic.playSelectSound();
     cleanupBattleSession();
     setIsGuidedTutorial(true);
     setGuidedStep(0);
-    // The tutorial teaches standard sudoku. Without a kind named, a new game takes the
-    // one being played (puzzleSetup.js) — right after a killer, the tutorial would be one.
-    startNewGame(1, 'classic', { variant: 'classic' });
+    // The kind is always named. Without it a new game takes the one being played
+    // (puzzleSetup.js) — right after a killer, the standard walkthrough would be a killer.
+    startNewGame(1, 'classic', { variant: kind === 'killer' ? 'killer' : 'classic' });
     setActiveScreen('game');
   };
 

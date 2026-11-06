@@ -23,6 +23,9 @@ import { getDatabase } from '../firebaseApp.js';
 import { RoomLink } from './roomLink.js';
 
 const QUEUE_PATH = 'queue';
+// A killer search waits apart (KP-10, 2026-11-06): apps up to 33 read only /queue and would
+// take a killer ticket as a standard match. firebase.rules.json has the same rules for both.
+const QUEUE_KILLER_PATH = 'queue_killer';
 const BUS_PATH = 'bus';
 const ROOMS_PATH = 'rooms';
 // A host waits this long for the server to accept a room before starting the match
@@ -177,11 +180,20 @@ export class FirebaseTransport {
     }
   }
 
+  /** Which queue the next search uses: 'classic' (default) or 'killer' (KP-10). */
+  useQueue(kind) {
+    this.queueKind = kind === 'killer' ? 'killer' : 'classic';
+  }
+
+  get queuePath() {
+    return this.queueKind === 'killer' ? QUEUE_KILLER_PATH : QUEUE_PATH;
+  }
+
   async listQueue() {
     const api = this.api || (await this.connect());
     if (!api || !api.db) return [];
     try {
-      const snap = await api.get(api.ref(api.db, QUEUE_PATH));
+      const snap = await api.get(api.ref(api.db, this.queuePath));
       const val = snap.val() || {};
       return Object.values(val).filter((t) => t && Date.now() - t.timestamp < TICKET_TTL_MS);
     } catch (e) {
@@ -190,17 +202,20 @@ export class FirebaseTransport {
     }
   }
 
+  /** False when the ticket did not go in (no database, or the server refused it). */
   async enqueue(ticket) {
     const api = this.api || (await this.connect());
-    if (!api || !api.db) return;
+    if (!api || !api.db) return false;
     try {
-      const ticketRef = api.ref(api.db, `${QUEUE_PATH}/${ticket.playerId}`);
+      const ticketRef = api.ref(api.db, `${this.queuePath}/${ticket.playerId}`);
       await api.set(ticketRef, ticket);
       // A player who closes the app mid-search must not sit in the queue forever
       // as a ghost opponent nobody can actually match with.
       api.onDisconnect(ticketRef).remove();
+      return true;
     } catch (e) {
       console.warn('[FirebaseTransport] enqueue failed:', e?.message || e);
+      return false;
     }
   }
 
@@ -208,7 +223,7 @@ export class FirebaseTransport {
     const api = this.api || (await this.connect());
     if (!api || !api.db) return;
     try {
-      await api.remove(api.ref(api.db, `${QUEUE_PATH}/${playerId}`));
+      await api.remove(api.ref(api.db, `${this.queuePath}/${playerId}`));
     } catch (e) {
       console.warn('[FirebaseTransport] dequeue failed:', e?.message || e);
     }
@@ -271,7 +286,7 @@ export class FirebaseTransport {
       return null;
     }
     try {
-      const ticketRef = api.ref(api.db, `${QUEUE_PATH}/${playerId}`);
+      const ticketRef = api.ref(api.db, `${this.queuePath}/${playerId}`);
       let seen = null;
       let sawTicket = false;
       const res = await api.runTransaction(ticketRef, (current) => {

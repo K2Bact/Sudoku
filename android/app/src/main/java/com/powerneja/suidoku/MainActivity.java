@@ -28,9 +28,11 @@ public class MainActivity extends BridgeActivity {
         // (src/utils/textZoom.js), so the cap only bounds the chrome around it.
         // A font-size change recreates this activity (fontScale is not in
         // configChanges), so reading it here is enough.
+        // Since D9 (2026-11-06) the player's own text size multiplies it, under the
+        // same cap — stored by NativeInfoPlugin.setTextScale, so it is in place
+        // before the page loads.
         try {
-            float fontScale = getResources().getConfiguration().fontScale;
-            int zoom = Math.round(Math.min(Math.max(fontScale, 0.85f), 1.3f) * 100);
+            int zoom = textZoomFor(this, savedTextStep(this));
             if (getBridge() != null && getBridge().getWebView() != null) {
                 getBridge().getWebView().getSettings().setTextZoom(zoom);
             }
@@ -145,6 +147,28 @@ public class MainActivity extends BridgeActivity {
         // have already been swapped. The one that cannot be stale is the one in
         // the argument.
         applyOrientationPolicy(newConfig);
+    }
+
+    // The player's text size step (D9): 0.9 · 1 · 1.15 · 1.3, kept by NativeInfoPlugin.
+    static final String TEXT_PREFS = "suidoku_display";
+    static final String TEXT_STEP_KEY = "text_step";
+
+    static float savedTextStep(android.content.Context ctx) {
+        try {
+            return ctx.getSharedPreferences(TEXT_PREFS, android.content.Context.MODE_PRIVATE).getFloat(TEXT_STEP_KEY, 1f);
+        } catch (Exception e) {
+            return 1f;
+        }
+    }
+
+    /**
+     * The WebView text zoom, in percent: the phone's font scale times the player's
+     * step, inside 0.85..1.3 — the cap U-1 set, which the layouts are gated to.
+     */
+    static int textZoomFor(android.content.Context ctx, float step) {
+        float fontScale = ctx.getResources().getConfiguration().fontScale;
+        float s = Math.min(Math.max(step, 0.8f), 1.4f);
+        return Math.round(Math.min(Math.max(fontScale * s, 0.85f), 1.3f) * 100);
     }
 
     /** Free rotation on a large screen, upright on a phone. See onCreate. */

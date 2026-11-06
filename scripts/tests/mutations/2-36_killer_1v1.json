@@ -1,0 +1,153 @@
+{
+  "gate": "2-36",
+  "name": "Killer 1v1: Killer Meets Killer, Never An Old App",
+  "command": "node scripts/tests/unit/test_battle_killer.js",
+  "greenMarker": "[2-36] PASSED",
+  "note": "KP-10 / KP-14 (2026-11-06). A killer search has its own queue (/queue_killer) because the /queue rule refuses any field it does not name and an app up to 33 would host a standard room for a killer ticket. Each 'ignored' in the gate is paired with the same message being taken by a search of its own kind.",
+  "mutations": [
+    {
+      "name": "a killer search waits in the standard queue",
+      "why": "An app up to 33 reads /queue, takes the killer ticket and hosts a standard room: the killer player is dropped onto a standard board.",
+      "file": "src/firebase/battleMatchmaking.js",
+      "find": "  if (typeof service.channel.useQueue === 'function') service.channel.useQueue(service.searchingKind);\n",
+      "replace": "",
+      "expectFailure": "the killer ticket waits in the killer queue"
+    },
+    {
+      "name": "the broadcast ticket does not say killer",
+      "why": "Two killer searchers that both saw an empty queue meet only through the broadcast; unmarked, each takes the other's ticket as a standard one and ignores it.",
+      "file": "src/firebase/battleMatchmaking.js",
+      "find": "level, timestamp, ...kindField(service.searchingKind) });",
+      "replace": "level, timestamp });",
+      "expectFailure": "a killer search must say so in its broadcast ticket"
+    },
+    {
+      "name": "a ticket of the other kind is not skipped",
+      "why": "The killer search withdraws and re-posts its own ticket for every old ticket it hears — a moment in which another killer searcher finds an empty queue — and re-broadcasts each time.",
+      "file": "src/firebase/battleMatchmaking.js",
+      "find": "  if (ticketKind(data) !== (service.searchingKind || 'classic')) return;   // a search of the other kind (KP-10)\n",
+      "replace": "",
+      "expectFailure": "a ticket it could never take made it withdraw and re-post its own"
+    },
+    {
+      "name": "a board of the other kind is adopted",
+      "why": "A killer search ends on a standard board, or an app gets a killer board it is not searching for.",
+      "file": "src/firebase/battleMatchmaking.js",
+      "find": "if (!isValidMatchBoard(data, undefined, service.searchingKind || 'classic')) return;",
+      "replace": "if (!isValidMatchBoard(data, undefined)) return;",
+      "expectFailure": "a killer search adopted a standard board"
+    },
+    {
+      "name": "the host that found a queued ticket deals a standard board",
+      "why": "The host sits in a standard room while the waiting killer player refuses the board and keeps searching: one player in a match, the other in the lobby.",
+      "file": "src/firebase/battleMatchmaking.js",
+      "find": "    const board = dealMatchBoard(level, service.searchingKind);",
+      "replace": "    const board = dealMatchBoard(level);",
+      "expectFailure": "two killer searches to pair"
+    },
+    {
+      "name": "the room keeps no cages",
+      "why": "The room says killer but has no cages: the game starts as a sparse standard board nobody can solve by sight.",
+      "file": "src/firebase/battleKind.js",
+      "find": "cages: killer ? data.cages : null };",
+      "replace": "cages: null };",
+      "expectFailure": "the room's cages do not cover the board once"
+    },
+    {
+      "name": "a refused killer ticket is taken as queued",
+      "why": "Before the /queue_killer rules are published every killer search is refused; the lobby would wait twelve seconds and then say nobody came.",
+      "file": "src/firebase/battleMatchmaking.js",
+      "find": "    if (queued === false) {",
+      "replace": "    if (queued === 'never') {",
+      "expectFailure": "a refused killer ticket must report \"could not connect\""
+    },
+    {
+      "name": "Firebase answers true for a refused write",
+      "why": "The local transport's switch would pass while the real server's refusal is swallowed: on a phone the killer search waits for nobody.",
+      "file": "src/firebase/transport/firebaseTransport.js",
+      "find": "      console.warn('[FirebaseTransport] enqueue failed:', e?.message || e);\n      return false;",
+      "replace": "      console.warn('[FirebaseTransport] enqueue failed:', e?.message || e);\n      return true;",
+      "expectFailure": "a write the server refuses must answer false"
+    },
+    {
+      "name": "Firebase writes killer tickets to /queue",
+      "why": "The same old-app collision as the local queue, on the only transport phones use.",
+      "file": "src/firebase/transport/firebaseTransport.js",
+      "find": "    return this.queueKind === 'killer' ? QUEUE_KILLER_PATH : QUEUE_PATH;",
+      "replace": "    return QUEUE_PATH;",
+      "expectFailure": "a killer ticket must go to /queue_killer"
+    },
+    {
+      "name": "a rematch deals a standard board",
+      "why": "A killer pair asks for a rematch and gets standard — and the requester, whose room is killer, refuses the board, so the two sides never start the same match.",
+      "file": "src/firebase/battleService.js",
+      "find": "...dealMatchBoard(this.currentRoom.level || 3, this.currentRoom.variant) };",
+      "replace": "...dealMatchBoard(this.currentRoom.level || 3) };",
+      "expectFailure": "both to start the rematch"
+    },
+    {
+      "name": "a rematch keeps the old cages",
+      "why": "The new board is played inside the previous match's cages, whose sums no longer add up: an unsolvable rematch.",
+      "file": "src/firebase/battleService.js",
+      "find": "initialEmptyCount: data.initialEmptyCount, ...roomBoard(data),",
+      "replace": "initialEmptyCount: data.initialEmptyCount,",
+      "expectFailure": "a cage sum is not its cells' sum in the solution"
+    },
+    {
+      "name": "a rematch board of the other kind is taken",
+      "why": "The opponent's acceptance can change the match's kind under the player.",
+      "file": "src/firebase/battleService.js",
+      "find": "isValidMatchBoard(data, this.currentRoom.level, this.currentRoom.variant || 'classic')",
+      "replace": "isValidMatchBoard(data, this.currentRoom.level)",
+      "expectFailure": "a killer room took a standard board as its rematch"
+    },
+    {
+      "name": "a cage may repeat a digit",
+      "why": "A peer could send cages that agree with the sums but not with the rules; the board has no answer by killer rules.",
+      "file": "src/firebase/battleValidation.js",
+      "find": "if (new Set(ds).size !== ds.length || ds.reduce",
+      "replace": "if (ds.reduce",
+      "expectFailure": "a cage with a digit twice is refused"
+    },
+    {
+      "name": "a cage sum is not checked against the solution",
+      "why": "A peer could send cages whose sums contradict its own answer: the board looks fine and cannot be finished.",
+      "file": "src/firebase/battleValidation.js",
+      "find": " || ds.reduce((s, d) => s + d, 0) !== cage.sum) return false;",
+      "replace": ") return false;",
+      "expectFailure": "a cage sum that is not its cells' sum is refused"
+    },
+    {
+      "name": "the replay is saved without its cages",
+      "why": "A killer replay shows a board with too few digits to follow (KP-14).",
+      "file": "src/firebase/replayExchange.js",
+      "find": "        ...(room.variant === 'killer' && room.cages ? { variant: 'killer', cages: room.cages } : {}),   // KP-14\n",
+      "replace": "",
+      "expectFailure": "saved as a killer"
+    },
+    {
+      "name": "a stored replay keeps a torn cage set",
+      "why": "A damaged record would be drawn with cages missing over part of the board.",
+      "file": "src/utils/replay/replayRecord.js",
+      "find": "r.variant === 'killer' && isValidCageSet(r.cages) ?",
+      "replace": "r.variant === 'killer' && Array.isArray(r.cages) ?",
+      "expectFailure": "a torn cage set is dropped"
+    },
+    {
+      "name": "the lobby searches for standard whatever is chosen",
+      "why": "The killer switch shows in the 1v1 lobby and does nothing.",
+      "file": "src/components/BattleLobbyScreen.jsx",
+      "find": "    }, variant);",
+      "replace": "    });",
+      "expectFailure": "the lobby must search for the chosen kind"
+    },
+    {
+      "name": "the hook drops the kind",
+      "why": "The lobby asks for killer and the service searches standard.",
+      "file": "src/hooks/useBattleMultiplayer.js",
+      "find": "    }, kind);",
+      "replace": "    });",
+      "expectFailure": "handleStartQuickMatch must take the kind"
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import { GuidedTutorialOverlay } from '../GuidedTutorialOverlay';
 import { AdBanner } from '../AdBanner';
 import { loadSettings } from '../../utils/storage';
 import { useBoardFit } from '../../hooks/useBoardFit';
+import { useGuidedTutorial } from '../../hooks/useGuidedTutorial';
 
 export function GameScreen({
   activeBattleRoom,
@@ -65,6 +66,11 @@ export function GameScreen({
   totalEmptyCount
 }) {
   const boardFitRef = useBoardFit();
+  // The first-game walkthrough (KP-18): its step, the cell it points at, and when it moves on.
+  const guide = useGuidedTutorial({
+    active: Boolean(isGuidedTutorial), kind: variant, step: guidedStep, onNext: onNextGuidedStep,
+    board, solution: solutionBoard, notes, cages, isFastEntryMode,
+  });
   return (
     <div className="game-screen-wrapper">
       {activeBattleRoom ? (
@@ -101,7 +107,8 @@ export function GameScreen({
 
       {isGuidedTutorial && (
         <GuidedTutorialOverlay
-          step={guidedStep}
+          guide={guide}
+          kind={variant}
           onNextStep={onNextGuidedStep}
           onExitTutorial={onExitGuidedTutorial}
         />
@@ -135,6 +142,7 @@ export function GameScreen({
           conflictInfo={conflictInfo}
           flashCell={flashCell}
           cages={cages}
+          guide={isGuidedTutorial && guide.ready ? guide.target : null}
         />
         </div>
 

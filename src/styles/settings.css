@@ -254,3 +254,51 @@
   border-radius: 999px;
   border: 1px solid var(--board-grid-line);
 }
+
+/* Display: text size steps and the board preview (D9, settings/DisplaySection.jsx).
+   The steps look like the language buttons; four to a row, and they wrap to two
+   rows where a language's step names run long at a large font. */
+.text-size-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  gap: 6px;
+  padding: 0 8px 8px;
+}
+
+.text-size-step {
+  padding: 10px 6px;
+  border-radius: 9px;
+  background: var(--btn-bg);
+  border: 1px solid var(--board-grid-line);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.text-size-step:active {
+  transform: scale(0.96);
+}
+
+.text-size-step.active {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
+  border: 1.5px solid #2563eb;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4);
+}
+
+/* One board row, the board's own classes: its digits are sized from its width
+   (cqw), so a row as wide as the board shows the digits as the board will. */
+.sudoku-board-container.display-preview {
+  aspect-ratio: auto;
+  width: auto;
+  margin: 0 8px 10px;
+  box-shadow: none;
+}
+
+.display-preview .sudoku-row {
+  aspect-ratio: 9 / 1;
+}

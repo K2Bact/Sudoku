@@ -15,6 +15,7 @@ import {
 import { ScreenHeader } from './common/ScreenHeader';
 import { PrivacyPolicyModal } from './modals/PrivacyPolicyModal';
 import { ThemeSelectorSection } from './settings/ThemeSelectorSection';
+import { DisplaySection } from './settings/DisplaySection';
 import { LanguageSelectorSection } from './settings/LanguageSelectorSection';
 import { soundHaptic } from '../utils/soundHaptic';
 import { loadSettings, saveSettings, clearGameState } from '../utils/storage';
@@ -195,6 +196,9 @@ export function SettingsScreen({
 
         {/* Section 4: Themes */}
         <ThemeSelectorSection theme={theme} onSelectTheme={onSelectTheme} />
+
+        {/* Text size, high contrast and a preview (D9) */}
+        <DisplaySection />
 
         {/* Section 5: Languages */}
         <LanguageSelectorSection />

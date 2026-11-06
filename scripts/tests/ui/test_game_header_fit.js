@@ -141,7 +141,7 @@ async function openGame(page, lang, tab, kind) {
   await page.goto(URL);
   await page.evaluate(({ l, killer }) => {
     localStorage.clear();
-    const settings = { language: l, theme: 'matte-dark' };
+    const settings = { guidedOffered: { classic: true, killer: true }, language: l, theme: 'matte-dark' };
     // Home opens on the killer switch, and the first-killer rules card is already seen.
     if (killer) Object.assign(settings, { homeVariant: 'killer', killerRulesSeen: true });
     localStorage.setItem('suidoku_settings_v1', JSON.stringify(settings));
@@ -217,7 +217,7 @@ async function openBattle(page, lang, kind) {
   await page.goto(URL);
   await page.evaluate((l) => {
     localStorage.clear();
-    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: l, theme: 'matte-dark', killerRulesSeen: true }));
+    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: l, theme: 'matte-dark', killerRulesSeen: true }));
     localStorage.setItem('suidoku_review_prompted', '1');
   }, lang);
   await page.reload();

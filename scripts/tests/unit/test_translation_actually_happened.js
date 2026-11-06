@@ -91,6 +91,7 @@ const COINCIDENTAL = new Set([
   'pt|achievements.pointsTotal',       // pts = pontos
   'fr|keypad.notesOn',                 // Notes is French (keypad.notes above); ON/OFF is the switch loanword
   'fr|keypad.notesOff',                // idem
+  'fr|tutorialOverlay.notesTitle',     // the walkthrough step names the Notes button, French "Notes" (KP-18)
   'de|replay.pause',                   // Pause ist deutsch (as common.pause)
   'fr|replay.pause',                   // pause est français (as common.pause)
   'fr|replay.sumNotes',                // Notes (as keypad.notes)

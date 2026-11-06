@@ -1,0 +1,81 @@
+{
+  "gate": "2-34",
+  "name": "Text Size And High Contrast Reach The Board And The WebView",
+  "command": "node scripts/tests/unit/test_text_scale.js",
+  "greenMarker": "[2-34] PASSED",
+  "note": "D9 (2026-11-06): Settings → Display, four text steps and high contrast. The board caps (digit 1.2, notes 1.15) were measured on a 412px board; the WebView cap (1.3) is the one the layouts are gated to (U-1). Gate 3-22 measures the cells and the contrast on screen.",
+  "mutations": [
+    {
+      "name": "the board digit takes the full step",
+      "why": "At 1.3 the digit font's 1.4em text box is 44.5px in a 41px cell — gate 3-12 counts that as a digit bigger than its cell.",
+      "file": "src/utils/textScale.js",
+      "find": "String(Math.min(factor, DIGIT_STEP_MAX))",
+      "replace": "String(factor)",
+      "expectFailure": "the board digit step"
+    },
+    {
+      "name": "the notes take the full step",
+      "why": "By arithmetic a killer note at 1.3 is about 11.8px in 11.3px of room inside its dashed cage (not measured: the text box of a note is taller than its slot even at the normal size). This gate is the only one that holds the number.",
+      "file": "src/utils/textScale.js",
+      "find": "String(Math.min(factor, NOTE_STEP_MAX))",
+      "replace": "String(factor)",
+      "expectFailure": "the note step"
+    },
+    {
+      "name": "the native plugin gets the board's capped step",
+      "why": "The app's text would stop at 1.2 for no reason: the WebView has its own cap (1.3), and that is the one the layouts are gated to.",
+      "file": "src/utils/textScale.js",
+      "find": "await native.setTextScale({ step: factor });",
+      "replace": "await native.setTextScale({ step: Math.min(factor, DIGIT_STEP_MAX) });",
+      "expectFailure": "the native plugin gets the full step"
+    },
+    {
+      "name": "the zoom is measured before the new one shows",
+      "why": "The new text zoom shows on the next frame. Measured before it, --text-zoom keeps the old value and the board's digits are divided by the wrong number until the next start.",
+      "file": "src/utils/textScale.js",
+      "find": "    if (typeof requestAnimationFrame === 'function') await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));\n",
+      "replace": "",
+      "expectFailure": "measured again only after the plugin answered"
+    },
+    {
+      "name": "the native cap goes past 1.3",
+      "why": "U-1: past 1.3 the header and keypad grow until the board has no room; the layouts are gated to 1.3.",
+      "file": "android/app/src/main/java/com/powerneja/suidoku/MainActivity.java",
+      "find": "Math.min(Math.max(fontScale * s, 0.85f), 1.3f)",
+      "replace": "Math.min(Math.max(fontScale * s, 0.85f), 1.5f)",
+      "expectFailure": "past 1.3 the board loses its room"
+    },
+    {
+      "name": "onCreate ignores the kept step",
+      "why": "The page would load at the phone's size and jump to the player's size when the web side catches up — or never, if it does not.",
+      "file": "android/app/src/main/java/com/powerneja/suidoku/MainActivity.java",
+      "find": "int zoom = textZoomFor(this, savedTextStep(this));",
+      "replace": "int zoom = textZoomFor(this, 1f);",
+      "expectFailure": "applies the kept step before the page loads"
+    },
+    {
+      "name": "the plugin does not keep the step",
+      "why": "Without it, MainActivity has nothing to apply at the next start.",
+      "file": "android/app/src/main/java/com/powerneja/suidoku/NativeInfoPlugin.java",
+      "find": ".edit().putFloat(MainActivity.TEXT_STEP_KEY, step).apply();",
+      "replace": ".edit().apply();",
+      "expectFailure": "keeps the step for the next start"
+    },
+    {
+      "name": "the saved settings are not applied at start",
+      "why": "A player who chose Large would see Normal at every start until they opened Settings.",
+      "file": "src/main.jsx",
+      "find": "applyDisplaySettings(loadSettings())\n",
+      "replace": "",
+      "expectFailure": "applies the saved display settings at start"
+    },
+    {
+      "name": "new players start at Large",
+      "why": "Normal is what everyone had before D9; a different default changes every screen for players who never asked.",
+      "file": "src/utils/storage.js",
+      "find": "    textSize: 'normal',",
+      "replace": "    textSize: 'large',",
+      "expectFailure": "starts at the normal text size"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "gate": "3-22",
+  "name": "The Largest Text Step Fits The Board; High Contrast Is High",
+  "command": "node scripts/tests/ui/test_text_size_board.js",
+  "greenMarker": "[3-22] PASSED",
+  "rebuild": true,
+  "note": "D9 (2026-11-06). The board half reads the digit back against the board's width, so a step that never reached the board fails instead of passing on a normal board; the contrast half checks each theme with the switch off too, so a switch that does nothing fails.",
+  "mutations": [
+    {
+      "name": "the board ignores the text step",
+      "why": "The setting would change the app's text and leave the digits — the part players asked to read — as they were.",
+      "file": "src/styles/board.css",
+      "find": "font-size: calc(6.1cqw * var(--board-digit-step, 1) / var(--text-zoom, 1));",
+      "replace": "font-size: calc(6.1cqw / var(--text-zoom, 1));",
+      "expectFailure": "did not reach the board"
+    },
+    {
+      "name": "the digit cap rises to 1.3",
+      "why": "Measured: the digit font's 1.4em text box is 44.5px in a 41px cell at 1.3.",
+      "file": "src/utils/textScale.js",
+      "find": "export const DIGIT_STEP_MAX = 1.2;",
+      "replace": "export const DIGIT_STEP_MAX = 1.3;",
+      "expectFailure": "cells overflow at the largest step"
+    },
+    {
+      "name": "the note cap rises to 1.3",
+      "why": "Expected to survive, and the audit of 2026-11-06 showed it: this gate measures layout boxes, and a note's text box is taller than its slot even at the normal step (81 of 108 killer notes), so it cannot tell a note crossing the dashed cage line from one that does not. The 1.15 cap is a margin by arithmetic (about 11.8px of note in 11.3px of room at 1.3), held by gate 2-34. Kept so the limit of this gate stays written down.",
+      "file": "src/utils/textScale.js",
+      "find": "export const NOTE_STEP_MAX = 1.15;",
+      "replace": "export const NOTE_STEP_MAX = 1.3;",
+      "expectSurvival": true
+    },
+    {
+      "name": "high contrast leaves the clay grid lines as they were",
+      "why": "The light themes draw the thin lines at about 1.8:1 on white — the thing high contrast is for.",
+      "file": "src/styles/contrast.css",
+      "find": "html.high-contrast body.theme-clay {\n  --text-muted: #292524;\n  --board-grid-line: #78716c;",
+      "replace": "html.high-contrast body.theme-clay {\n  --text-muted: #292524;",
+      "expectFailure": "clay: with high contrast the grid lines are"
+    },
+    {
+      "name": "high contrast leaves the notes muted",
+      "why": "Notes are the smallest text on the board; with high contrast on they take the main text colour.",
+      "file": "src/styles/contrast.css",
+      "find": "html.high-contrast body.theme-pure-ceramic {\n  --text-muted: #0f172a;\n",
+      "replace": "html.high-contrast body.theme-pure-ceramic {\n",
+      "expectFailure": "notes should take the main text colour"
+    },
+    {
+      "name": "the box lines stay thin",
+      "why": "The box lines are what a player follows across the board; with high contrast on they go from 2.5 to 3.5px.",
+      "file": "src/styles/contrast.css",
+      "find": "html.high-contrast .sudoku-cell.border-right-thick {\n  border-right-width: 3.5px;\n}",
+      "replace": "",
+      "expectFailure": "the box lines did not get thicker"
+    },
+    {
+      "name": "the preview is drawn outside a board container",
+      "why": "The digits are sized from the board container's width (cqw). Outside one they size from the nearest other container and the preview stops showing the board's proportion.",
+      "file": "src/components/settings/DisplaySection.jsx",
+      "find": "<div className=\"sudoku-board-container display-preview\" role=\"img\" aria-label={label}>",
+      "replace": "<div className=\"display-preview\" role=\"img\" aria-label={label}>",
+      "expectFailure": "not the board's proportion"
+    }
+  ]
+}

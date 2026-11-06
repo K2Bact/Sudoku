@@ -107,7 +107,7 @@ async function primeStorage(page, gameState = null, settings = {}) {
   await page.goto(PREVIEW_URL);
   await page.evaluate(({ s, extra }) => {
     localStorage.clear();
-    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en', theme: 'matte-dark', ...extra }));
+    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'en', theme: 'matte-dark', ...extra }));
 
     // Same local-time day key the app derives in src/utils/dateKey.js
     const d = new Date();

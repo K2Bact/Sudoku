@@ -4,12 +4,12 @@
  * 100% Real Players Only (Bot simulations completely removed).
  */
 
-import { generatePuzzle } from '../engine/SudokuEngine.js';
+import { dealMatchBoard, roomBoard } from './battleKind.js';
 import { aiBotService } from '../engine/aiBotService.js';
 import { createAIRoom, runAIBattle } from './aiBattleSession.js';
 import { createTransport } from './transport/index.js';
 import {
-  isValidBoardPayload, isValidProgress, isForRoom, isFromOpponent, isForThisMatch
+  isValidMatchBoard, isValidProgress, isForRoom, isFromOpponent, isForThisMatch
 } from './battleValidation.js';
 import {
   startQuickMatch, claimBothTickets, handleMatchTicket, handleMatchCreated
@@ -190,7 +190,7 @@ class BattleService {
    * Finding an opponent lives in battleMatchmaking.js — see the header there.
    * These four keep their names so callers and tests do not have to know.
    */
-  startQuickMatch(level = 3, onMatched, onUnavailable) { return startQuickMatch(this, level, onMatched, onUnavailable); }
+  startQuickMatch(level = 3, onMatched, onUnavailable, kind = 'classic') { return startQuickMatch(this, level, onMatched, onUnavailable, kind); }
 
   claimBothTickets(peerId) { return claimBothTickets(this, peerId); }
 
@@ -210,7 +210,7 @@ class BattleService {
 
   setupRoom(cfg) {
     this.currentRoom = {
-      code: cfg.code, roomId: cfg.roomId, level: cfg.level, puzzle: cfg.puzzle, solution: cfg.solution,
+      code: cfg.code, roomId: cfg.roomId, level: cfg.level, puzzle: cfg.puzzle, solution: cfg.solution, variant: cfg.variant || 'classic', cages: cfg.cages || null,
       initialEmptyCount: cfg.initialEmptyCount, status: 'playing', myProgress: 0, myMistakes: 0,
       opponentProgress: 0, opponentMistakes: 0, opponentId: cfg.opponentId, opponentName: cfg.opponentName,
       winner: null, rematchStatus: 'idle',
@@ -349,11 +349,8 @@ class BattleService {
 
   acceptRematch() {
     if (!this.currentRoom) return;
-    const newPuzzle = generatePuzzle(this.currentRoom.level || 3);
-    const payload = {
-      level: this.currentRoom.level || 3, puzzle: newPuzzle.puzzle, solution: newPuzzle.solution,
-      initialEmptyCount: newPuzzle.puzzle.flat().filter(v => v === 0).length
-    };
+    // The same kind as the match before (KP-10): a killer rematch deals a killer, cages and all.
+    const payload = { level: this.currentRoom.level || 3, ...dealMatchBoard(this.currentRoom.level || 3, this.currentRoom.variant) };
     this.sendInRoom({
       type: 'rematch_accepted', roomId: this.currentRoom.code, seq: this.currentRoom.matchSeq, ...payload
     });
@@ -372,11 +369,11 @@ class BattleService {
   resetForNewMatch(data) {
     // The level is this room's, not the one in the message: a rematch cannot
     // quietly change the difficulty both players agreed to.
-    if (!this.currentRoom || !isValidBoardPayload(data, this.currentRoom.level)) return;
+    if (!this.currentRoom || !isValidMatchBoard(data, this.currentRoom.level, this.currentRoom.variant || 'classic')) return;
     // Messages for the match before are dropped from here on (matchSeq).
     abandonReplay(this);
     Object.assign(this.currentRoom, {
-      puzzle: data.puzzle, solution: data.solution, initialEmptyCount: data.initialEmptyCount,
+      puzzle: data.puzzle, solution: data.solution, initialEmptyCount: data.initialEmptyCount, ...roomBoard(data),
       status: 'playing', myProgress: 0, myMistakes: 0, opponentProgress: 0, opponentMistakes: 0,
       winner: null, winnerReason: null,
       rematchStatus: 'accepted', rematchSeq: (this.currentRoom.rematchSeq || 0) + 1,

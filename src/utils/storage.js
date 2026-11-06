@@ -62,7 +62,10 @@ export function loadSettings() {
     shareMatchReplay: true,
     fastEntryMode: false,
     limitMistakes: true,
-    autoCheckMistakes: true
+    autoCheckMistakes: true,
+    // Display (D9): text size step (utils/textScale.js TEXT_STEPS) and high contrast.
+    textSize: 'normal',
+    highContrast: false
   };
 
   try {

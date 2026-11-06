@@ -31,6 +31,7 @@
  * A reader skips event kinds it does not know rather than failing, so a record
  * written by a later version still shows everything this version understands.
  */
+import { isValidCageSet } from '../../engine/variants.js';
 
 export const REPLAY_VERSION = 1;
 export const MAX_EVENTS = 3000;
@@ -252,6 +253,8 @@ export function normalizeRecord(raw) {
     level: isInt(r.level) && r.level >= 1 && r.level <= 5 ? r.level : 3,
     puzzle: r.puzzle,
     solution: r.solution,
+    // A killer match keeps its cages (KP-14); without a whole set it is shown as the board alone.
+    ...(r.variant === 'killer' && isValidCageSet(r.cages) ? { variant: 'killer', cages: r.cages } : {}),
     winner: r.winner === 'me' || r.winner === 'opponent' ? r.winner : null,
     reason: typeof r.reason === 'string' ? r.reason.slice(0, 32) : '',
     me,

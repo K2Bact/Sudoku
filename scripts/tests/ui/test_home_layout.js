@@ -233,7 +233,7 @@ async function run() {
         await p.goto(PREVIEW_URL);
         await p.evaluate((l) => {
           localStorage.setItem('suidoku_review_prompted', 'done');
-          localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: l, theme: 'clay' }));
+          localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: l, theme: 'clay' }));
         }, lang);
         await p.reload();
         await p.waitForSelector('.home-bottom-nav');

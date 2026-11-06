@@ -49,7 +49,7 @@ async function prime(page, settings = {}) {
   await page.goto(URL);
   await page.evaluate(({ today, extra }) => {
     localStorage.clear();
-    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ language: 'en', theme: 'matte-dark', ...extra }));
+    localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'en', theme: 'matte-dark', ...extra }));
     localStorage.setItem('suidoku_user_wallet_v1', JSON.stringify({ hints: 3, lastDailyClaimDate: today, streakDays: 1, totalAdsWatched: 0, history: [] }));
     localStorage.setItem('suidoku_review_prompted', '1');
   }, { today: todayKey(), extra: settings });

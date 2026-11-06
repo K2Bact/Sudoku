@@ -65,12 +65,40 @@
     "stays on /bus otherwise — so before these rules are published, 25 behaves exactly",
     "like 24, and a mistake in them sends a match back to /bus instead of breaking it.",
     "Publishing before or after 25 ships are both safe; before means 25-to-25 matches",
-    "are private from the first day."
+    "are private from the first day.",
+    "",
+    "2026-11-06 (KP-10): /queue_killer. A killer 1v1 search waits here, not in /queue: apps up to 1.9.0 (33)",
+    "read only /queue and would take a killer ticket as a standard match (they do not know the kind), and the",
+    "/queue rule refuses any field it does not name, so a ticket cannot say its kind. Same rules as /queue.",
+    "Until this is published a killer search is refused and the lobby says it cannot connect; standard",
+    "matches are untouched. Must be published by the user."
   ],
   "rules": {
     ".read": false,
     ".write": false,
     "queue": {
+      ".read": "auth != null",
+      "$playerId": {
+        ".write": "auth != null && (!newData.exists() || $playerId === auth.uid)",
+        ".validate": "newData.hasChildren(['playerId','playerName','level','timestamp'])",
+        "playerId": {
+          ".validate": "newData.isString() && newData.val() === $playerId && newData.val() === auth.uid && newData.val().length <= 64"
+        },
+        "playerName": {
+          ".validate": "newData.isString() && newData.val().length <= 64"
+        },
+        "level": {
+          ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 5"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "queue_killer": {
       ".read": "auth != null",
       "$playerId": {
         ".write": "auth != null && (!newData.exists() || $playerId === auth.uid)",

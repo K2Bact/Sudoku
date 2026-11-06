@@ -132,7 +132,7 @@ function ReplayView({ record, shareState, onBack }) {
 
           <div className="replay-board">
             <SudokuBoard board={board} initialBoard={puzzleGrid} solutionBoard={solutionGrid} notes={notes}
-              selectedCell={lastCell} onSelectCell={noop} />
+              selectedCell={lastCell} onSelectCell={noop} cages={record.cages || null} />
           </div>
 
           <div className="replay-bars">

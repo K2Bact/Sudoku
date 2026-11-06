@@ -116,9 +116,9 @@ export function useBackStack(props) {
         setDailyRewardInfo(null);
         return true;
       }
+      // The walkthrough is played on a real board: back closes it and keeps the game (KP-18).
       if (isGuidedTutorial) {
         setIsGuidedTutorial(false);
-        setActiveScreen('home');
         return true;
       }
 

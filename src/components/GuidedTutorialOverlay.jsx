@@ -3,86 +3,62 @@ import { Award, CheckCircle2, ChevronRight, X } from 'lucide-react';
 import { soundHaptic } from '../utils/soundHaptic';
 import { useTranslation } from '../i18n/i18nContext';
 
-export function GuidedTutorialOverlay({
-  step,
-  currentStep,
-  onNextStep,
-  onExitTutorial,
-  onFinishTutorial
-}) {
+// Which strings each step reads: with a cell to point at, and without one (KP-18).
+const TEXT = {
+  single: { title: 'singleTitle', desc: 'singleDesc', plain: 'singlePlain' },
+  notes: { title: 'notesTitle', desc: 'notesDesc', plain: 'notesPlain' },
+  fast: { title: 'fastTitle', desc: 'fastDesc', plain: 'fastDesc' },
+  cageLast: { title: 'cageTitle', desc: 'cageDesc', plain: 'cagePlain' },
+  rule45: { title: 'rule45Title', desc: 'rule45Desc', plain: 'rule45Plain' },
+  done: { title: 'doneTitle', desc: 'doneDesc', plain: 'doneDesc' },
+};
+
+/**
+ * The first-game walkthrough's card above the board (KP-18). What the step is and
+ * when it is done come from useGuidedTutorial; this only says it. A step that has
+ * a cell to point at moves on when the player does it, so it shows no Next button —
+ * a step without one shows Next, and the last step shows Keep playing.
+ */
+export function GuidedTutorialOverlay({ guide, kind, onNextStep, onExitTutorial }) {
   const { t } = useTranslation();
-  const actualStep = step ?? currentStep ?? 0;
-  const handleFinish = onExitTutorial || onFinishTutorial;
+  const { id, steps, index, target, ready } = guide;
+  const text = TEXT[id] || TEXT.done;
+  const isLast = id === 'done';
+  const params = target
+    ? { row: target.r + 1, col: target.c + 1, num: target.num, sum: target.sum, cands: (target.cands || []).join(' · ') }
+    : {};
+  const descKey = isLast && kind === 'killer' ? 'doneKillerDesc' : target ? text.desc : text.plain;
 
-  const steps = [
-    {
-      title: t('tutorialOverlay.step1Title'),
-      desc: t('tutorialOverlay.step1Desc'),
-      targetCell: [0, 2],
-      expectedNum: 9
-    },
-    {
-      title: t('tutorialOverlay.step2Title'),
-      desc: t('tutorialOverlay.step2Desc'),
-      targetCell: [1, 4],
-      expectedNum: 3
-    },
-    {
-      title: t('tutorialOverlay.step3Title'),
-      desc: t('tutorialOverlay.step3Desc'),
-      targetCell: [2, 6],
-      expectedNum: 4
-    },
-    {
-      title: t('tutorialOverlay.step4Title'),
-      desc: t('tutorialOverlay.step4Desc'),
-      isComplete: true
-    }
-  ];
-
-  const activeStep = steps[actualStep] || steps[0];
-  const isLast = actualStep >= steps.length - 1;
-
-  const handleNextClick = () => {
+  const handleNext = () => {
     soundHaptic.playSelectSound();
-    if (isLast) {
-      if (handleFinish) handleFinish();
-    } else {
-      if (onNextStep) onNextStep();
-    }
+    if (isLast) onExitTutorial();
+    else onNextStep();
   };
-
-  const handleExitClick = () => {
+  const handleExit = () => {
     soundHaptic.playSelectSound();
-    if (handleFinish) handleFinish();
+    onExitTutorial();
   };
 
   return (
-    <div className="guided-coaching-banner">
+    <div className="guided-coaching-banner" role="status" aria-live="polite" data-step={id}>
       <div className="coaching-header">
-        <Award className="text-yellow" size={20} />
-        <h4>{activeStep.title}</h4>
-        <span className="step-badge">{actualStep + 1} / {steps.length}</span>
-        <button type="button" className="icon-btn close-coaching-btn ml-auto" onClick={handleExitClick} title={t('tutorialOverlay.exitTooltip')}>
+        <Award className="text-yellow" size={18} />
+        <h4>{t(`tutorialOverlay.${text.title}`)}</h4>
+        <span className="step-badge">{index + 1} / {steps.length}</span>
+        <button type="button" className="icon-btn close-coaching-btn" onClick={handleExit} title={t('tutorialOverlay.exitTooltip')} aria-label={t('tutorialOverlay.exitTooltip')}>
           <X size={16} />
         </button>
       </div>
-
-      <p className="coaching-desc">{activeStep.desc}</p>
-
-      <div className="coaching-actions mt-2">
-        {isLast ? (
-          <button type="button" className="btn btn-primary btn-block" onClick={handleNextClick}>
-            <CheckCircle2 size={18} />
-            <span>{t('tutorialOverlay.finishBtn')}</span>
+      <p className="coaching-desc">{ready ? t(`tutorialOverlay.${descKey}`, params) : ''}</p>
+      {(isLast || (ready && !target && id !== 'fast')) && (
+        <div className="coaching-actions">
+          <button type="button" className={`btn ${isLast ? 'btn-primary' : 'btn-secondary'} btn-sm`} onClick={handleNext}>
+            {isLast ? <CheckCircle2 size={16} /> : null}
+            <span>{t(isLast ? 'tutorialOverlay.finishBtn' : 'tutorialOverlay.nextBtn')}</span>
+            {isLast ? null : <ChevronRight size={16} />}
           </button>
-        ) : (
-          <button type="button" className="btn btn-secondary btn-sm" onClick={handleNextClick}>
-            <span>{t('tutorialOverlay.nextBtn')}</span>
-            <ChevronRight size={16} />
-          </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
