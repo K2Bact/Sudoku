@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useTranslation } from '../i18n/i18nContext';
 import { CageOutline } from './KillerCage';
 import { cageLayout } from '../engine/killer/cageLayout';
+import { cellLabel } from '../utils/cellLabel';
 
 export function SudokuBoard({
   board,
@@ -115,6 +116,7 @@ export function SudokuBoard({
                     ${guideArea.has(cell) && cell !== guideCell ? 'guide-area' : ''}
                   `}
                   onClick={() => onSelectCell(r, c)}
+                  aria-label={cellLabel(t, { r, c, value, given: isInitial, notes: cellNotes, cageSum: killer ? cages[killer.cageOf[cell]]?.sum : undefined })}
                 >
                   {killer && <CageOutline cell={cell} cageOf={killer.cageOf} />}
                   {cageSum !== undefined && <span className="cage-sum">{cageSum}</span>}

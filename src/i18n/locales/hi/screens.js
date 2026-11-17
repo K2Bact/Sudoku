@@ -44,6 +44,9 @@ export const screens = {
     unlockingAd: '📺 पिछला दिन अनलॉक हो रहा है...',
     calendarTitle: '📅 365-दिवसीय कैलेंडर',
     futureAlert: 'भविष्य की पहेलियां अभी उपलब्ध नहीं हैं।',
+    // D36: a date already finished — by its mission (the day's puzzle stays closed) or otherwise.
+    doneByMission: 'इस दिन की उपस्थिति पहले ही दर्ज है — आपने इसका मिशन पूरा किया। हर दिन एक ही बार गिना जाता है, इसलिए इस दिन की पहेली बंद रहती है।',
+    doneAlready: 'आप यह दिन पहले ही पूरा कर चुके हैं। ✅',
     pastUnlockNotice: '💡 छूटे हुए पिछले दिनों (🔒) को छोटा विज्ञापन देखकर अनलॉक किया जा सकता है।',
     unlockModalTitle: 'पिछली चुनौती अनलॉक करें',
     unlockModalDesc: '{date} की पहेली पिछली चुनौती है।\nइसे अनलॉक करने और खेलने के लिए छोटा विज्ञापन देखें।\nक्या आप देखना चाहते हैं?',

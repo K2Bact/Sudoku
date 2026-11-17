@@ -44,6 +44,9 @@ export const screens = {
     unlockingAd: '📺 Разблокировка прошлого дня...',
     calendarTitle: '📅 Календарь 365 дней',
     futureAlert: 'Будущие испытания еще недоступны.',
+    // D36: a date already finished — by its mission (the day's puzzle stays closed) or otherwise.
+    doneByMission: 'Этот день уже отмечен — вы выполнили его задание. Каждый день засчитывается один раз, поэтому его испытание остаётся закрытым.',
+    doneAlready: 'Этот день уже пройден. ✅',
     pastUnlockNotice: '💡 Пропущенные дни (🔒) можно открыть просмотром короткого видео.',
     unlockModalTitle: 'Открыть прошлое испытание',
     unlockModalDesc: 'Испытание за {date} из прошлого.\nПосмотрите короткий ролик, чтобы открыть его.\nСмотреть рекламу?',

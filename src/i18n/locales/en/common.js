@@ -64,7 +64,15 @@ export const common = {
   board: {
     pausedTitle: 'Paused',
     tapToResume: 'Tap to resume ▶️',
-    resumeTooltip: 'Tap to Resume'
+    resumeTooltip: 'Tap to Resume',
+    // D47: what a screen reader says for a board cell (utils/cellLabel.js).
+    cellAria: 'Row {row}, column {col}: {content}',
+    cellAriaCage: 'Row {row}, column {col}: {content}; cage sum {sum}',
+    cellEmpty: 'empty',
+    cellGiven: '{num}, given',
+    cellNotes: 'notes {list}',
+    // D44: shown instead of a board under 144px (a split-screen half on a phone).
+    tooShort: 'The window is too short for the board. Make it taller to play.'
   },
   themes: {
     clay: '🏺 Warm Clay',
@@ -111,5 +119,13 @@ export const common = {
       title: '🌱 Beginner',
       desc: 'Keep playing and your score will go up.'
     }
+  },
+  // D38 (2026-11-06): shown by the page itself, before the app loads, when the WebView is older
+  // than the build supports (scripts/build/webviewNotice.js). Read at build time, not by the app.
+  webviewUpdate: {
+    title: 'Please update Android System WebView',
+    body: 'This game draws its screens with Android System WebView, and the version on this phone is too old to show them. Update it on Google Play, then open the game again.',
+    update: 'Open Google Play',
+    continue: 'Continue anyway'
   }
 };

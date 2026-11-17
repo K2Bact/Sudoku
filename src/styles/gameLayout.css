@@ -305,3 +305,50 @@
     aspect-ratio: 1.15;
   }
 }
+
+/* D44 (2026-11-06): a phone's split-screen half (411x430) left the board 96px across with the
+   banner below it — 8px cells. The second header row (restart, new game) is the next height
+   to give back: in a window this short it joins the badge row, its buttons as icons
+   (they keep their names for screen readers: aria-label). */
+@media (max-height: 520px) {
+  .game-header .header-status-container {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .game-header .status-badges-row {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .game-header .status-actions-row {
+    display: flex;
+    flex: none;
+    width: auto;
+    gap: 4px;
+  }
+
+  .game-header .restart-btn,
+  .game-header .new-game-btn {
+    min-width: 36px;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .game-header .restart-btn span,
+  .game-header .new-game-btn span {
+    display: none;
+  }
+}
+
+/* A 16:9 phone (360x640dp, a 592px window) is not short enough for that, but its board was
+   231px with the banner — the gaps between header, board and keypad give a little back. */
+@media (max-height: 640px) {
+  .game-screen-wrapper {
+    gap: 8px;
+  }
+
+  .game-main {
+    gap: 10px;
+  }
+}

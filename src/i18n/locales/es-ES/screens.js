@@ -44,6 +44,9 @@ export const screens = {
     unlockingAd: '📺 Desbloqueando puzle pasado...',
     calendarTitle: '📅 Calendario de 365 días',
     futureAlert: 'Los puzles futuros aún no están desbloqueados.',
+    // D36: a date already finished — by its mission (the day's puzzle stays closed) or otherwise.
+    doneByMission: 'Este día ya tiene su registro: completaste su misión. Cada día cuenta una vez, así que su puzle sigue cerrado.',
+    doneAlready: 'Ya completaste este día. ✅',
     pastUnlockNotice: '💡 Las fechas pasadas (🔒) se pueden desbloquear viendo un breve anuncio.',
     unlockModalTitle: 'Desbloquear puzle pasado',
     unlockModalDesc: 'El puzle de {date} es un desafío diario pasado.\nMira un breve anuncio para desbloquearlo y jugar de inmediato.\n¿Deseas verlo?',

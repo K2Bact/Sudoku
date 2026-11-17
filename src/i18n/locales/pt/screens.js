@@ -44,6 +44,9 @@ export const screens = {
     unlockingAd: '📺 Desbloqueando desafio anterior...',
     calendarTitle: '📅 Calendário 365 Dias',
     futureAlert: 'Os desafios futuros ainda não foram liberados.',
+    // D36: a date already finished — by its mission (the day's puzzle stays closed) or otherwise.
+    doneByMission: 'Este dia já tem presença: você concluiu a missão dele. Cada dia conta uma vez, então o desafio dele continua fechado.',
+    doneAlready: 'Você já concluiu este dia. ✅',
     pastUnlockNotice: '💡 Dias anteriores perdidos (🔒) podem ser liberados assistindo a um vídeo curto.',
     unlockModalTitle: 'Desafio anterior',
     unlockModalDesc: 'O desafio de {date} é de um dia anterior.\nAssista a um anúncio rápido para desbloquear e jogar.\nDeseja assistir?',

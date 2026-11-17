@@ -85,8 +85,11 @@ export function DailyChallengeScreen({ onBack, onStartDailyPuzzle, onStartDailyM
   const handleDayClick = (dayNum) => {
     const dateKey = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
 
-    // 1. 이미 완료한 날짜는 당일/과거 상관없이 무반응 (게임 재진입 차단)
+    // 1. 이미 완료한 날짜는 다시 열지 않는다(게임 재진입 차단). 예전엔 아무 말 없이 돌아가서,
+    //    미션으로 출석한 날의 퍼즐이 왜 안 열리는지 알 수 없었다(D36, 2026-11-06).
     if (records[dateKey]?.completed) {
+      soundHaptic.playSelectSound();
+      notify(t(records[dateKey].via === 'mission' ? 'daily.doneByMission' : 'daily.doneAlready'));
       return;
     }
 

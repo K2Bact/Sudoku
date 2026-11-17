@@ -116,6 +116,22 @@
       "find": ".sudoku-board-container.paused {\n  background: var(--bg-surface);\n}",
       "replace": ".sudoku-board-container.paused {\n  background: var(--bg-surface);\n  width: auto;\n}",
       "expectFailure": "D48"
+    },
+    {
+      "name": "a short window keeps two header rows",
+      "why": "D44 (2026-11-06): a phone's split-screen half near the 480dp floor gives that row's height back to the board; without it the board falls under 200px.",
+      "file": "src/styles/gameLayout.css",
+      "find": "  .game-header .header-status-container {\n    flex-direction: row;\n    align-items: stretch;\n  }\n",
+      "replace": "",
+      "expectFailure": "status rows are still two"
+    },
+    {
+      "name": "a board too small to play is drawn anyway",
+      "why": "D44: under 144px a board has 16px cells; it should be hidden and the window asked to grow.",
+      "file": "src/hooks/useBoardFit.js",
+      "find": "board.getBoundingClientRect().width < BOARD_MIN_PX",
+      "replace": "false",
+      "expectFailure": "drawn without the too-short notice"
     }
   ],
   "rebuild": true

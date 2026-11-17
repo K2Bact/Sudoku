@@ -44,6 +44,9 @@ export const screens = {
     unlockingAd: '📺 Altes Rätsel wird freigeschaltet...',
     calendarTitle: '📅 365-Tage-Kalender',
     futureAlert: 'Zukünftige Rätsel sind noch nicht freigeschaltet.',
+    // D36: a date already finished — by its mission (the day's puzzle stays closed) or otherwise.
+    doneByMission: 'Dieser Tag ist schon eingetragen – du hast seine Mission geschafft. Jeder Tag zählt einmal, deshalb bleibt sein Rätsel geschlossen.',
+    doneAlready: 'Diesen Tag hast du schon abgeschlossen. ✅',
     pastUnlockNotice: '💡 Einen Tag verpasst (🔒)? Schalte ihn jederzeit mit einem kurzen Werbevideo frei.',
     unlockModalTitle: 'Vergangenes Rätsel freischalten',
     unlockModalDesc: 'Das Rätsel vom {date} ist eine vergangene Challenge.\nKurze Werbung ansehen, um sofort freizuschalten.\nWerbung ansehen?',

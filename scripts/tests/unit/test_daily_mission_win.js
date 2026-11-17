@@ -102,10 +102,20 @@ for (const [type, gameMode] of [['level_clear', 'classic'], ['speedrun', 'timeAt
         'the win was judged against the mission its own count unlocked (D25)');
       assert.strictEqual(hints, 4, `${tag}: hints ${hints} after the mission (want 3 + 1)`);
       assert.strictEqual(day1.variant, variant, `${tag}: the day's record says ${day1.variant}`);
+      // D36: the calendar says why a day's puzzle stays closed — it needs to know a mission closed it.
+      const via = how === 'plain game' ? 'mission' : 'puzzle';
+      assert.strictEqual(day1.via, via, `${tag}: the day's record says via=${day1.via}, not ${via} — the calendar would explain the wrong thing (D36)`);
       cases++;
     }
   }
 }
 fixedNow = null;
+// The other mission that writes the day: a 1v1 or AI battle, from its result window.
+{
+  const fs = await import('fs');
+  const modal = fs.readFileSync(new URL('../../../src/components/BattleResultModal.jsx', import.meta.url), 'utf8');
+  assert(/recordDailyCompletion\(todayKey, 0, 0, variantOf\(room\), 'mission'\)/.test(modal),
+    'the battle mission must record its day as via=mission, or the calendar calls it a solved puzzle (D36)');
+}
 console.log(`  ✅ ${cases} cases: level and Speedrun missions, standard and killer, 13->14 and 14->15 wins and the mission's own game — each pays the mission on its card`);
 console.log('\n✅ [2-31] PASSED — a win pays the day\'s mission the player was shown');

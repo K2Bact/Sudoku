@@ -241,8 +241,11 @@ async function openBattle(page, lang, kind) {
     window.suidokuBattle.currentRoom.botId = id;
     window.suidokuBattle.notifyListeners();
   }, longest);
-  const shown = await page.locator('.battle-header-card').innerText();
+  // React draws the new name on its next render, not inside notifyListeners: read at once and a
+  // busy machine (the full QA run, 2026-11-18) catches the header before it — wait for the name.
   const want = (await botNames(lang))[longest];
+  const shown = await page.waitForFunction((w) => document.querySelector('.battle-header-card')?.innerText.includes(w), want, { timeout: 3000 })
+    .then(() => want).catch(async () => page.locator('.battle-header-card').innerText());
   if (!shown.includes(want)) throw new Error(`${lang}: the AI header does not show its longest bot name "${want}" — the measurement would not reach it`);
   await page.waitForTimeout(150);
   return word;

@@ -170,6 +170,9 @@ try {
           keypadBottom: kb.bottom,
           adTop: rect('.ad-slot-container')?.top,
           board: rect('.sudoku-board-container')?.width,
+          // D44: the header's two status rows are one at ≤520px; the too-short notice never at an accepted size.
+          oneRow: getComputedStyle(document.querySelector('.header-status-container')).flexDirection === 'row',
+          small: document.querySelector('.game-main').hasAttribute('data-board-small'),
           banner: box('.ghost-rival-banner-container'),
           header: box('.game-header'),
           boardBox: box('.sudoku-board-container'),
@@ -202,6 +205,8 @@ try {
       // A board small enough to be unplayable is a layout failure of its own: a
       // 780x380 split-screen half gave 26px before the landscape rule.
       if (r.board < 200) errors.push(`${where}: the board is only ${Math.round(r.board)}px across — unplayable`);
+      if (r.small) errors.push(`${where}: the too-short notice is up at a size the app accepts — the board is hidden (D44)`);
+      if (r.oneRow !== (h <= 520)) errors.push(`${where}: the header's status rows are ${r.oneRow ? 'one' : 'two'} — want ${h <= 520 ? 'one at ≤520px (D44)' : 'two'}`);
       // Wide and lying down, the two halves must be side by side; stacked, the
       // board is starved by a keypad taller than the window.
       if (w >= 720 && w > h && !r.sideBySide) errors.push(`${where}: landscape and ${w}px wide, but the keypad is still under the board`);
@@ -281,6 +286,92 @@ try {
       console.log(`  ${where.padEnd(28)} board ${Math.round(r.board)}px${pz ? ` (paused ${Math.round(pz.width)})` : ''} · ${r.sideBySide ? 'side-by-side' : 'stacked'} · pad ${r.padColumns}col · width ${Math.round(r.usedWidth * 100)}% · lowest→banner ${Math.round(r.adTop - r.lowest)}px`);
       await page.close();
     }
+  }
+
+  // ── A phone's split-screen half near the 480dp floor (D44) ────────────
+  //
+  // 411x520: the header's two status rows become one (gameLayout.css, ≤520px) and the
+  // board keeps the 200px this gate calls playable — 223px, 211 at the 1.3x font. A ghost
+  // race at this height is not held to it: its banner leaves 161px (144 at 1.3x), a known
+  // limit recorded in Diary 182, still above the too-short line below.
+  for (const S of SCALES) {
+    const page = await (await browser.newContext({ viewport: { width: 411, height: 520 } })).newPage();
+    await page.goto(URL);
+    await page.evaluate(() => localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'ko', theme: 'clay' })));
+    await page.reload();
+    await page.waitForSelector('.home-bottom-nav');
+    await page.locator('.home-screen-container .btn-play-new').first().click();
+    await page.waitForSelector('.sudoku-board-container', { timeout: 8000 });
+    await page.evaluate((s) => {
+      const slot = document.createElement('div');
+      slot.className = 'ad-slot-container';
+      document.documentElement.style.setProperty('--ad-banner-h', `${Math.round(Math.min(90, Math.max(50, innerWidth * 0.155)))}px`);
+      document.querySelector('.game-screen-wrapper').appendChild(slot);
+      if (s !== 1) {
+        const els = [...document.querySelectorAll('body *')];
+        const sizes = els.map((e) => parseFloat(getComputedStyle(e).fontSize));
+        els.forEach((e, i) => { e.style.fontSize = `${sizes[i] * s}px`; });
+        document.documentElement.style.setProperty('--text-zoom', String(s));
+        document.querySelectorAll('.cell-number, .note-digit').forEach((e) => { e.style.fontSize = ''; });
+      }
+    }, S);
+    await page.waitForTimeout(300);
+    const r = await page.evaluate(() => {
+      const rect = (sel) => document.querySelector(sel).getBoundingClientRect();
+      const head = document.querySelector('.header-status-container');
+      const cut = [...head.querySelectorAll('*')].filter((e) => { const b = e.getBoundingClientRect(); return b.right > innerWidth + 1 || b.left < -1; }).length;
+      return { oneRow: getComputedStyle(head).flexDirection === 'row', board: rect('.sudoku-board-container').width, small: document.querySelector('.game-main').hasAttribute('data-board-small'),
+        gap: rect('.ad-slot-container').top - rect('.keypad-container').bottom, scroll: document.scrollingElement.scrollHeight - innerHeight, cut };
+    });
+    const where = `411x520 font×${S} (split, D44)`;
+    if (!r.oneRow) errors.push(`${where}: the header's status rows are still two`);
+    if (r.board < 200) errors.push(`${where}: the board is only ${Math.round(r.board)}px across — unplayable`);
+    if (r.small) errors.push(`${where}: the too-short notice is up at a size the app accepts`);
+    if (r.gap < MIN_AD_GAP) errors.push(`${where}: the keypad ends ${Math.round(r.gap)}px above the banner (need ≥${MIN_AD_GAP})`);
+    if (r.scroll > 0) errors.push(`${where}: the page scrolls by ${r.scroll}px`);
+    if (r.cut) errors.push(`${where}: ${r.cut} parts of the one-row header run off the screen`);
+    console.log(`  ${where.padEnd(28)} board ${Math.round(r.board)}px · header ${r.oneRow ? 'one row' : 'two rows'} · keypad→banner ${Math.round(r.gap)}px`);
+    await page.close();
+  }
+
+  // ── Below the floor: the board would not be playable (D44) ─────────────
+  //
+  // The manifest declares 480dp as the least height (Android crops a smaller split
+  // rather than laying the app out in it — not checked on a real split screen). Should a
+  // window still come in shorter, a board under 144px (16px cells) is hidden and the
+  // window is asked to grow: the notice is there, inside the board's place, and fits.
+  for (const [w, h] of [[411, 380], [411, 300]]) {
+    const page = await (await browser.newContext({ viewport: { width: w, height: h } })).newPage();
+    await page.goto(URL);
+    await page.evaluate(() => localStorage.setItem('suidoku_settings_v1', JSON.stringify({ guidedOffered: { classic: true, killer: true }, language: 'ko', theme: 'clay' })));
+    await page.reload();
+    await page.waitForSelector('.home-bottom-nav');
+    await page.locator('.home-screen-container .btn-play-new').first().click();
+    await page.waitForSelector('.sudoku-board-container', { state: 'attached', timeout: 8000 });
+    await page.evaluate(() => {
+      const slot = document.createElement('div');
+      slot.className = 'ad-slot-container';
+      document.documentElement.style.setProperty('--ad-banner-h', '64px');
+      document.querySelector('.game-screen-wrapper').appendChild(slot);
+    });
+    await page.waitForTimeout(300);
+    const n = await page.evaluate(() => {
+      const main = document.querySelector('.game-main');
+      const board = document.querySelector('.board-zone .sudoku-board-container');
+      const note = document.querySelector('.board-too-small');
+      const b = note.getBoundingClientRect();
+      return { small: main.hasAttribute('data-board-small'), board: board.getBoundingClientRect().width, hidden: getComputedStyle(board).visibility === 'hidden',
+        shown: getComputedStyle(note).display !== 'none' && b.height > 0, text: note.textContent.trim(), cut: note.scrollWidth > note.clientWidth + 1 || b.right > innerWidth + 1 || b.left < -1 };
+    });
+    const where = `${w}x${h} (below the 480dp floor)`;
+    if (n.board >= 144) errors.push(`${where}: the board is ${Math.round(n.board)}px — this size no longer tests the notice`);
+    else {
+      if (!n.small || !n.hidden || !n.shown) errors.push(`${where}: a ${Math.round(n.board)}px board is drawn without the too-short notice (small ${n.small}, hidden ${n.hidden}, notice ${n.shown}) — D44`);
+      if (n.text.length < 8) errors.push(`${where}: the notice has no words ("${n.text}")`);
+      if (n.cut) errors.push(`${where}: the notice runs off the screen or is cut`);
+    }
+    console.log(`  ${where.padEnd(28)} board ${Math.round(n.board)}px · notice ${n.shown ? 'shown' : 'NOT shown'}`);
+    await page.close();
   }
 
   // ── The screens outside the game, on a large screen ────────────────────

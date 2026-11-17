@@ -44,6 +44,9 @@ export const screens = {
     unlockingAd: '📺 جارٍ فتح اللغز السابق...',
     calendarTitle: '📅 تقويم الـ 365 يوماً',
     futureAlert: 'الألغاز المستقبلية لم تُفتح بعد.',
+    // D36: a date already finished — by its mission (the day's puzzle stays closed) or otherwise.
+    doneByMission: 'سُجِّل حضور هذا اليوم بالفعل — لقد أكملت مهمته. يُحتسب كل يوم مرة واحدة، لذا يبقى لغزه مغلقًا.',
+    doneAlready: 'لقد أكملت هذا اليوم بالفعل. ✅',
     pastUnlockNotice: '💡 الأيام الفائتة (🔒) يمكن فتحها في أي وقت بمشاهدة إعلان فيديو قصير.',
     unlockModalTitle: 'فتح لغز سابق',
     unlockModalDesc: 'لغز {date} هو تحدٍ يومي سابق.\nشاهد إعلاناً قصيراً لفتحه واللعب فوراً.\nهل تود المشاهدة؟',

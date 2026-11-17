@@ -131,6 +131,7 @@ runStep('2-33. A 1v1 Says When The Opponent Stops Answering (heartbeat on the ro
 runStep('2-34. Text Size And High Contrast Reach The Board And The WebView (four steps, digit ≤ 1.2, notes ≤ 1.15, native zoom capped at 1.3)', 'node scripts/tests/unit/test_text_scale.js');
 runStep('2-35. The Walkthrough Points At Cells Whose Answer It Knows (single, note, cage last cell, rule of 45 — checked against the solution)', 'node scripts/tests/unit/test_guided_targets.js');
 runStep('2-36. Killer 1v1 — Killer Meets Killer, Never An Old App (own queue, kind on tickets and boards, refused = could not connect, rematch and replay keep the cages)', 'node scripts/tests/unit/test_battle_killer.js');
+runStep('2-37. An Old WebView Is Told To Update (an ES2015 notice script, shown below Chrome 111, by the app\'s own language rule)', 'node scripts/tests/unit/test_webview_notice.js');
 
 // -----------------------------------------------------------------------------
 // [TIER 3] UI / UX, Accessibility & Native Platform Tests
@@ -169,6 +170,9 @@ runStep('3-20. The Last Move Writes What The Screen Shows (a hint on the last ce
 runStep('3-21. Attendance Is Paid On Home, Not Only At Start (back to the front on Home, not in a game, once a day)', 'node scripts/tests/ui/test_attendance_return.js');
 runStep('3-22. The Largest Text Step Fits The Board; High Contrast Is High (phone, tablet, standard and killer with notes; four themes; the preview)', 'node scripts/tests/ui/test_text_size_board.js');
 runStep('3-23. The First-Game Walkthrough (offered once, steps move on only when done, killer after its rules, Academy, back keeps the game)', 'node scripts/tests/ui/test_guided_walkthrough.js');
+runStep('3-24. An Old WebView Sees The Update Notice In The Built Page (Chrome 69 in 13 languages, 108 may continue, a current engine sees the app)', 'node scripts/tests/ui/test_webview_notice_page.js');
+runStep('3-25. Every Board Cell Has A Name A Screen Reader Can Say (row, column, content, cage sum; no nameless button; 13 languages, standard and killer)', 'node scripts/tests/ui/test_cell_names.js');
+runStep('3-26. A Finished Day Says Why It Does Not Open (by its mission, by its puzzle, from before; 13 languages)', 'node scripts/tests/ui/test_daily_done_message.js');
 
 console.log('======================================================');
 summary('pass');

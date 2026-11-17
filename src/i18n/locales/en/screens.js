@@ -44,6 +44,9 @@ export const screens = {
     unlockingAd: '📺 Unlocking past puzzle...',
     calendarTitle: '📅 365-Day Calendar',
     futureAlert: 'Future puzzles are not unlocked yet.',
+    // D36: a date already finished — by its mission (the day's puzzle stays closed) or otherwise.
+    doneByMission: 'This day is already checked in — you completed its mission. Each day counts once, so its puzzle stays closed.',
+    doneAlready: 'You\'ve already completed this day. ✅',
     pastUnlockNotice: '💡 Missed a day (🔒)? Unlock it anytime by watching a short ad.',
     unlockModalTitle: 'Unlock Past Puzzle',
     unlockModalDesc: 'The {date} puzzle is from a past day.\nWatch a short ad to unlock it and play now?',

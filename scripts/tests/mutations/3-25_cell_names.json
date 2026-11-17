@@ -1,0 +1,42 @@
+{
+  "gate": "3-25",
+  "name": "Every Board Cell Has A Name A Screen Reader Can Say",
+  "command": "node scripts/tests/ui/test_cell_names.js",
+  "greenMarker": "[3-25] PASSED",
+  "rebuild": true,
+  "note": "D47 (2026-11-06): the accessibility tree Chrome computes — what TalkBack reads.",
+  "mutations": [
+    {
+      "name": "the cells lose their names",
+      "why": "TalkBack reads 39 empty cells of a Lv.2 board as \"button\" and a filled one as its digit with no place (stability round 3).",
+      "file": "src/components/SudokuBoard.jsx",
+      "find": "                  aria-label={cellLabel(t, { r, c, value, given: isInitial, notes: cellNotes, cageSum: killer ? cages[killer.cageOf[cell]]?.sum : undefined })}\n",
+      "replace": "",
+      "expectFailure": "buttons without a name on the game screen"
+    },
+    {
+      "name": "killer cells do not say their cage sum",
+      "why": "The sum is drawn on one corner of the cage; a screen-reader player on any other cell of it never hears it.",
+      "file": "src/components/SudokuBoard.jsx",
+      "find": "cageSum: killer ? cages[killer.cageOf[cell]]?.sum : undefined })",
+      "replace": "cageSum: undefined })",
+      "expectFailure": "killer: 81 cells named wrongly"
+    },
+    {
+      "name": "a given digit sounds like an entered one",
+      "why": "The player cannot tell what the puzzle gave from what they wrote — what can be erased from what cannot.",
+      "file": "src/components/SudokuBoard.jsx",
+      "find": "given: isInitial,",
+      "replace": "given: false,",
+      "expectFailure": "cells named wrongly"
+    },
+    {
+      "name": "restart loses its name when it becomes an icon",
+      "why": "In a short window the words are hidden (D44); without aria-label the button is nameless.",
+      "file": "src/components/Header.jsx",
+      "find": "            aria-label={t('common.restart')}\n",
+      "replace": "",
+      "expectFailure": "restart / new game without a name"
+    }
+  ]
+}

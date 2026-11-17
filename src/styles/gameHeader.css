@@ -69,6 +69,39 @@
   width: min(100cqw, 100cqh - var(--board-rest, 0px));
 }
 
+/* D44 (2026-11-06): a board too small to play (useBoardFit sets data-board-small under 144px).
+   The board keeps its place, invisible, so it is still measured as the window grows back. */
+.board-zone {
+  position: relative;
+}
+
+.board-too-small {
+  display: none;
+}
+
+.game-main[data-board-small] .board-zone .sudoku-board-container {
+  visibility: hidden;
+}
+
+.game-main[data-board-small] .board-too-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  inset: 0;
+  min-height: 100%;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  border-radius: var(--border-radius-sm);
+  background: var(--btn-bg);
+  border: 1px solid var(--board-grid-line);
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+}
+
 .game-header {
   display: flex;
   flex-direction: column;

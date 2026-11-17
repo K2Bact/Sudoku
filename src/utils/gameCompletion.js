@@ -113,7 +113,7 @@ export function handleGameWinLogic({
     }
 
     if (missionPassed && !dailyRecords[todayKey]?.completed) {
-      recordDailyCompletion(todayKey, timerSeconds, mistakes, variant);
+      recordDailyCompletion(todayKey, timerSeconds, mistakes, variant, 'mission');
       addHints(1, 'daily_mission');
       setHintsRemaining(loadWallet().hints);
     }

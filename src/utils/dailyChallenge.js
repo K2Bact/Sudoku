@@ -208,13 +208,16 @@ export function loadDailyRecords() {
 
 // Save completed daily challenge record. One per day whichever kind cleared it —
 // the calendar is one (KP-4) — with the kind written down (variant).
-export function recordDailyCompletion(dateKey = getTodayDateKey(), timeSeconds = 0, mistakes = 0, variant = 'classic') {
+// via: 'mission' when the day's mission finished it rather than its puzzle (D36) — the calendar
+// then says why that day's puzzle no longer opens. Records written before have no `via`.
+export function recordDailyCompletion(dateKey = getTodayDateKey(), timeSeconds = 0, mistakes = 0, variant = 'classic', via = 'puzzle') {
   const records = loadDailyRecords();
   records[dateKey] = {
     completed: true,
     timeSeconds,
     mistakes,
     variant,
+    via: via === 'mission' ? 'mission' : 'puzzle',
     completedAt: new Date().toISOString(),
   };
 

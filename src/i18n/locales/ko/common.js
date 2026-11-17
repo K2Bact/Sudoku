@@ -64,7 +64,15 @@ export const common = {
   board: {
     pausedTitle: '게임이 일시정지 되었습니다',
     tapToResume: '화면을 탭하여 계속하기 ▶️',
-    resumeTooltip: '터치하여 계속하기'
+    resumeTooltip: '터치하여 계속하기',
+    // D47: what a screen reader says for a board cell (utils/cellLabel.js).
+    cellAria: '{row}번째 가로줄 {col}번째 세로줄: {content}',
+    cellAriaCage: '{row}번째 가로줄 {col}번째 세로줄: {content}, 묶음 합 {sum}',
+    cellEmpty: '빈칸',
+    cellGiven: '{num}, 처음부터 있는 숫자',
+    cellNotes: '메모 {list}',
+    // D44: shown instead of a board under 144px (a split-screen half on a phone).
+    tooShort: '창이 너무 짧아 판을 그릴 수 없습니다. 창을 늘리면 다시 보입니다.'
   },
   themes: {
     clay: '🏺 웜 세라믹 & 클레이',
@@ -111,5 +119,13 @@ export const common = {
       title: '🌱 초보',
       desc: '플레이할수록 점수가 오릅니다.'
     }
+  },
+  // D38 (2026-11-06): shown by the page itself, before the app loads, when the WebView is older
+  // than the build supports (scripts/build/webviewNotice.js). Read at build time, not by the app.
+  webviewUpdate: {
+    title: 'Android System WebView를 업데이트해 주세요',
+    body: '이 게임은 Android System WebView로 화면을 그려요. 이 폰의 WebView는 너무 오래돼서 화면이 제대로 나오지 않아요. Google Play에서 업데이트한 다음 게임을 다시 열어 주세요.',
+    update: 'Google Play 열기',
+    continue: '그래도 계속하기'
   }
 };

@@ -92,6 +92,7 @@ const COINCIDENTAL = new Set([
   'fr|keypad.notesOn',                 // Notes is French (keypad.notes above); ON/OFF is the switch loanword
   'fr|keypad.notesOff',                // idem
   'fr|tutorialOverlay.notesTitle',     // the walkthrough step names the Notes button, French "Notes" (KP-18)
+  'fr|board.cellNotes',                // a cell's notes read aloud, "notes {list}" — the same French word (D47)
   'de|replay.pause',                   // Pause ist deutsch (as common.pause)
   'fr|replay.pause',                   // pause est français (as common.pause)
   'fr|replay.sumNotes',                // Notes (as keypad.notes)

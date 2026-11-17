@@ -64,7 +64,15 @@ export const common = {
   board: {
     pausedTitle: 'Spiel pausiert',
     tapToResume: 'Tippen zum Fortsetzen ▶️',
-    resumeTooltip: 'Tippen zum Fortsetzen'
+    resumeTooltip: 'Tippen zum Fortsetzen',
+    // D47: what a screen reader says for a board cell (utils/cellLabel.js).
+    cellAria: 'Zeile {row}, Spalte {col}: {content}',
+    cellAriaCage: 'Zeile {row}, Spalte {col}: {content}; Käfigsumme {sum}',
+    cellEmpty: 'leer',
+    cellGiven: '{num}, vorgegeben',
+    cellNotes: 'Notizen {list}',
+    // D44: shown instead of a board under 144px (a split-screen half on a phone).
+    tooShort: 'Das Fenster ist zu niedrig für das Spielfeld. Mach es höher, um zu spielen.'
   },
   themes: {
     clay: '🏺 Warmer Ton',
@@ -111,5 +119,13 @@ export const common = {
       title: '🌱 Einsteiger',
       desc: 'Spiel weiter, dann steigt dein Wert.'
     }
+  },
+  // D38 (2026-11-06): shown by the page itself, before the app loads, when the WebView is older
+  // than the build supports (scripts/build/webviewNotice.js). Read at build time, not by the app.
+  webviewUpdate: {
+    title: 'Bitte aktualisiere Android System WebView',
+    body: 'Dieses Spiel zeigt seine Bildschirme mit Android System WebView an, und die Version auf diesem Telefon ist dafür zu alt. Aktualisiere sie bei Google Play und öffne das Spiel dann erneut.',
+    update: 'Google Play öffnen',
+    continue: 'Trotzdem fortfahren'
   }
 };

@@ -64,7 +64,15 @@ export const common = {
   board: {
     pausedTitle: 'ゲームが一時停止されました',
     tapToResume: 'タップして再開 ▶️',
-    resumeTooltip: 'タッチして再開'
+    resumeTooltip: 'タッチして再開',
+    // D47: what a screen reader says for a board cell (utils/cellLabel.js).
+    cellAria: '{row}行目 {col}列目：{content}',
+    cellAriaCage: '{row}行目 {col}列目：{content}、ケージの合計 {sum}',
+    cellEmpty: '空き',
+    cellGiven: '{num}（最初からある数字）',
+    cellNotes: 'メモ {list}',
+    // D44: shown instead of a board under 144px (a split-screen half on a phone).
+    tooShort: 'ウィンドウの高さが足りず、盤面を表示できません。高くするとまた表示されます。'
   },
   themes: {
     clay: '🏺 ウォームセラミック＆クレイ',
@@ -111,5 +119,13 @@ export const common = {
       title: '🌱 ビギナー',
       desc: 'プレイを続けるほどスコアが上がります。'
     }
+  },
+  // D38 (2026-11-06): shown by the page itself, before the app loads, when the WebView is older
+  // than the build supports (scripts/build/webviewNotice.js). Read at build time, not by the app.
+  webviewUpdate: {
+    title: 'Android System WebView を更新してください',
+    body: 'このゲームは Android System WebView で画面を表示しています。この端末の WebView は古いため、画面が正しく表示されません。Google Play で更新してから、ゲームをもう一度開いてください。',
+    update: 'Google Play を開く',
+    continue: 'このまま続ける'
   }
 };

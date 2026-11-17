@@ -44,6 +44,9 @@ export const screens = {
     unlockingAd: '📺 Sblocco schema passato…',
     calendarTitle: '📅 Calendario 365 giorni',
     futureAlert: 'Gli schemi futuri non sono ancora sbloccati.',
+    // D36: a date already finished — by its mission (the day's puzzle stays closed) or otherwise.
+    doneByMission: 'Questo giorno ha già la presenza: hai completato la sua missione. Ogni giorno conta una volta sola, quindi il suo schema resta chiuso.',
+    doneAlready: 'Hai già completato questo giorno. ✅',
     pastUnlockNotice: '💡 I giorni passati persi (🔒) possono essere sbloccati guardando un breve video.',
     unlockModalTitle: 'Sblocca schema passato',
     unlockModalDesc: 'Lo schema del {date} è una sfida passata.\nGuarda un breve annuncio per sbloccarlo e giocare.\nVuoi guardare il video?',

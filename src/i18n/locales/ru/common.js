@@ -64,7 +64,15 @@ export const common = {
   board: {
     pausedTitle: 'Игра на паузе',
     tapToResume: 'Нажмите для продолжения ▶️',
-    resumeTooltip: 'Нажмите для продолжения'
+    resumeTooltip: 'Нажмите для продолжения',
+    // D47: what a screen reader says for a board cell (utils/cellLabel.js).
+    cellAria: 'Строка {row}, столбец {col}: {content}',
+    cellAriaCage: 'Строка {row}, столбец {col}: {content}; сумма области {sum}',
+    cellEmpty: 'пусто',
+    cellGiven: '{num}, дано',
+    cellNotes: 'заметки {list}',
+    // D44: shown instead of a board under 144px (a split-screen half on a phone).
+    tooShort: 'Окно слишком низкое для поля. Увеличьте его высоту, чтобы играть.'
   },
   themes: {
     clay: '🏺 Керамика и глина',
@@ -111,5 +119,13 @@ export const common = {
       title: '🌱 Новичок',
       desc: 'Играйте дальше — и счёт вырастет.'
     }
+  },
+  // D38 (2026-11-06): shown by the page itself, before the app loads, when the WebView is older
+  // than the build supports (scripts/build/webviewNotice.js). Read at build time, not by the app.
+  webviewUpdate: {
+    title: 'Обновите Android System WebView',
+    body: 'Эта игра показывает экраны через Android System WebView, а версия на этом телефоне слишком старая для этого. Обновите её в Google Play и снова откройте игру.',
+    update: 'Открыть Google Play',
+    continue: 'Всё равно продолжить'
   }
 };

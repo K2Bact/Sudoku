@@ -9,6 +9,7 @@ import { AdBanner } from '../AdBanner';
 import { loadSettings } from '../../utils/storage';
 import { useBoardFit } from '../../hooks/useBoardFit';
 import { useGuidedTutorial } from '../../hooks/useGuidedTutorial';
+import { useTranslation } from '../../i18n/i18nContext';
 
 export function GameScreen({
   activeBattleRoom,
@@ -65,6 +66,7 @@ export function GameScreen({
   userFilledCount,
   totalEmptyCount
 }) {
+  const { t } = useTranslation();
   const boardFitRef = useBoardFit();
   // The first-game walkthrough (KP-18): its step, the cell it points at, and when it moves on.
   const guide = useGuidedTutorial({
@@ -144,6 +146,8 @@ export function GameScreen({
           cages={cages}
           guide={isGuidedTutorial && guide.ready ? guide.target : null}
         />
+        {/* Shown by CSS only while the board is too small to play (D44, useBoardFit). */}
+        <div className="board-too-small" role="status">{t('board.tooShort')}</div>
         </div>
 
         <Keypad

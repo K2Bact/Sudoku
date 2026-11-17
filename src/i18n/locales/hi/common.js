@@ -64,7 +64,15 @@ export const common = {
   board: {
     pausedTitle: 'खेल रुका हुआ है',
     tapToResume: 'जारी रखने के लिए टैप करें ▶️',
-    resumeTooltip: 'जारी रखें'
+    resumeTooltip: 'जारी रखें',
+    // D47: what a screen reader says for a board cell (utils/cellLabel.js).
+    cellAria: 'पंक्ति {row}, स्तंभ {col}: {content}',
+    cellAriaCage: 'पंक्ति {row}, स्तंभ {col}: {content}; समूह का योग {sum}',
+    cellEmpty: 'खाली',
+    cellGiven: '{num}, पहले से दिया गया',
+    cellNotes: 'नोट्स {list}',
+    // D44: shown instead of a board under 144px (a split-screen half on a phone).
+    tooShort: 'विंडो बोर्ड के लिए बहुत छोटी है। खेलने के लिए इसे ऊँचा करें।'
   },
   themes: {
     clay: '🏺 सिरेमिक और मिट्टी',
@@ -111,5 +119,13 @@ export const common = {
       title: '🌱 शुरुआती',
       desc: 'खेलते रहें, आपका स्कोर बढ़ेगा।'
     }
+  },
+  // D38 (2026-11-06): shown by the page itself, before the app loads, when the WebView is older
+  // than the build supports (scripts/build/webviewNotice.js). Read at build time, not by the app.
+  webviewUpdate: {
+    title: 'कृपया Android System WebView अपडेट करें',
+    body: 'यह गेम अपनी स्क्रीन Android System WebView से दिखाता है, और इस फ़ोन पर उसका वर्शन बहुत पुराना है। Google Play पर इसे अपडेट करें, फिर गेम दोबारा खोलें।',
+    update: 'Google Play खोलें',
+    continue: 'फिर भी जारी रखें'
   }
 };

@@ -67,7 +67,15 @@ export const common = {
   board: {
     pausedTitle: '遊戲已暫停',
     tapToResume: '點擊螢幕繼續遊戲 ▶️',
-    resumeTooltip: '點擊繼續'
+    resumeTooltip: '點擊繼續',
+    // D47: what a screen reader says for a board cell (utils/cellLabel.js).
+    cellAria: '第 {row} 橫行第 {col} 直列：{content}',
+    cellAriaCage: '第 {row} 橫行第 {col} 直列：{content}，籠子和 {sum}',
+    cellEmpty: '空格',
+    cellGiven: '{num}，題目給出',
+    cellNotes: '筆記 {list}',
+    // D44: shown instead of a board under 144px (a split-screen half on a phone).
+    tooShort: '畫面太矮，無法顯示盤面。把畫面調高後就會再次顯示。'
   },
   themes: {
     clay: '🏺 溫潤陶瓷與黏土',
@@ -114,5 +122,13 @@ export const common = {
       title: '🌱 新手',
       desc: '玩得越多，分數越高。'
     }
+  },
+  // D38 (2026-11-06): shown by the page itself, before the app loads, when the WebView is older
+  // than the build supports (scripts/build/webviewNotice.js). Read at build time, not by the app.
+  webviewUpdate: {
+    title: '請更新 Android System WebView',
+    body: '本遊戲使用 Android System WebView 顯示畫面，這部手機上的版本太舊，無法正常顯示。請在 Google Play 更新後，重新打開遊戲。',
+    update: '打開 Google Play',
+    continue: '仍然繼續'
   }
 };

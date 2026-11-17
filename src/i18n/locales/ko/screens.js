@@ -44,6 +44,9 @@ export const screens = {
     unlockingAd: '📺 광고 시청 중... 지나간 퍼즐 해금',
     calendarTitle: '📅 365일 일일 달력',
     futureAlert: '미래 날짜의 퍼즐은 아직 해금되지 않았습니다.',
+    // D36: a date already finished — by its mission (the day's puzzle stays closed) or otherwise.
+    doneByMission: '이 날은 미션을 완료해 이미 출석했습니다. 하루는 한 번만 인정되어 이 날의 퍼즐은 열리지 않습니다.',
+    doneAlready: '이미 완료한 날짜입니다. ✅',
     pastUnlockNotice: '💡 놓친 지나간 날짜(🔒)는 짧은 광고를 시청하여 언제든 해금하고 출석 스탬프를 채울 수 있습니다.',
     unlockModalTitle: '지나간 일일 퍼즐 해금',
     unlockModalDesc: '{date} 퍼즐은 지나간 일일 챌린지입니다.\n짧은 광고를 시청하시면 즉시 해금되어 도전하실 수 있습니다.\n광고를 시청하시겠습니까?',

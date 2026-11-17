@@ -1,0 +1,26 @@
+{
+  "gate": "3-24",
+  "name": "An Old WebView Sees The Update Notice In The Built Page",
+  "command": "node scripts/tests/ui/test_webview_notice_page.js",
+  "greenMarker": "[3-24] PASSED",
+  "rebuild": true,
+  "note": "D38 (2026-11-06). Gate 2-37 holds the script; this one the page Vite built with it.",
+  "mutations": [
+    {
+      "name": "the plugin is dropped from the build",
+      "why": "The page ships without the notice: Chrome 69 shows a dark screen again.",
+      "file": "vite.config.js",
+      "find": "plugins: [react(), webviewNoticePlugin()],",
+      "replace": "plugins: [react()],",
+      "expectFailure": "Chrome 69 got no notice"
+    },
+    {
+      "name": "the notice does not cover the app",
+      "why": "On Chrome 91–110 the app runs under it; a notice in the flow of the page sits under the app's own screen, unseen.",
+      "file": "scripts/build/webviewNotice.js",
+      "find": "'position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483647;",
+      "replace": "'position:static;z-index:2147483647;",
+      "expectFailure": "the notice does not cover the screen"
+    }
+  ]
+}

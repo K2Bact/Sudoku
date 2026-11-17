@@ -64,7 +64,15 @@ export const common = {
   board: {
     pausedTitle: 'اللعبة متوقفة مؤقتاً',
     tapToResume: 'انقر على الشاشة للاستئناف ▶️',
-    resumeTooltip: 'انقر للاستئناف'
+    resumeTooltip: 'انقر للاستئناف',
+    // D47: what a screen reader says for a board cell (utils/cellLabel.js).
+    cellAria: 'الصف {row}، العمود {col}: {content}',
+    cellAriaCage: 'الصف {row}، العمود {col}: {content}؛ مجموع القفص {sum}',
+    cellEmpty: 'فارغة',
+    cellGiven: '{num}، مُعطى',
+    cellNotes: 'ملاحظات {list}',
+    // D44: shown instead of a board under 144px (a split-screen half on a phone).
+    tooShort: 'النافذة قصيرة جدًا لعرض اللوحة. كبّرها لتتمكن من اللعب.'
   },
   themes: {
     clay: '🏺 سيراميك وطين دافئ',
@@ -111,5 +119,13 @@ export const common = {
       title: '🌱 مبتدئ',
       desc: 'واصل اللعب وسترتفع نتيجتك.'
     }
+  },
+  // D38 (2026-11-06): shown by the page itself, before the app loads, when the WebView is older
+  // than the build supports (scripts/build/webviewNotice.js). Read at build time, not by the app.
+  webviewUpdate: {
+    title: 'يُرجى تحديث Android System WebView',
+    body: 'تعرض هذه اللعبة شاشاتها عبر Android System WebView، والإصدار الموجود على هذا الهاتف قديم جدًا لعرضها. حدِّثه من Google Play ثم افتح اللعبة مرة أخرى.',
+    update: 'فتح Google Play',
+    continue: 'المتابعة على أي حال'
   }
 };

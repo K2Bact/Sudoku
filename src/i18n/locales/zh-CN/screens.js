@@ -44,6 +44,9 @@ export const screens = {
     unlockingAd: '📺 正在观看广告... 解锁过往谜题',
     calendarTitle: '📅 365 日历',
     futureAlert: '未来的谜题尚未开放挑战。',
+    // D36: a date already finished — by its mission (the day's puzzle stays closed) or otherwise.
+    doneByMission: '这一天已完成任务并签到。每天只记一次，所以这一天的谜题不会再开放。',
+    doneAlready: '这一天已经完成。✅',
     pastUnlockNotice: '💡 错过的过往谜题 (🔒) 可通过观看简短广告随时解锁并补签。',
     unlockModalTitle: '解锁过往每日谜题',
     unlockModalDesc: '{date} 的谜题为过往挑战。\n观看简短广告即可立即解锁进行挑战。\n是否观看广告？',

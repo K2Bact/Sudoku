@@ -182,6 +182,7 @@ export function Header({
             className="restart-btn"
             onClick={handleRestartConfirm}
             title={t('common.restart')}
+            aria-label={t('common.restart')}
           >
             <RotateCcw size={13} />
             <span>{t('header.restartShort')}</span>
@@ -193,6 +194,7 @@ export function Header({
             className="new-game-btn"
             onClick={onOpenNewGame}
             title={t('common.newGame')}
+            aria-label={t('common.newGame')}
           >
             <Zap size={13} />
             <span>{t('header.newGameShort')}</span>

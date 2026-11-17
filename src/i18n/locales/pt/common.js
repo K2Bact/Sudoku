@@ -64,7 +64,15 @@ export const common = {
   board: {
     pausedTitle: 'Jogo Pausado',
     tapToResume: 'Toque para continuar ▶️',
-    resumeTooltip: 'Toque para continuar'
+    resumeTooltip: 'Toque para continuar',
+    // D47: what a screen reader says for a board cell (utils/cellLabel.js).
+    cellAria: 'Linha {row}, coluna {col}: {content}',
+    cellAriaCage: 'Linha {row}, coluna {col}: {content}; soma da gaiola {sum}',
+    cellEmpty: 'vazia',
+    cellGiven: '{num}, dado inicial',
+    cellNotes: 'anotações {list}',
+    // D44: shown instead of a board under 144px (a split-screen half on a phone).
+    tooShort: 'A janela é baixa demais para o tabuleiro. Aumente a altura para jogar.'
   },
   themes: {
     clay: '🏺 Cerâmica & Argila',
@@ -111,5 +119,13 @@ export const common = {
       title: '🌱 Iniciante',
       desc: 'Continue jogando e sua pontuação vai subir.'
     }
+  },
+  // D38 (2026-11-06): shown by the page itself, before the app loads, when the WebView is older
+  // than the build supports (scripts/build/webviewNotice.js). Read at build time, not by the app.
+  webviewUpdate: {
+    title: 'Atualize o Android System WebView',
+    body: 'Este jogo mostra as telas com o Android System WebView, e a versão deste celular é antiga demais para exibi-las. Atualize-o no Google Play e abra o jogo novamente.',
+    update: 'Abrir o Google Play',
+    continue: 'Continuar mesmo assim'
   }
 };

@@ -13,6 +13,9 @@ import { useLayoutEffect, useRef } from 'react';
  * Measured with a ResizeObserver, because the keypad and header change height
  * with the system font size, the language and the rival banner.
  */
+/** The smallest board drawn (D44): 9 cells of 16px. */
+export const BOARD_MIN_PX = 144;
+
 export function useBoardFit() {
   const ref = useRef(null);
   useLayoutEffect(() => {
@@ -31,6 +34,10 @@ export function useBoardFit() {
       };
       const rest = kids.reduce((sum, c) => sum + outer(c), 0) + gap * kids.length;
       main.style.setProperty('--board-rest', `${Math.ceil(rest)}px`);
+      // D44 (2026-11-06): a board under 144px — 16px cells, a third of a fingertip — cannot be played.
+      // It stays in the layout (hidden) so it can still be measured, and the window is asked to grow.
+      const board = main.querySelector('.board-zone .sudoku-board-container');
+      if (board) main.toggleAttribute('data-board-small', board.getBoundingClientRect().width < BOARD_MIN_PX);
     };
     update();
     const ro = new ResizeObserver(update);

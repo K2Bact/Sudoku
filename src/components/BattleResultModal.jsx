@@ -63,7 +63,7 @@ export function BattleResultModal({
       const dailyRecords = loadDailyRecords();
       const mission = getDailyMission(todayKey);
       if (mission.type === 'play_battle' && !dailyRecords[todayKey]?.completed) {
-        recordDailyCompletion(todayKey, 0, 0, variantOf(room));
+        recordDailyCompletion(todayKey, 0, 0, variantOf(room), 'mission');
         addHints(1, 'daily_battle_mission');
       }
     } catch (e) {}

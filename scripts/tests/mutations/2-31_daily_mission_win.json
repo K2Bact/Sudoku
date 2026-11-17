@@ -12,6 +12,22 @@
       "find": "    const dailyRecords = loadDailyRecords();",
       "replace": "    const dailyRecords = loadDailyRecords(); const mission = getDailyMission(todayKey);",
       "expectFailure": "the win was judged against the mission its own count unlocked"
+    },
+    {
+      "name": "a mission win records its day as a solved puzzle",
+      "why": "D36 (2026-11-06): the calendar would tell a player whose day was finished by its mission that they had solved its puzzle.",
+      "file": "src/utils/gameCompletion.js",
+      "find": "recordDailyCompletion(todayKey, timerSeconds, mistakes, variant, 'mission');",
+      "replace": "recordDailyCompletion(todayKey, timerSeconds, mistakes, variant);",
+      "expectFailure": "via=puzzle, not mission"
+    },
+    {
+      "name": "the battle mission records its day as a solved puzzle",
+      "why": "D36: the 1v1 / AI battle mission writes the day from the result window — the same wrong message as above.",
+      "file": "src/components/BattleResultModal.jsx",
+      "find": "recordDailyCompletion(todayKey, 0, 0, variantOf(room), 'mission');",
+      "replace": "recordDailyCompletion(todayKey, 0, 0, variantOf(room));",
+      "expectFailure": "the battle mission must record its day as via=mission"
     }
   ]
 }

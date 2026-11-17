@@ -44,6 +44,9 @@ export const screens = {
     unlockingAd: '📺 広告視聴中... 過去のパズルのロックを解除',
     calendarTitle: '📅 365日カレンダー',
     futureAlert: '未来の日付のパズルは、まだロックが解除されていません。',
+    // D36: a date already finished — by its mission (the day's puzzle stays closed) or otherwise.
+    doneByMission: 'この日はミッションを達成して、すでにクリア記録があります。1日1回の記録なので、この日のパズルは開きません。',
+    doneAlready: 'この日はすでにクリアしています。✅',
     pastUnlockNotice: '💡 見逃した過去の日付(🔒)は、短い広告を視聴することでいつでもロックを解除してスタンプを獲得できます。',
     unlockModalTitle: '過去のデイリーパズルのロック解除',
     unlockModalDesc: '{date} のパズルは過去のチャレンジです。\n短い広告を視聴するとすぐにロックを解除してプレイできます。\n広告を視聴しますか？',

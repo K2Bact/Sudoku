@@ -1,0 +1,26 @@
+{
+  "gate": "3-26",
+  "name": "A Finished Day Says Why It Does Not Open",
+  "command": "node scripts/tests/ui/test_daily_done_message.js",
+  "greenMarker": "[3-26] PASSED",
+  "rebuild": true,
+  "note": "D36 (2026-11-06): a day's mission sets the same calendar mark as its puzzle; the date now says which, instead of nothing.",
+  "mutations": [
+    {
+      "name": "a finished day says nothing again",
+      "why": "The Flip5 report: the day's puzzle will not open and pressing its date does nothing at all.",
+      "file": "src/components/DailyChallengeScreen.jsx",
+      "find": "      notify(t(records[dateKey].via === 'mission' ? 'daily.doneByMission' : 'daily.doneAlready'));\n",
+      "replace": "",
+      "expectFailure": "pressing a finished day says nothing"
+    },
+    {
+      "name": "the mission and puzzle messages swap",
+      "why": "A day solved by its puzzle is said to have been finished by its mission, and the other way round.",
+      "file": "src/components/DailyChallengeScreen.jsx",
+      "find": "records[dateKey].via === 'mission' ?",
+      "replace": "records[dateKey].via !== 'mission' ?",
+      "expectFailure": "want daily."
+    }
+  ]
+}

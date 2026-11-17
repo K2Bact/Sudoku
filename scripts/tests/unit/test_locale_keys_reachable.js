@@ -56,7 +56,9 @@ function walk(dir, out = []) {
 }
 
 // ── What the app refers to ────────────────────────────────────────────────
-const appFiles = walk(SRC).filter((f) => !f.startsWith(LOCALES));
+// scripts/build too: what the build writes into index.html ships with the app — the old-WebView
+// notice (D38) reads its words there, at build time, where the app's bundle cannot run.
+const appFiles = [...walk(SRC).filter((f) => !f.startsWith(LOCALES)), ...walk(path.join(ROOT, 'scripts/build'))];
 const appSource = appFiles.map((f) => fs.readFileSync(f, 'utf8')).join('\n');
 
 // Any dotted path written as a string literal, wherever it sits. Comments count

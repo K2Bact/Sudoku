@@ -1,0 +1,65 @@
+{
+  "gate": "2-37",
+  "name": "An Old WebView Is Told To Update",
+  "command": "node scripts/tests/unit/test_webview_notice.js",
+  "greenMarker": "[2-37] PASSED",
+  "note": "D38 (2026-11-06): a classic inline script in index.html (scripts/build/webviewNotice.js) tells a WebView older than the build target what to do. Gate 3-24 runs the built page.",
+  "mutations": [
+    {
+      "name": "the notice line drifts from the build target",
+      "why": "Chrome 105–110 would get the app with no word, though the bundle is built for 111 and was never seen there.",
+      "file": "scripts/build/webviewNotice.js",
+      "find": "export const NOTICE_BELOW = 111;",
+      "replace": "export const NOTICE_BELOW = 105;",
+      "expectFailure": "but the bundle is built for Chrome 111"
+    },
+    {
+      "name": "Chrome 69 is offered \"continue anyway\"",
+      "why": "Below 105 the app cannot run (Chrome 69 stops at its first line) — continuing leads to the dark screen the notice exists to explain.",
+      "file": "scripts/build/webviewNotice.js",
+      "find": "export const CONTINUE_FROM = 105;",
+      "replace": "export const CONTINUE_FROM = 60;",
+      "expectFailure": "no \"continue anyway\" into a dark screen"
+    },
+    {
+      "name": "\"continue anyway\" is not remembered",
+      "why": "A player on WebView 108 who chose to go on is stopped by the same notice at every start.",
+      "file": "scripts/build/webviewNotice.js",
+      "find": "    if (v >= ${CONTINUE_FROM} && localStorage.getItem('suidoku_webview_notice') === String(v)) return;\n",
+      "replace": "",
+      "expectFailure": "so the next start does not ask again"
+    },
+    {
+      "name": "the saved language is ignored",
+      "why": "A player who chose Japanese in the app, on an English phone, is told in English.",
+      "file": "scripts/build/webviewNotice.js",
+      "find": "lang = saved && saved !== 'auto' && S[saved] ? saved :",
+      "replace": "lang = false ? saved :",
+      "expectFailure": "the saved language comes first"
+    },
+    {
+      "name": "Arabic is laid out left to right",
+      "why": "The Arabic notice reads in the wrong direction.",
+      "file": "scripts/build/webviewNotice.js",
+      "find": "box.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');",
+      "replace": "box.setAttribute('dir', 'ltr');",
+      "expectFailure": "Arabic runs right to left"
+    },
+    {
+      "name": "the notice script uses syntax an old WebView cannot read",
+      "why": "On Chrome 69 the notice itself would stop at the same `?.` that stops the app — the dark screen again.",
+      "file": "scripts/build/webviewNotice.js",
+      "find": "exec(navigator.userAgent || '')",
+      "replace": "exec(navigator?.userAgent ?? '')",
+      "expectFailure": "is not ES2015"
+    },
+    {
+      "name": "the script goes into <head>",
+      "why": "It would run before <body> exists and stop at document.body.appendChild — no notice.",
+      "file": "scripts/build/webviewNotice.js",
+      "find": "injectTo: 'body' }",
+      "replace": "injectTo: 'head' }",
+      "expectFailure": "a classic <script> at the end of <body>"
+    }
+  ]
+}
