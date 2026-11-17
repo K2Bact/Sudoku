@@ -1,0 +1,53 @@
+[앱 이름 (App name - 최대 30자)]
+Sudoku: Klassiek en Killer
+
+[간단한 설명 (Short description - 최대 80자)]
+Klassieke en Killer Sudoku, 40 technieken, dagelijkse puzzels, 1v1- en AI-duels
+
+[자세한 설명 (Full description - 최대 4000자)]
+Sudoku voor iedereen, van beginner tot doorgewinterde puzzelaar.
+
+Speel klassieke en Killer Sudoku op 5 moeilijkheidsniveaus, leer 40 oplostechnieken met uitleg en oefenpuzzels, en neem het in online 1v1-duels op tegen andere spelers of tegen de AI.
+
+━━━━━━━━━━━━━━━━━━━━━
+🌟 HOOGTEPUNTEN
+━━━━━━━━━━━━━━━━━━━━━
+
+🧩 1. Klassiek en Killer, 5 moeilijkheidsniveaus
+- Vijf niveaus: Intro, Easy, Medium, Hard en Expert.
+- Elke puzzel wordt zo gemaakt dat er precies één oplossing is.
+- Killer Sudoku: de cijfers in elk gestippeld vak tellen op tot het kleine getal in de hoek.
+- De modi Classic, Speedrun en Survival, voor Standard en Killer.
+- Ghost en Time Gap: speel je recordpuzzel opnieuw tegen je eigen run, of zie hoever je voorligt op je beste tempo.
+- 4 rustige thema's (Warm Clay, Matte Dark, Pure Ceramic, Classic Paper).
+
+🎓 2. Academy: 40 oplostechnieken
+- Bij elke techniek een uitleg met afbeeldingen en 2 oefenpuzzels op echte borden.
+- Beginner: Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
+- Intermediate: Pointing, Claiming, Naked/Hidden Pairs, Triples and Quads
+- Advanced: X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
+- Master: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
+- Grandmaster: Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
+- Killer: Last Cell of a Cage, Unique Combination, Two-Cell Sums, Rule of 45, Must-Contain Digit, Hidden Cage, Innie-Outie Difference, Cage Splitting
+
+⚔️ 3. 1v1- en AI-duels
+- Online duels in realtime: race tegen een andere speler op hetzelfde bord.
+- Volg de voortgang van je tegenstander terwijl je speelt.
+- Speel een duel daarna zet voor zet terug.
+- AI-duels op 5 niveaus, met Standard- of Killer-puzzels.
+
+🏆 4. Prestaties en speelanalyse
+- 40 prestaties om te ontgrendelen, ook in Google Play Games.
+- Zie je spel uitgesplitst in 5 metingen, zoals snelheid en foutloze oplossingen.
+- Strijd mee op het Logic Score-klassement in Google Play Games.
+
+📅 5. Daily Challenge
+- Elke dag een nieuwe missie, bijgehouden in een kalender.
+- Een dag gemist? Ontgrendel eerdere puzzels door een korte advertentie te bekijken.
+- Verdien een maandbadge.
+
+☁️ 6. Back-up in de cloud
+- Als je bent ingelogd bij Google Play Games, wordt je voortgang automatisch opgeslagen.
+- Op een nieuw apparaat kun je die terugzetten.
+
+Neem je tijd, denk goed na en geniet van de puzzel.

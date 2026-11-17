@@ -1,0 +1,53 @@
+[앱 이름 (App name - 최대 30자)]
+Sudoku: Klassisk og Killer
+
+[간단한 설명 (Short description - 최대 80자)]
+Klassisk og Killer Sudoku, 40 teknikker, daglige opgaver, 1v1- og AI-dueller
+
+[자세한 설명 (Full description - 최대 4000자)]
+Sudoku for alle, fra nybegyndere til garvede løsere.
+
+Spil klassisk og Killer Sudoku på 5 sværhedsgrader, lær 40 løsningsteknikker med illustrationer og øvelsesopgaver, og dyst mod andre spillere i online 1v1-dueller eller mod AI'en.
+
+━━━━━━━━━━━━━━━━━━━━━
+🌟 HØJDEPUNKTER
+━━━━━━━━━━━━━━━━━━━━━
+
+🧩 1. Klassisk og Killer, 5 sværhedsgrader
+- Fem niveauer: Intro, Easy, Medium, Hard og Expert.
+- Hver opgave er lavet, så der er præcis én løsning.
+- Killer Sudoku: tallene i hvert stiplet felt giver tilsammen det lille tal i hjørnet.
+- Spiltyperne Classic, Speedrun og Survival, til både Standard og Killer.
+- Ghost og Time Gap: spil din rekordopgave igen mod din egen runde, eller se hvor langt du er foran dit bedste tempo.
+- 4 skånsomme temaer (Warm Clay, Matte Dark, Pure Ceramic, Classic Paper).
+
+🎓 2. Academy: 40 løsningsteknikker
+- Hver teknik har en illustreret forklaring og 2 øvelsesopgaver på rigtige plader.
+- Beginner: Full House, Last Free Cell, Cross-Hatching, Naked Single, Hidden Single
+- Intermediate: Pointing, Claiming, Naked/Hidden Pairs, Triples and Quads
+- Advanced: X-Wing, XY-Wing, XYZ-Wing, W-Wing, BUG+1, Remote Pairs
+- Master: Swordfish, Jellyfish, Unique Rectangles, Simple Coloring, 3D Medusa, XY-Chains, WXYZ-Wing, Empty Rectangles
+- Grandmaster: Finned X-Wing/Swordfish, AIC, ALS-XZ, Forcing Chains, Junior Exocet
+- Killer: Last Cell of a Cage, Unique Combination, Two-Cell Sums, Rule of 45, Must-Contain Digit, Hidden Cage, Innie-Outie Difference, Cage Splitting
+
+⚔️ 3. 1v1- og AI-dueller
+- Online dueller i realtid: kapløb mod en anden spiller på samme plade.
+- Følg din modstanders fremskridt, mens du spiller.
+- Afspil en duel bagefter, træk for træk.
+- AI-dueller på 5 niveauer, med Standard- eller Killer-opgaver.
+
+🏆 4. Præstationer og spilanalyse
+- 40 præstationer at låse op, også i Google Play Games.
+- Se dit spil opdelt i 5 målinger, fx hastighed og fejlfri løsninger.
+- Kæmp om pladsen på Logic Score-ranglisten i Google Play Games.
+
+📅 5. Daily Challenge
+- En ny mission hver dag, holdt styr på i en kalender.
+- Gik du glip af en dag? Lås tidligere opgaver op ved at se en kort reklame.
+- Optjen et månedsmærke.
+
+☁️ 6. Sikkerhedskopi i skyen
+- Når du er logget ind på Google Play Games, sikkerhedskopieres dine fremskridt automatisk.
+- På en ny enhed kan du hente dem tilbage.
+
+Tag dig god tid, tænk dig om, og nyd opgaven.

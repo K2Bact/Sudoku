@@ -1,0 +1,96 @@
+<en-US>
+• Settings → Display: four text sizes and high contrast.
+• Your first game, Standard or Killer, can start with a short walkthrough. Replay it any time from the Academy.
+• Killer Sudoku comes to the 1v1 Online Battle, with rematches and replays.
+• Screen readers now say each cell's row, column and contents. Phones with an outdated Android System WebView are asked to update it. Tapping a finished day in the calendar now says why it won't open.
+</en-US>
+<ar>
+• في الإعدادات، قسم «العرض»: أربعة أحجام للنص وتباين عالٍ.
+• يمكن أن تبدأ لعبتك الأولى، القياسية أو كيلر، بجولة قصيرة، ويمكنك إعادتها في أي وقت من الأكاديمية.
+• سودوكو كيلر متاح الآن في مبارزة 1 ضد 1 عبر الإنترنت، مع طلب مباراة أخرى وإعادة عرض المباراة.
+• صارت قارئات الشاشة تذكر صف كل خانة وعمودها ومحتواها. وتطلب اللعبة تحديث Android System WebView إن كان قديمًا. والضغط على يوم منتهٍ في التقويم يوضّح الآن سبب عدم فتحه.
+</ar>
+<de-DE>
+• Einstellungen → Anzeige: vier Textgrößen und hoher Kontrast.
+• Dein erstes Spiel, Standard oder Killer, kann mit einer kurzen Anleitung beginnen. In der Akademie kannst du sie jederzeit wiederholen.
+• Killer-Sudoku jetzt auch im 1v1 Online-Duell, mit Revanche und Rückblick.
+• Screenreader nennen für jedes Feld Zeile, Spalte und Inhalt. Ist Android System WebView veraltet, bittet die App um ein Update. Ein abgeschlossener Tag im Kalender sagt jetzt, warum er sich nicht öffnet.
+</de-DE>
+<es-ES>
+• Ajustes → Pantalla: cuatro tamaños de texto y alto contraste.
+• Tu primera partida, Estándar o Killer, puede empezar con un recorrido breve. Vuelve a verlo cuando quieras desde la Academia.
+• El Killer llega al Duelo 1v1 online, con revancha y repetición.
+• Los lectores de pantalla dicen la fila, la columna y el contenido de cada casilla. Si el Android System WebView del móvil es antiguo, se te pide actualizarlo. Al tocar un día terminado del calendario, se explica por qué no se abre.
+</es-ES>
+<fr-FR>
+• Paramètres → Affichage : quatre tailles de texte et contraste élevé.
+• Votre première partie, Standard ou Killer, peut commencer par une visite guidée, à revoir quand vous voulez depuis l’Académie.
+• Le Killer arrive dans le Duel 1v1 en ligne, avec revanche et « Revoir la partie ».
+• Les lecteurs d’écran annoncent ligne, colonne et contenu de chaque case. Avec un Android System WebView trop ancien, l’app demande sa mise à jour. Un jour terminé du calendrier dit pourquoi il reste fermé.
+</fr-FR>
+<hi-IN>
+• सेटिंग → डिस्प्ले: टेक्स्ट के चार आकार और हाई कंट्रास्ट।
+• मानक या किलर का पहला खेल एक छोटे गाइड के साथ शुरू हो सकता है। अकादमी में इसे कभी भी दोबारा देखें।
+• 1v1 ऑनलाइन मुकाबले में अब किलर सुडोकू भी, रीमैच और रीप्ले के साथ।
+• स्क्रीन रीडर अब हर खाने की पंक्ति, स्तंभ और उसमें क्या है, बताते हैं। पुराने Android System WebView वाले फ़ोन पर उसे अपडेट करने को कहा जाता है। कैलेंडर में पूरा हुआ दिन दबाने पर अब बताया जाता है कि वह क्यों नहीं खुलता।
+</hi-IN>
+<it-IT>
+• Impostazioni → Schermo: quattro dimensioni del testo e contrasto elevato.
+• La tua prima partita, Standard o Killer, può iniziare con una breve guida. Puoi rivederla quando vuoi dall’Accademia.
+• Il Killer arriva nel Duello 1v1 online, con rivincita e «Rivedi partita».
+• Gli screen reader leggono riga, colonna e contenuto di ogni casella. Se Android System WebView è troppo vecchio, l’app chiede di aggiornarlo. Un giorno completato nel calendario ora spiega perché non si apre.
+</it-IT>
+<ja-JP>
+• 設定 → 表示：文字サイズ4段階とハイコントラストを追加しました。
+• スタンダードとキラーのはじめての1ゲームを、短いガイド付きで始められます。アカデミーからいつでももう一度見られます。
+• 1v1 オンライン対戦でもキラーが遊べます。再戦と振り返りにも対応しています。
+• 読み上げ機能が、各マスの行・列と中身を読み上げます。Android System WebView が古い端末には更新をご案内します。カレンダーで終わった日をタップすると、開かない理由を表示します。
+</ja-JP>
+<ko-KR>
+• 설정 → 화면: 글자 크기 4단계와 고대비가 생겼어요.
+• 표준·킬러 첫 판을 짧은 따라 하기로 시작할 수 있어요. 아카데미에서 언제든 다시 볼 수 있어요.
+• 1v1 온라인 배틀에서도 킬러를 해요. 재대결과 복기도 그대로예요.
+• 화면 읽기가 칸마다 가로줄·세로줄과 내용을 읽어 줘요. Android System WebView가 오래된 폰에는 업데이트를 안내해요. 달력에서 끝난 날을 누르면 왜 열리지 않는지 알려 줘요.
+</ko-KR>
+<pt-BR>
+• Configurações → Exibição: quatro tamanhos de texto e alto contraste.
+• Sua primeira partida, Padrão ou Killer, pode começar com um passo a passo rápido. Reveja quando quiser na Academia.
+• O Killer chega ao Duelo 1v1 Online, com revanche e "Rever partida".
+• Leitores de tela agora falam a linha, a coluna e o conteúdo de cada casa. Celulares com Android System WebView antigo recebem um aviso para atualizá-lo. Tocar em um dia concluído do calendário agora explica por que ele não abre.
+</pt-BR>
+<ru-RU>
+• Настройки → Экран: четыре размера текста и высокая контрастность.
+• Первую игру, стандартную или киллер, можно начать с короткого обучения. Повторить его можно в любой момент в Академии.
+• Киллер теперь и в Дуэли 1v1 Онлайн — с реваншем и разбором партии.
+• Экранные чтецы называют строку, столбец и содержимое каждой клетки. Если Android System WebView устарел, приложение попросит его обновить. Завершённый день в календаре теперь объясняет, почему он не открывается.
+</ru-RU>
+<zh-CN>
+• 设置 → 显示：新增4档文字大小和高对比度。
+• 标准与杀手的第一局，可以先跟着学一遍。随时可在数独学院重看。
+• 1v1 在线对决也能玩杀手数独，再战和复盘同样支持。
+• 读屏功能会读出每个格子的行、列和内容。Android System WebView 版本过旧的手机会提示更新。在日历中点击已完成的日期，会说明它为什么无法打开。
+</zh-CN>
+<zh-TW>
+• 設定 → 顯示：新增4段文字大小與高對比。
+• 標準與殺手的第一局，可以先跟著學一遍。隨時可在數獨學院重看。
+• 1v1 線上對決也能玩殺手數獨，再戰與復盤同樣支援。
+• 螢幕閱讀器會讀出每個格子的行、列與內容。Android System WebView 版本過舊的手機會提示更新。在日曆中點擊已完成的日期，會說明它為什麼無法開啟。
+</zh-TW>
+<nl-NL>
+• Nieuw in Settings → Display: vier tekstgroottes en hoog contrast.
+• Je eerste spel, Standard of Killer, kan beginnen met een korte rondleiding. Bekijk die altijd opnieuw in de Academy.
+• Killer Sudoku nu ook in de 1v1 Online Battle, met revanche en terugkijken.
+• Schermlezers noemen nu van elk vakje de rij, de kolom en de inhoud. Telefoons met een verouderde Android System WebView krijgen een melding om die bij te werken. Een voltooide dag in de kalender legt nu uit waarom hij niet opengaat.
+</nl-NL>
+<da-DK>
+• Nyt i Settings → Display: fire tekststørrelser og høj kontrast.
+• Dit første spil, Standard eller Killer, kan starte med en kort gennemgang. Se den igen når som helst i Academy.
+• Killer Sudoku er nu også i 1v1 Online Battle, med revanche og genafspilning.
+• Skærmlæsere siger nu hvert felts række, kolonne og indhold. Telefoner med en forældet Android System WebView bliver bedt om at opdatere den. En afsluttet dag i kalenderen fortæller nu, hvorfor den ikke åbner.
+</da-DK>
+<ms-MY>
+• Baharu dalam Settings → Display: empat saiz teks dan kontras tinggi.
+• Permainan pertama anda, Standard atau Killer, boleh bermula dengan panduan ringkas. Tonton semula bila-bila masa di Academy.
+• Killer Sudoku kini dalam 1v1 Online Battle, dengan perlawanan semula dan main semula.
+• Pembaca skrin kini menyebut baris, lajur dan isi setiap petak. Telefon dengan Android System WebView yang lama diminta mengemas kininya. Hari yang selesai dalam kalendar kini memberitahu sebab ia tidak dibuka.
+</ms-MY>
