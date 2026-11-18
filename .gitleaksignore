@@ -1,0 +1,61 @@
+# Gitleaks false positives, checked by hand on 2026-11-19.
+# Every entry is the generic-api-key rule firing on a name, not a secret:
+# translation keys (descKey, "key"), localStorage key names (AD_REMOVED_KEY,
+# STORAGE_KEY) and export names (exportKey). None of them is a credential.
+# Real secrets (.env, android/app/google-services.json, android/keystore.properties)
+# are in .gitignore and have never been committed.
+# Fingerprints carry commit hashes, so a history rewrite invalidates them:
+# regenerate with `gitleaks git . --report-format json` and re-check each match.
+
+582d58119224975cb5dbad35eff98e58e61d5776:src/utils/achievementManager.js:generic-api-key:9
+763c6ce90eb3c299308a61acbf5913b1b08c3906:src/services/adsService.js:generic-api-key:21
+763c6ce90eb3c299308a61acbf5913b1b08c3906:src/utils/dailyChallenge.js:generic-api-key:11
+b907796dd0ad1546503267d06d7e79fc12cee80f:src/data/achievementsData.js:generic-api-key:103
+b907796dd0ad1546503267d06d7e79fc12cee80f:src/data/achievementsData.js:generic-api-key:112
+b907796dd0ad1546503267d06d7e79fc12cee80f:src/data/achievementsData.js:generic-api-key:307
+b907796dd0ad1546503267d06d7e79fc12cee80f:src/data/achievementsData.js:generic-api-key:325
+b907796dd0ad1546503267d06d7e79fc12cee80f:src/data/achievementsData.js:generic-api-key:94
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:2315
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:2333
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:2479
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:2489
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:2498
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:2507
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:2516
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:2554
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:3474
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:3537
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:3642
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:3705
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:3810
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:3873
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:3978
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:4041
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:4146
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:4209
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:632
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:644
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:653
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:664
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:673
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/archive/audit_issues.json:generic-api-key:732
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/generators/compact_practice_serializer.mjs:generic-api-key:42
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/generators/compact_practice_serializer.mjs:generic-api-key:43
+df8e292d2fa107daa438ec573d691f1ed17b183f:scripts/generators/compact_practice_serializer.mjs:generic-api-key:45
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/data/achievementsData.js:generic-api-key:198
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/data/achievementsData.js:generic-api-key:207
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/data/achievementsData.js:generic-api-key:216
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/data/achievementsData.js:generic-api-key:225
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/data/achievementsData.js:generic-api-key:234
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/data/achievementsData.js:generic-api-key:272
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/data/achievementsData.js:generic-api-key:290
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/data/achievementsData.js:generic-api-key:86
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/data/achievementsData.js:generic-api-key:95
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/services/admobService.js:generic-api-key:21
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/utils/achievementManager.js:generic-api-key:5
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/utils/dailyChallenge.js:generic-api-key:141
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/utils/dailyChallenge.js:generic-api-key:155
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/utils/dailyChallenge.js:generic-api-key:52
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/utils/dailyChallenge.js:generic-api-key:66
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/utils/dailyChallenge.js:generic-api-key:9
+df8e292d2fa107daa438ec573d691f1ed17b183f:src/utils/dailyChallenge.js:generic-api-key:96

@@ -287,7 +287,7 @@
 ## 📌 앱 런칭 전 로드맵 · 차후 대기 목록 — 삭제 (2026-09-30)
 
 여기 있던 로드맵 9개는 전부 구현됐고, "차후 대기 목록"(외장 키보드·크롬 확장)은 BACKLOG 의 O-3·O-4 와 같은 사본이었다.
-할 일은 `docs/BACKLOG.md` 하나에만 둔다. 옛 판: `git show 11e74a1:docs/POST_MORTEM_MISTAKES_REGISTRY.md`
+할 일은 `docs/BACKLOG.md` 하나에만 둔다. 옛 판: `git show 046924c:docs/POST_MORTEM_MISTAKES_REGISTRY.md`
 
 ---
 

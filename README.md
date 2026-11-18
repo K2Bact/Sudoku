@@ -1,63 +1,129 @@
 # Sudoku: Classic Puzzle Academy
 
-안드로이드 스도쿠 앱 (패키지 `com.powerneja.suidoku`). React 19 + Vite 8 을 Capacitor 8 로 감싼다.
-Google Play 출시 중 — 출시 상태는 [`docs/RELEASE_STATE.md`](docs/RELEASE_STATE.md).
+An Android sudoku game with classic and killer puzzles, a technique academy, and online 1v1 matches.
+It is live on Google Play:
+[com.powerneja.suidoku](https://play.google.com/store/apps/details?id=com.powerneja.suidoku).
+The current release is 1.10.0 (build 34).
 
-> 이 파일은 2026-09-30 에 코드에 맞춰 다시 썼고, 2026-10-16 에 숫자를 다시 맞췄다(킬러·아카데미 40·업적 40). 예전 판은 "기법 27종 · React 18 · Tailwind · Sudoku IQ ·
-> 멘사 · 1v1 동일 시드" 를 적고 있었는데 전부 지금 사실이 아니다. 여기 적힌 숫자는 **코드가 정본**이다.
+한국어: [`README.ko.md`](README.ko.md)
 
-## 무엇이 있나
+## Who it is for
+
+- **Players who already know sudoku** and want more than random boards: timed modes, a daily puzzle,
+  killer sudoku, and a record of how they play.
+- **Players who want to get better.** The academy teaches 40 solving techniques, from the last free cell
+  to advanced patterns, and every lesson ends with practice boards.
+- **Players who like a rival.** You can race another person online or one of five AI opponents.
+
+The app ships in 13 languages, Arabic included in right-to-left layout.
+
+## What is in it
 
 | | |
 |---|---|
-| 종류 | 표준 · 킬러(묶음 합 — `src/engine/killer/`). 아래 모드·대전·기록이 두 종류 모두에 있다 |
-| 난이도 | 5단계, 해가 하나인 퍼즐만 생성 (`src/engine/SudokuEngine.js` · `killer/killerGenerator.js`) |
-| 모드 | 클래식 · 스피드런 · 서바이벌(제한 시간) · 데일리 챌린지 · 고스트/델타(자기 기록과 겨루기) |
-| 아카데미 | 6탭 40기법(표준 5단계 32 + 킬러 8), 기법마다 이론 그림 + 연습 2개 (연습 80개, 전부 자체 생성 퍼즐) |
-| 대전 | 온라인 1v1 (Firebase Realtime Database, 방마다 비공개 경로) · AI 대전 5단계 |
-| 기록 | Logic Score · 플레이 분석 5축 · 업적 40개(Play 게임즈에도) · Play 게임즈 순위표·클라우드 백업 · 1v1 복기 |
-| 언어 | 13개 (ko en ja zh-CN zh-TW es-ES de fr pt it ru hi ar, 아랍어는 오른쪽→왼쪽) |
-| 광고 | AdMob 배너·전면·보상형, UMP 동의 |
+| Puzzle kinds | Classic and killer (cages with sums). Every mode below works with both kinds. |
+| Difficulty | 5 levels. The generator only keeps puzzles with exactly one solution (`src/engine/SudokuEngine.js`, `src/engine/killer/killerGenerator.js`). |
+| Modes | Classic, speedrun, survival (time limit), daily challenge, ghost and delta races against your own best run |
+| Academy | 40 techniques (32 classic, 8 killer), each with a diagram and 2 practice boards. All 80 boards come from our own generator. |
+| Battles | Online 1v1 over Firebase Realtime Database, with a private path per room, and AI battles at 5 levels |
+| Records | Logic Score, a 5-axis play analysis, 40 achievements (also on Play Games), a leaderboard, cloud backup, and a replay of each 1v1 |
+| Languages | ko, en, ja, zh-CN, zh-TW, es-ES, de, fr, pt, it, ru, hi, ar |
+| Ads | AdMob banner, interstitial and rewarded ads, with the UMP consent form |
 
-## 명령
+## Stack
+
+- **App:** React 19 and Vite 8, plain CSS, no UI framework
+- **Android shell:** Capacitor 8. The minimum SDK is 24 and the target SDK is 36; Java 21 is required.
+- **Online play:** Firebase Realtime Database with anonymous auth. The security rules live in
+  [`firebase.rules.json`](firebase.rules.json).
+- **Platform services:** Google Play Games (achievements, leaderboard, saved games),
+  AdMob, and Google Analytics for Firebase
+- **Tests:** Node scripts and Playwright (Chromium). [`scripts/tests/run_all_qa.js`](scripts/tests/run_all_qa.js)
+  runs about 60 gates in order: logic, data, translations, static scans, real play-throughs,
+  and layout checks in all 13 languages.
+
+## How to run it
+
+You need Node.js 20.19+ or 22.12+ (Vite 8's requirement).
+For the Android build you also need Android Studio and JDK 21.
 
 ```bash
-npm run dev          # 개발 서버
-npm run build        # 웹 번들 (dist/)
-npx cap sync android # 안드로이드 프로젝트에 반영
-
-npm run qa:quick     # 빠른 검사 — 논리·데이터·번역·정적 + 실플레이 하나 (약 1~2분)
-npm run qa           # 전체 검사 60단계 — AAB 전 (약 16분)
-node scripts/tests/run_mutation_audit.js   # 검사가 정말 잡는지: 코드를 일부러 부수고 확인 (몇 시간)
-
-node scripts/store/build_release_aab.js    # 릴리스 AAB — 사용자가 지시할 때만
+npm install
+cp .env.example .env    # optional, see below
+npm run dev             # dev server on http://localhost:5173
 ```
 
-`.env` 가 있어야 1v1·광고가 실제로 동작한다 (`.env.example` 참고). 서명 키는 `android/keystore.properties`
-(git 제외).
+The game runs without a `.env`. In that case online 1v1 is turned off and ads are drawn as placeholders.
+To turn them on, fill in `.env` from your own Firebase project and AdMob account.
+[`.env.example`](.env.example) explains each switch.
 
-## 문서 — 어디에 무엇이
+```bash
+npm run build           # web bundle in dist/
+npx cap sync android    # copy it into the Android project
+npx cap open android    # build and run from Android Studio
+```
 
-| 파일 | 내용 |
+Firebase on Android also needs your own `android/app/google-services.json`, which is not in the repository.
+
+### Checks
+
+```bash
+npx playwright install chromium   # once
+npm run qa:quick                  # quick pass, about 1 to 2 minutes
+npm run qa                        # full pass before a release, about 16 minutes
+node scripts/tests/run_mutation_audit.js   # breaks the code on purpose to prove the checks catch it (hours)
+```
+
+## Roadmap
+
+The live to-do list is [`docs/BACKLOG.md`](docs/BACKLOG.md) (in Korean). The main items:
+
+- **Remove-ads purchase.** The billing code was written against a plugin API that does not exist,
+  so it has to be rewritten on a real Play Billing plugin before the product can go on sale.
+- **Per-level leaderboards** for classic and speedrun, next to the single Logic Score board
+- **Physical keyboard controls** for tablets and DeX: digits, arrows, notes, undo, hint and pause
+- **48 dp touch targets** for the mode tabs, bottom menu and keypad
+- **Technique analysis in replays.** The app would show which technique made each move possible.
+  It would reuse the technique detector the academy authoring tools already use.
+- **Puzzle designer:** build your own puzzle, check it has one solution, and share it with a friend
+  by code
+- **Voice control** as an accessibility option
+- **Privacy policy** in more languages, and native-speaker review of the newer store listings
+
+## How it is built
+
+Most of the code is written with AI coding assistants (Claude Code, with ChatGPT and Gemini reviewing).
+A person directs the work and makes the decisions.
+The rules every assistant follows are in [`AGENTS.md`](AGENTS.md).
+Every change is logged in [`docs/SudokuDiary.md`](docs/SudokuDiary.md) with four parts:
+what changed, why, what was rejected, and how it was checked.
+
+| File | What it holds |
 |---|---|
-| [`AGENTS.md`](AGENTS.md) | 이 앱의 작업 규칙 (공통 규칙 `../../app_common/AGENTS.md` 를 상속). AI 도 사람도 여기서 시작 |
-| [`docs/BACKLOG.md`](docs/BACKLOG.md) | 할 일 — 단일 원본 |
-| [`docs/RELEASE_STATE.md`](docs/RELEASE_STATE.md) | 출시·콘솔 상태 |
-| [`docs/SudokuDiary.md`](docs/SudokuDiary.md) | 변경마다 무엇을·왜·무엇을 버렸나·어떻게 확인했나 |
-| [`docs/TECHNICAL_SPECIFICATION.md`](docs/TECHNICAL_SPECIFICATION.md) | 엔진·모드·점수 산식 (코드와 대조한 판) |
-| [`SudokuAITalk.md`](SudokuAITalk.md) | 다른 AI(ChatGPT·Gemini)의 검수 결과와 반영 기록 |
-| [`docs/privacy.html`](docs/privacy.html) | 개인정보처리방침 (k2bact.github.io 에 게시) |
-| `docs/archive/`, `scripts/archive/` | 끝난 문서·일회용 스크립트. **읽기용이지 실행용이 아니다** |
+| [`AGENTS.md`](AGENTS.md) | Working rules for this app (they extend shared rules kept outside this repository) |
+| [`docs/BACKLOG.md`](docs/BACKLOG.md) | To-do list |
+| [`docs/RELEASE_STATE.md`](docs/RELEASE_STATE.md) | Release and Play Console state |
+| [`docs/SudokuDiary.md`](docs/SudokuDiary.md) | Change log with reasons |
+| [`docs/TECHNICAL_SPECIFICATION.md`](docs/TECHNICAL_SPECIFICATION.md) | Engine, modes and scoring, checked against the code |
+| [`SudokuAITalk.md`](SudokuAITalk.md) | Reviews from other AI models and what was done with them |
+| [`docs/privacy.html`](docs/privacy.html) | Privacy policy, published on k2bact.github.io |
 
-## 폴더
+Most of the docs are in Korean. The code, comments and commit messages are mostly in English.
+
+## Folders
 
 ```
-src/             앱 (React 컴포넌트·훅·엔진·광고·1v1 전송·다국어)
-android/         Capacitor 안드로이드 프로젝트
-scripts/tests/   QA 게이트와 변이 정의 (run_all_qa.js 가 순서를 정한다)
-scripts/scan/    정적 스캔 (호출되지 않는 코드·번역 키·연결)
-scripts/store/   스토어 스크린샷 촬영·피처 그래픽·Play 게임즈 업적 가져오기 파일·AAB 빌드·Firebase 규칙 출력
-scripts/academy/ 아카데미 연습판을 고르고 문구를 만드는 도구 (킬러: killer/write_killer.mjs → src/data/academy/practice/killerPractice.js)
-store_assets/    언어별 스토어 문구·그림
-firebase.rules.json   Realtime Database 규칙 (콘솔 게시본의 원본)
+src/              the app: React components, hooks, engine, ads, 1v1 transport, i18n
+android/          Capacitor Android project
+scripts/tests/    QA gates and mutation definitions
+scripts/scan/     static scans (dead code, translation keys, wiring)
+scripts/store/    store screenshots, feature graphics, Play Games import files, release build
+scripts/academy/  tools that pick academy practice boards and write their text
+store_assets/     store text and images per language
+docs/archive/, scripts/archive/   finished docs and one-off scripts, kept for reading only
 ```
+
+## License
+
+[Mozilla Public License 2.0](LICENSE). The puzzles, academy boards and text are this project's own work.
+No third-party puzzles are included.

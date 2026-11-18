@@ -56,7 +56,7 @@
     },
     {
       "name": "a resume forgets the game's best combo",
-      "why": "CH18-R01 (ChatGPT's re-review of b39f1a2): the best was kept beside the clock and a resume reset it — a 5-combo before a trip home was saved as 1 and 'combo 5' was missed. It is restored from the save now.",
+      "why": "CH18-R01 (ChatGPT's re-review of c67f62e): the best was kept beside the clock and a resume reset it — a 5-combo before a trip home was saved as 1 and 'combo 5' was missed. It is restored from the save now.",
       "file": "src/utils/playFacts.js",
       "find": "  const bestCombo = Number.isInteger(f?.bestCombo) && f.bestCombo >= 0 ? f.bestCombo : 0;",
       "replace": "  const bestCombo = 0;",
