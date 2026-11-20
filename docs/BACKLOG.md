@@ -250,4 +250,4 @@
 - **광고는 릴리스에서 실제 단위**(18 부터), 디버그 APK 만 샘플. 스토어 설치본의 광고는 누르지 않는다 — AGENTS §3·RELEASE_STATE.
 - **git 기록은 2026-11-12 에 다시 썼다**(Diary 184) — 경쟁 앱 리뷰 원문 · 옛 AAB · 구글 도움말 사본을 모든 커밋에서 뺌. 그 전 커밋 번호는 지금 저장소에 없다 —
   옛 → 새는 `D:\PowerNeJa\Backup\Sudoku_history_rewrite_20261112\commit-map_old_to_new.txt`(지금 판 문서는 11-19 에 바꿈, 옛 커밋 속 문서는 옛 번호 그대로).
-  **저장소 공개는 GitHub 지원이 캐시를 지웠다고 답한 뒤**(BYOP 신청용). 남이 쓴 글 · 도움말 사본 · AAB 를 다시 커밋하지 않는다(`docs/reference/google_policy/` 는 PC 에만, `.git/info/exclude`).
+  **GitHub 지원이 11-19 캐시를 지웠다고 답함**(티켓 #5022907, Diary 186) → **저장소 공개는 사용자 몫**(U25, BYOP 신청용). 공개 뒤 옛 커밋 URL 이 404 인지 로그인 없이 확인. 남이 쓴 글 · 도움말 사본 · AAB 를 다시 커밋하지 않는다(`docs/reference/google_policy/` 는 PC 에만, `.git/info/exclude`).
