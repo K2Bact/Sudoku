@@ -25,6 +25,8 @@ The app ships in 13 languages, Arabic included in right-to-left layout.
 | Difficulty | 5 levels. The generator only keeps puzzles with exactly one solution (`src/engine/SudokuEngine.js`, `src/engine/killer/killerGenerator.js`). |
 | Modes | Classic, speedrun, survival (time limit), daily challenge, ghost and delta races against your own best run |
 | Academy | 40 techniques (32 classic, 8 killer), each with a diagram and 2 practice boards. All 80 boards come from our own generator. |
+| First game | A short walkthrough on the first classic and the first killer game, on that game's own board. The academy can replay it. |
+| Accessibility | Four text sizes and a high-contrast mode (Settings → Display). Screen readers read every board cell by row, column and contents, with the cage sum in killer. |
 | Battles | Online 1v1 over Firebase Realtime Database, with a private path per room, and AI battles at 5 levels |
 | Records | Logic Score, a 5-axis play analysis, 40 achievements (also on Play Games), a leaderboard, cloud backup, and a replay of each 1v1 |
 | Languages | ko, en, ja, zh-CN, zh-TW, es-ES, de, fr, pt, it, ru, hi, ar |
@@ -39,7 +41,7 @@ The app ships in 13 languages, Arabic included in right-to-left layout.
 - **Platform services:** Google Play Games (achievements, leaderboard, saved games),
   AdMob, and Google Analytics for Firebase
 - **Tests:** Node scripts and Playwright (Chromium). [`scripts/tests/run_all_qa.js`](scripts/tests/run_all_qa.js)
-  runs about 60 gates in order: logic, data, translations, static scans, real play-throughs,
+  runs 74 gates in order: logic, data, translations, static scans, real play-throughs,
   and layout checks in all 13 languages.
 
 ## How to run it
@@ -67,10 +69,27 @@ Firebase on Android also needs your own `android/app/google-services.json`, whic
 
 ### Checks
 
+These run from a plain clone, without `.env`:
+
+```bash
+npm run lint
+npm run build
+node scripts/tests/unit/test_battle_killer.js   # one gate; many files in scripts/tests/unit run on their own
+```
+
+The full QA pipeline needs two things that are not in this repository, and stops at its first gates
+without them:
+
+- the translation checker shared by this project's apps, expected beside it at
+  `../../app_common/l10n_engine` (gate 0-3 checks that it is there; gates 1, 2-6 and 2-16 use it)
+- a `.env` with Firebase keys (gates 0-5 and 3-0b check that they reach the build)
+
+With both in place:
+
 ```bash
 npx playwright install chromium   # once
-npm run qa:quick                  # quick pass, about 1 to 2 minutes
-npm run qa                        # full pass before a release, about 16 minutes
+npm run qa:quick                  # quick pass, about 2 minutes
+npm run qa                        # all 74 gates, before a release, about 22 minutes
 node scripts/tests/run_mutation_audit.js   # breaks the code on purpose to prove the checks catch it (hours)
 ```
 
@@ -104,7 +123,7 @@ what changed, why, what was rejected, and how it was checked.
 | [`docs/BACKLOG.md`](docs/BACKLOG.md) | To-do list |
 | [`docs/RELEASE_STATE.md`](docs/RELEASE_STATE.md) | Release and Play Console state |
 | [`docs/SudokuDiary.md`](docs/SudokuDiary.md) | Change log with reasons |
-| [`docs/TECHNICAL_SPECIFICATION.md`](docs/TECHNICAL_SPECIFICATION.md) | Engine, modes and scoring, checked against the code |
+| [`docs/TECHNICAL_SPECIFICATION.md`](docs/TECHNICAL_SPECIFICATION.md) | Engine, modes and scoring as of 1.3.2 (2026-09-30). Killer sudoku and later features are not in it yet. |
 | [`SudokuAITalk.md`](SudokuAITalk.md) | Reviews from other AI models and what was done with them |
 | [`docs/privacy.html`](docs/privacy.html) | Privacy policy, published on k2bact.github.io |
 
