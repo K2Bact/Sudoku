@@ -76,6 +76,14 @@
       "find": "    textSize: 'normal',",
       "replace": "    textSize: 'large',",
       "expectFailure": "starts at the normal text size"
+    },
+    {
+      "name": "a NaN step reaches the clamps",
+      "why": "Math.max/Math.min pass NaN through and Math.round(NaN) is 0: the WebView text zoom would be 0% (review 2026-11-20).",
+      "file": "android/app/src/main/java/com/powerneja/suidoku/MainActivity.java",
+      "find": "if (Float.isNaN(step)) step = 1f;",
+      "replace": "if (Float.isNaN(step)) step = step;",
+      "expectFailure": "must turn a NaN step into 1 before clamping"
     }
   ]
 }

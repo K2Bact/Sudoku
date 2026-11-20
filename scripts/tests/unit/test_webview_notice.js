@@ -12,6 +12,8 @@
  *      (remembered for that version), 111 and up never, and never outside Chrome engines.
  *   3. It speaks the player's language by the app's own rule: the saved setting first, then the
  *      system language as matchSystemLanguage reads it — every locale the app ships, Arabic right to left.
+ *   4. No string can break the script it is written into: "</script>", U+2028 and U+2029 go in as
+ *      \u escapes (review 2026-11-20).
  *
  * Gate 3-24 runs the built page in a browser with old user agents.
  */
@@ -72,7 +74,7 @@ function element(tag) {
   };
   return e;
 }
-function run({ ua, language = 'en-US', saved = null, store = new Map() }) {
+function run({ ua, language = 'en-US', saved = null, store = new Map(), script = src }) {
   const body = element('body');
   if (saved) store.set('suidoku_settings_v1', JSON.stringify({ language: saved }));
   const ctx = {
@@ -80,7 +82,7 @@ function run({ ua, language = 'en-US', saved = null, store = new Map() }) {
     localStorage: { getItem: (k) => (store.has(k) ? store.get(k) : null), setItem: (k, v) => store.set(k, String(v)) },
     document: { body, createElement: element },
   };
-  vm.runInNewContext(src, ctx);
+  vm.runInNewContext(script, ctx);
   const box = body.children.find((c) => c.id === 'webview-notice') || null;
   const find = (root, tg) => (root.tag === tg ? root : root.children.map((c) => find(c, tg)).find(Boolean));
   return { box, store, body, title: box && find(box, 'h1')?.textContent, link: box && find(box, 'a'), button: box && find(box, 'button') };
@@ -124,6 +126,29 @@ const ar = run({ ua: UA(69), language: 'ar-SA' });
 assert.strictEqual(ar.box.attrs.dir, 'rtl', 'Arabic runs right to left');
 assert.strictEqual(run({ ua: UA(69), language: 'fr-FR' }).box.attrs.dir, 'ltr', 'and nothing else does');
 console.log('  ✅ saved setting, then the system language as matchSystemLanguage reads it; Arabic RTL');
+
+// ── 5. A string cannot break the script it is written into ────────────────
+// The words are written into an inline <script>. "</script>" in one would end the script in the
+// HTML parser, and U+2028/U+2029 are line breaks inside a string literal for engines before
+// ES2019 (Chrome below 66, which this notice is for). No shipped string has either today; this
+// keeps a future translation from doing it (review 2026-11-20).
+console.log('▶ 5. Strings are escaped for an inline script');
+{
+  const LS = String.fromCharCode(0x2028);
+  const PS = String.fromCharCode(0x2029);
+  const nasty = `A </script><b>x</b> ${LS} B ${PS} C`;
+  const hostile = { ...strings, en: { ...strings.en, title: nasty } };
+  const out = noticeScript(hostile);
+  assert(!/<\/script/i.test(out), 'a string holding "</script>" reaches the page raw — the HTML parser would end the notice script there');
+  assert(!out.includes(LS) && !out.includes(PS), 'U+2028/U+2029 reach the page raw — before Chrome 66 that is a line break inside a string: a syntax error');
+  try {
+    espree.parse(out, { ecmaVersion: 6, sourceType: 'script' });
+  } catch (e) {
+    assert.fail(`with an awkward string the notice is no longer ES2015 (${e.message})`);
+  }
+  assert.strictEqual(run({ ua: UA(69), language: 'en-US', script: out }).title, nasty, 'escaped, the string must still read back as the same words');
+}
+console.log('  ✅ "</script>", U+2028 and U+2029 are written as \\u escapes and read back unchanged');
 
 console.log('\n======================================================');
 console.log('🎉 [2-37] PASSED — an old WebView is told what to do, in its own language.');

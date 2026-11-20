@@ -96,6 +96,12 @@ const main = fs.readFileSync('android/app/src/main/java/com/powerneja/suidoku/Ma
 const plugin = fs.readFileSync('android/app/src/main/java/com/powerneja/suidoku/NativeInfoPlugin.java', 'utf8');
 assert(/Math\.min\(Math\.max\(fontScale \* s, 0\.85f\), 1\.3f\)/.test(main),
   'MainActivity: the zoom is font scale × step inside 0.85..1.3 — past 1.3 the board loses its room (U-1); the layouts are gated to 1.3');
+{
+  // NaN passes Math.max/Math.min unchanged and Math.round(NaN) is 0: a step of NaN would set a 0%
+  // text zoom. The guard has to come before the clamps (review 2026-11-20).
+  const body = main.slice(main.indexOf('static int textZoomFor('), main.indexOf('Math.min(Math.max(fontScale * s'));
+  assert(/if \(Float\.isNaN\(step\)\) step = 1f;/.test(body), 'MainActivity.textZoomFor must turn a NaN step into 1 before clamping — NaN slips through both clamps and rounds to a 0% zoom');
+}
 assert(/setTextZoom\(\s*textZoomFor\(this,\s*savedTextStep\(this\)\)\s*\)|int zoom = textZoomFor\(this, savedTextStep\(this\)\);/.test(main),
   'MainActivity.onCreate applies the kept step before the page loads');
 assert(/@PluginMethod\s+public void setTextScale/.test(plugin), 'NativeInfoPlugin has setTextScale');

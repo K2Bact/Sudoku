@@ -60,6 +60,22 @@
       "find": "injectTo: 'body' }",
       "replace": "injectTo: 'head' }",
       "expectFailure": "a classic <script> at the end of <body>"
+    },
+    {
+      "name": "a string's < goes into the page raw",
+      "why": "A translation holding </script> would end the notice script in the HTML parser; the rest of it would show as text on the page (review 2026-11-20).",
+      "file": "scripts/build/webviewNotice.js",
+      "find": "return JSON.stringify(value).replace(/</g,",
+      "replace": "return JSON.stringify(value).replace(/<(?=never)/g,",
+      "expectFailure": "the HTML parser would end the notice script there"
+    },
+    {
+      "name": "U+2028 goes into the page raw",
+      "why": "Before ES2019 (Chrome below 66, the WebViews this notice is for) it is a line break inside a string: the notice dies of a syntax error (review 2026-11-20).",
+      "file": "scripts/build/webviewNotice.js",
+      "find": ".split(LINE_SEPARATOR).join(",
+      "replace": ".split('no such text').join(",
+      "expectFailure": "U+2028/U+2029 reach the page raw"
     }
   ]
 }

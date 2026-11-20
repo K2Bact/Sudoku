@@ -481,6 +481,13 @@ const CASES = {
   const bridge = strip(read('src/utils/playGamesBridge.js'));
   const handler = bridge.slice(bridge.indexOf("addEventListener('playGamesSignedIn'"), bridge.indexOf('listeners.forEach', bridge.indexOf("addEventListener('playGamesSignedIn'")));
   assert(/syncAchievementsToPlayGames\(\)/.test(handler), 'a sign-in must send the achievements unlocked while signed out');
+  // The native side fires the same event with the player's name written into JavaScript. Each
+  // value must go in as a whole JSON string literal: escaping only ' let a name with a backslash
+  // end the string early, and the event never fired (review 2026-11-20).
+  const main = read('android/app/src/main/java/com/powerneja/suidoku/MainActivity.java');
+  const dispatch = main.slice(main.indexOf('private void requestPlayerInfo()'), main.indexOf('evaluateJavascript(js'));
+  assert(/displayName: %s, playerId: %s/.test(dispatch) && /JSONObject\.quote\(displayName\)/.test(dispatch) && /JSONObject\.quote\(playerId\)/.test(dispatch),
+    'MainActivity must write the Play Games name and id into the page with JSONObject.quote — hand-escaping misses backslashes and line breaks');
   const view = strip(read('src/components/AchievementsView.jsx'));
   assert(/playGamesService\.showAchievements\(\)/.test(view) && /t\('achievements\.openPlayGames'\)/.test(view),
     'the achievements screen must open Google\'s own achievements screen');

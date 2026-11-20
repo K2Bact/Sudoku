@@ -12,9 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- Google's sample application id. It only ever serves test ads, which
-             is what makes running the real SDK during closed testing safe.
-             Swap this and the five unit ids in .env together at release. -->
+        <!-- This app's own AdMob application id, the one the released app uses. It is
+             not a secret (every APK carries it), but it belongs to this app's AdMob
+             account. A fork or an outside build puts its own id here, or Google's
+             sample id ca-app-pub-3940256099942544~3347511713, which only serves test
+             ads; .env.example lists it with the sample unit ids. The app id and the
+             unit ids in .env must come from the same AdMob account. -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-4962315343548854~7282504859" />

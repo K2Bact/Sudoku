@@ -300,6 +300,14 @@
       "find": "    const res = await playGamesService.showAchievements();",
       "replace": "    const res = await playGamesService.showLeaderboards();",
       "expectFailure": "the achievements screen must open Google's own achievements screen"
+    },
+    {
+      "name": "the Play Games name goes into the page unquoted",
+      "why": "The native sign-in event writes the name into JavaScript; without JSONObject.quote a backslash or line break in it ends the string early and the event never fires (review 2026-11-20).",
+      "file": "android/app/src/main/java/com/powerneja/suidoku/MainActivity.java",
+      "find": "JSONObject.quote(displayName),",
+      "replace": "displayName,",
+      "expectFailure": "must write the Play Games name and id into the page with JSONObject.quote"
     }
   ]
 }

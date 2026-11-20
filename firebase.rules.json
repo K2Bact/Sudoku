@@ -1,6 +1,6 @@
 {
   "//": [
-    "Realtime Database security rules for Suidoku 1v1. Everything but /rooms is LIVE as published; /rooms (below) is new on 2026-09-30 and must be published by the user.",
+    "Realtime Database security rules for Suidoku 1v1. All of it is LIVE as published: /rooms since 2026-09-30 (Diary 76), /queue_killer since 2026-11-06 (Diary 180).",
     "",
     "Paste into Firebase console > Realtime Database > Rules, then Publish.",
     "Kept in the repo so the rules are reviewable and versioned alongside the",
@@ -70,8 +70,8 @@
     "2026-11-06 (KP-10): /queue_killer. A killer 1v1 search waits here, not in /queue: apps up to 1.9.0 (33)",
     "read only /queue and would take a killer ticket as a standard match (they do not know the kind), and the",
     "/queue rule refuses any field it does not name, so a ticket cannot say its kind. Same rules as /queue.",
-    "Until this is published a killer search is refused and the lobby says it cannot connect; standard",
-    "matches are untouched. Must be published by the user."
+    "Before it was published (2026-11-06, Diary 180) a killer search was refused and the lobby said it could",
+    "not connect; standard matches were untouched."
   ],
   "rules": {
     ".read": false,

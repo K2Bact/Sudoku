@@ -8,6 +8,7 @@ import com.google.android.gms.games.PlayGamesSdk;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.GamesSignInClient;
 import com.google.android.gms.games.PlayersClient;
+import org.json.JSONObject;
 
 public class MainActivity extends BridgeActivity {
     private static final String TAG = "SuidokuPlayGames";
@@ -166,6 +167,10 @@ public class MainActivity extends BridgeActivity {
      * step, inside 0.85..1.3 — the cap U-1 set, which the layouts are gated to.
      */
     static int textZoomFor(android.content.Context ctx, float step) {
+        // NaN passes both clamps below (Math.max/min return NaN) and rounds to a 0% zoom.
+        // The bridge cannot send one today (JSON has no NaN; it arrives as null → 1), so
+        // this only keeps a future caller from blanking the text (review 2026-11-20).
+        if (Float.isNaN(step)) step = 1f;
         float fontScale = ctx.getResources().getConfiguration().fontScale;
         float s = Math.min(Math.max(step, 0.8f), 1.4f);
         return Math.round(Math.min(Math.max(fontScale * s, 0.85f), 1.3f) * 100);
@@ -192,13 +197,16 @@ public class MainActivity extends BridgeActivity {
                     String playerId = playerTask.getResult().getPlayerId();
                     Log.i(TAG, "Signed in Player: " + displayName + " (" + playerId + ")");
 
-                    // Dispatch to webview Javascript event
+                    // Dispatch to webview Javascript event. JSONObject.quote writes each value as a
+                    // whole JSON string literal (quotes, backslashes, line breaks, "</" all escaped,
+                    // null → ""). Escaping only ' let a name with a backslash end the string early:
+                    // a syntax error, and the event never fired (review 2026-11-20).
                     runOnUiThread(() -> {
                         if (getBridge() != null && getBridge().getWebView() != null) {
                             String js = String.format(
-                                "window.dispatchEvent(new CustomEvent('playGamesSignedIn', { detail: { displayName: '%s', playerId: '%s' } }));",
-                                displayName.replace("'", "\\'"),
-                                playerId.replace("'", "\\'")
+                                "window.dispatchEvent(new CustomEvent('playGamesSignedIn', { detail: { displayName: %s, playerId: %s } }));",
+                                JSONObject.quote(displayName),
+                                JSONObject.quote(playerId)
                             );
                             getBridge().getWebView().evaluateJavascript(js, null);
                         }

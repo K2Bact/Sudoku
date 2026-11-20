@@ -41,6 +41,22 @@ export function noticeStrings() {
   return out;
 }
 
+/**
+ * JSON that is safe inside an inline <script>. JSON.stringify leaves two things raw: `<`, so a
+ * string holding "</script>" would end the script in the HTML parser, and U+2028/U+2029, which
+ * engines before ES2019 (Chrome below 66, the very WebViews this notice is for) read as a line
+ * break inside a string literal: a syntax error. Both are written as \u escapes, which a string
+ * literal reads back as the same character (review 2026-11-20; no current string has either).
+ */
+const LINE_SEPARATOR = String.fromCharCode(0x2028);
+const PARAGRAPH_SEPARATOR = String.fromCharCode(0x2029);
+
+export function inlineJson(value) {
+  return JSON.stringify(value).replace(/</g, '\\u003c')
+    .split(LINE_SEPARATOR).join('\\u2028')
+    .split(PARAGRAPH_SEPARATOR).join('\\u2029');
+}
+
 /** The inline script itself (ES2015 at most; see the header). */
 export function noticeScript(strings = noticeStrings()) {
   return `(function () {
@@ -48,7 +64,7 @@ export function noticeScript(strings = noticeStrings()) {
   if (!m) return;
   var v = parseInt(m[1], 10);
   if (v >= ${NOTICE_BELOW}) return;
-  var S = ${JSON.stringify(strings)};
+  var S = ${inlineJson(strings)};
   var matchSystemLanguage = ${matchSystemLanguage.toString()};
   var lang = 'en';
   try {
