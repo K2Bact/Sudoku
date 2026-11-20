@@ -95,6 +95,40 @@ const GRAPHICS_CONFIG = {
     tagline: 'Classic & Killer · 40 Techniques · 1v1 & AI Duels',
     font: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
   },
+  'nl-NL': {
+    lang: 'nl',
+    dir: 'ltr',
+    badge: '☀ SUDOKU',
+    title1: 'Sudoku',
+    // Netherlands listing 2026-11-18 (Diary 183): the store title's words (store_description_nl.txt,
+    // "Sudoku: Klassiek en Killer") and the rest of its short description. No native review.
+    title2: 'Klassiek en Killer',
+    tagline: '40 technieken · dagelijkse puzzels · 1v1- en AI-duels',
+    font: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+  },
+  'da-DK': {
+    lang: 'da',
+    dir: 'ltr',
+    badge: '☀ SUDOKU',
+    title1: 'Sudoku',
+    // Denmark listing 2026-11-18 (Diary 183): the store title's words (store_description_da.txt,
+    // "Sudoku: Klassisk og Killer") and the rest of its short description. No native review.
+    title2: 'Klassisk og Killer',
+    tagline: '40 teknikker · daglige opgaver · 1v1- og AI-dueller',
+    font: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+  },
+  'ms-MY': {
+    lang: 'ms',
+    dir: 'ltr',
+    badge: '☀ SUDOKU',
+    title1: 'Sudoku',
+    // Malaysia listing 2026-11-18 (Diary 183, Malay (Malaysia) ms-MY): the store title's words
+    // (store_description_ms.txt, "Sudoku: Klasik dan Killer") and the rest of its short description.
+    // No native review.
+    title2: 'Klasik dan Killer',
+    tagline: '40 teknik · teka-teki harian · pertarungan 1v1 dan AI',
+    font: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+  },
   'ja-JP': {
     lang: 'ja',
     dir: 'ltr',
